@@ -6,13 +6,14 @@ import { Badge } from './ui/badge';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from './ui/dialog';
 import { Label } from './ui/label';
 import { Textarea } from './ui/textarea';
-import { 
-  Plus, 
-  Upload, 
-  FileText, 
-  Download, 
-  Eye, 
-  Edit, 
+import { Tabs, TabsContent, TabsList, TabsTrigger } from './ui/tabs';
+import {
+  Plus,
+  Upload,
+  FileText,
+  Download,
+  Eye,
+  Edit,
   Trash2,
   MoreHorizontal,
   File,
@@ -25,11 +26,14 @@ import {
   Globe,
   Lock,
   Share2,
-  ExternalLink
+  ExternalLink,
+  Github,
+  HardDrive
 } from 'lucide-react';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator } from './ui/dropdown-menu';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
 import { formatDistanceToNow } from 'date-fns';
+import GitHubIntegration from './GitHubIntegration';
 
 interface ProjectFile {
   id: number;
