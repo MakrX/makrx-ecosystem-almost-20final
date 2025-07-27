@@ -20,30 +20,32 @@ import { createRoot } from "react-dom/client";
 const App = () => (
   <ThemeProvider>
     <AuthProvider>
-      <FeatureFlagProvider>
-        <MakerspaceProvider>
-          <BrowserRouter>
-          <Routes>
-            <Route path="/login" element={<Login />} />
-            <Route path="/" element={<Layout />}>
-              <Route index element={<Navigate to="/portal/dashboard" replace />} />
-              <Route path="portal">
-                <Route path="dashboard" element={<Dashboard />} />
-                <Route path="inventory" element={<Inventory />} />
-                <Route path="equipment" element={<Equipment />} />
-                <Route path="projects" element={<Projects />} />
-                <Route path="reservations" element={<Reservations />} />
-                <Route path="admin">
-                  <Route path="users" element={<AdminUsers />} />
-                  <Route path="makerspace" element={<AdminMakerspace />} />
-                  <Route path="feature-flags" element={<AdminFeatureFlags />} />
+      <NotificationProvider>
+        <FeatureFlagProvider>
+          <MakerspaceProvider>
+            <BrowserRouter>
+            <Routes>
+              <Route path="/login" element={<Login />} />
+              <Route path="/" element={<Layout />}>
+                <Route index element={<Navigate to="/portal/dashboard" replace />} />
+                <Route path="portal">
+                  <Route path="dashboard" element={<Dashboard />} />
+                  <Route path="inventory" element={<Inventory />} />
+                  <Route path="equipment" element={<Equipment />} />
+                  <Route path="projects" element={<Projects />} />
+                  <Route path="reservations" element={<Reservations />} />
+                  <Route path="admin">
+                    <Route path="users" element={<AdminUsers />} />
+                    <Route path="makerspace" element={<AdminMakerspace />} />
+                    <Route path="feature-flags" element={<AdminFeatureFlags />} />
+                  </Route>
                 </Route>
               </Route>
-            </Route>
-          </Routes>
-          </BrowserRouter>
-        </MakerspaceProvider>
-      </FeatureFlagProvider>
+            </Routes>
+            </BrowserRouter>
+          </MakerspaceProvider>
+        </FeatureFlagProvider>
+      </NotificationProvider>
     </AuthProvider>
   </ThemeProvider>
 );
