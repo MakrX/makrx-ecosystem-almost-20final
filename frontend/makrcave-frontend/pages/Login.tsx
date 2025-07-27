@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { Building2, Eye, EyeOff, Lock, Mail, User, Crown, Shield, Wrench, Settings, UserCheck } from 'lucide-react';
+import MakrXThemeToggle from '../components/MakrXThemeToggle';
 
 export default function Login() {
   const [email, setEmail] = useState('');
