@@ -527,6 +527,234 @@ export default function Inventory() {
     );
   };
 
+  const EditInventoryModal = () => {
+    if (!showEditModal || !selectedItem) return null;
+
+    const handleSubmit = (e: React.FormEvent) => {
+      e.preventDefault();
+      // Update item logic here
+      console.log('Updating item:', selectedItem.id, editItem);
+      // In a real app, you'd call updateInventoryItem or similar
+      setShowEditModal(false);
+      setSelectedItem(null);
+    };
+
+    return (
+      <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+        <div className="bg-card p-6 rounded-lg w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+          <div className="flex items-center justify-between mb-6">
+            <h2 className="text-xl font-semibold">Edit Inventory Item</h2>
+            <button
+              onClick={() => {
+                setShowEditModal(false);
+                setSelectedItem(null);
+              }}
+              className="p-2 hover:bg-accent rounded-lg"
+            >
+              <X className="w-5 h-5" />
+            </button>
+          </div>
+
+          <form onSubmit={handleSubmit} className="space-y-4">
+            {/* Item Name and Category */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium mb-2">Item Name *</label>
+                <input
+                  type="text"
+                  required
+                  value={editItem.name}
+                  onChange={(e) => setEditItem({...editItem, name: e.target.value})}
+                  className="w-full px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-makrx-teal"
+                  placeholder="PLA Filament - White"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium mb-2">Category *</label>
+                <select
+                  required
+                  value={editItem.category}
+                  onChange={(e) => setEditItem({...editItem, category: e.target.value})}
+                  className="w-full px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-makrx-teal"
+                >
+                  <option value="filament">Filament</option>
+                  <option value="resin">Resin</option>
+                  <option value="tools">Tools</option>
+                  <option value="electronics">Electronics</option>
+                  <option value="materials">Materials</option>
+                </select>
+              </div>
+            </div>
+
+            {/* SKU and Location */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium mb-2">SKU</label>
+                <input
+                  type="text"
+                  value={editItem.sku}
+                  onChange={(e) => setEditItem({...editItem, sku: e.target.value})}
+                  className="w-full px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-makrx-teal"
+                  placeholder="PLA-WHT-001"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium mb-2">Location</label>
+                <input
+                  type="text"
+                  value={editItem.location}
+                  onChange={(e) => setEditItem({...editItem, location: e.target.value})}
+                  className="w-full px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-makrx-teal"
+                  placeholder="Shelf A-1"
+                />
+              </div>
+            </div>
+
+            {/* Quantity and Unit */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div>
+                <label className="block text-sm font-medium mb-2">Current Quantity *</label>
+                <input
+                  type="number"
+                  required
+                  min="0"
+                  step="0.01"
+                  value={editItem.quantity}
+                  onChange={(e) => setEditItem({...editItem, quantity: e.target.value})}
+                  className="w-full px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-makrx-teal"
+                  placeholder="5"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium mb-2">Unit *</label>
+                <input
+                  type="text"
+                  required
+                  value={editItem.unit}
+                  onChange={(e) => setEditItem({...editItem, unit: e.target.value})}
+                  className="w-full px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-makrx-teal"
+                  placeholder="kg, pcs, rolls"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium mb-2">Low Stock Alert *</label>
+                <input
+                  type="number"
+                  required
+                  min="0"
+                  value={editItem.lowStockThreshold}
+                  onChange={(e) => setEditItem({...editItem, lowStockThreshold: e.target.value})}
+                  className="w-full px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-makrx-teal"
+                  placeholder="3"
+                />
+              </div>
+            </div>
+
+            {/* Price and Supplier */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium mb-2">Unit Price</label>
+                <input
+                  type="number"
+                  step="0.01"
+                  min="0"
+                  value={editItem.price}
+                  onChange={(e) => setEditItem({...editItem, price: e.target.value})}
+                  className="w-full px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-makrx-teal"
+                  placeholder="25.99"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium mb-2">Supplier</label>
+                <input
+                  type="text"
+                  value={editItem.supplier}
+                  onChange={(e) => setEditItem({...editItem, supplier: e.target.value})}
+                  className="w-full px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-makrx-teal"
+                  placeholder="Hatchbox, Prusa, etc."
+                />
+              </div>
+            </div>
+
+            {/* Description */}
+            <div>
+              <label className="block text-sm font-medium mb-2">Description</label>
+              <textarea
+                value={editItem.description}
+                onChange={(e) => setEditItem({...editItem, description: e.target.value})}
+                rows={3}
+                className="w-full px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-makrx-teal"
+                placeholder="Additional details about the item..."
+              />
+            </div>
+
+            {/* Quick Quantity Adjustments */}
+            <div className="bg-muted/50 p-4 rounded-lg">
+              <h3 className="text-sm font-medium mb-3">Quick Quantity Adjustments</h3>
+              <div className="flex gap-2 flex-wrap">
+                <button
+                  type="button"
+                  onClick={() => setEditItem({...editItem, quantity: Math.max(0, parseFloat(editItem.quantity || '0') - 1).toString()})}
+                  className="px-3 py-1 bg-red-100 text-red-700 rounded text-sm hover:bg-red-200 transition-colors"
+                >
+                  -1
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setEditItem({...editItem, quantity: Math.max(0, parseFloat(editItem.quantity || '0') - 5).toString()})}
+                  className="px-3 py-1 bg-red-100 text-red-700 rounded text-sm hover:bg-red-200 transition-colors"
+                >
+                  -5
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setEditItem({...editItem, quantity: (parseFloat(editItem.quantity || '0') + 1).toString()})}
+                  className="px-3 py-1 bg-green-100 text-green-700 rounded text-sm hover:bg-green-200 transition-colors"
+                >
+                  +1
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setEditItem({...editItem, quantity: (parseFloat(editItem.quantity || '0') + 5).toString()})}
+                  className="px-3 py-1 bg-green-100 text-green-700 rounded text-sm hover:bg-green-200 transition-colors"
+                >
+                  +5
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setEditItem({...editItem, quantity: (parseFloat(editItem.quantity || '0') + 10).toString()})}
+                  className="px-3 py-1 bg-green-100 text-green-700 rounded text-sm hover:bg-green-200 transition-colors"
+                >
+                  +10
+                </button>
+              </div>
+            </div>
+
+            <div className="flex gap-3 pt-4">
+              <button
+                type="button"
+                onClick={() => {
+                  setShowEditModal(false);
+                  setSelectedItem(null);
+                }}
+                className="flex-1 px-4 py-2 border border-border rounded-lg hover:bg-accent transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                type="submit"
+                className="flex-1 makrcave-btn-primary"
+              >
+                <Save className="w-4 h-4 mr-2" />
+                Update Item
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    );
+  };
+
   const BulkOperationsModal = () => {
     if (!showBulkModal) return null;
 
