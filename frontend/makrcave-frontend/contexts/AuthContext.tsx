@@ -37,54 +37,54 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  // Demo users for different roles
-  const demoUsers: Record<UserRole, User> = {
-    super_admin: {
+  // Predefined demo users for authentication
+  const demoUsers: User[] = [
+    {
       id: 'sa-1',
-      email: 'superadmin@makrx.org',
-      username: 'superadmin',
-      firstName: 'System',
-      lastName: 'Administrator',
+      email: 'alex.carter@makrx.org',
+      username: 'alex.carter',
+      firstName: 'Alex',
+      lastName: 'Carter',
       role: 'super_admin',
       assignedMakerspaces: ['ms-1', 'ms-2', 'ms-3'] // Can manage all makerspaces
     },
-    admin: {
+    {
       id: 'adm-1',
-      email: 'admin@makrx.org',
-      username: 'admin',
-      firstName: 'Organization',
-      lastName: 'Admin',
+      email: 'jordan.kim@makrx.org',
+      username: 'jordan.kim',
+      firstName: 'Jordan',
+      lastName: 'Kim',
       role: 'admin',
       assignedMakerspaces: [] // Can view all but not assigned to specific ones
     },
-    makerspace_admin: {
+    {
       id: 'msa-1',
-      email: 'makerspaceadmin@makrcave.local',
-      username: 'makerspaceadmin',
-      firstName: 'MakrCave',
-      lastName: 'Admin',
+      email: 'sarah.martinez@makrcave.local',
+      username: 'sarah.martinez',
+      firstName: 'Sarah',
+      lastName: 'Martinez',
       role: 'makerspace_admin',
       assignedMakerspaces: ['ms-1'] // Assigned to specific makerspace
     },
-    service_provider: {
+    {
       id: 'sp-1',
-      email: 'provider@makrcave.local',
-      username: 'serviceprovider',
-      firstName: 'Service',
-      lastName: 'Provider',
+      email: 'riley.thompson@makrcave.local',
+      username: 'riley.thompson',
+      firstName: 'Riley',
+      lastName: 'Thompson',
       role: 'service_provider',
       assignedMakerspaces: ['ms-1'] // Currently restricted
     },
-    maker: {
+    {
       id: 'mkr-1',
-      email: 'maker@makrcave.local',
-      username: 'maker',
-      firstName: 'Creative',
-      lastName: 'Maker',
+      email: 'casey.williams@makrcave.local',
+      username: 'casey.williams',
+      firstName: 'Casey',
+      lastName: 'Williams',
       role: 'maker',
       assignedMakerspaces: ['ms-1'] // Assigned to their makerspace
     }
-  };
+  ];
 
   useEffect(() => {
     // Demo: Start with Makerspace Admin role for showcase
