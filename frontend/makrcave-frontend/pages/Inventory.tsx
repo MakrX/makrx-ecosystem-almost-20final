@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { 
   Package, Plus, Search, Filter, Download, Upload, ShoppingCart, 
   AlertTriangle, BarChart3, Grid, List, Calendar, Eye, Edit,
