@@ -8,6 +8,9 @@ import {
 import { useMakerspace } from '../contexts/MakerspaceContext';
 import { useAuth } from '../contexts/AuthContext';
 import { FeatureGate } from '../components/FeatureGate';
+import EquipmentCard from '../components/EquipmentCard';
+import ReservationModal from '../components/ReservationModal';
+import EquipmentRating from '../components/EquipmentRating';
 
 interface Equipment {
   id: string;
