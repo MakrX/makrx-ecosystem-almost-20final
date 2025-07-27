@@ -4,6 +4,8 @@ from typing import List, Optional, Dict, Any
 from datetime import datetime
 import uuid
 
+from ..utils.github_service import GitHubService
+
 from ..models.project import (
     Project, ProjectCollaborator, ProjectBOM, ProjectEquipmentReservation,
     ProjectFile, ProjectMilestone, ProjectActivityLog, ProjectStatus,
