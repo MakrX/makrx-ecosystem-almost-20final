@@ -5,10 +5,68 @@ export interface User {
   username: string;
   firstName?: string;
   lastName?: string;
-  roles: UserRole[];
+  role: UserRole;
+  assignedMakerspaces?: string[]; // For makerspace_admin, service_provider, maker
   isActive: boolean;
   createdAt: string;
   updatedAt: string;
+}
+
+// Role Permission Definitions
+export interface RolePermissions {
+  users: {
+    view: 'all' | 'assigned_makerspace' | 'none';
+    create: boolean;
+    edit: 'all' | 'assigned_makerspace' | 'none';
+    delete: 'all' | 'assigned_makerspace' | 'none';
+    invite: 'all' | 'assigned_makerspace' | 'none';
+  };
+  makerspaces: {
+    view: 'all' | 'assigned' | 'none';
+    create: boolean;
+    edit: 'all' | 'assigned' | 'none';
+    delete: 'all' | 'assigned' | 'none';
+  };
+  inventory: {
+    view: 'all' | 'assigned_makerspace' | 'availability_only' | 'none';
+    edit: 'all' | 'assigned_makerspace' | 'none';
+    add: 'all' | 'assigned_makerspace' | 'none';
+    deduct: 'all' | 'assigned_makerspace' | 'none';
+    reorder: 'all' | 'assigned_makerspace' | 'none';
+  };
+  projects: {
+    view: 'all' | 'assigned_makerspace' | 'own' | 'none';
+    create: boolean;
+    edit: 'all' | 'assigned_makerspace' | 'own' | 'none';
+    delete: 'all' | 'assigned_makerspace' | 'own' | 'none';
+    addMembers: boolean;
+  };
+  equipment: {
+    view: 'all' | 'assigned_makerspace' | 'certified_only' | 'none';
+    edit: 'all' | 'assigned_makerspace' | 'none';
+    add: 'all' | 'assigned_makerspace' | 'none';
+    reserve: boolean;
+    maintenance: 'all' | 'assigned_makerspace' | 'none';
+  };
+  reservations: {
+    view: 'all' | 'assigned_makerspace' | 'own' | 'none';
+    create: boolean;
+    edit: 'all' | 'assigned_makerspace' | 'own' | 'none';
+    approve: 'all' | 'assigned_makerspace' | 'none';
+    cancel: 'all' | 'assigned_makerspace' | 'own' | 'none';
+  };
+  bom: {
+    view: 'all' | 'assigned_makerspace' | 'own_projects' | 'none';
+    link: 'all' | 'assigned_makerspace' | 'own_projects' | 'none';
+    approve: 'all' | 'assigned_makerspace' | 'none';
+  };
+  admin: {
+    userRoleManagement: boolean;
+    systemLogs: boolean;
+    featureFlags: boolean;
+    globalDashboard: boolean;
+    makerspaceSettings: 'all' | 'assigned' | 'none';
+  };
 }
 
 export type UserRole = 'super_admin' | 'admin' | 'makerspace_admin' | 'service_provider' | 'maker';
