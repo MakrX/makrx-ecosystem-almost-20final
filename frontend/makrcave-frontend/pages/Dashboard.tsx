@@ -256,20 +256,29 @@ export default function Dashboard() {
             <Activity className="w-5 h-5" />
             Quick Actions
           </h3>
-          <div className="grid grid-cols-2 gap-3">
-            <button className="makrcave-btn-primary text-sm py-3">
-              Reserve Equipment
-            </button>
-            <button className="makrcave-btn-secondary text-sm py-3">
-              New Project
-            </button>
-            <button className="makrcave-btn-primary text-sm py-3">
-              Add Inventory
-            </button>
-            <button className="makrcave-btn-secondary text-sm py-3">
-              View Reports
-            </button>
-          </div>
+          <FeatureGate
+            featureKey="dashboard.quick_actions"
+            fallback={
+              <div className="text-center py-4 text-muted-foreground">
+                <p className="text-sm">Quick actions not available</p>
+              </div>
+            }
+          >
+            <div className="grid grid-cols-2 gap-3">
+              <button className="makrcave-btn-primary text-sm py-3">
+                Reserve Equipment
+              </button>
+              <button className="makrcave-btn-secondary text-sm py-3">
+                New Project
+              </button>
+              <button className="makrcave-btn-primary text-sm py-3">
+                Add Inventory
+              </button>
+              <button className="makrcave-btn-secondary text-sm py-3">
+                View Reports
+              </button>
+            </div>
+          </FeatureGate>
           
           {/* Usage Chart */}
           <div className="mt-6 pt-6 border-t border-border">
