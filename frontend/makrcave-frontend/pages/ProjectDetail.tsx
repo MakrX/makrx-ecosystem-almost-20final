@@ -523,11 +523,15 @@ const ProjectDetail: React.FC = () => {
 
         {/* Files Tab */}
         <TabsContent value="files">
-          <ProjectFiles 
+          <ProjectFiles
             projectId={project.project_id}
             files={project.files}
             canEdit={permissions.canManageFiles}
             onUpdate={fetchProject}
+            githubIntegrationEnabled={project.github_integration_enabled}
+            githubRepoUrl={project.github_repo_url}
+            githubRepoName={project.github_repo_name}
+            githubDefaultBranch={project.github_default_branch}
           />
         </TabsContent>
 
