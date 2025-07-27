@@ -117,9 +117,10 @@ export default function Equipment() {
 
   const loadStats = async () => {
     try {
+      const authToken = localStorage.getItem('auth_token') || 'mock-token';
       const response = await fetch('/api/v1/equipment/stats/overview', {
         headers: {
-          'Authorization': `Bearer ${localStorage.getItem('auth_token')}`
+          'Authorization': `Bearer ${authToken}`
         }
       });
       
