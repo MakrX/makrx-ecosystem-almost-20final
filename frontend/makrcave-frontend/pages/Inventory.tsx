@@ -165,7 +165,8 @@ export default function Inventory() {
       supplier: item.supplier || '',
       description: item.description || '',
       sku: item.sku || '',
-      location: item.location || ''
+      location: item.location || '',
+      isScanned: item.isScanned || false
     });
   };
 
