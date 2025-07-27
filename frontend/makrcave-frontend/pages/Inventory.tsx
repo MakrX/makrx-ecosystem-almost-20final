@@ -95,7 +95,7 @@ const QRScanner = ({ onScan, onClose }: { onScan: (code: string) => void; onClos
 };
 
 export default function Inventory() {
-  const { inventory, addInventoryItem, updateInventoryQuantity } = useMakerspace();
+  const { inventory, addInventoryItem, updateInventoryItem, updateInventoryQuantity } = useMakerspace();
   const { hasPermission } = useAuth();
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all');
