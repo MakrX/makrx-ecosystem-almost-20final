@@ -1,19 +1,10 @@
-import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
-import {
-  LayoutDashboard,
-  Package,
-  Wrench,
-  FolderOpen,
-  Calendar,
-  Users,
-  Settings,
-  LogOut,
-  Building2
-} from 'lucide-react';
+import SuperAdminSidebar from './SuperAdminSidebar';
+import ManagerSidebar from './ManagerSidebar';
+import MakerSidebar from './MakerSidebar';
 
 export default function Sidebar() {
-  const { user, logout, isMakerspaceAdmin } = useAuth();
+  const { user, isSuperAdmin, isMakrcaveManager, isMaker } = useAuth();
   const location = useLocation();
 
   const isActive = (path: string) => location.pathname.startsWith(path);
