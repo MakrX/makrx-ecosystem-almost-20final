@@ -117,7 +117,7 @@ function AdminDashboard() {
               <p className="text-sm font-medium text-muted-foreground">Analytics Reports</p>
               <p className="text-2xl font-bold">8</p>
             </div>
-            <BarChart3 className="w-8 h-8 text-yellow-600" />
+            <BarChart3 className="w-8 h-8 text-makrx-teal" />
           </div>
         </div>
       </div>
