@@ -4,6 +4,7 @@ import { AuthProvider } from "./contexts/AuthContext";
 import { MakerspaceProvider } from "./contexts/MakerspaceContext";
 import { FeatureFlagProvider } from "./contexts/FeatureFlagContext";
 import { ThemeProvider } from "./contexts/ThemeContext";
+import { NotificationProvider } from "./contexts/NotificationContext";
 import Layout from "./components/Layout";
 import Dashboard from "./pages/Dashboard";
 import Inventory from "./pages/Inventory";
