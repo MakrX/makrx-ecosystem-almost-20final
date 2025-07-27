@@ -5,8 +5,8 @@
 
 @layer base {
   :root {
-    /* Light Theme - MakrCave Professional */
-    --background: 249 249 249; /* #F9F9F9 */
+    /* Light Theme - Soft, Eye-friendly */
+    --background: 253 253 254; /* #FDFDFE - Very light with subtle warmth */
     --foreground: 30 30 30; /* #1E1E1E */
 
     --card: 0 0% 100%;
