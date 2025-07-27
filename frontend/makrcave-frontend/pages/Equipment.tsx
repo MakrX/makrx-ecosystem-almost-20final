@@ -44,13 +44,30 @@ export default function Equipment() {
             </div>
 
             <div className="flex gap-2">
-              <button className="flex-1 makrcave-btn-primary text-sm">
-                <Calendar className="w-4 h-4 mr-1" />
-                Reserve
-              </button>
-              <button className="makrcave-btn-secondary text-sm">
-                <Settings className="w-4 h-4" />
-              </button>
+              <FeatureGate
+                featureKey="equipment.reservation_system"
+                fallback={
+                  <button disabled className="flex-1 makrcave-btn-primary text-sm opacity-50 cursor-not-allowed">
+                    <Calendar className="w-4 h-4 mr-1" />
+                    Reserve (Disabled)
+                  </button>
+                }
+              >
+                <button className="flex-1 makrcave-btn-primary text-sm">
+                  <Calendar className="w-4 h-4 mr-1" />
+                  Reserve
+                </button>
+              </FeatureGate>
+
+              {maintenanceAccess.hasAccess ? (
+                <button className="makrcave-btn-secondary text-sm">
+                  <Settings className="w-4 h-4" />
+                </button>
+              ) : (
+                <button disabled className="makrcave-btn-secondary text-sm opacity-50 cursor-not-allowed" title="Maintenance mode requires manager role">
+                  <Settings className="w-4 h-4" />
+                </button>
+              )}
             </div>
           </div>
         ))}
