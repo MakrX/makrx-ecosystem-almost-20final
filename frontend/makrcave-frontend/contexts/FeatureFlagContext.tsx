@@ -145,7 +145,7 @@ const defaultFlags: FeatureFlagConfig = {
     name: 'Full Inventory Management',
     description: 'Add, deduct, and reorder inventory items',
     enabled: true,
-    allowedRoles: ['super_admin', 'makerspace_admin'],
+    allowedRoles: ['super_admin', 'admin'],
     environment: 'all',
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
