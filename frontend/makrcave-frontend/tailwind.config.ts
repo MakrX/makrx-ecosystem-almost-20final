@@ -56,7 +56,9 @@ export default {
           foreground: "hsl(var(--card-foreground))",
         },
         makrx: {
-          yellow: "#FFC107",
+          teal: "#10B981", // Modern teal - much easier on the eyes
+          "teal-light": "#34D399", // Lighter teal for hover states
+          "teal-dark": "#059669", // Darker teal for active states
           blue: "#1A3D7C",
           brown: "#A25B12",
           "light-bg": "#F9F9F9",
@@ -65,6 +67,8 @@ export default {
           "dark-text": "#E0E0E0",
           "glass-light": "rgba(255, 255, 255, 0.9)",
           "glass-dark": "rgba(26, 61, 124, 0.3)",
+          // Keep yellow for legacy compatibility but don't use it
+          yellow: "#FFC107",
         },
       },
       borderRadius: {
