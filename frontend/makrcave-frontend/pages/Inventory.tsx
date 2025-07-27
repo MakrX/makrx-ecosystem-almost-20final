@@ -121,6 +121,49 @@ export default function Inventory() {
     location: ''
   });
 
+  const [editItem, setEditItem] = useState({
+    name: '',
+    category: 'filament',
+    quantity: '',
+    unit: '',
+    lowStockThreshold: '',
+    price: '',
+    supplier: '',
+    description: '',
+    sku: '',
+    location: ''
+  });
+
+  const resetForm = () => {
+    setNewItem({
+      name: '',
+      category: 'filament',
+      quantity: '',
+      unit: '',
+      lowStockThreshold: '',
+      price: '',
+      supplier: '',
+      description: '',
+      sku: '',
+      location: ''
+    });
+  };
+
+  const loadItemForEdit = (item: any) => {
+    setEditItem({
+      name: item.name || '',
+      category: item.category || 'filament',
+      quantity: item.quantity?.toString() || '',
+      unit: item.unit || '',
+      lowStockThreshold: item.lowStockThreshold?.toString() || '',
+      price: item.price?.toString() || '',
+      supplier: item.supplier || '',
+      description: item.description || '',
+      sku: item.sku || '',
+      location: item.location || ''
+    });
+  };
+
   // Filter inventory
   const filteredInventory = inventory.filter(item => {
     const matchesSearch = item.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
