@@ -352,6 +352,9 @@ export function MakerspaceProvider({ children }: { children: ReactNode }) {
       addInventoryItem,
       updateInventoryItem,
       updateInventoryQuantity,
+      addEquipment,
+      updateEquipment,
+      deleteEquipment,
       createReservation,
       updateEquipmentStatus
     }}>
