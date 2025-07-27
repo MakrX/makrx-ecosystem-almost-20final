@@ -355,7 +355,7 @@ function MakerDashboard() {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="makrcave-card">
           <h3 className="text-lg font-semibold mb-4">Quick Actions</h3>
           <div className="space-y-2">
@@ -374,11 +374,22 @@ function MakerDashboard() {
         <div className="makrcave-card">
           <h3 className="text-lg font-semibold mb-4">Your Access</h3>
           <p className="text-muted-foreground text-sm">
-            Create and manage your own projects, reserve equipment you're certified to use, 
+            Create and manage your own projects, reserve equipment you're certified to use,
             and collaborate with other makers. Add materials to your project BOMs linked to the store.
           </p>
         </div>
+
+        <NotificationWidget
+          category="projects"
+          title="Project Updates"
+          maxItems={3}
+        />
       </div>
+
+      <NotificationWidget
+        title="Recent Notifications"
+        maxItems={5}
+      />
     </div>
   );
 }
