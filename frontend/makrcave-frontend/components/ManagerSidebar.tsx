@@ -105,8 +105,8 @@ export default function ManagerSidebar() {
       {/* User Info */}
       <div className="p-4 border-b border-blue-200">
         <div className="flex items-center gap-3">
-          <div className="w-8 h-8 bg-makrx-yellow rounded-full flex items-center justify-center">
-            <span className="text-sm font-semibold text-makrx-blue">
+          <div className="w-8 h-8 bg-makrx-teal rounded-full flex items-center justify-center">
+            <span className="text-sm font-semibold text-white">
               {user?.firstName?.[0] || 'M'}
             </span>
           </div>
