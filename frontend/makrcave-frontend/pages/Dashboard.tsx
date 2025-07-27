@@ -179,37 +179,42 @@ export default function Dashboard() {
         </div>
 
         {/* Inventory Alerts */}
-        <div className="makrcave-card">
-          <div className="flex items-center justify-between mb-4">
-            <h3 className="text-lg font-semibold flex items-center gap-2">
-              <Package className="w-5 h-5" />
-              Inventory Alerts
-            </h3>
-            <span className="text-sm text-muted-foreground">
-              {lowStockItems.length} items low
-            </span>
-          </div>
-          <div className="space-y-3">
-            {lowStockItems.length > 0 ? (
-              lowStockItems.map((item) => (
-                <div key={item.id} className="flex items-center justify-between p-3 bg-red-50 border border-red-200 rounded-lg">
-                  <div>
-                    <p className="text-sm font-medium">{item.name}</p>
-                    <p className="text-xs text-muted-foreground">
-                      {item.quantity} {item.unit} remaining
-                    </p>
+        <FeatureGate
+          featureKey="dashboard.inventory_alerts"
+          showReasonWhenBlocked={true}
+        >
+          <div className="makrcave-card">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-lg font-semibold flex items-center gap-2">
+                <Package className="w-5 h-5" />
+                Inventory Alerts
+              </h3>
+              <span className="text-sm text-muted-foreground">
+                {lowStockItems.length} items low
+              </span>
+            </div>
+            <div className="space-y-3">
+              {lowStockItems.length > 0 ? (
+                lowStockItems.map((item) => (
+                  <div key={item.id} className="flex items-center justify-between p-3 bg-red-50 border border-red-200 rounded-lg">
+                    <div>
+                      <p className="text-sm font-medium">{item.name}</p>
+                      <p className="text-xs text-muted-foreground">
+                        {item.quantity} {item.unit} remaining
+                      </p>
+                    </div>
+                    <AlertTriangle className="w-4 h-4 text-red-500" />
                   </div>
-                  <AlertTriangle className="w-4 h-4 text-red-500" />
+                ))
+              ) : (
+                <div className="text-center py-6 text-muted-foreground">
+                  <CheckCircle className="w-8 h-8 mx-auto mb-2 text-green-500" />
+                  <p className="text-sm">All items well-stocked</p>
                 </div>
-              ))
-            ) : (
-              <div className="text-center py-6 text-muted-foreground">
-                <CheckCircle className="w-8 h-8 mx-auto mb-2 text-green-500" />
-                <p className="text-sm">All items well-stocked</p>
-              </div>
-            )}
+              )}
+            </div>
           </div>
-        </div>
+        </FeatureGate>
       </div>
 
       {/* Recent Activity */}
