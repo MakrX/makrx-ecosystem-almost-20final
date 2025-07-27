@@ -74,6 +74,7 @@ interface MakerspaceContextType {
   reservations: Reservation[];
   updateStats: () => void;
   addInventoryItem: (item: Omit<InventoryItem, 'id'>) => void;
+  updateInventoryItem: (id: string, item: Partial<InventoryItem>) => void;
   updateInventoryQuantity: (id: string, quantity: number) => void;
   createReservation: (reservation: Omit<Reservation, 'id'>) => void;
   updateEquipmentStatus: (id: string, status: Equipment['status']) => void;
