@@ -611,11 +611,13 @@ export default function Equipment() {
 
               console.log(`Making ${method} request to:`, url);
 
+              const authToken = localStorage.getItem('auth_token') || 'mock-token';
+
               const response = await fetch(url, {
                 method,
                 headers: {
                   'Content-Type': 'application/json',
-                  'Authorization': `Bearer ${localStorage.getItem('auth_token')}`
+                  'Authorization': `Bearer ${authToken}`
                 },
                 body: JSON.stringify(equipmentData)
               });
