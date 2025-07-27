@@ -112,7 +112,7 @@ export default function Header() {
 
         {/* Mobile Navigation */}
         {isMenuOpen && (
-          <div className="md:hidden py-4 border-t border-border mt-4">
+          <div className="md:hidden py-4 border-t border-white/10 mt-4">
             <nav className="flex flex-col gap-2">
               {navigation.map((item) => {
                 const Icon = item.icon;
