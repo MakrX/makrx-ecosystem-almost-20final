@@ -7,6 +7,18 @@ interface Equipment {
   status: 'available' | 'in_use' | 'maintenance' | 'offline';
   location?: string;
   lastMaintenance?: string;
+  makerspaceId: string;
+  description?: string;
+  specifications?: Record<string, any>;
+  requiredCertifications?: string[];
+  hourlyRate?: number;
+  totalHours?: number;
+  successRate?: number;
+  monthlyHours?: number;
+  maintenanceInterval?: number;
+  nextMaintenance?: string;
+  accessMethod?: 'nfc' | 'manual' | 'badge';
+  operatorRequired?: boolean;
 }
 
 interface InventoryItem {
