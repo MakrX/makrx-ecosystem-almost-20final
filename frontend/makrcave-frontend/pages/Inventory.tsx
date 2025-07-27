@@ -641,8 +641,19 @@ export default function Inventory() {
       }
 
       // Update item logic here
-      console.log('Updating item:', selectedItem.id, editItem);
-      // In a real app, you'd call updateInventoryItem or similar
+      updateInventoryItem(selectedItem.id, {
+        name: editItem.name,
+        category: editItem.category as any,
+        quantity: parseFloat(editItem.quantity),
+        unit: editItem.unit,
+        lowStockThreshold: parseInt(editItem.lowStockThreshold),
+        price: editItem.price ? parseFloat(editItem.price) : undefined,
+        supplier: editItem.supplier,
+        sku: editItem.sku,
+        location: editItem.location,
+        isScanned: editItem.isScanned
+      });
+
       setShowEditModal(false);
       setSelectedItem(null);
     };
