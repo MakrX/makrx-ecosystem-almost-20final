@@ -12,16 +12,27 @@ export default function Projects() {
           <h1 className="text-3xl font-bold flex items-center gap-3">
             <FolderOpen className="w-8 h-8" />
             Project Management
+            <FeatureFlagBadge featureKey="projects.personal" />
             <FeatureFlagBadge featureKey="projects.collaboration" />
           </h1>
           <p className="text-muted-foreground mt-1">
             Collaborate on projects and manage BOMs
           </p>
         </div>
-        <button className="makrcave-btn-primary flex items-center gap-2">
-          <Plus className="w-4 h-4" />
-          New Project
-        </button>
+        <FeatureGate
+          featureKey="projects.personal"
+          fallback={
+            <button disabled className="makrcave-btn-primary flex items-center gap-2 opacity-50 cursor-not-allowed">
+              <Plus className="w-4 h-4" />
+              New Project (Restricted)
+            </button>
+          }
+        >
+          <button className="makrcave-btn-primary flex items-center gap-2">
+            <Plus className="w-4 h-4" />
+            New Project
+          </button>
+        </FeatureGate>
       </div>
 
       {/* Version Control Feature - Under Development */}
