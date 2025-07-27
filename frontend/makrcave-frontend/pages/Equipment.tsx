@@ -568,11 +568,12 @@ export default function Equipment() {
           equipment={selectedEquipment}
           onSubmit={async (reservationData) => {
             try {
+              const authToken = localStorage.getItem('auth_token') || 'mock-token';
               const response = await fetch(`/api/v1/equipment/${selectedEquipment.id}/reserve`, {
                 method: 'POST',
                 headers: {
                   'Content-Type': 'application/json',
-                  'Authorization': `Bearer ${localStorage.getItem('auth_token')}`
+                  'Authorization': `Bearer ${authToken}`
                 },
                 body: JSON.stringify(reservationData)
               });
