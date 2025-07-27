@@ -310,6 +310,27 @@ export function MakerspaceProvider({ children }: { children: ReactNode }) {
     updateInventoryItem(id, { quantity });
   };
 
+  const addEquipment = (equipment: Omit<Equipment, 'id'>) => {
+    const newEquipment = {
+      ...equipment,
+      id: `eq-${Date.now()}`
+    };
+    setEquipment(prev => [...prev, newEquipment]);
+    console.log('Added equipment:', newEquipment);
+  };
+
+  const updateEquipment = (id: string, updates: Partial<Equipment>) => {
+    setEquipment(prev => prev.map(equipment =>
+      equipment.id === id ? { ...equipment, ...updates } : equipment
+    ));
+    console.log('Updated equipment:', id, updates);
+  };
+
+  const deleteEquipment = (id: string) => {
+    setEquipment(prev => prev.filter(equipment => equipment.id !== id));
+    console.log('Deleted equipment:', id);
+  };
+
   const createReservation = (reservation: Omit<Reservation, 'id'>) => {
     // Would call API to create reservation
     console.log('Creating reservation:', reservation);
