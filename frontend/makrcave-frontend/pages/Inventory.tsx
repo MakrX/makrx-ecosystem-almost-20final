@@ -1,6 +1,6 @@
 import { useState, useMemo } from 'react';
-import {
-  Package, Plus, Search, Filter, Download, Upload, ShoppingCart,
+import { 
+  Package, Plus, Search, Filter, Download, Upload, ShoppingCart, 
   AlertTriangle, BarChart3, Grid, List, Calendar, Eye, Edit,
   X, Save, FileText, MapPin, Shield, ExternalLink, QrCode
 } from 'lucide-react';
@@ -11,907 +11,355 @@ import InventoryCard from '../components/InventoryCard';
 import LowStockBanner from '../components/LowStockBanner';
 import UsageTimeline from '../components/UsageTimeline';
 
-// QR Code scanning mock component (in real app, you'd use a proper QR library)
-const QRScanner = ({ onScan, onClose }: { onScan: (code: string) => void; onClose: () => void }) => {
-  const [scanning, setScanning] = useState(true);
-  const videoRef = useRef<HTMLVideoElement>(null);
+interface InventoryUsageLog {
+  id: string;
+  timestamp: string;
+  userId: string;
+  userName: string;
+  action: 'add' | 'issue' | 'restock' | 'adjust' | 'damage' | 'transfer';
+  quantityBefore: number;
+  quantityAfter: number;
+  reason?: string;
+  linkedProjectId?: string;
+  linkedJobId?: string;
+}
 
-  // Mock QR codes for demonstration
-  const mockQRCodes = [
-    'MKX-FIL-HAT-PLA001-1.75-BLU', // MakrX-Filament-Hatchbox-PLA-1.75mm-Blue
-    'MKX-RES-FOR-STD001-GRY', // MakrX-Resin-Formlabs-Standard-Grey
-    'MKX-TOL-PRI-CAL001-STL', // MakrX-Tool-Prusa-Calipers-Steel
-    'MKX-ELE-ARD-UNO001-R3', // MakrX-Electronics-Arduino-Uno-R3
-    'MKX-MAT-ACR-PLX001-3MM' // MakrX-Material-Acrylic-Plexiglass-3mm
-  ];
-
-  const simulateScan = () => {
-    const randomCode = mockQRCodes[Math.floor(Math.random() * mockQRCodes.length)];
-    onScan(randomCode);
-    setScanning(false);
-  };
-
-  return (
-    <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50">
-      <div className="bg-card p-6 rounded-lg w-full max-w-md">
-        <div className="flex items-center justify-between mb-4">
-          <h3 className="text-lg font-semibold">Scan QR Code</h3>
-          <button onClick={onClose} className="p-1 hover:bg-accent rounded">
-            <X className="w-5 h-5" />
-          </button>
-        </div>
-        
-        <div className="aspect-square bg-black rounded-lg mb-4 relative overflow-hidden">
-          <video
-            ref={videoRef}
-            className="w-full h-full object-cover"
-            autoPlay
-            muted
-            style={{ filter: 'blur(2px)' }}
-          />
-          <div className="absolute inset-0 flex items-center justify-center">
-            <div className="w-48 h-48 border-2 border-makrx-teal rounded-lg">
-              <div className="w-full h-full border border-makrx-teal/50 rounded-lg m-2"></div>
-            </div>
-          </div>
-          {scanning && (
-            <div className="absolute inset-0 flex items-center justify-center">
-              <div className="w-full h-1 bg-makrx-teal animate-pulse"></div>
-            </div>
-          )}
-        </div>
-        
-        <div className="text-center">
-          <p className="text-sm text-muted-foreground mb-4">
-            Position the QR code within the frame to scan
-          </p>
-          <button 
-            onClick={simulateScan}
-            className="makrcave-btn-primary w-full"
-            disabled={!scanning}
-          >
-            {scanning ? 'Simulate Scan' : 'Scanned!'}
-          </button>
-        </div>
-      </div>
-    </div>
-  );
-};
+interface InventoryItem {
+  id: string;
+  name: string;
+  category: 'filament' | 'resin' | 'tools' | 'electronics' | 'materials' | 'consumables' | 'machines' | 'sensors' | 'components';
+  subcategory?: string;
+  quantity: number;
+  unit: string;
+  minThreshold: number;
+  location: string;
+  status: 'active' | 'in_use' | 'damaged' | 'reserved' | 'discontinued';
+  supplierType: 'makrx' | 'external';
+  productCode?: string;
+  makerspaceId: string;
+  history: InventoryUsageLog[];
+  imageUrl?: string;
+  notes?: string;
+  ownerUserId?: string;
+  restrictedAccessLevel?: 'basic' | 'certified' | 'admin_only';
+  price?: number;
+  supplier?: string;
+  description?: string;
+  isScanned?: boolean;
+}
 
 export default function Inventory() {
-  const { inventory, addInventoryItem, updateInventoryItem, updateInventoryQuantity } = useMakerspace();
-  const { hasPermission } = useAuth();
+  const { inventory, addInventoryItem, updateInventoryItem } = useMakerspace();
+  const { user, hasPermission } = useAuth();
+  
+  // State management
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all');
-  const [showAddModal, setShowAddModal] = useState(false);
-  const [showEditModal, setShowEditModal] = useState(false);
-  const [showQRScanner, setShowQRScanner] = useState(false);
-  const [showBulkModal, setShowBulkModal] = useState(false);
-  const [showHistoryModal, setShowHistoryModal] = useState(false);
-  const [selectedItem, setSelectedItem] = useState<any>(null);
+  const [selectedStatus, setSelectedStatus] = useState('all');
+  const [selectedSupplierType, setSelectedSupplierType] = useState('all');
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
-  const [isScannedItem, setIsScannedItem] = useState(false);
-  const [duplicateWarning, setDuplicateWarning] = useState<string>('');
-  
-  // Form states
-  const [newItem, setNewItem] = useState({
-    name: '',
-    category: 'filament',
-    quantity: '',
-    unit: '',
-    lowStockThreshold: '',
-    price: '',
-    supplier: '',
-    description: '',
-    sku: '',
-    location: '',
-    isScanned: false
-  });
+  const [showFilters, setShowFilters] = useState(false);
+  const [showAddModal, setShowAddModal] = useState(false);
+  const [showDetailModal, setShowDetailModal] = useState(false);
+  const [showReorderModal, setShowReorderModal] = useState(false);
+  const [selectedItem, setSelectedItem] = useState<InventoryItem | null>(null);
 
-  const [editItem, setEditItem] = useState({
-    name: '',
-    category: 'filament',
-    quantity: '',
-    unit: '',
-    lowStockThreshold: '',
-    price: '',
-    supplier: '',
-    description: '',
-    sku: '',
-    location: '',
-    isScanned: false
-  });
+  // Role-based permissions based on the access matrix
+  const canAddEdit = user?.role === 'super_admin' || user?.role === 'makerspace_admin' || 
+                    (user?.role === 'service_provider' && selectedItem?.ownerUserId === user?.id);
+  const canIssue = user?.role === 'super_admin' || user?.role === 'makerspace_admin' || user?.role === 'service_provider';
+  const canDelete = user?.role === 'super_admin' || user?.role === 'makerspace_admin' || 
+                   (user?.role === 'service_provider' && selectedItem?.ownerUserId === user?.id);
+  const canReorder = user?.role === 'super_admin' || user?.role === 'makerspace_admin' || user?.role === 'service_provider';
+  const canViewUsage = user?.role === 'super_admin' || user?.role === 'makerspace_admin' || user?.role === 'service_provider';
+  const canLinkToBOM = user?.role !== 'admin'; // All except global admin
 
-  const resetForm = () => {
-    setNewItem({
-      name: '',
-      category: 'filament',
-      quantity: '',
-      unit: '',
-      lowStockThreshold: '',
-      price: '',
-      supplier: '',
-      description: '',
-      sku: '',
-      location: '',
-      isScanned: false
-    });
-    setIsScannedItem(false);
-    setDuplicateWarning('');
-  };
+  // Filter inventory based on user role and makerspace
+  const filteredInventory = useMemo(() => {
+    let items = inventory as InventoryItem[];
 
-  const loadItemForEdit = (item: any) => {
-    setEditItem({
-      name: item.name || '',
-      category: item.category || 'filament',
-      quantity: item.quantity?.toString() || '',
-      unit: item.unit || '',
-      lowStockThreshold: item.lowStockThreshold?.toString() || '',
-      price: item.price?.toString() || '',
-      supplier: item.supplier || '',
-      description: item.description || '',
-      sku: item.sku || '',
-      location: item.location || '',
-      isScanned: item.isScanned || false
-    });
-  };
+    // Apply role-based filtering per access matrix
+    if (user?.role === 'makerspace_admin' && user.assignedMakerspaces) {
+      // Makerspace Admin: View own cave only
+      items = items.filter(item => user.assignedMakerspaces?.includes(item.makerspaceId));
+    } else if (user?.role === 'service_provider') {
+      // Service Provider: View own inventory only
+      items = items.filter(item => item.ownerUserId === user?.id);
+    } else if (user?.role === 'maker') {
+      // Maker: Read-only access to all items in their makerspace
+      if (user.assignedMakerspaces) {
+        items = items.filter(item => user.assignedMakerspaces?.includes(item.makerspaceId));
+      }
+    }
+    // Super Admin sees all, Admin (Global) sees all but read-only
 
-  // Filter inventory
-  const filteredInventory = inventory.filter(item => {
-    const matchesSearch = item.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         item.sku?.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesCategory = selectedCategory === 'all' || item.category === selectedCategory;
-    return matchesSearch && matchesCategory;
-  });
+    // Search filtering
+    if (searchTerm) {
+      items = items.filter(item =>
+        item.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        item.category.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        item.location.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        item.productCode?.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+    }
 
+    // Category filtering
+    if (selectedCategory !== 'all') {
+      items = items.filter(item => item.category === selectedCategory);
+    }
+
+    // Status filtering
+    if (selectedStatus !== 'all') {
+      items = items.filter(item => item.status === selectedStatus);
+    }
+
+    // Supplier type filtering
+    if (selectedSupplierType !== 'all') {
+      items = items.filter(item => item.supplierType === selectedSupplierType);
+    }
+
+    return items;
+  }, [inventory, searchTerm, selectedCategory, selectedStatus, selectedSupplierType, user]);
+
+  // Low stock items
+  const lowStockItems = filteredInventory.filter(item => 
+    item.quantity <= item.minThreshold && item.status === 'active'
+  );
+
+  // Categories for filtering
   const categories = [
-    { value: 'all', label: 'All Categories', color: 'bg-gray-100' },
-    { value: 'filament', label: 'Filament', color: 'bg-blue-100' },
-    { value: 'resin', label: 'Resin', color: 'bg-purple-100' },
-    { value: 'tools', label: 'Tools', color: 'bg-orange-100' },
-    { value: 'electronics', label: 'Electronics', color: 'bg-yellow-100' },
-    { value: 'materials', label: 'Materials', color: 'bg-green-100' },
-    { value: 'consumables', label: 'Consumables', color: 'bg-red-100' }
+    { value: 'all', label: 'All Categories' },
+    { value: 'filament', label: 'Filament' },
+    { value: 'resin', label: 'Resin' },
+    { value: 'tools', label: 'Tools' },
+    { value: 'electronics', label: 'Electronics' },
+    { value: 'materials', label: 'Materials' },
+    { value: 'machines', label: 'Machines' },
+    { value: 'sensors', label: 'Sensors' },
+    { value: 'components', label: 'Components' },
+    { value: 'consumables', label: 'Consumables' },
   ];
 
-  const lowStockItems = filteredInventory.filter(item => item.quantity <= item.lowStockThreshold);
-  const totalValue = filteredInventory.reduce((sum, item) => sum + ((item.price || 0) * item.quantity), 0);
+  const handleIssueItem = (id: string, quantity: number, reason: string) => {
+    const item = filteredInventory.find(i => i.id === id);
+    if (!item) return;
 
-  // Parse QR code and extract item information
-  const parseQRCode = (qrCode: string) => {
-    // Expected format: MKX-CAT-BRD-ITM001-VAR1-VAR2
-    const parts = qrCode.split('-');
-    if (parts.length >= 4 && parts[0] === 'MKX') {
-      const categoryMap: { [key: string]: string } = {
-        'FIL': 'filament',
-        'RES': 'resin',
-        'TOL': 'tools',
-        'ELE': 'electronics',
-        'MAT': 'materials',
-        'CON': 'consumables'
-      };
-      
-      return {
-        category: categoryMap[parts[1]] || 'materials',
-        brand: parts[2],
-        item: parts[3],
-        variant1: parts[4] || '',
-        variant2: parts[5] || '',
-        sku: qrCode
-      };
-    }
-    return null;
-  };
-
-  const handleQRScan = (qrCode: string) => {
-    const parsedData = parseQRCode(qrCode);
-    if (parsedData) {
-      setNewItem({
-        ...newItem,
-        category: parsedData.category,
-        sku: parsedData.sku,
-        name: `${parsedData.brand} ${parsedData.item} ${parsedData.variant1} ${parsedData.variant2}`.trim(),
-        isScanned: true
-      });
-      setIsScannedItem(true);
-      setShowQRScanner(false);
-      setShowAddModal(true);
-    } else {
-      alert('Invalid QR code format. Please scan a valid MakrX item code.');
-    }
-  };
-
-  const InventoryCard = ({ item }: { item: any }) => {
-    const isLowStock = item.quantity <= item.lowStockThreshold;
-    const stockPercentage = Math.min(100, (item.quantity / (item.lowStockThreshold * 3)) * 100);
-    
-    return (
-      <div className={`makrcave-card ${isLowStock ? 'border-red-200 bg-red-50' : ''} group`}>
-        <div className="flex items-start justify-between mb-3">
-          <div className="flex-1">
-            <h3 className="font-semibold group-hover:text-makrx-teal transition-colors">{item.name}</h3>
-            <p className="text-sm text-muted-foreground capitalize">{item.category}</p>
-            {item.isScanned && item.sku && (
-              <p className="text-xs text-muted-foreground font-mono">{item.sku}</p>
-            )}
-            {!item.isScanned && (
-              <div className="mt-1 px-2 py-1 bg-amber-50 border border-amber-200 rounded text-xs text-amber-700">
-                <span className="font-medium">User-added product.</span> MakrX has not reviewed or certified this item.
-              </div>
-            )}
-          </div>
-          <div className="flex items-center gap-2">
-            {isLowStock && <AlertTriangle className="w-5 h-5 text-red-500" />}
-            <button className="opacity-0 group-hover:opacity-100 transition-opacity p-1 hover:bg-accent rounded">
-              <MoreHorizontal className="w-4 h-4" />
-            </button>
-          </div>
-        </div>
-
-        <div className="space-y-2 mb-4">
-          <div className="flex justify-between text-sm">
-            <span>Current Stock:</span>
-            <span className={`font-medium ${isLowStock ? 'text-red-600' : 'text-makrx-teal'}`}>
-              {item.quantity} {item.unit}
-            </span>
-          </div>
-          <div className="flex justify-between text-sm">
-            <span>Low Stock Alert:</span>
-            <span>{item.lowStockThreshold} {item.unit}</span>
-          </div>
-          {item.price && (
-            <div className="flex justify-between text-sm">
-              <span>Unit Price:</span>
-              <span>${item.price}</span>
-            </div>
-          )}
-          {item.location && (
-            <div className="flex justify-between text-sm">
-              <span>Location:</span>
-              <span>{item.location}</span>
-            </div>
-          )}
-        </div>
-
-        {/* Stock Level Bar */}
-        <div className="mb-4">
-          <div className="flex justify-between text-xs text-muted-foreground mb-1">
-            <span>Stock Level</span>
-            <span>{Math.round(stockPercentage)}%</span>
-          </div>
-          <div className="w-full bg-gray-200 rounded-full h-2">
-            <div 
-              className={`h-2 rounded-full transition-all ${
-                isLowStock ? 'bg-red-500' : stockPercentage > 70 ? 'bg-makrx-teal' : 'bg-yellow-500'
-              }`}
-              style={{ width: `${stockPercentage}%` }}
-            ></div>
-          </div>
-        </div>
-
-        <FeatureGate featureKey="inventory.makerspace_management">
-          <div className="flex gap-2">
-            <button
-              onClick={() => {
-                setSelectedItem(item);
-                loadItemForEdit(item);
-                setShowEditModal(true);
-              }}
-              className="flex-1 makrcave-btn-primary text-sm"
-            >
-              <Edit className="w-4 h-4 mr-1" />
-              Update
-            </button>
-            <FeatureGate featureKey="inventory.qr_generation">
-              <button className="makrcave-btn-secondary text-sm">
-                <QrCode className="w-4 h-4" />
-              </button>
-            </FeatureGate>
-          </div>
-        </FeatureGate>
-      </div>
-    );
-  };
-
-  const AddInventoryModal = () => {
-    if (!showAddModal) return null;
-
-    const checkForDuplicates = () => {
-      // Check for duplicate by name and category
-      const nameMatch = inventory.find(item =>
-        item.name.toLowerCase().trim() === newItem.name.toLowerCase().trim() &&
-        item.category === newItem.category
-      );
-
-      // Check for duplicate by SKU (only for scanned items)
-      const skuMatch = newItem.sku && inventory.find(item =>
-        item.sku && item.sku.toLowerCase() === newItem.sku.toLowerCase()
-      );
-
-      return { nameMatch, skuMatch };
+    const newQuantity = Math.max(0, item.quantity - quantity);
+    const usageLog: InventoryUsageLog = {
+      id: `log-${Date.now()}`,
+      timestamp: new Date().toISOString(),
+      userId: user?.id || '',
+      userName: `${user?.firstName} ${user?.lastName}` || 'Unknown User',
+      action: 'issue',
+      quantityBefore: item.quantity,
+      quantityAfter: newQuantity,
+      reason
     };
 
-    const handleSubmit = (e: React.FormEvent) => {
-      e.preventDefault();
+    updateInventoryItem(id, {
+      quantity: newQuantity,
+      history: [...(item.history || []), usageLog]
+    });
+  };
 
-      const { nameMatch, skuMatch } = checkForDuplicates();
+  const handleReorderItem = (item: InventoryItem) => {
+    setSelectedItem(item);
+    setShowReorderModal(true);
+    // In real implementation, this would open MakrX Store with the product pre-selected
+    console.log('Opening MakrX Store for reorder:', item.productCode);
+  };
 
-      if (nameMatch) {
-        alert(`Duplicate item found: "${nameMatch.name}" already exists in ${nameMatch.category} category. Please check existing inventory before adding.`);
-        return;
-      }
-
-      if (skuMatch) {
-        alert(`Duplicate SKU found: "${skuMatch.sku}" is already assigned to "${skuMatch.name}". Each SKU must be unique.`);
-        return;
-      }
-
-      // Add item logic here
-      console.log('Adding item:', newItem);
-      addInventoryItem({
-        ...newItem,
-        id: Date.now().toString(), // Temporary ID generation
-        quantity: parseFloat(newItem.quantity),
-        lowStockThreshold: parseInt(newItem.lowStockThreshold),
-        price: newItem.price ? parseFloat(newItem.price) : undefined
-      });
-
-      resetForm();
-      setShowAddModal(false);
-    };
+  const ItemDetailModal = () => {
+    if (!showDetailModal || !selectedItem) return null;
 
     return (
       <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-        <div className="bg-card p-6 rounded-lg w-full max-w-2xl max-h-[90vh] overflow-y-auto">
-          <div className="flex items-center justify-between mb-6">
-            <h3 className="text-xl font-semibold">Add Inventory Item</h3>
-            <button onClick={() => setShowAddModal(false)} className="p-1 hover:bg-accent rounded">
-              <X className="w-5 h-5" />
-            </button>
-          </div>
-
-          <form onSubmit={handleSubmit} className="space-y-6">
-            {/* Quick QR Scan */}
-            <div className="bg-makrx-teal/10 border border-makrx-teal/20 rounded-lg p-4">
-              <div className="flex items-center gap-3 mb-2">
-                <QrCode className="w-5 h-5 text-makrx-teal" />
-                <span className="font-medium text-makrx-teal">Quick Add via QR Code</span>
-              </div>
-              <p className="text-sm text-muted-foreground mb-3">
-                Scan authorized MakrX item QR codes for instant inventory addition
-              </p>
-              <button 
-                type="button"
-                onClick={() => {
-                  setShowAddModal(false);
-                  setShowQRScanner(true);
-                }}
-                className="makrcave-btn-primary"
-              >
-                <QrCode className="w-4 h-4 mr-2" />
-                Scan QR Code
-              </button>
-            </div>
-
-            {/* Basic Information */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="bg-card rounded-lg w-full max-w-4xl max-h-[90vh] overflow-hidden">
+          {/* Header */}
+          <div className="flex items-center justify-between p-6 border-b border-border">
+            <div className="flex items-center gap-3">
+              <Package className="w-6 h-6" />
               <div>
-                <label className="block text-sm font-medium mb-2">Item Name *</label>
-                <input
-                  type="text"
-                  required
-                  value={newItem.name}
-                  onChange={(e) => {
-                    const newName = e.target.value;
-                    setNewItem({...newItem, name: newName});
-
-                    // Check for duplicates in real-time
-                    if (newName.trim()) {
-                      const duplicate = inventory.find(item =>
-                        item.name.toLowerCase().trim() === newName.toLowerCase().trim() &&
-                        item.category === newItem.category
-                      );
-                      if (duplicate) {
-                        setDuplicateWarning(`Item "${duplicate.name}" already exists in ${duplicate.category} category`);
-                      } else {
-                        setDuplicateWarning('');
-                      }
-                    } else {
-                      setDuplicateWarning('');
-                    }
-                  }}
-                  className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-makrx-teal ${
-                    duplicateWarning ? 'border-red-300 bg-red-50' : 'border-border'
-                  }`}
-                  placeholder="e.g., PLA Filament - Blue"
-                />
-                {duplicateWarning && (
-                  <p className="text-sm text-red-600 mt-1">{duplicateWarning}</p>
-                )}
-              </div>
-              <div>
-                <label className="block text-sm font-medium mb-2">Category *</label>
-                <select 
-                  required
-                  value={newItem.category}
-                  onChange={(e) => setNewItem({...newItem, category: e.target.value})}
-                  className="w-full px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-makrx-teal"
-                >
-                  {categories.slice(1).map(cat => (
-                    <option key={cat.value} value={cat.value}>{cat.label}</option>
-                  ))}
-                </select>
-              </div>
-            </div>
-
-            {/* Warning for Manual Items */}
-            {!isScannedItem && (
-              <div className="p-4 bg-amber-50 border border-amber-200 rounded-lg">
-                <div className="flex items-start gap-3">
-                  <AlertTriangle className="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5" />
-                  <div>
-                    <h4 className="font-medium text-amber-800 mb-1">User-added Product</h4>
-                    <p className="text-sm text-amber-700">
-                      MakrX has not reviewed or certified this item. This product will not have an official SKU and may not be available for BOM integration until reviewed.
-                    </p>
-                  </div>
+                <h2 className="text-xl font-semibold">{selectedItem.name}</h2>
+                <div className="flex items-center gap-2 mt-1">
+                  <span className="text-sm text-muted-foreground capitalize">
+                    {selectedItem.category}
+                  </span>
+                  {selectedItem.subcategory && (
+                    <>
+                      <span className="text-sm text-muted-foreground">•</span>
+                      <span className="text-sm text-muted-foreground">{selectedItem.subcategory}</span>
+                    </>
+                  )}
+                  {selectedItem.supplierType === 'makrx' && (
+                    <span className="px-2 py-0.5 bg-makrx-teal text-white text-xs rounded-full font-medium ml-2">
+                      MakrX Verified
+                    </span>
+                  )}
+                  {selectedItem.supplierType === 'external' && (
+                    <span className="px-2 py-0.5 bg-amber-100 text-amber-700 text-xs rounded-full font-medium ml-2">
+                      External Item
+                    </span>
+                  )}
                 </div>
               </div>
-            )}
-
-            {/* SKU and Location */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {isScannedItem && (
-                <div>
-                  <label className="block text-sm font-medium mb-2">SKU/Item Code</label>
-                  <input
-                    type="text"
-                    value={newItem.sku}
-                    onChange={(e) => setNewItem({...newItem, sku: e.target.value})}
-                    className="w-full px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-makrx-teal bg-gray-50"
-                    placeholder="MKX-FIL-HAT-PLA001"
-                    readOnly
-                  />
-                  <p className="text-xs text-muted-foreground mt-1">Auto-generated from QR scan</p>
-                </div>
-              )}
-              <div className={isScannedItem ? '' : 'md:col-span-2'}>
-                <label className="block text-sm font-medium mb-2">Location</label>
-                <input
-                  type="text"
-                  value={newItem.location}
-                  onChange={(e) => setNewItem({...newItem, location: e.target.value})}
-                  className="w-full px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-makrx-teal"
-                  placeholder="Shelf A3, Bin 12"
-                />
-              </div>
             </div>
-
-            {/* Quantity and Units */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div>
-                <label className="block text-sm font-medium mb-2">Quantity *</label>
-                <input 
-                  type="number" 
-                  required
-                  min="0"
-                  value={newItem.quantity}
-                  onChange={(e) => setNewItem({...newItem, quantity: e.target.value})}
-                  className="w-full px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-makrx-teal"
-                  placeholder="10"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium mb-2">Unit *</label>
-                <input 
-                  type="text" 
-                  required
-                  value={newItem.unit}
-                  onChange={(e) => setNewItem({...newItem, unit: e.target.value})}
-                  className="w-full px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-makrx-teal"
-                  placeholder="kg, pcs, rolls"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium mb-2">Low Stock Alert *</label>
-                <input 
-                  type="number" 
-                  required
-                  min="0"
-                  value={newItem.lowStockThreshold}
-                  onChange={(e) => setNewItem({...newItem, lowStockThreshold: e.target.value})}
-                  className="w-full px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-makrx-teal"
-                  placeholder="3"
-                />
-              </div>
-            </div>
-
-            {/* Price and Supplier */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <label className="block text-sm font-medium mb-2">Unit Price</label>
-                <input 
-                  type="number" 
-                  step="0.01"
-                  min="0"
-                  value={newItem.price}
-                  onChange={(e) => setNewItem({...newItem, price: e.target.value})}
-                  className="w-full px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-makrx-teal"
-                  placeholder="25.99"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium mb-2">Supplier</label>
-                <input 
-                  type="text" 
-                  value={newItem.supplier}
-                  onChange={(e) => setNewItem({...newItem, supplier: e.target.value})}
-                  className="w-full px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-makrx-teal"
-                  placeholder="Hatchbox, Prusa, etc."
-                />
-              </div>
-            </div>
-
-            {/* Description */}
-            <div>
-              <label className="block text-sm font-medium mb-2">Description</label>
-              <textarea 
-                value={newItem.description}
-                onChange={(e) => setNewItem({...newItem, description: e.target.value})}
-                rows={3}
-                className="w-full px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-makrx-teal"
-                placeholder="Additional details about the item..."
-              />
-            </div>
-
-            <div className="flex gap-3 pt-4">
-              <button 
-                type="button"
-                onClick={() => {
-                  resetForm();
-                  setShowAddModal(false);
-                }}
-                className="flex-1 px-4 py-2 border border-border rounded-lg hover:bg-accent transition-colors"
-              >
-                Cancel
-              </button>
-              <button 
-                type="submit"
-                className="flex-1 makrcave-btn-primary"
-              >
-                <Save className="w-4 h-4 mr-2" />
-                Add Item
-              </button>
-            </div>
-          </form>
-        </div>
-      </div>
-    );
-  };
-
-  const EditInventoryModal = () => {
-    if (!showEditModal || !selectedItem) return null;
-
-    const checkForEditDuplicates = () => {
-      // Check for duplicate by name and category (excluding current item)
-      const nameMatch = inventory.find(item =>
-        item.id !== selectedItem.id &&
-        item.name.toLowerCase().trim() === editItem.name.toLowerCase().trim() &&
-        item.category === editItem.category
-      );
-
-      // Check for duplicate by SKU (only for scanned items, excluding current item)
-      const skuMatch = editItem.sku && inventory.find(item =>
-        item.id !== selectedItem.id &&
-        item.sku && item.sku.toLowerCase() === editItem.sku.toLowerCase()
-      );
-
-      return { nameMatch, skuMatch };
-    };
-
-    const handleSubmit = (e: React.FormEvent) => {
-      e.preventDefault();
-
-      const { nameMatch, skuMatch } = checkForEditDuplicates();
-
-      if (nameMatch) {
-        alert(`Duplicate item found: "${nameMatch.name}" already exists in ${nameMatch.category} category. Please choose a different name or check existing inventory.`);
-        return;
-      }
-
-      if (skuMatch) {
-        alert(`Duplicate SKU found: "${skuMatch.sku}" is already assigned to "${skuMatch.name}". Each SKU must be unique.`);
-        return;
-      }
-
-      // Update item logic here
-      updateInventoryItem(selectedItem.id, {
-        name: editItem.name,
-        category: editItem.category as any,
-        quantity: parseFloat(editItem.quantity),
-        unit: editItem.unit,
-        lowStockThreshold: parseInt(editItem.lowStockThreshold),
-        price: editItem.price ? parseFloat(editItem.price) : undefined,
-        supplier: editItem.supplier,
-        sku: editItem.sku,
-        location: editItem.location,
-        isScanned: editItem.isScanned
-      });
-
-      setShowEditModal(false);
-      setSelectedItem(null);
-    };
-
-    return (
-      <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-        <div className="bg-card p-6 rounded-lg w-full max-w-2xl max-h-[90vh] overflow-y-auto">
-          <div className="flex items-center justify-between mb-6">
-            <h2 className="text-xl font-semibold">Edit Inventory Item</h2>
             <button
-              onClick={() => {
-                setShowEditModal(false);
-                setSelectedItem(null);
-              }}
+              onClick={() => setShowDetailModal(false)}
               className="p-2 hover:bg-accent rounded-lg"
             >
               <X className="w-5 h-5" />
             </button>
           </div>
 
-          <form onSubmit={handleSubmit} className="space-y-4">
-            {/* Item Name and Category */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <label className="block text-sm font-medium mb-2">Item Name *</label>
-                <input
-                  type="text"
-                  required
-                  value={editItem.name}
-                  onChange={(e) => setEditItem({...editItem, name: e.target.value})}
-                  className="w-full px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-makrx-teal"
-                  placeholder="PLA Filament - White"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium mb-2">Category *</label>
-                <select
-                  required
-                  value={editItem.category}
-                  onChange={(e) => setEditItem({...editItem, category: e.target.value})}
-                  className="w-full px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-makrx-teal"
-                >
-                  <option value="filament">Filament</option>
-                  <option value="resin">Resin</option>
-                  <option value="tools">Tools</option>
-                  <option value="electronics">Electronics</option>
-                  <option value="materials">Materials</option>
-                </select>
-              </div>
-            </div>
-
-            {/* Warning for Manual Items */}
-            {!editItem.isScanned && (
-              <div className="p-4 bg-amber-50 border border-amber-200 rounded-lg">
-                <div className="flex items-start gap-3">
-                  <AlertTriangle className="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5" />
-                  <div>
-                    <h4 className="font-medium text-amber-800 mb-1">User-added Product</h4>
-                    <p className="text-sm text-amber-700">
-                      MakrX has not reviewed or certified this item. This product does not have an official SKU.
-                    </p>
+          {/* Content */}
+          <div className="p-6 overflow-y-auto max-h-[70vh]">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              {/* Item Details */}
+              <div className="space-y-4">
+                <div className="bg-muted/50 p-4 rounded-lg">
+                  <h3 className="font-semibold mb-3 flex items-center gap-2">
+                    <Package className="w-4 h-4" />
+                    Item Information
+                  </h3>
+                  <div className="space-y-2">
+                    <div className="flex justify-between">
+                      <span>Current Stock:</span>
+                      <span className={`font-medium ${
+                        selectedItem.quantity <= selectedItem.minThreshold ? 'text-red-600' : 'text-makrx-teal'
+                      }`}>
+                        {selectedItem.quantity} {selectedItem.unit}
+                      </span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>Min Threshold:</span>
+                      <span>{selectedItem.minThreshold} {selectedItem.unit}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>Location:</span>
+                      <span className="flex items-center gap-1">
+                        <MapPin className="w-3 h-3" />
+                        {selectedItem.location}
+                      </span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>Status:</span>
+                      <span className="capitalize">{selectedItem.status.replace('_', ' ')}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>Supplier Type:</span>
+                      <span className="capitalize">{selectedItem.supplierType}</span>
+                    </div>
+                    {selectedItem.productCode && (
+                      <div className="flex justify-between">
+                        <span>Product Code:</span>
+                        <span className="font-mono text-sm">{selectedItem.productCode}</span>
+                      </div>
+                    )}
+                    {selectedItem.price && (
+                      <div className="flex justify-between">
+                        <span>Unit Price:</span>
+                        <span>${selectedItem.price}</span>
+                      </div>
+                    )}
+                    {selectedItem.restrictedAccessLevel && (
+                      <div className="flex justify-between">
+                        <span>Access Level:</span>
+                        <span className="flex items-center gap-1 capitalize">
+                          <Shield className="w-3 h-3 text-amber-500" />
+                          {selectedItem.restrictedAccessLevel.replace('_', ' ')}
+                        </span>
+                      </div>
+                    )}
                   </div>
                 </div>
-              </div>
-            )}
 
-            {/* SKU and Location */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {editItem.isScanned && (
-                <div>
-                  <label className="block text-sm font-medium mb-2">SKU/Item Code</label>
-                  <input
-                    type="text"
-                    value={editItem.sku}
-                    className="w-full px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-makrx-teal bg-gray-50"
-                    placeholder="MKX-FIL-HAT-PLA001"
-                    readOnly
+                {selectedItem.description && (
+                  <div className="bg-muted/50 p-4 rounded-lg">
+                    <h3 className="font-semibold mb-2">Description</h3>
+                    <p className="text-sm text-muted-foreground">{selectedItem.description}</p>
+                  </div>
+                )}
+
+                {selectedItem.notes && (
+                  <div className="bg-muted/50 p-4 rounded-lg">
+                    <h3 className="font-semibold mb-2">Notes</h3>
+                    <p className="text-sm text-muted-foreground">{selectedItem.notes}</p>
+                  </div>
+                )}
+
+                {/* External Item Warning */}
+                {selectedItem.supplierType === 'external' && (
+                  <div className="p-3 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-lg">
+                    <div className="flex items-start gap-2">
+                      <AlertTriangle className="w-4 h-4 text-amber-600 flex-shrink-0 mt-0.5" />
+                      <div className="text-sm">
+                        <span className="font-medium text-amber-800 dark:text-amber-200">Quality Disclaimer:</span>
+                        <span className="text-amber-700 dark:text-amber-300"> MakrX cannot verify the quality of external items.</span>
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* Usage Timeline */}
+              <div>
+                {canViewUsage && selectedItem.history && selectedItem.history.length > 0 ? (
+                  <UsageTimeline 
+                    logs={selectedItem.history} 
+                    itemName={selectedItem.name}
+                    unit={selectedItem.unit}
+                    maxItems={5}
                   />
-                  <p className="text-xs text-muted-foreground mt-1">Auto-generated from QR scan</p>
-                </div>
-              )}
-              <div className={editItem.isScanned ? '' : 'md:col-span-2'}>
-                <label className="block text-sm font-medium mb-2">Location</label>
-                <input
-                  type="text"
-                  value={editItem.location}
-                  onChange={(e) => setEditItem({...editItem, location: e.target.value})}
-                  className="w-full px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-makrx-teal"
-                  placeholder="Shelf A-1"
-                />
+                ) : (
+                  <div className="bg-muted/50 p-4 rounded-lg text-center">
+                    <Calendar className="w-8 h-8 mx-auto mb-2 text-muted-foreground opacity-50" />
+                    <p className="text-sm text-muted-foreground">
+                      {canViewUsage ? 'No usage history available' : 'Usage history restricted'}
+                    </p>
+                  </div>
+                )}
               </div>
             </div>
-
-            {/* Quantity and Unit */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div>
-                <label className="block text-sm font-medium mb-2">Current Quantity *</label>
-                <input
-                  type="number"
-                  required
-                  min="0"
-                  step="0.01"
-                  value={editItem.quantity}
-                  onChange={(e) => setEditItem({...editItem, quantity: e.target.value})}
-                  className="w-full px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-makrx-teal"
-                  placeholder="5"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium mb-2">Unit *</label>
-                <input
-                  type="text"
-                  required
-                  value={editItem.unit}
-                  onChange={(e) => setEditItem({...editItem, unit: e.target.value})}
-                  className="w-full px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-makrx-teal"
-                  placeholder="kg, pcs, rolls"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium mb-2">Low Stock Alert *</label>
-                <input
-                  type="number"
-                  required
-                  min="0"
-                  value={editItem.lowStockThreshold}
-                  onChange={(e) => setEditItem({...editItem, lowStockThreshold: e.target.value})}
-                  className="w-full px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-makrx-teal"
-                  placeholder="3"
-                />
-              </div>
-            </div>
-
-            {/* Price and Supplier */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <label className="block text-sm font-medium mb-2">Unit Price</label>
-                <input
-                  type="number"
-                  step="0.01"
-                  min="0"
-                  value={editItem.price}
-                  onChange={(e) => setEditItem({...editItem, price: e.target.value})}
-                  className="w-full px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-makrx-teal"
-                  placeholder="25.99"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium mb-2">Supplier</label>
-                <input
-                  type="text"
-                  value={editItem.supplier}
-                  onChange={(e) => setEditItem({...editItem, supplier: e.target.value})}
-                  className="w-full px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-makrx-teal"
-                  placeholder="Hatchbox, Prusa, etc."
-                />
-              </div>
-            </div>
-
-            {/* Description */}
-            <div>
-              <label className="block text-sm font-medium mb-2">Description</label>
-              <textarea
-                value={editItem.description}
-                onChange={(e) => setEditItem({...editItem, description: e.target.value})}
-                rows={3}
-                className="w-full px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-makrx-teal"
-                placeholder="Additional details about the item..."
-              />
-            </div>
-
-            {/* Quick Quantity Adjustments */}
-            <div className="bg-muted/50 p-4 rounded-lg">
-              <h3 className="text-sm font-medium mb-3">Quick Quantity Adjustments</h3>
-              <div className="flex gap-2 flex-wrap">
-                <button
-                  type="button"
-                  onClick={() => setEditItem({...editItem, quantity: Math.max(0, parseFloat(editItem.quantity || '0') - 1).toString()})}
-                  className="px-3 py-1 bg-red-100 text-red-700 rounded text-sm hover:bg-red-200 transition-colors"
-                >
-                  -1
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setEditItem({...editItem, quantity: Math.max(0, parseFloat(editItem.quantity || '0') - 5).toString()})}
-                  className="px-3 py-1 bg-red-100 text-red-700 rounded text-sm hover:bg-red-200 transition-colors"
-                >
-                  -5
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setEditItem({...editItem, quantity: (parseFloat(editItem.quantity || '0') + 1).toString()})}
-                  className="px-3 py-1 bg-green-100 text-green-700 rounded text-sm hover:bg-green-200 transition-colors"
-                >
-                  +1
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setEditItem({...editItem, quantity: (parseFloat(editItem.quantity || '0') + 5).toString()})}
-                  className="px-3 py-1 bg-green-100 text-green-700 rounded text-sm hover:bg-green-200 transition-colors"
-                >
-                  +5
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setEditItem({...editItem, quantity: (parseFloat(editItem.quantity || '0') + 10).toString()})}
-                  className="px-3 py-1 bg-green-100 text-green-700 rounded text-sm hover:bg-green-200 transition-colors"
-                >
-                  +10
-                </button>
-              </div>
-            </div>
-
-            <div className="flex gap-3 pt-4">
-              <button
-                type="button"
-                onClick={() => {
-                  setShowEditModal(false);
-                  setSelectedItem(null);
-                }}
-                className="flex-1 px-4 py-2 border border-border rounded-lg hover:bg-accent transition-colors"
-              >
-                Cancel
-              </button>
-              <button
-                type="submit"
-                className="flex-1 makrcave-btn-primary"
-              >
-                <Save className="w-4 h-4 mr-2" />
-                Update Item
-              </button>
-            </div>
-          </form>
-        </div>
-      </div>
-    );
-  };
-
-  const BulkOperationsModal = () => {
-    if (!showBulkModal) return null;
-
-    return (
-      <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-        <div className="bg-card p-6 rounded-lg w-full max-w-lg">
-          <div className="flex items-center justify-between mb-6">
-            <h3 className="text-xl font-semibold">Bulk Operations</h3>
-            <button onClick={() => setShowBulkModal(false)} className="p-1 hover:bg-accent rounded">
-              <X className="w-5 h-5" />
-            </button>
           </div>
 
-          <div className="space-y-4">
-            <button className="w-full makrcave-btn-primary text-left flex items-center gap-3 p-4">
-              <Upload className="w-5 h-5" />
-              <div>
-                <div className="font-medium">Import from CSV</div>
-                <div className="text-sm opacity-75">Bulk add items from spreadsheet</div>
-              </div>
-            </button>
+          {/* Footer Actions */}
+          <div className="p-6 border-t border-border flex gap-3 justify-end">
+            {canIssue && selectedItem.quantity > 0 && selectedItem.status === 'active' && (
+              <button className="makrcave-btn-secondary">
+                Issue Items
+              </button>
+            )}
+            
+            {canReorder && selectedItem.supplierType === 'makrx' && selectedItem.productCode && (
+              <button 
+                onClick={() => handleReorderItem(selectedItem)}
+                className="makrcave-btn-primary"
+              >
+                <ShoppingCart className="w-4 h-4 mr-2" />
+                Reorder from MakrX Store
+              </button>
+            )}
+            
+            {canLinkToBOM && (
+              <button className="makrcave-btn-secondary">
+                <FileText className="w-4 h-4 mr-2" />
+                Link to BOM
+              </button>
+            )}
+            
+            {canAddEdit && (
+              <button className="makrcave-btn-secondary">
+                <Edit className="w-4 h-4 mr-2" />
+                Edit Item
+              </button>
+            )}
 
-            <button className="w-full makrcave-btn-secondary text-left flex items-center gap-3 p-4">
-              <Download className="w-5 h-5" />
-              <div>
-                <div className="font-medium">Export to CSV</div>
-                <div className="text-sm opacity-75">Download current inventory</div>
-              </div>
-            </button>
-
-            <button className="w-full border border-border hover:bg-accent text-left flex items-center gap-3 p-4 rounded-lg transition-colors">
-              <QrCode className="w-5 h-5" />
-              <div>
-                <div className="font-medium">Generate QR Codes</div>
-                <div className="text-sm text-muted-foreground">Print labels for existing items</div>
-              </div>
+            <button 
+              onClick={() => setShowDetailModal(false)}
+              className="px-4 py-2 border border-border rounded-lg hover:bg-accent transition-colors"
+            >
+              Close
             </button>
           </div>
         </div>
@@ -929,33 +377,24 @@ export default function Inventory() {
             Inventory Management
           </h1>
           <p className="text-muted-foreground mt-1">
-            Track and manage makerspace materials with QR code integration
+            Track materials, components, and equipment with MakrX integration
           </p>
         </div>
-        
+
         <div className="flex gap-3">
-          <FeatureGate featureKey="inventory.qr_scanning">
-            <button
-              onClick={() => setShowQRScanner(true)}
-              className="makrcave-btn-secondary flex items-center gap-2"
-            >
+          <FeatureGate featureKey="inventory.qr_scanning" fallback={null}>
+            <button className="makrcave-btn-secondary flex items-center gap-2">
               <QrCode className="w-4 h-4" />
               Scan QR
             </button>
           </FeatureGate>
 
-          <FeatureGate featureKey="inventory.qr_generation">
-            <button
-              onClick={() => setShowBulkModal(true)}
-              className="makrcave-btn-secondary flex items-center gap-2"
-            >
-              <MoreHorizontal className="w-4 h-4" />
-              Bulk Actions
+          <FeatureGate featureKey="inventory.makerspace_management" fallback={null}>
+            <button className="makrcave-btn-secondary flex items-center gap-2">
+              <Upload className="w-4 h-4" />
+              Import CSV
             </button>
-          </FeatureGate>
-
-          <FeatureGate featureKey="inventory.makerspace_management">
-            <button
+            <button 
               onClick={() => setShowAddModal(true)}
               className="makrcave-btn-primary flex items-center gap-2"
             >
@@ -966,13 +405,32 @@ export default function Inventory() {
         </div>
       </div>
 
-      {/* Stats Cards */}
+      {/* Role-Based Access Information */}
+      <div className="makrcave-card bg-blue-50 dark:bg-blue-900/20 border-blue-200 dark:border-blue-800">
+        <div className="flex items-center gap-3">
+          <Shield className="w-5 h-5 text-blue-600" />
+          <div>
+            <h3 className="font-medium text-blue-800 dark:text-blue-200">
+              Access Level: {user?.role?.replace('_', ' ').toUpperCase()}
+            </h3>
+            <p className="text-sm text-blue-700 dark:text-blue-300">
+              {user?.role === 'super_admin' && 'Full access to all inventory across all makerspaces'}
+              {user?.role === 'makerspace_admin' && 'Manage inventory in your assigned makerspace'}
+              {user?.role === 'admin' && 'View-only access to all inventory'}
+              {user?.role === 'maker' && 'View inventory and link items to your projects'}
+              {user?.role === 'service_provider' && 'Manage your own inventory items and issue for jobs'}
+            </p>
+          </div>
+        </div>
+      </div>
+
+      {/* Statistics Cards */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
         <div className="makrcave-card">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm text-muted-foreground">Total Items</p>
-              <p className="text-2xl font-bold">{inventory.length}</p>
+              <p className="text-2xl font-bold">{filteredInventory.length}</p>
             </div>
             <Package className="w-8 h-8 text-makrx-blue" />
           </div>
@@ -981,7 +439,7 @@ export default function Inventory() {
         <div className="makrcave-card">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-muted-foreground">Low Stock</p>
+              <p className="text-sm text-muted-foreground">Low Stock Alerts</p>
               <p className="text-2xl font-bold text-red-600">{lowStockItems.length}</p>
             </div>
             <AlertTriangle className="w-8 h-8 text-red-500" />
@@ -991,97 +449,158 @@ export default function Inventory() {
         <div className="makrcave-card">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-muted-foreground">Total Value</p>
-              <p className="text-2xl font-bold">${totalValue.toFixed(2)}</p>
+              <p className="text-sm text-muted-foreground">MakrX Verified</p>
+              <p className="text-2xl font-bold text-makrx-teal">
+                {filteredInventory.filter(item => item.supplierType === 'makrx').length}
+              </p>
             </div>
-            <BarChart3 className="w-8 h-8 text-makrx-teal" />
+            <ShoppingCart className="w-8 h-8 text-makrx-teal" />
           </div>
         </div>
 
         <div className="makrcave-card">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-muted-foreground">Categories</p>
-              <p className="text-2xl font-bold">{categories.length - 1}</p>
+              <p className="text-sm text-muted-foreground">Active Items</p>
+              <p className="text-2xl font-bold text-green-600">
+                {filteredInventory.filter(item => item.status === 'active').length}
+              </p>
             </div>
-            <Filter className="w-8 h-8 text-makrx-teal" />
+            <BarChart3 className="w-8 h-8 text-green-500" />
           </div>
         </div>
       </div>
+
+      {/* Low Stock Banner */}
+      {lowStockItems.length > 0 && (
+        <LowStockBanner 
+          lowStockItems={lowStockItems}
+          onReorderItem={handleReorderItem}
+          onViewItem={(item) => {
+            setSelectedItem(item);
+            setShowDetailModal(true);
+          }}
+        />
+      )}
 
       {/* Filters and Search */}
       <div className="makrcave-card">
-        <div className="flex flex-col md:flex-row gap-4">
-          <div className="flex-1 relative">
+        <div className="flex items-center gap-4 mb-4">
+          <div className="relative flex-1 max-w-md">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
             <input
               type="text"
-              placeholder="Search inventory by name or SKU..."
+              placeholder="Search items, locations, codes..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-makrx-teal"
+              className="w-full pl-10 pr-4 py-2 bg-background border border-border rounded-lg text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-makrx-teal focus:border-transparent"
             />
           </div>
-          <select
-            value={selectedCategory}
-            onChange={(e) => setSelectedCategory(e.target.value)}
-            className="px-4 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-makrx-teal"
-          >
-            {categories.map(category => (
-              <option key={category.value} value={category.value}>
-                {category.label}
-              </option>
-            ))}
-          </select>
-          <div className="flex gap-2">
-            <button 
-              onClick={() => setViewMode(viewMode === 'grid' ? 'list' : 'grid')}
-              className="px-4 py-2 border border-border rounded-lg hover:bg-accent transition-colors"
-            >
-              {viewMode === 'grid' ? 'List View' : 'Grid View'}
-            </button>
-          </div>
-        </div>
-      </div>
 
-      {/* Low Stock Alert */}
-      {lowStockItems.length > 0 && (
-        <div className="makrcave-card border-red-200 bg-red-50">
-          <div className="flex items-center gap-3 mb-3">
-            <AlertTriangle className="w-5 h-5 text-red-500" />
-            <h3 className="font-semibold text-red-700">Low Stock Alert</h3>
-          </div>
-          <p className="text-sm text-red-600 mb-3">
-            {lowStockItems.length} items are running low and need reordering:
-          </p>
-          <div className="flex flex-wrap gap-2 mb-4">
-            {lowStockItems.slice(0, 5).map(item => (
-              <span key={item.id} className="px-2 py-1 bg-red-100 text-red-700 rounded text-sm">
-                {item.name} ({item.quantity} {item.unit})
-              </span>
-            ))}
-            {lowStockItems.length > 5 && (
-              <span className="px-2 py-1 bg-red-100 text-red-700 rounded text-sm">
-                +{lowStockItems.length - 5} more
-              </span>
-            )}
-          </div>
-          <div className="flex gap-2">
-            <button className="makrcave-btn-primary text-sm">
-              <ShoppingCart className="w-4 h-4 mr-1" />
-              Reorder via MakrX Store
+          <button
+            onClick={() => setShowFilters(!showFilters)}
+            className={`px-4 py-2 border border-border rounded-lg transition-colors flex items-center gap-2 ${
+              showFilters ? 'bg-makrx-teal text-white' : 'hover:bg-accent'
+            }`}
+          >
+            <Filter className="w-4 h-4" />
+            Filters
+          </button>
+
+          <div className="flex items-center gap-2 border-l border-border pl-4">
+            <button
+              onClick={() => setViewMode('grid')}
+              className={`p-2 rounded ${viewMode === 'grid' ? 'bg-makrx-teal text-white' : 'hover:bg-accent'}`}
+            >
+              <Grid className="w-4 h-4" />
             </button>
-            <button className="makrcave-btn-secondary text-sm">
-              Generate Report
+            <button
+              onClick={() => setViewMode('list')}
+              className={`p-2 rounded ${viewMode === 'list' ? 'bg-makrx-teal text-white' : 'hover:bg-accent'}`}
+            >
+              <List className="w-4 h-4" />
             </button>
           </div>
+
+          <button className="makrcave-btn-secondary">
+            <Download className="w-4 h-4 mr-2" />
+            Export
+          </button>
         </div>
-      )}
+
+        {/* Advanced Filters */}
+        {showFilters && (
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-4 border-t border-border">
+            <div>
+              <label className="block text-sm font-medium mb-2">Category</label>
+              <select
+                value={selectedCategory}
+                onChange={(e) => setSelectedCategory(e.target.value)}
+                className="w-full px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-makrx-teal"
+              >
+                {categories.map(category => (
+                  <option key={category.value} value={category.value}>
+                    {category.label}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium mb-2">Status</label>
+              <select
+                value={selectedStatus}
+                onChange={(e) => setSelectedStatus(e.target.value)}
+                className="w-full px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-makrx-teal"
+              >
+                <option value="all">All Statuses</option>
+                <option value="active">Active</option>
+                <option value="in_use">In Use</option>
+                <option value="damaged">Damaged</option>
+                <option value="reserved">Reserved</option>
+                <option value="discontinued">Discontinued</option>
+              </select>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium mb-2">Supplier Type</label>
+              <select
+                value={selectedSupplierType}
+                onChange={(e) => setSelectedSupplierType(e.target.value)}
+                className="w-full px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-makrx-teal"
+              >
+                <option value="all">All Suppliers</option>
+                <option value="makrx">MakrX Store</option>
+                <option value="external">External</option>
+              </select>
+            </div>
+          </div>
+        )}
+      </div>
 
       {/* Inventory Grid/List */}
       <div className={viewMode === 'grid' ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6' : 'space-y-4'}>
         {filteredInventory.map((item) => (
-          <InventoryCard key={item.id} item={item} />
+          <InventoryCard
+            key={item.id}
+            item={item}
+            onEdit={canAddEdit ? () => {
+              setSelectedItem(item);
+              setShowAddModal(true);
+            } : undefined}
+            onDelete={canDelete ? (id) => console.log('Delete item:', id) : undefined}
+            onIssue={canIssue ? handleIssueItem : undefined}
+            onReorder={canReorder ? handleReorderItem : undefined}
+            onViewDetails={(item) => {
+              setSelectedItem(item);
+              setShowDetailModal(true);
+            }}
+            userRole={user?.role || 'maker'}
+            canEdit={canAddEdit}
+            canDelete={canDelete && (!item.ownerUserId || item.ownerUserId === user?.id)}
+            canIssue={canIssue}
+            canReorder={canReorder}
+          />
         ))}
       </div>
 
@@ -1091,43 +610,71 @@ export default function Inventory() {
           <Package className="w-12 h-12 mx-auto mb-4 text-muted-foreground opacity-50" />
           <h3 className="text-lg font-medium mb-2">No items found</h3>
           <p className="text-muted-foreground mb-4">
-            {searchTerm || selectedCategory !== 'all' 
-              ? 'Try adjusting your search or filter criteria' 
-              : 'Start by adding your first inventory item'
+            {searchTerm || selectedCategory !== 'all' || selectedStatus !== 'all' || selectedSupplierType !== 'all'
+              ? 'Try adjusting your search or filter criteria'
+              : user?.role === 'maker' 
+                ? 'No inventory items available in your makerspace'
+                : 'Start by adding your first inventory item'
             }
           </p>
-          <div className="flex gap-3 justify-center">
-            <FeatureGate featureKey="inventory.qr_scanning">
-              <button
-                onClick={() => setShowQRScanner(true)}
-                className="makrcave-btn-secondary"
-              >
-                <QrCode className="w-4 h-4 mr-2" />
-                Scan QR Code
-              </button>
-            </FeatureGate>
-            <FeatureGate featureKey="inventory.makerspace_management">
-              <button
-                onClick={() => setShowAddModal(true)}
-                className="makrcave-btn-primary"
-              >
-                <Plus className="w-4 h-4 mr-2" />
-                Add First Item
-              </button>
-            </FeatureGate>
-          </div>
+          <FeatureGate featureKey="inventory.makerspace_management" fallback={null}>
+            <button 
+              onClick={() => setShowAddModal(true)}
+              className="makrcave-btn-primary"
+            >
+              <Plus className="w-4 h-4 mr-2" />
+              Add First Item
+            </button>
+          </FeatureGate>
         </div>
       )}
 
       {/* Modals */}
-      <AddInventoryModal />
-      <EditInventoryModal />
-      <BulkOperationsModal />
-      {showQRScanner && (
-        <QRScanner 
-          onScan={handleQRScan} 
-          onClose={() => setShowQRScanner(false)} 
-        />
+      <ItemDetailModal />
+
+      {/* MakrX Store Integration Notice */}
+      {showReorderModal && selectedItem && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="bg-card p-6 rounded-lg w-full max-w-md">
+            <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
+              <ShoppingCart className="w-5 h-5" />
+              Reorder from MakrX Store
+            </h3>
+            
+            <div className="space-y-4">
+              <div className="bg-makrx-teal/10 p-4 rounded-lg">
+                <h4 className="font-medium">{selectedItem.name}</h4>
+                <p className="text-sm text-muted-foreground">Product Code: {selectedItem.productCode}</p>
+                <p className="text-sm text-muted-foreground">Current Stock: {selectedItem.quantity} {selectedItem.unit}</p>
+                <p className="text-sm text-muted-foreground">Min Threshold: {selectedItem.minThreshold} {selectedItem.unit}</p>
+              </div>
+
+              <p className="text-sm text-muted-foreground">
+                This will open the MakrX Store with the product pre-selected. You can adjust quantities and complete the order there.
+              </p>
+            </div>
+
+            <div className="flex gap-3 mt-6">
+              <button
+                onClick={() => setShowReorderModal(false)}
+                className="flex-1 px-4 py-2 border border-border rounded-lg hover:bg-accent transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={() => {
+                  // In real implementation, this would open MakrX Store
+                  window.open(`https://store.makrx.org/product/${selectedItem.productCode}`, '_blank');
+                  setShowReorderModal(false);
+                }}
+                className="flex-1 makrcave-btn-primary"
+              >
+                <ExternalLink className="w-4 h-4 mr-2" />
+                Open MakrX Store
+              </button>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );
