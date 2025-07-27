@@ -22,14 +22,14 @@ export default function Index() {
         <div className="absolute inset-0 makrx-circuit-bg opacity-20" />
         
         {/* Floating Elements */}
-        <div className="absolute top-20 left-10 makrx-float opacity-20">
-          <Cog className="w-16 h-16 text-makrx-blue" />
+        <div className="absolute top-20 left-10 makrx-float opacity-30">
+          <Cog className="w-16 h-16 text-white" />
         </div>
-        <div className="absolute top-40 right-20 makrx-float-delay opacity-20">
+        <div className="absolute top-40 right-20 makrx-float-delay opacity-30">
           <Cpu className="w-12 h-12 text-makrx-yellow" />
         </div>
-        <div className="absolute bottom-40 left-20 makrx-float opacity-20">
-          <Wrench className="w-14 h-14 text-makrx-brown" />
+        <div className="absolute bottom-40 left-20 makrx-float opacity-30">
+          <Wrench className="w-14 h-14 text-white" />
         </div>
         
         <div className="relative container mx-auto px-6 py-24 lg:py-32">
