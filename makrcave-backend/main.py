@@ -41,6 +41,7 @@ async def health_check():
 # Include routers
 app.include_router(inventory_router, prefix="/api/v1")
 app.include_router(equipment_router, prefix="/api/v1")
+app.include_router(project_router, prefix="/api/v1/projects", tags=["projects"])
 
 # Root endpoint
 @app.get("/")
