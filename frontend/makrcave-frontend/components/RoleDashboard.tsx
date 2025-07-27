@@ -228,12 +228,33 @@ function MakerspaceAdminDashboard() {
         </div>
       </div>
 
-      <div className="makrcave-card">
-        <h3 className="text-lg font-semibold mb-4">Your Makerspace</h3>
-        <p className="text-muted-foreground">
-          You can manage inventory, approve reservations, add/edit equipment, and oversee all operations 
-          within your assigned makerspace. Full control over member management and project oversight.
-        </p>
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div className="makrcave-card">
+          <h3 className="text-lg font-semibold mb-4">Your Makerspace</h3>
+          <p className="text-muted-foreground">
+            You can manage inventory, approve reservations, add/edit equipment, and oversee all operations
+            within your assigned makerspace. Full control over member management and project oversight.
+          </p>
+        </div>
+
+        <NotificationWidget
+          category="equipment"
+          title="Equipment Alerts"
+          maxItems={3}
+        />
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <NotificationWidget
+          category="inventory"
+          title="Inventory Status"
+          maxItems={4}
+        />
+
+        <NotificationWidget
+          title="Recent Activity"
+          maxItems={4}
+        />
       </div>
     </div>
   );
