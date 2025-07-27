@@ -634,18 +634,27 @@ export default function Equipment() {
                 alert(selectedEquipment ? 'Equipment updated successfully!' : 'Equipment created successfully!');
                 loadEquipment(); // Refresh equipment list
               } else {
-                const errorText = await response.text();
-                console.error('Error response body:', errorText);
-
+                // Clone the response to avoid "body stream already read" error
+                const responseClone = response.clone();
                 let errorMessage = `Failed to save equipment (${response.status})`;
+
                 try {
-                  const errorJson = JSON.parse(errorText);
+                  // Try to parse as JSON first (FastAPI usually returns JSON errors)
+                  const errorJson = await response.json();
+                  console.error('Error response JSON:', errorJson);
                   if (errorJson.detail) {
                     errorMessage = `Failed to save equipment: ${errorJson.detail}`;
                   }
-                } catch (e) {
-                  if (errorText) {
-                    errorMessage = `Failed to save equipment: ${errorText}`;
+                } catch (jsonError) {
+                  // If JSON parsing fails, try to get text
+                  try {
+                    const errorText = await responseClone.text();
+                    console.error('Error response text:', errorText);
+                    if (errorText) {
+                      errorMessage = `Failed to save equipment: ${errorText}`;
+                    }
+                  } catch (textError) {
+                    console.error('Could not read error response:', textError);
                   }
                 }
 
