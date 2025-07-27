@@ -12,6 +12,7 @@ export default function Projects() {
           <h1 className="text-3xl font-bold flex items-center gap-3">
             <FolderOpen className="w-8 h-8" />
             Project Management
+            <FeatureFlagBadge featureKey="projects.collaboration" />
           </h1>
           <p className="text-muted-foreground mt-1">
             Collaborate on projects and manage BOMs
