@@ -336,49 +336,6 @@ export default function Equipment() {
     setShowDetailModal(true);
   };
 
-  const getStatusIcon = (status: string) => {
-    switch (status) {
-      case 'available':
-        return <CheckCircle className="w-4 h-4 text-green-500" />;
-      case 'in_use':
-        return <PlayCircle className="w-4 h-4 text-blue-500" />;
-      case 'under_maintenance':
-        return <Wrench className="w-4 h-4 text-yellow-500" />;
-      case 'offline':
-        return <XCircle className="w-4 h-4 text-red-500" />;
-      default:
-        return <AlertTriangle className="w-4 h-4 text-gray-500" />;
-    }
-  };
-
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case 'available':
-        return 'bg-green-100 text-green-800 border-green-200';
-      case 'in_use':
-        return 'bg-blue-100 text-blue-800 border-blue-200';
-      case 'under_maintenance':
-        return 'bg-yellow-100 text-yellow-800 border-yellow-200';
-      case 'offline':
-        return 'bg-red-100 text-red-800 border-red-200';
-      default:
-        return 'bg-gray-100 text-gray-800 border-gray-200';
-    }
-  };
-
-  const renderStars = (rating: number) => {
-    return Array.from({ length: 5 }, (_, i) => (
-      <Star
-        key={i}
-        className={`w-4 h-4 ${
-          i < Math.floor(rating) 
-            ? 'text-yellow-400 fill-current' 
-            : 'text-gray-300'
-        }`}
-      />
-    ));
-  };
-
   if (!canViewEquipment) {
     return (
       <div className="p-6">
