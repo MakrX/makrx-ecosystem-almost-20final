@@ -81,9 +81,9 @@ const defaultFlags: FeatureFlagConfig = {
   'equipment.reservation_system': {
     id: 'equipment.reservation_system',
     name: 'Equipment Reservations',
-    description: 'Reserve equipment slots (if trained/certified)',
+    description: 'Reserve equipment slots (if trained/certified) - Maker users only',
     enabled: true,
-    allowedRoles: ['super_admin', 'admin', 'makerspace_admin', 'maker'],
+    allowedRoles: ['maker'],
     environment: 'all',
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
