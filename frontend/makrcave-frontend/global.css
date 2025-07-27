@@ -109,7 +109,7 @@
   }
 
   .makrcave-btn-secondary {
-    @apply bg-makrx-yellow text-makrx-blue px-4 py-2 rounded-lg font-medium hover:bg-makrx-yellow/90 transition-colors;
+    @apply bg-makrx-teal text-white px-4 py-2 rounded-lg font-medium hover:bg-makrx-teal-light transition-colors;
   }
 
   .makrcave-status-available {
