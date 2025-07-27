@@ -33,6 +33,7 @@ const App = () => (
               <Route path="admin">
                 <Route path="users" element={<AdminUsers />} />
                 <Route path="makerspace" element={<AdminMakerspace />} />
+                <Route path="feature-flags" element={<AdminFeatureFlags />} />
               </Route>
             </Route>
           </Route>
