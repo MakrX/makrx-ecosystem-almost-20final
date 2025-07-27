@@ -265,6 +265,7 @@ export function MakerspaceProvider({ children }: { children: ReactNode }) {
       reservations,
       updateStats,
       addInventoryItem,
+      updateInventoryItem,
       updateInventoryQuantity,
       createReservation,
       updateEquipmentStatus
