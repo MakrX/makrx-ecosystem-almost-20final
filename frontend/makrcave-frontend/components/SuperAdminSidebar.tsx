@@ -12,7 +12,7 @@ import {
   Activity,
   LogOut,
   Crown,
-  Toggles
+  ToggleLeft
 } from 'lucide-react';
 
 export default function SuperAdminSidebar() {
