@@ -6,7 +6,7 @@
 @layer base {
   :root {
     /* Light Theme - Soft, Eye-friendly */
-    --background: 253 253 254; /* #FDFDFE - Very light with subtle warmth */
+    --background: 255 255 255; /* #FFFFFF - Pure white background */
     --foreground: 30 30 30; /* #1E1E1E */
 
     --card: 0 0% 100%;
