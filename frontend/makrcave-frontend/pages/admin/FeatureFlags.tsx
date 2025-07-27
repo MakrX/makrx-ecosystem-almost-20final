@@ -226,4 +226,4 @@ function FeatureFlagsPage() {
 }
 
 // Only allow super admins to access feature flags management
-export default withFeatureFlag(FeatureFlagsPage, 'admin.system_logs');
+export default withFeatureFlag(FeatureFlagsPage, 'admin.feature_flags');
