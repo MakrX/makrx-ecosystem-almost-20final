@@ -451,7 +451,41 @@ const ProjectFiles: React.FC<ProjectFilesProps> = ({
         )}
       </div>
 
-      {/* File Statistics */}
+      {/* Tabs for GitHub vs Local Files */}
+      {githubIntegrationEnabled ? (
+        <Tabs defaultValue="local" className="w-full">
+          <TabsList className="grid w-full grid-cols-2">
+            <TabsTrigger value="local" className="flex items-center gap-2">
+              <HardDrive className="h-4 w-4" />
+              Local Files ({files.length})
+            </TabsTrigger>
+            <TabsTrigger value="github" className="flex items-center gap-2">
+              <Github className="h-4 w-4" />
+              GitHub Repository
+            </TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="local" className="space-y-6">
+            {renderLocalFilesSection()}
+          </TabsContent>
+
+          <TabsContent value="github" className="space-y-6">
+            <GitHubIntegration
+              projectId={projectId}
+              isConnected={githubIntegrationEnabled}
+              repoUrl={githubRepoUrl}
+              repoName={githubRepoName}
+              defaultBranch={githubDefaultBranch}
+              canEdit={canEdit}
+              onUpdate={onUpdate}
+            />
+          </TabsContent>
+        </Tabs>
+      ) : (
+        renderLocalFilesSection()
+      )}
+
+      {/* Upload Modal */}
       <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
         <Card>
           <CardContent className="p-4">
