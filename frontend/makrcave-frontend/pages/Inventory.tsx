@@ -227,21 +227,6 @@ export default function Inventory() {
     }
   };
 
-  const resetForm = () => {
-    setNewItem({
-      name: '',
-      category: 'filament',
-      quantity: '',
-      unit: '',
-      lowStockThreshold: '',
-      price: '',
-      supplier: '',
-      description: '',
-      sku: '',
-      location: ''
-    });
-  };
-
   const InventoryCard = ({ item }: { item: any }) => {
     const isLowStock = item.quantity <= item.lowStockThreshold;
     const stockPercentage = Math.min(100, (item.quantity / (item.lowStockThreshold * 3)) * 100);
