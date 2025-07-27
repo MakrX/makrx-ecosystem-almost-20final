@@ -28,14 +28,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // Check for existing auth on app start
-    const storedUser = localStorage.getItem('makrcave_user');
-    const token = localStorage.getItem('makrcave_access_token');
-    
-    if (storedUser && token) {
-      setUser(JSON.parse(storedUser));
-    }
-    
+    // Demo: Auto-login for showcase
+    const demoUser: User = {
+      id: '1',
+      email: 'admin@makrcave.local',
+      username: 'admin',
+      firstName: 'Demo',
+      lastName: 'Admin',
+      roles: ['maker', 'makerspace_admin'],
+      makerspaceId: 'ms-1'
+    };
+
+    setUser(demoUser);
     setIsLoading(false);
   }, []);
 
