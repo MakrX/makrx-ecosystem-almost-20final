@@ -72,10 +72,7 @@ export default function Header() {
         <MakrXThemeToggle variant="compact" className="hidden sm:flex" />
 
         {/* Notifications */}
-        <button className="relative p-2 hover:bg-accent rounded-lg transition-colors">
-          <Bell className="w-5 h-5" />
-          <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
-        </button>
+        <NotificationPanel />
 
         {/* Current Date/Time */}
         <div className="hidden md:block text-sm text-muted-foreground">
