@@ -12,7 +12,8 @@ from ..schemas.project import (
     CollaboratorAdd, CollaboratorUpdate, BOMItemCreate, BOMItemUpdate,
     EquipmentReservationCreate, EquipmentReservationUpdate,
     MilestoneCreate, MilestoneUpdate, ProjectFilter, ProjectSort,
-    ProjectStatistics, UserProjectStatistics, FileUpload
+    ProjectStatistics, UserProjectStatistics, FileUpload,
+    GitHubRepoConnect, GitHubRepoInfo, GitHubFile, GitHubCommit
 )
 from ..crud import project as crud_project
 
