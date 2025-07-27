@@ -201,11 +201,11 @@
   }
 
   ::-webkit-scrollbar-thumb {
-    @apply bg-makrx-yellow rounded-full;
+    @apply bg-makrx-teal rounded-full;
   }
 
   ::-webkit-scrollbar-thumb:hover {
-    @apply bg-makrx-blue;
+    @apply bg-makrx-teal-dark;
   }
 }
 
