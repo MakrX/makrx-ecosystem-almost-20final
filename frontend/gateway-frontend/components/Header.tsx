@@ -90,13 +90,32 @@ export default function Header() {
             </button>
 
             {/* Profile/Login */}
-            <Link
-              to="/profile"
-              className="hidden md:flex items-center gap-2 px-4 py-2 makrx-btn-primary text-sm"
-            >
-              <User className="w-4 h-4" />
-              Profile
-            </Link>
+            {isAuthenticated ? (
+              <div className="hidden md:flex items-center gap-3">
+                <Link
+                  to="/profile"
+                  className="flex items-center gap-2 px-3 py-2 text-white/80 hover:text-white rounded-lg"
+                >
+                  <User className="w-4 h-4" />
+                  {user?.firstName || user?.username}
+                </Link>
+                <button
+                  onClick={logout}
+                  className="p-2 rounded-lg text-white/80 hover:text-white hover:bg-white/10 transition-colors"
+                  aria-label="Logout"
+                >
+                  <LogOut className="w-4 h-4" />
+                </button>
+              </div>
+            ) : (
+              <Link
+                to="/login"
+                className="hidden md:flex items-center gap-2 px-4 py-2 makrx-btn-primary text-sm"
+              >
+                <User className="w-4 h-4" />
+                Sign In
+              </Link>
+            )}
 
             {/* Mobile Menu Button */}
             <button
