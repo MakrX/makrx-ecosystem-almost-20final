@@ -399,22 +399,41 @@ export default function Inventory() {
               </div>
             </div>
 
-            {/* SKU and Description */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <label className="block text-sm font-medium mb-2">SKU/Item Code</label>
-                <input 
-                  type="text" 
-                  value={newItem.sku}
-                  onChange={(e) => setNewItem({...newItem, sku: e.target.value})}
-                  className="w-full px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-makrx-teal"
-                  placeholder="MKX-FIL-HAT-PLA001"
-                />
+            {/* Warning for Manual Items */}
+            {!isScannedItem && (
+              <div className="p-4 bg-amber-50 border border-amber-200 rounded-lg">
+                <div className="flex items-start gap-3">
+                  <AlertTriangle className="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5" />
+                  <div>
+                    <h4 className="font-medium text-amber-800 mb-1">User-added Product</h4>
+                    <p className="text-sm text-amber-700">
+                      MakrX has not reviewed or certified this item. This product will not have an official SKU and may not be available for BOM integration until reviewed.
+                    </p>
+                  </div>
+                </div>
               </div>
-              <div>
+            )}
+
+            {/* SKU and Location */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {isScannedItem && (
+                <div>
+                  <label className="block text-sm font-medium mb-2">SKU/Item Code</label>
+                  <input
+                    type="text"
+                    value={newItem.sku}
+                    onChange={(e) => setNewItem({...newItem, sku: e.target.value})}
+                    className="w-full px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-makrx-teal bg-gray-50"
+                    placeholder="MKX-FIL-HAT-PLA001"
+                    readOnly
+                  />
+                  <p className="text-xs text-muted-foreground mt-1">Auto-generated from QR scan</p>
+                </div>
+              )}
+              <div className={isScannedItem ? '' : 'md:col-span-2'}>
                 <label className="block text-sm font-medium mb-2">Location</label>
-                <input 
-                  type="text" 
+                <input
+                  type="text"
                   value={newItem.location}
                   onChange={(e) => setNewItem({...newItem, location: e.target.value})}
                   className="w-full px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-makrx-teal"
