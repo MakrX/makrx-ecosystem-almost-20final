@@ -87,8 +87,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   useEffect(() => {
-    // Demo: Start with MakrCave Manager role for showcase
-    setUser(demoUsers.makrcave_manager);
+    // Demo: Start with Makerspace Admin role for showcase
+    setUser(demoUsers.makerspace_admin);
     setIsLoading(false);
   }, []);
 
@@ -96,7 +96,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     // Demo login - determine role based on email
     let role: UserRole = 'maker';
     if (email.includes('superadmin')) role = 'super_admin';
-    else if (email.includes('manager')) role = 'makrcave_manager';
+    else if (email.includes('admin') && !email.includes('makerspace')) role = 'admin';
+    else if (email.includes('makerspace') || email.includes('manager')) role = 'makerspace_admin';
+    else if (email.includes('provider')) role = 'service_provider';
 
     setUser(demoUsers[role]);
   };
@@ -111,12 +113,27 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setUser(demoUsers[role]);
   };
 
-  const getCurrentRole = (): string => {
+  const getCurrentRole = (): UserRole => {
     return user?.role || 'maker';
   };
 
+  const getUserRolePermissions = (): RolePermissions => {
+    return user ? getRolePermissions(user.role) : getRolePermissions('maker');
+  };
+
+  const userHasPermission = (area: keyof RolePermissions, action: string, context?: any): boolean => {
+    return user ? hasPermission(user.role, area, action, context) : false;
+  };
+
+  const getUserUIAccess = () => {
+    return user ? UI_ACCESS[user.role] : UI_ACCESS.maker;
+  };
+
+  // Role check helpers
   const isSuperAdmin = user?.role === 'super_admin';
-  const isMakrcaveManager = user?.role === 'makrcave_manager';
+  const isAdmin = user?.role === 'admin';
+  const isMakerspaceAdmin = user?.role === 'makerspace_admin';
+  const isServiceProvider = user?.role === 'service_provider';
   const isMaker = user?.role === 'maker';
   const isAuthenticated = !!user;
 
