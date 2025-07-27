@@ -13,6 +13,11 @@ export default {
       },
     },
     extend: {
+      fontFamily: {
+        sans: ['Inter', 'system-ui', 'sans-serif'],
+        display: ['Exo', 'Inter', 'system-ui', 'sans-serif'],
+        mono: ['JetBrains Mono', 'monospace'],
+      },
       colors: {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
@@ -56,6 +61,17 @@ export default {
           "accent-foreground": "hsl(var(--sidebar-accent-foreground))",
           border: "hsl(var(--sidebar-border))",
           ring: "hsl(var(--sidebar-ring))",
+        },
+        makrx: {
+          yellow: "#FFC107",
+          blue: "#1A3D7C",
+          brown: "#A25B12",
+          "light-bg": "#F9F9F9",
+          "light-text": "#1E1E1E",
+          "dark-bg": "#121212",
+          "dark-text": "#E0E0E0",
+          "glass-light": "rgba(255, 255, 255, 0.9)",
+          "glass-dark": "rgba(26, 61, 124, 0.3)",
         },
       },
       borderRadius: {
