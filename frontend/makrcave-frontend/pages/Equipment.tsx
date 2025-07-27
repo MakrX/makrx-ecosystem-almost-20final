@@ -5,6 +5,10 @@ import { FeatureGate, withFeatureFlag, FeatureFlagBadge, useFeatureAccess } from
 export default function Equipment() {
   const { equipment } = useMakerspace();
   const maintenanceAccess = useFeatureAccess('equipment.maintenance_mode');
+  const addEditAccess = useFeatureAccess('equipment.add_edit');
+  const viewAllAccess = useFeatureAccess('equipment.view_all');
+  const viewAssignedAccess = useFeatureAccess('equipment.view_assigned');
+  const viewCertifiedAccess = useFeatureAccess('equipment.view_certified');
 
   return (
     <div className="space-y-6">
@@ -13,9 +17,13 @@ export default function Equipment() {
           <Wrench className="w-8 h-8" />
           Equipment Management
           <FeatureFlagBadge featureKey="equipment.reservation_system" />
+          {viewAllAccess.hasAccess && <FeatureFlagBadge featureKey="equipment.view_all" />}
+          {addEditAccess.hasAccess && <FeatureFlagBadge featureKey="equipment.add_edit" />}
         </h1>
         <p className="text-muted-foreground mt-1">
-          Monitor and reserve makerspace equipment
+          {viewAllAccess.hasAccess ? 'Monitor and reserve equipment across all makerspaces' :
+           viewAssignedAccess.hasAccess ? 'Monitor and reserve equipment in your assigned makerspaces' :
+           'View and reserve equipment you are certified to use'}
         </p>
       </div>
 
