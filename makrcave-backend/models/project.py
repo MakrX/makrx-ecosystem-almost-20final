@@ -53,6 +53,14 @@ class Project(Base):
     start_date = Column(DateTime(timezone=True), nullable=True)
     end_date = Column(DateTime(timezone=True), nullable=True)
     
+    # GitHub Integration
+    github_repo_url = Column(String(500), nullable=True)  # GitHub repository URL
+    github_repo_name = Column(String(200), nullable=True)  # Repository name (owner/repo)
+    github_access_token = Column(String(500), nullable=True)  # Encrypted access token for private repos
+    github_webhook_secret = Column(String(200), nullable=True)  # Webhook secret for real-time updates
+    github_integration_enabled = Column(Boolean, default=False)  # Whether GitHub integration is active
+    github_default_branch = Column(String(100), default="main")  # Default branch to track
+
     # Metadata
     tags = Column(JSON, nullable=True, default=list)  # List of project tags
     is_featured = Column(Boolean, default=False)  # Admin can feature projects
