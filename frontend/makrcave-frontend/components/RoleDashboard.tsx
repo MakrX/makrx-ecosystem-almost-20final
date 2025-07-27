@@ -11,7 +11,7 @@ function SuperAdminDashboard() {
   
   return (
     <div className="space-y-6">
-      <div className="bg-gradient-to-r from-purple-600 to-purple-700 rounded-lg p-6 text-white">
+      <div className="bg-gradient-to-r from-purple-600 to-purple-700 dark:from-purple-700 dark:to-purple-800 rounded-lg p-6 text-white">
         <div className="flex items-center gap-4">
           <Crown className="w-12 h-12" />
           <div>
