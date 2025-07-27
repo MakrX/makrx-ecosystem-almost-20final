@@ -99,18 +99,33 @@ export default function Header() {
 
         {/* Quick Actions */}
         <div className="hidden md:flex items-center gap-2">
-          <button className="makrcave-btn-secondary text-xs">
-            Quick Reserve
-          </button>
-          <a
-            href="https://e986654b5a5843d7b3f8adf13b61022c-556d114307be4dee892ae999b.projects.builder.codes"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex items-center gap-1 px-3 py-1 text-xs text-muted-foreground hover:text-foreground border border-border rounded hover:bg-accent transition-colors"
+          <FeatureGate
+            featureKey="equipment.reservation_system"
+            fallback={
+              <button disabled className="makrcave-btn-secondary text-xs opacity-50 cursor-not-allowed">
+                Quick Reserve (N/A)
+              </button>
+            }
           >
-            MakrX Gateway
-            <ExternalLink className="w-3 h-3" />
-          </a>
+            <button className="makrcave-btn-secondary text-xs">
+              Quick Reserve
+            </button>
+          </FeatureGate>
+
+          <FeatureGate
+            featureKey="admin.global_dashboard"
+            fallback={null}
+          >
+            <a
+              href="https://e986654b5a5843d7b3f8adf13b61022c-556d114307be4dee892ae999b.projects.builder.codes"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-1 px-3 py-1 text-xs text-muted-foreground hover:text-foreground border border-border rounded hover:bg-accent transition-colors"
+            >
+              MakrX Gateway
+              <ExternalLink className="w-3 h-3" />
+            </a>
+          </FeatureGate>
         </div>
 
         {/* Notifications */}
