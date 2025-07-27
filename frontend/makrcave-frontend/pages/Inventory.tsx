@@ -583,8 +583,38 @@ export default function Inventory() {
   const EditInventoryModal = () => {
     if (!showEditModal || !selectedItem) return null;
 
+    const checkForEditDuplicates = () => {
+      // Check for duplicate by name and category (excluding current item)
+      const nameMatch = inventory.find(item =>
+        item.id !== selectedItem.id &&
+        item.name.toLowerCase().trim() === editItem.name.toLowerCase().trim() &&
+        item.category === editItem.category
+      );
+
+      // Check for duplicate by SKU (only for scanned items, excluding current item)
+      const skuMatch = editItem.sku && inventory.find(item =>
+        item.id !== selectedItem.id &&
+        item.sku && item.sku.toLowerCase() === editItem.sku.toLowerCase()
+      );
+
+      return { nameMatch, skuMatch };
+    };
+
     const handleSubmit = (e: React.FormEvent) => {
       e.preventDefault();
+
+      const { nameMatch, skuMatch } = checkForEditDuplicates();
+
+      if (nameMatch) {
+        alert(`Duplicate item found: "${nameMatch.name}" already exists in ${nameMatch.category} category. Please choose a different name or check existing inventory.`);
+        return;
+      }
+
+      if (skuMatch) {
+        alert(`Duplicate SKU found: "${skuMatch.sku}" is already assigned to "${skuMatch.name}". Each SKU must be unique.`);
+        return;
+      }
+
       // Update item logic here
       console.log('Updating item:', selectedItem.id, editItem);
       // In a real app, you'd call updateInventoryItem or similar
