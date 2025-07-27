@@ -235,9 +235,15 @@ export function MakerspaceProvider({ children }: { children: ReactNode }) {
     console.log('Adding inventory item:', item);
   };
 
+  const updateInventoryItem = (id: string, updates: Partial<InventoryItem>) => {
+    setInventory(prev => prev.map(item =>
+      item.id === id ? { ...item, ...updates } : item
+    ));
+    console.log('Updated inventory item:', id, updates);
+  };
+
   const updateInventoryQuantity = (id: string, quantity: number) => {
-    // Would call API to update quantity
-    console.log('Updating inventory quantity:', id, quantity);
+    updateInventoryItem(id, { quantity });
   };
 
   const createReservation = (reservation: Omit<Reservation, 'id'>) => {
