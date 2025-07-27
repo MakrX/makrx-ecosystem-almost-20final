@@ -54,6 +54,11 @@ interface Project {
   is_approved: boolean;
   created_at: string;
   updated_at: string;
+  // GitHub Integration
+  github_repo_url?: string;
+  github_repo_name?: string;
+  github_integration_enabled: boolean;
+  github_default_branch: string;
   collaborators: Array<{
     id: number;
     user_id: string;
