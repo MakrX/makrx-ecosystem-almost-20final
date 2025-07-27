@@ -16,8 +16,9 @@ import { createRoot } from "react-dom/client";
 
 const App = () => (
   <AuthProvider>
-    <MakerspaceProvider>
-      <BrowserRouter>
+    <FeatureFlagProvider>
+      <MakerspaceProvider>
+        <BrowserRouter>
         <Routes>
           <Route path="/login" element={<Login />} />
           <Route path="/" element={<Layout />}>
@@ -35,8 +36,9 @@ const App = () => (
             </Route>
           </Route>
         </Routes>
-      </BrowserRouter>
-    </MakerspaceProvider>
+        </BrowserRouter>
+      </MakerspaceProvider>
+    </FeatureFlagProvider>
   </AuthProvider>
 );
 
