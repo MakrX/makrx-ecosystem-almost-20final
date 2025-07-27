@@ -245,8 +245,13 @@ export default function Inventory() {
           <div className="flex-1">
             <h3 className="font-semibold group-hover:text-makrx-teal transition-colors">{item.name}</h3>
             <p className="text-sm text-muted-foreground capitalize">{item.category}</p>
-            {item.sku && (
+            {item.isScanned && item.sku && (
               <p className="text-xs text-muted-foreground font-mono">{item.sku}</p>
+            )}
+            {!item.isScanned && (
+              <div className="mt-1 px-2 py-1 bg-amber-50 border border-amber-200 rounded text-xs text-amber-700">
+                <span className="font-medium">User-added product.</span> MakrX has not reviewed or certified this item.
+              </div>
             )}
           </div>
           <div className="flex items-center gap-2">
