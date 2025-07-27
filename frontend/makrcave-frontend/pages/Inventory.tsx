@@ -72,6 +72,11 @@ export default function Inventory() {
   const [showReorderModal, setShowReorderModal] = useState(false);
   const [selectedItem, setSelectedItem] = useState<InventoryItem | null>(null);
 
+  // Load inventory items on component mount
+  useEffect(() => {
+    loadInventoryItems();
+  }, [loadInventoryItems]);
+
   // Role-based permissions based on the access matrix
   const canAddEdit = user?.role === 'super_admin' || user?.role === 'makerspace_admin' || 
                     (user?.role === 'service_provider' && selectedItem?.ownerUserId === user?.id);
