@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react';
+import { useState, useMemo } from 'react';
 import { useMakerspace } from '../contexts/MakerspaceContext';
 import { useAuth } from '../contexts/AuthContext';
 import { FeatureGate } from '../components/FeatureGate';
