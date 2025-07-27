@@ -595,8 +595,147 @@ export default function Equipment() {
         </div>
       )}
 
-      {/* Modals would be implemented here */}
-      {/* TODO: Add equipment modals - AddEquipmentModal, EquipmentDetailModal, ReservationModal, MaintenanceModal */}
+      {/* Reservation Modal */}
+      {showReservationModal && selectedEquipment && (
+        <ReservationModal
+          isOpen={showReservationModal}
+          onClose={() => {
+            setShowReservationModal(false);
+            setSelectedEquipment(null);
+          }}
+          equipment={selectedEquipment}
+          onSubmit={async (reservationData) => {
+            try {
+              const response = await fetch(`/api/v1/equipment/${selectedEquipment.id}/reserve`, {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                  'Authorization': `Bearer ${localStorage.getItem('auth_token')}`
+                },
+                body: JSON.stringify(reservationData)
+              });
+
+              if (response.ok) {
+                alert('Reservation submitted successfully!');
+                loadEquipment(); // Refresh equipment list
+              } else {
+                throw new Error('Failed to create reservation');
+              }
+            } catch (error) {
+              console.error('Error creating reservation:', error);
+              alert('Failed to create reservation. Please try again.');
+            }
+          }}
+          userProjects={[]} // Would load user projects from context
+        />
+      )}
+
+      {/* Equipment Detail Modal */}
+      {showDetailModal && selectedEquipment && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-lg max-w-4xl w-full max-h-[90vh] overflow-hidden">
+            <div className="flex items-center justify-between p-6 border-b border-gray-200">
+              <div>
+                <h2 className="text-xl font-semibold text-gray-900">{selectedEquipment.name}</h2>
+                <p className="text-sm text-gray-600">{selectedEquipment.equipment_id}</p>
+              </div>
+              <button
+                onClick={() => {
+                  setShowDetailModal(false);
+                  setSelectedEquipment(null);
+                }}
+                className="p-2 hover:bg-gray-100 rounded-lg"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <div className="overflow-y-auto max-h-[calc(90vh-80px)]">
+              <div className="p-6">
+                {/* Equipment Details */}
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+                  <div>
+                    <div className="w-full h-64 bg-gray-100 rounded-lg flex items-center justify-center mb-4">
+                      {selectedEquipment.image_url ? (
+                        <img src={selectedEquipment.image_url} alt={selectedEquipment.name} className="w-full h-full object-cover rounded-lg" />
+                      ) : (
+                        <Wrench className="w-16 h-16 text-gray-400" />
+                      )}
+                    </div>
+
+                    <div className="space-y-3">
+                      <div className="flex items-center">
+                        <MapPin className="w-4 h-4 mr-2 text-gray-500" />
+                        <span className="text-sm">{selectedEquipment.location}</span>
+                      </div>
+
+                      <div className="flex items-center">
+                        <Clock className="w-4 h-4 mr-2 text-gray-500" />
+                        <span className="text-sm">{selectedEquipment.total_usage_hours.toFixed(1)}h used ({selectedEquipment.usage_count} sessions)</span>
+                      </div>
+
+                      {selectedEquipment.hourly_rate && (
+                        <div className="flex items-center">
+                          <DollarSign className="w-4 h-4 mr-2 text-gray-500" />
+                          <span className="text-sm">${selectedEquipment.hourly_rate.toFixed(2)}/hour</span>
+                        </div>
+                      )}
+
+                      {selectedEquipment.requires_certification && (
+                        <div className="flex items-center text-amber-600">
+                          <Shield className="w-4 h-4 mr-2" />
+                          <span className="text-sm">Certification Required: {selectedEquipment.certification_required}</span>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+
+                  <div>
+                    <h3 className="text-lg font-semibold text-gray-900 mb-4">Specifications</h3>
+                    <dl className="space-y-2">
+                      <div>
+                        <dt className="text-sm font-medium text-gray-500">Manufacturer</dt>
+                        <dd className="text-sm text-gray-900">{selectedEquipment.manufacturer || 'Not specified'}</dd>
+                      </div>
+                      <div>
+                        <dt className="text-sm font-medium text-gray-500">Model</dt>
+                        <dd className="text-sm text-gray-900">{selectedEquipment.model || 'Not specified'}</dd>
+                      </div>
+                      <div>
+                        <dt className="text-sm font-medium text-gray-500">Category</dt>
+                        <dd className="text-sm text-gray-900">{selectedEquipment.category.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase())}</dd>
+                      </div>
+                      <div>
+                        <dt className="text-sm font-medium text-gray-500">Status</dt>
+                        <dd className="text-sm text-gray-900 capitalize">{selectedEquipment.status.replace('_', ' ')}</dd>
+                      </div>
+                      {selectedEquipment.description && (
+                        <div>
+                          <dt className="text-sm font-medium text-gray-500">Description</dt>
+                          <dd className="text-sm text-gray-900">{selectedEquipment.description}</dd>
+                        </div>
+                      )}
+                    </dl>
+                  </div>
+                </div>
+
+                {/* Equipment Rating Component */}
+                <EquipmentRating
+                  equipmentId={selectedEquipment.id}
+                  equipmentName={selectedEquipment.name}
+                  averageRating={selectedEquipment.average_rating}
+                  totalRatings={selectedEquipment.total_ratings}
+                  canRate={user?.role !== 'admin'} // Admins typically don't rate equipment
+                  onRatingSubmit={(rating) => {
+                    // Refresh equipment data to update ratings
+                    loadEquipment();
+                  }}
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
