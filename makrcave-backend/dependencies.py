@@ -72,7 +72,14 @@ def check_permission(user_role: str, permission: str) -> bool:
             "reorder_from_store": True,
             "view_usage_logs": True,
             "link_to_boms": True,
-            "delete_items": True
+            "delete_items": True,
+            # Equipment permissions
+            "view_equipment": True,
+            "reserve": True,
+            "create_equipment": True,
+            "maintenance_logs": True,
+            "access_control": True,
+            "delete_equipment": True
         },
         "makerspace_admin": {
             "view_inventory": True,  # own cave only
@@ -81,7 +88,14 @@ def check_permission(user_role: str, permission: str) -> bool:
             "reorder_from_store": True,
             "view_usage_logs": True,
             "link_to_boms": True,
-            "delete_items": True
+            "delete_items": True,
+            # Equipment permissions
+            "view_equipment": True,  # own cave only
+            "reserve": True,
+            "create_equipment": True,
+            "maintenance_logs": True,
+            "access_control": True,
+            "delete_equipment": True
         },
         "admin": {
             "view_inventory": True,
@@ -90,7 +104,14 @@ def check_permission(user_role: str, permission: str) -> bool:
             "reorder_from_store": False,
             "view_usage_logs": False,
             "link_to_boms": False,
-            "delete_items": False
+            "delete_items": False,
+            # Equipment permissions
+            "view_equipment": True,
+            "reserve": False,
+            "create_equipment": False,
+            "maintenance_logs": False,
+            "access_control": False,
+            "delete_equipment": False
         },
         "user": {
             "view_inventory": True,  # read-only
@@ -99,7 +120,14 @@ def check_permission(user_role: str, permission: str) -> bool:
             "reorder_from_store": False,
             "view_usage_logs": False,
             "link_to_boms": True,  # view-only
-            "delete_items": False
+            "delete_items": False,
+            # Equipment permissions
+            "view_equipment": True,
+            "reserve": True,
+            "create_equipment": False,
+            "maintenance_logs": False,
+            "access_control": False,
+            "delete_equipment": False
         },
         "service_provider": {
             "view_inventory": True,  # own inventory only
@@ -108,7 +136,14 @@ def check_permission(user_role: str, permission: str) -> bool:
             "reorder_from_store": True,
             "view_usage_logs": True,
             "link_to_boms": True,  # for jobs
-            "delete_items": True  # own only
+            "delete_items": True,  # own only
+            # Equipment permissions
+            "view_equipment": True,  # own only
+            "reserve": True,
+            "create_equipment": True,  # own only
+            "maintenance_logs": True,
+            "access_control": True,
+            "delete_equipment": True  # own only
         }
     }
     
