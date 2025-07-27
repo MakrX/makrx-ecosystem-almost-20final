@@ -37,6 +37,18 @@ class ActivityType(str, enum.Enum):
     MILESTONE_ADDED = "milestone_added"
     MILESTONE_COMPLETED = "milestone_completed"
     STATUS_CHANGED = "status_changed"
+    # GitHub Integration Activities
+    GITHUB_REPO_CONNECTED = "github_repo_connected"
+    GITHUB_REPO_DISCONNECTED = "github_repo_disconnected"
+    GITHUB_COMMIT_PUSHED = "github_commit_pushed"
+    GITHUB_PULL_REQUEST_OPENED = "github_pull_request_opened"
+    GITHUB_PULL_REQUEST_MERGED = "github_pull_request_merged"
+    GITHUB_ISSUE_CREATED = "github_issue_created"
+    GITHUB_ISSUE_CLOSED = "github_issue_closed"
+    GITHUB_RELEASE_CREATED = "github_release_created"
+    GITHUB_FILE_ADDED = "github_file_added"
+    GITHUB_FILE_MODIFIED = "github_file_modified"
+    GITHUB_FILE_DELETED = "github_file_deleted"
 
 class Project(Base):
     __tablename__ = "projects"
