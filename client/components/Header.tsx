@@ -45,7 +45,7 @@ export default function Header() {
               <div className="absolute inset-0 bg-makrx-yellow/20 rounded-full blur-sm opacity-0 group-hover:opacity-100 transition-opacity" />
             </div>
             <div className="text-xl font-display font-bold">
-              <span className="text-makrx-blue">Makr</span>
+              <span className="text-white">Makr</span>
               <span className="text-makrx-yellow">X</span>
             </div>
           </Link>
