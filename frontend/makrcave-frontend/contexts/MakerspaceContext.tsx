@@ -117,9 +117,13 @@ interface MakerspaceContextType {
   projects: Project[];
   reservations: Reservation[];
   updateStats: () => void;
-  addInventoryItem: (item: Omit<InventoryItem, 'id'>) => void;
-  updateInventoryItem: (id: string, item: Partial<InventoryItem>) => void;
+  addInventoryItem: (item: Omit<InventoryItem, 'id'>) => Promise<void>;
+  updateInventoryItem: (id: string, item: Partial<InventoryItem>) => Promise<void>;
   updateInventoryQuantity: (id: string, quantity: number) => void;
+  issueInventoryItem: (id: string, quantity: number, reason?: string, projectId?: string, jobId?: string) => Promise<void>;
+  restockInventoryItem: (id: string, quantity: number, reason?: string) => Promise<void>;
+  deleteInventoryItem: (id: string) => Promise<void>;
+  loadInventoryItems: () => Promise<void>;
   addEquipment: (equipment: Omit<Equipment, 'id'>) => void;
   updateEquipment: (id: string, equipment: Partial<Equipment>) => void;
   deleteEquipment: (id: string) => void;
