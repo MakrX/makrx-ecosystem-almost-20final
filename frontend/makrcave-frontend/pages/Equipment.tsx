@@ -4,6 +4,7 @@ import { FeatureGate, withFeatureFlag, FeatureFlagBadge, useFeatureAccess } from
 
 export default function Equipment() {
   const { equipment } = useMakerspace();
+  const maintenanceAccess = useFeatureAccess('equipment.maintenance_mode');
 
   return (
     <div className="space-y-6">
@@ -11,6 +12,7 @@ export default function Equipment() {
         <h1 className="text-3xl font-bold flex items-center gap-3">
           <Wrench className="w-8 h-8" />
           Equipment Management
+          <FeatureFlagBadge featureKey="equipment.reservation_system" />
         </h1>
         <p className="text-muted-foreground mt-1">
           Monitor and reserve makerspace equipment
