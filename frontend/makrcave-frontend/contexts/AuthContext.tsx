@@ -1,13 +1,16 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 
+type UserRole = 'super_admin' | 'makrcave_manager' | 'maker';
+
 interface User {
   id: string;
   email: string;
   username: string;
   firstName?: string;
   lastName?: string;
-  roles: string[];
+  role: UserRole;
   makerspaceId?: string;
+  makerspaces?: string[]; // For super admins who can manage multiple spaces
 }
 
 interface AuthContextType {
@@ -16,9 +19,11 @@ interface AuthContextType {
   isLoading: boolean;
   login: (email: string, password: string) => Promise<void>;
   logout: () => void;
-  hasRole: (role: string) => boolean;
-  isMakerspaceAdmin: boolean;
-  isAdmin: boolean;
+  switchRole: (role: UserRole) => void; // Demo function to switch between roles
+  isSuperAdmin: boolean;
+  isMakrcaveManager: boolean;
+  isMaker: boolean;
+  getCurrentRole: () => string;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
