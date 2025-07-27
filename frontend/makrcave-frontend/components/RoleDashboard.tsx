@@ -222,7 +222,7 @@ function ServiceProviderDashboard() {
 
       <div className="makrcave-card">
         <div className="text-center py-12">
-          <Settings className="w-16 h-16 mx-auto text-yellow-600 mb-4" />
+          <Settings className="w-16 h-16 mx-auto text-slate-600 mb-4" />
           <h3 className="text-xl font-semibold mb-4">Account Under Development</h3>
           <p className="text-muted-foreground mb-6">
             Service provider features are currently being developed. Your future capabilities will include:
