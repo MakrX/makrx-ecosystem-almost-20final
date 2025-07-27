@@ -137,12 +137,12 @@ export default function Login() {
               </div>
             </div>
 
-            {/* Demo Credentials */}
-            <div className="bg-makrx-yellow/10 border border-makrx-yellow/20 rounded-lg p-3">
-              <p className="text-xs text-makrx-yellow font-medium mb-1">Demo Credentials:</p>
-              <p className="text-xs text-white/80">Email: admin@makrcave.local</p>
-              <p className="text-xs text-white/80">Password: makrcave2024</p>
-            </div>
+            {/* Error Message */}
+            {error && (
+              <div className="bg-red-500/10 border border-red-500/20 rounded-lg p-3">
+                <p className="text-xs text-red-300">{error}</p>
+              </div>
+            )}
 
             {/* Submit Button */}
             <button
