@@ -330,10 +330,46 @@ export default function Inventory() {
   const AddInventoryModal = () => {
     if (!showAddModal) return null;
 
+    const checkForDuplicates = () => {
+      // Check for duplicate by name and category
+      const nameMatch = inventory.find(item =>
+        item.name.toLowerCase().trim() === newItem.name.toLowerCase().trim() &&
+        item.category === newItem.category
+      );
+
+      // Check for duplicate by SKU (only for scanned items)
+      const skuMatch = newItem.sku && inventory.find(item =>
+        item.sku && item.sku.toLowerCase() === newItem.sku.toLowerCase()
+      );
+
+      return { nameMatch, skuMatch };
+    };
+
     const handleSubmit = (e: React.FormEvent) => {
       e.preventDefault();
+
+      const { nameMatch, skuMatch } = checkForDuplicates();
+
+      if (nameMatch) {
+        alert(`Duplicate item found: "${nameMatch.name}" already exists in ${nameMatch.category} category. Please check existing inventory before adding.`);
+        return;
+      }
+
+      if (skuMatch) {
+        alert(`Duplicate SKU found: "${skuMatch.sku}" is already assigned to "${skuMatch.name}". Each SKU must be unique.`);
+        return;
+      }
+
       // Add item logic here
       console.log('Adding item:', newItem);
+      addInventoryItem({
+        ...newItem,
+        id: Date.now().toString(), // Temporary ID generation
+        quantity: parseFloat(newItem.quantity),
+        lowStockThreshold: parseInt(newItem.lowStockThreshold),
+        price: newItem.price ? parseFloat(newItem.price) : undefined
+      });
+
       resetForm();
       setShowAddModal(false);
     };
