@@ -1,6 +1,6 @@
 import { Outlet, Navigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
-import Sidebar from './Sidebar';
+import RoleBasedSidebar from './RoleBasedSidebar';
 import Header from './Header';
 
 export default function Layout() {
