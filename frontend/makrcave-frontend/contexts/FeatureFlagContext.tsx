@@ -150,6 +150,36 @@ const defaultFlags: FeatureFlagConfig = {
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
   },
+  'inventory.qr_scanning': {
+    id: 'inventory.qr_scanning',
+    name: 'QR Code Scanning',
+    description: 'Scan QR codes to identify and manage inventory',
+    enabled: true,
+    allowedRoles: ['super_admin', 'admin', 'makerspace_admin', 'service_provider', 'maker'],
+    environment: 'all',
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+  },
+  'inventory.qr_generation': {
+    id: 'inventory.qr_generation',
+    name: 'QR Code Generation',
+    description: 'Generate QR codes for inventory items',
+    enabled: true,
+    allowedRoles: ['super_admin', 'admin'],
+    environment: 'all',
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+  },
+  'inventory.makerspace_management': {
+    id: 'inventory.makerspace_management',
+    name: 'Makerspace Inventory Management',
+    description: 'Add and edit inventory within assigned makerspaces',
+    enabled: true,
+    allowedRoles: ['super_admin', 'admin', 'makerspace_admin'],
+    environment: 'all',
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+  },
 
   // Project Features
   'projects.view_all': {
