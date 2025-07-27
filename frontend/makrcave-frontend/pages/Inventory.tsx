@@ -1,31 +1,15 @@
 import { useState, useMemo } from 'react';
+import {
+  Package, Plus, Search, Filter, Download, Upload, ShoppingCart,
+  AlertTriangle, BarChart3, Grid, List, Calendar, Eye, Edit,
+  X, Save, FileText, MapPin, Shield, ExternalLink, QrCode
+} from 'lucide-react';
 import { useMakerspace } from '../contexts/MakerspaceContext';
 import { useAuth } from '../contexts/AuthContext';
 import { FeatureGate } from '../components/FeatureGate';
-import { 
-  Package, 
-  Plus, 
-  Search, 
-  Filter, 
-  AlertTriangle, 
-  TrendingDown, 
-  TrendingUp,
-  Edit,
-  ExternalLink,
-  ShoppingCart,
-  BarChart3,
-  QrCode,
-  Camera,
-  X,
-  Save,
-  Upload,
-  Download,
-  History,
-  Eye,
-  MoreHorizontal,
-  CheckCircle,
-  XCircle
-} from 'lucide-react';
+import InventoryCard from '../components/InventoryCard';
+import LowStockBanner from '../components/LowStockBanner';
+import UsageTimeline from '../components/UsageTimeline';
 
 // QR Code scanning mock component (in real app, you'd use a proper QR library)
 const QRScanner = ({ onScan, onClose }: { onScan: (code: string) => void; onClose: () => void }) => {
