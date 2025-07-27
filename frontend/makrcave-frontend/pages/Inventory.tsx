@@ -262,9 +262,9 @@ export default function Inventory() {
           </div>
         </div>
 
-        <FeatureGate featureKey="inventory.full_management">
+        <FeatureGate featureKey="inventory.makerspace_management">
           <div className="flex gap-2">
-            <button 
+            <button
               onClick={() => {
                 setSelectedItem(item);
                 setShowEditModal(true);
@@ -274,9 +274,11 @@ export default function Inventory() {
               <Edit className="w-4 h-4 mr-1" />
               Update
             </button>
-            <button className="makrcave-btn-secondary text-sm">
-              <QrCode className="w-4 h-4" />
-            </button>
+            <FeatureGate featureKey="inventory.qr_generation">
+              <button className="makrcave-btn-secondary text-sm">
+                <QrCode className="w-4 h-4" />
+              </button>
+            </FeatureGate>
           </div>
         </FeatureGate>
       </div>
