@@ -224,7 +224,10 @@ const ProjectFiles: React.FC<ProjectFilesProps> = ({
         <div>
           <h3 className="text-lg font-semibold">Project Files</h3>
           <p className="text-sm text-gray-600">
-            Manage documents, images, and other project files
+            {githubIntegrationEnabled
+              ? "Manage files from GitHub repository and local uploads"
+              : "Manage documents, images, and other project files"
+            }
           </p>
         </div>
         {canEdit && (
