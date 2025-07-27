@@ -5,11 +5,7 @@ from typing import Optional
 import jwt
 from datetime import datetime
 
-# Mock database connection - replace with actual database setup
-def get_db():
-    """Get database session"""
-    # This would be replaced with actual database session management
-    pass
+from .database import get_db
 
 security = HTTPBearer()
 
