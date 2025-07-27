@@ -26,7 +26,7 @@ export default function Layout() {
       <RoleBasedSidebar />
       <div className="makrcave-main">
         <Header />
-        <main className="p-6">
+        <main className="p-6 bg-white">
           <Outlet />
         </main>
       </div>
