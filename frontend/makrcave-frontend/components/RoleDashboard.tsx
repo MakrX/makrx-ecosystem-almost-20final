@@ -188,7 +188,7 @@ function MakerspaceAdminDashboard() {
               <p className="text-sm font-medium text-muted-foreground">Today's Bookings</p>
               <p className="text-2xl font-bold">12</p>
             </div>
-            <Calendar className="w-8 h-8 text-yellow-600" />
+            <Calendar className="w-8 h-8 text-makrx-teal" />
           </div>
         </div>
       </div>
