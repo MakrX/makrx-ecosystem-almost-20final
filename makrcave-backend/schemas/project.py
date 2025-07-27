@@ -284,3 +284,60 @@ class UserProjectStatistics(BaseModel):
     completed_projects: int
     active_projects: int
     favorite_tags: List[str] = []
+
+# GitHub Integration Schemas
+class GitHubRepoConnect(BaseModel):
+    repo_url: str = Field(..., regex=r"^https://github\.com/[\w\-\.]+/[\w\-\.]+/?$")
+    access_token: Optional[str] = None  # For private repos
+    default_branch: str = "main"
+
+class GitHubRepoInfo(BaseModel):
+    name: str
+    full_name: str
+    description: Optional[str] = None
+    html_url: str
+    clone_url: str
+    ssh_url: str
+    default_branch: str
+    is_private: bool
+    size: int
+    language: Optional[str] = None
+    created_at: datetime
+    updated_at: datetime
+    pushed_at: datetime
+
+class GitHubCommit(BaseModel):
+    sha: str
+    message: str
+    author_name: str
+    author_email: str
+    author_date: datetime
+    committer_name: str
+    committer_email: str
+    committer_date: datetime
+    url: str
+    added_files: List[str] = []
+    modified_files: List[str] = []
+    removed_files: List[str] = []
+
+class GitHubFile(BaseModel):
+    name: str
+    path: str
+    sha: str
+    size: int
+    url: str
+    html_url: str
+    download_url: Optional[str] = None
+    type: str  # file or dir
+    encoding: Optional[str] = None
+    content: Optional[str] = None  # Base64 encoded for files
+
+class GitHubActivity(BaseModel):
+    type: str  # commit, pull_request, issue, release, etc.
+    action: Optional[str] = None  # opened, closed, merged, etc.
+    title: str
+    description: Optional[str] = None
+    author: str
+    created_at: datetime
+    url: str
+    metadata: Optional[Dict[str, Any]] = None
