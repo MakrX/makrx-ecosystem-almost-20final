@@ -593,6 +593,11 @@ export default function Equipment() {
       {/* Modals */}
       <EquipmentDetailModal />
       <AddEquipmentModal />
+      <ReservationModal
+        isOpen={showReservationModal}
+        onClose={() => setShowReservationModal(false)}
+        equipment={selectedEquipment}
+      />
     </div>
   );
 }
