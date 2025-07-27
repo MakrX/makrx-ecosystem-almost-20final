@@ -142,12 +142,12 @@
   /* Glassmorphism Cards */
   .makrx-glass-card {
     @apply backdrop-blur-md border border-white/20 rounded-xl p-6 transition-all duration-300;
-    background: var(--makrx-glass-light);
+    background: rgba(255, 255, 255, 0.1);
   }
 
   .dark .makrx-glass-card {
-    background: var(--makrx-glass-dark);
-    @apply border-white/10;
+    background: rgba(255, 255, 255, 0.1);
+    @apply border-white/20;
   }
 
   .makrx-glass-card:hover {
