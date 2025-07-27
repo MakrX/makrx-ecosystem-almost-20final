@@ -24,9 +24,9 @@ export default function Layout() {
   return (
     <div className="min-h-screen bg-background">
       <RoleBasedSidebar />
-      <div className="makrcave-main" style={{ backgroundColor: '#ffffff' }}>
+      <div className="makrcave-main">
         <Header />
-        <main className="p-6 bg-white">
+        <main className="p-6 bg-background">
           <Outlet />
         </main>
       </div>
