@@ -220,16 +220,45 @@ export function MakerspaceProvider({ children }: { children: ReactNode }) {
       id: 'inv-1',
       name: 'PLA Filament - White',
       category: 'filament',
+      subcategory: 'PLA',
       quantity: 2,
       unit: 'kg',
-      lowStockThreshold: 3,
+      minThreshold: 3,
+      location: 'Shelf A-1',
+      status: 'active',
+      supplierType: 'makrx',
+      productCode: 'MKX-FIL-HAT-PLA001-WHT',
+      makerspaceId: 'ms-1',
+      history: [
+        {
+          id: 'log-1',
+          timestamp: '2024-01-10T10:00:00Z',
+          userId: 'user-1',
+          userName: 'Sarah Martinez',
+          action: 'restock',
+          quantityBefore: 0,
+          quantityAfter: 5,
+          reason: 'Initial stock'
+        },
+        {
+          id: 'log-2',
+          timestamp: '2024-01-15T14:30:00Z',
+          userId: 'user-2',
+          userName: 'Casey Williams',
+          action: 'issue',
+          quantityBefore: 5,
+          quantityAfter: 2,
+          reason: 'Project housing prototype',
+          linkedProjectId: 'proj-123'
+        }
+      ],
       price: 25.99,
       supplier: 'Hatchbox',
-      makerspaceId: 'ms-1',
+      description: 'High-quality PLA filament perfect for prototyping and general printing',
       sku: 'MKX-FIL-HAT-PLA001-WHT',
-      location: 'Shelf A-1',
       isScanned: true,
-      lastRestocked: '2024-01-10'
+      lastRestocked: '2024-01-10',
+      lowStockThreshold: 3 // Legacy field for backward compatibility
     },
     {
       id: 'inv-2',
