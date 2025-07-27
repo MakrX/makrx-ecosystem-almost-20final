@@ -23,7 +23,7 @@ export default function Layout() {
 
   return (
     <div className="min-h-screen bg-background">
-      <Sidebar />
+      <RoleBasedSidebar />
       <div className="makrcave-main">
         <Header />
         <main className="p-6">
