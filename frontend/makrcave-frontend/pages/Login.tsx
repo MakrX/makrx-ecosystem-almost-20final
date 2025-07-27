@@ -1,15 +1,18 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
-import { Building2, Eye, EyeOff, Lock, Mail } from 'lucide-react';
+import { Building2, Eye, EyeOff, Lock, Mail, User, Crown, Shield, Wrench, Settings, UserCheck } from 'lucide-react';
 
 export default function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const { login } = useAuth();
+  const [error, setError] = useState('');
+  const { login, getDemoUsers } = useAuth();
   const navigate = useNavigate();
+
+  const demoUsers = getDemoUsers();
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
