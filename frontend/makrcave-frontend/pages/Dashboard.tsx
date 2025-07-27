@@ -180,7 +180,7 @@ export default function Dashboard() {
 
         {/* Inventory Alerts */}
         <FeatureGate
-          featureKey="dashboard.inventory_alerts"
+          featureKey="inventory.view_assigned"
           showReasonWhenBlocked={true}
         >
           <div className="makrcave-card">
