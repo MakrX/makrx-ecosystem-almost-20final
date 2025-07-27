@@ -1,5 +1,6 @@
 import { Wrench, Calendar, Settings, Play, Pause, AlertTriangle } from 'lucide-react';
 import { useMakerspace } from '../contexts/MakerspaceContext';
+import { FeatureGate, withFeatureFlag, FeatureFlagBadge, useFeatureAccess } from '../components/FeatureGate';
 
 export default function Equipment() {
   const { equipment } = useMakerspace();
