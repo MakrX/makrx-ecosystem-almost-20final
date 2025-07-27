@@ -1,6 +1,7 @@
 import { Bell, Search, Menu, ExternalLink, Users, ChevronDown } from 'lucide-react';
 import { useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
+import { FeatureGate, useFeatureAccess } from './FeatureGate';
 
 export default function Header() {
   const [searchQuery, setSearchQuery] = useState('');
