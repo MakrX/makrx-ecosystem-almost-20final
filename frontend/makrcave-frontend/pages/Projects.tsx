@@ -35,20 +35,28 @@ export default function Projects() {
         </FeatureGate>
       </div>
 
-      {/* Version Control Feature - Under Development */}
+      {/* BOM Management Feature */}
       <FeatureGate
-        featureKey="projects.version_control"
+        featureKey="bom.add_materials"
         showReasonWhenBlocked={true}
-        fallback={<FeatureInDevelopment featureName="Project Version Control" />}
       >
         <div className="makrcave-card">
-          <h3 className="text-lg font-semibold mb-4">Version Control</h3>
-          <p className="text-sm text-muted-foreground">
-            Track changes and manage versions of your project files.
+          <h3 className="text-lg font-semibold mb-4">Bill of Materials (BOM)</h3>
+          <p className="text-sm text-muted-foreground mb-4">
+            Add materials to your projects and link them to the store.
           </p>
-          <button className="makrcave-btn-primary text-sm mt-4">
-            View History
-          </button>
+          <FeatureGate
+            featureKey="bom.link_products"
+            fallback={
+              <button disabled className="makrcave-btn-primary text-sm opacity-50 cursor-not-allowed">
+                Link to Store (Admin Only)
+              </button>
+            }
+          >
+            <button className="makrcave-btn-primary text-sm">
+              Manage BOM
+            </button>
+          </FeatureGate>
         </div>
       </FeatureGate>
 
