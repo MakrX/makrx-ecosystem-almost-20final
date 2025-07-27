@@ -224,8 +224,10 @@ export default function Inventory() {
         ...newItem,
         category: parsedData.category,
         sku: parsedData.sku,
-        name: `${parsedData.brand} ${parsedData.item} ${parsedData.variant1} ${parsedData.variant2}`.trim()
+        name: `${parsedData.brand} ${parsedData.item} ${parsedData.variant1} ${parsedData.variant2}`.trim(),
+        isScanned: true
       });
+      setIsScannedItem(true);
       setShowQRScanner(false);
       setShowAddModal(true);
     } else {
