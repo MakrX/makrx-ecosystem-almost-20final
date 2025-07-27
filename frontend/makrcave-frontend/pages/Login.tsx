@@ -90,6 +90,51 @@ export default function Login() {
             <p className="text-white/80">Sign in to your makerspace portal</p>
           </div>
 
+          {/* Demo Users */}
+          <div className="mb-8">
+            <h3 className="text-white text-sm font-medium mb-4 text-center">
+              Quick Login - Demo Users
+            </h3>
+            <div className="grid grid-cols-1 gap-3">
+              {demoUsers.map((user) => {
+                const IconComponent = getRoleIcon(user.role);
+                return (
+                  <button
+                    key={user.id}
+                    onClick={() => quickLogin(user.email)}
+                    disabled={isLoading}
+                    className="flex items-center gap-3 p-3 bg-white/5 hover:bg-white/10 border border-white/10 hover:border-white/20 rounded-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    <div className={`w-8 h-8 bg-gradient-to-br ${getRoleColor(user.role)} rounded-lg flex items-center justify-center flex-shrink-0`}>
+                      <IconComponent className="w-4 h-4 text-white" />
+                    </div>
+                    <div className="flex-1 text-left">
+                      <div className="text-white text-sm font-medium">
+                        {user.firstName} {user.lastName}
+                      </div>
+                      <div className="text-white/60 text-xs capitalize">
+                        {user.role.replace('_', ' ')}
+                      </div>
+                    </div>
+                    <div className="text-white/40 text-xs">
+                      {user.email}
+                    </div>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Divider */}
+          <div className="relative my-6">
+            <div className="absolute inset-0 flex items-center">
+              <div className="w-full border-t border-white/20"></div>
+            </div>
+            <div className="relative flex justify-center text-xs">
+              <span className="px-2 bg-makrx-blue text-white/60">or login manually</span>
+            </div>
+          </div>
+
           {/* Login Form */}
           <form onSubmit={handleLogin} className="space-y-6">
             {/* Email Field */}
