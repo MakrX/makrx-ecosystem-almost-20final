@@ -1,12 +1,11 @@
-import { Bell, Search, Menu, ExternalLink, Users, ChevronDown } from 'lucide-react';
+import { Bell, Search, Menu, ExternalLink, User as UserIcon } from 'lucide-react';
 import { useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
-import { FeatureGate, useFeatureAccess } from './FeatureGate';
+import { FeatureGate } from './FeatureGate';
 
 export default function Header() {
   const [searchQuery, setSearchQuery] = useState('');
-  const [showRoleSwitcher, setShowRoleSwitcher] = useState(false);
-  const { user, switchRole, getCurrentRole } = useAuth();
+  const { user, logout } = useAuth();
 
   return (
     <header className="makrcave-header">
