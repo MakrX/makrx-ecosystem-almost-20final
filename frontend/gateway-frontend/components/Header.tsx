@@ -1,15 +1,17 @@
 import { Link, useLocation } from "react-router-dom";
 import { useState } from "react";
-import { 
-  Bot, 
-  Menu, 
-  X, 
-  Building2, 
-  ShoppingCart, 
+import { useAuth } from "../contexts/AuthContext";
+import {
+  Bot,
+  Menu,
+  X,
+  Building2,
+  ShoppingCart,
   GraduationCap,
   User,
   Moon,
-  Sun
+  Sun,
+  LogOut
 } from "lucide-react";
 
 export default function Header() {
