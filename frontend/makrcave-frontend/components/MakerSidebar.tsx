@@ -164,8 +164,8 @@ export default function MakerSidebar() {
                   to={item.href}
                   className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
                     item.active
-                      ? 'bg-makrx-yellow text-green-700'
-                      : 'text-gray-700 hover:text-makrx-yellow hover:bg-yellow-50'
+                      ? 'bg-makrx-teal text-white'
+                      : 'text-gray-700 hover:text-makrx-teal hover:bg-makrx-teal/10'
                   }`}
                 >
                   <Icon className="w-4 h-4" />
