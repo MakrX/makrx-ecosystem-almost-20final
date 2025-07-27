@@ -217,6 +217,219 @@ const ProjectFiles: React.FC<ProjectFilesProps> = ({
   const totalSize = files.reduce((sum, file) => sum + file.file_size, 0);
   const stats = getFileCategoryStats();
 
+  const renderLocalFilesSection = () => (
+    <>
+      {/* File Statistics */}
+      <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+        <Card>
+          <CardContent className="p-4">
+            <div className="flex items-center space-x-2">
+              <FileText className="h-4 w-4 text-blue-600" />
+              <div>
+                <p className="text-2xl font-bold">{files.length}</p>
+                <p className="text-xs text-gray-600">Total Files</p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardContent className="p-4">
+            <div className="flex items-center space-x-2">
+              <FileText className="h-4 w-4 text-red-600" />
+              <div>
+                <p className="text-2xl font-bold">{stats.documents}</p>
+                <p className="text-xs text-gray-600">Documents</p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardContent className="p-4">
+            <div className="flex items-center space-x-2">
+              <Image className="h-4 w-4 text-blue-600" />
+              <div>
+                <p className="text-2xl font-bold">{stats.images}</p>
+                <p className="text-xs text-gray-600">Images</p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardContent className="p-4">
+            <div className="flex items-center space-x-2">
+              <Video className="h-4 w-4 text-purple-600" />
+              <div>
+                <p className="text-2xl font-bold">{stats.videos}</p>
+                <p className="text-xs text-gray-600">Videos</p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardContent className="p-4">
+            <div className="flex items-center space-x-2">
+              <Archive className="h-4 w-4 text-yellow-600" />
+              <div>
+                <p className="text-2xl font-bold">{formatFileSize(totalSize)}</p>
+                <p className="text-xs text-gray-600">Total Size</p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Search and Filters */}
+      <Card>
+        <CardContent className="p-4">
+          <div className="flex flex-col md:flex-row gap-4">
+            <div className="flex-1">
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+                <Input
+                  placeholder="Search files..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="pl-10"
+                />
+              </div>
+            </div>
+            <div className="flex gap-2">
+              <Select value={filterType} onValueChange={setFilterType}>
+                <SelectTrigger className="w-48">
+                  <SelectValue placeholder="Filter by type" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All File Types</SelectItem>
+                  {getFileTypes().map((type) => (
+                    <SelectItem key={type} value={type}>
+                      {type.charAt(0).toUpperCase() + type.slice(1)}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Files Grid */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Local Files ({filteredFiles.length})</CardTitle>
+        </CardHeader>
+        <CardContent>
+          {filteredFiles.length === 0 ? (
+            <div className="text-center py-8 text-gray-500">
+              <FileText className="h-8 w-8 mx-auto mb-2 opacity-50" />
+              <p>No files found</p>
+              <p className="text-sm">Upload documents, images, or other project files</p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {filteredFiles.map((file) => (
+                <div key={file.id} className="border rounded-lg p-4 hover:shadow-md transition-shadow">
+                  <div className="flex items-start justify-between mb-3">
+                    <div className="flex items-center space-x-2">
+                      {getFileIcon(file.file_type)}
+                      <div className="min-w-0 flex-1">
+                        <h4 className="font-medium text-sm truncate" title={file.original_filename}>
+                          {file.original_filename}
+                        </h4>
+                        <p className="text-xs text-gray-500">v{file.version}</p>
+                      </div>
+                    </div>
+                    <div className="flex items-center space-x-1">
+                      {file.is_public && (
+                        <Globe className="h-3 w-3 text-green-600" title="Public file" />
+                      )}
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button variant="ghost" size="sm">
+                            <MoreHorizontal className="h-4 w-4" />
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end">
+                          <DropdownMenuItem onClick={() => handleDownload(file)}>
+                            <Download className="h-4 w-4 mr-2" />
+                            Download
+                          </DropdownMenuItem>
+                          <DropdownMenuItem>
+                            <Eye className="h-4 w-4 mr-2" />
+                            Preview
+                          </DropdownMenuItem>
+                          {file.is_public && (
+                            <DropdownMenuItem>
+                              <Share2 className="h-4 w-4 mr-2" />
+                              Share Link
+                            </DropdownMenuItem>
+                          )}
+                          <DropdownMenuItem>
+                            <ExternalLink className="h-4 w-4 mr-2" />
+                            Open External
+                          </DropdownMenuItem>
+                          {canEdit && (
+                            <>
+                              <DropdownMenuSeparator />
+                              <DropdownMenuItem>
+                                <Edit className="h-4 w-4 mr-2" />
+                                Edit Details
+                              </DropdownMenuItem>
+                              <DropdownMenuItem
+                                onClick={() => handleDeleteFile(file.id)}
+                                className="text-red-600"
+                              >
+                                <Trash2 className="h-4 w-4 mr-2" />
+                                Delete File
+                              </DropdownMenuItem>
+                            </>
+                          )}
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    </div>
+                  </div>
+
+                  {file.description && (
+                    <p className="text-sm text-gray-600 mb-3 line-clamp-2">
+                      {file.description}
+                    </p>
+                  )}
+
+                  <div className="space-y-2">
+                    <div className="flex items-center justify-between text-xs">
+                      <span className="text-gray-500">Size:</span>
+                      <span className="font-medium">{formatFileSize(file.file_size)}</span>
+                    </div>
+                    <div className="flex items-center justify-between text-xs">
+                      <span className="text-gray-500">Uploaded:</span>
+                      <span className="font-medium">{formatDate(file.uploaded_at)}</span>
+                    </div>
+                    <div className="flex items-center justify-between text-xs">
+                      <span className="text-gray-500">By:</span>
+                      <span className="font-medium">{file.uploaded_by}</span>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center justify-between mt-3">
+                    <Badge variant="outline" className="text-xs">
+                      {file.file_type}
+                    </Badge>
+                    <div className="flex items-center gap-1">
+                      {file.is_public ? (
+                        <Globe className="h-3 w-3 text-green-600" />
+                      ) : (
+                        <Lock className="h-3 w-3 text-gray-600" />
+                      )}
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </CardContent>
+      </Card>
+    </>
+  );
+
   return (
     <div className="space-y-6">
       {/* Header */}
