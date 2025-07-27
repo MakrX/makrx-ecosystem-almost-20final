@@ -58,9 +58,18 @@ export default function Projects() {
               <button className="flex-1 makrcave-btn-primary text-sm">
                 View Project
               </button>
-              <button className="makrcave-btn-secondary text-sm">
-                <Users className="w-4 h-4" />
-              </button>
+              <FeatureGate
+                featureKey="projects.collaboration"
+                fallback={
+                  <button disabled className="makrcave-btn-secondary text-sm opacity-50 cursor-not-allowed" title="Collaboration features not available">
+                    <Users className="w-4 h-4" />
+                  </button>
+                }
+              >
+                <button className="makrcave-btn-secondary text-sm">
+                  <Users className="w-4 h-4" />
+                </button>
+              </FeatureGate>
             </div>
           </div>
         ))}
