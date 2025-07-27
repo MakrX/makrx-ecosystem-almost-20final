@@ -32,38 +32,50 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  useEffect(() => {
-    // Demo: Auto-login for showcase
-    const demoUser: User = {
-      id: '1',
-      email: 'admin@makrcave.local',
-      username: 'admin',
-      firstName: 'Demo',
-      lastName: 'Admin',
-      roles: ['maker', 'makerspace_admin'],
+  // Demo users for different roles
+  const demoUsers: Record<UserRole, User> = {
+    super_admin: {
+      id: 'sa-1',
+      email: 'superadmin@makrx.org',
+      username: 'superadmin',
+      firstName: 'System',
+      lastName: 'Administrator',
+      role: 'super_admin',
+      makerspaces: ['ms-1', 'ms-2', 'ms-3'] // Can manage multiple makerspaces
+    },
+    makrcave_manager: {
+      id: 'mgr-1',
+      email: 'manager@makrcave.local',
+      username: 'manager',
+      firstName: 'Cave',
+      lastName: 'Manager',
+      role: 'makrcave_manager',
       makerspaceId: 'ms-1'
-    };
+    },
+    maker: {
+      id: 'mkr-1',
+      email: 'maker@makrcave.local',
+      username: 'maker',
+      firstName: 'Creative',
+      lastName: 'Maker',
+      role: 'maker',
+      makerspaceId: 'ms-1'
+    }
+  };
 
-    setUser(demoUser);
+  useEffect(() => {
+    // Demo: Start with MakrCave Manager role for showcase
+    setUser(demoUsers.makrcave_manager);
     setIsLoading(false);
   }, []);
 
   const login = async (email: string, password: string) => {
-    // This would normally call your auth API
-    const dummyUser: User = {
-      id: '1',
-      email,
-      username: email.split('@')[0],
-      firstName: 'Demo',
-      lastName: 'Maker',
-      roles: ['maker', 'makerspace_admin'],
-      makerspaceId: 'ms-1'
-    };
+    // Demo login - determine role based on email
+    let role: UserRole = 'maker';
+    if (email.includes('superadmin')) role = 'super_admin';
+    else if (email.includes('manager')) role = 'makrcave_manager';
 
-    localStorage.setItem('makrcave_user', JSON.stringify(dummyUser));
-    localStorage.setItem('makrcave_access_token', 'dummy_token_' + Date.now());
-    
-    setUser(dummyUser);
+    setUser(demoUsers[role]);
   };
 
   const logout = () => {
@@ -72,12 +84,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setUser(null);
   };
 
-  const hasRole = (role: string): boolean => {
-    return user?.roles.includes(role) || false;
+  const switchRole = (role: UserRole) => {
+    setUser(demoUsers[role]);
   };
 
-  const isMakerspaceAdmin = hasRole('makerspace_admin') || hasRole('admin') || hasRole('super_admin');
-  const isAdmin = hasRole('admin') || hasRole('super_admin');
+  const getCurrentRole = (): string => {
+    return user?.role || 'maker';
+  };
+
+  const isSuperAdmin = user?.role === 'super_admin';
+  const isMakrcaveManager = user?.role === 'makrcave_manager';
+  const isMaker = user?.role === 'maker';
   const isAuthenticated = !!user;
 
   return (
