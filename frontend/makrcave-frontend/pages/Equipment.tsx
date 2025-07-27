@@ -553,101 +553,22 @@ export default function Equipment() {
       {/* Equipment Grid/List */}
       <div className={viewMode === 'grid' ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6' : 'space-y-4'}>
         {filteredEquipment.map((item) => (
-          <div
+          <EquipmentCard
             key={item.id}
-            className={`bg-white rounded-lg border border-gray-200 p-6 hover:shadow-lg transition-shadow ${
-              viewMode === 'list' ? 'flex items-center space-x-6' : ''
-            }`}
-          >
-            {/* Equipment Image */}
-            <div className={`${viewMode === 'list' ? 'w-24 h-24' : 'w-full h-48'} bg-gray-100 rounded-lg mb-4 flex items-center justify-center overflow-hidden`}>
-              {item.image_url ? (
-                <img src={item.image_url} alt={item.name} className="w-full h-full object-cover" />
-              ) : (
-                <Wrench className="w-12 h-12 text-gray-400" />
-              )}
-            </div>
-
-            <div className="flex-1">
-              {/* Header */}
-              <div className="flex items-start justify-between mb-3">
-                <div>
-                  <h3 className="text-lg font-semibold text-gray-900 mb-1">{item.name}</h3>
-                  <p className="text-sm text-gray-600">{item.equipment_id}</p>
-                  <p className="text-sm text-gray-500">{item.manufacturer} {item.model}</p>
-                </div>
-                
-                <div className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium border ${getStatusColor(item.status)}`}>
-                  {getStatusIcon(item.status)}
-                  <span className="ml-1 capitalize">{item.status.replace('_', ' ')}</span>
-                </div>
-              </div>
-
-              {/* Details */}
-              <div className="space-y-2 mb-4">
-                <div className="flex items-center text-sm text-gray-600">
-                  <MapPin className="w-4 h-4 mr-2" />
-                  {item.location}
-                </div>
-                
-                <div className="flex items-center text-sm text-gray-600">
-                  <Clock className="w-4 h-4 mr-2" />
-                  {item.total_usage_hours.toFixed(1)}h used ({item.usage_count} sessions)
-                </div>
-
-                <div className="flex items-center text-sm text-gray-600">
-                  <div className="flex items-center mr-4">
-                    {renderStars(item.average_rating)}
-                    <span className="ml-1">{item.average_rating.toFixed(1)} ({item.total_ratings})</span>
-                  </div>
-                </div>
-
-                {item.requires_certification && (
-                  <div className="flex items-center text-sm text-amber-600">
-                    <Shield className="w-4 h-4 mr-2" />
-                    Certification Required: {item.certification_required}
-                  </div>
-                )}
-
-                {item.hourly_rate && (
-                  <div className="text-sm text-gray-600">
-                    Rate: ${item.hourly_rate.toFixed(2)}/hour
-                  </div>
-                )}
-              </div>
-
-              {/* Actions */}
-              <div className="flex items-center space-x-2">
-                <button
-                  onClick={() => handleViewDetails(item)}
-                  className="inline-flex items-center px-3 py-1 text-sm border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50"
-                >
-                  <Eye className="w-4 h-4 mr-1" />
-                  Details
-                </button>
-
-                {canReserve && item.status === 'available' && (
-                  <button
-                    onClick={() => handleReserveEquipment(item)}
-                    className="inline-flex items-center px-3 py-1 text-sm bg-makrx-blue text-white rounded-lg hover:bg-makrx-blue/90"
-                  >
-                    <Calendar className="w-4 h-4 mr-1" />
-                    Reserve
-                  </button>
-                )}
-
-                {canMaintenanceLogs && (
-                  <button
-                    onClick={() => handleMaintenanceLog(item)}
-                    className="inline-flex items-center px-3 py-1 text-sm border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50"
-                  >
-                    <Wrench className="w-4 h-4 mr-1" />
-                    Maintenance
-                  </button>
-                )}
-              </div>
-            </div>
-          </div>
+            equipment={item}
+            onReserve={canReserve ? handleReserveEquipment : undefined}
+            onViewDetails={handleViewDetails}
+            onEdit={canCreateEquipment ? (eq) => {
+              setSelectedEquipment(eq);
+              setShowAddModal(true);
+            } : undefined}
+            onMaintenance={canMaintenanceLogs ? handleMaintenanceLog : undefined}
+            viewMode={viewMode}
+            userRole={user?.role || 'user'}
+            canReserve={canReserve}
+            canEdit={canCreateEquipment}
+            canMaintenance={canMaintenanceLogs}
+          />
         ))}
       </div>
 
