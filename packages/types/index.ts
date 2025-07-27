@@ -11,7 +11,7 @@ export interface User {
   updatedAt: string;
 }
 
-export type UserRole = 'super_admin' | 'admin' | 'makerspace_admin' | 'maker' | 'service_provider';
+export type UserRole = 'super_admin' | 'admin' | 'makerspace_admin' | 'service_provider' | 'maker';
 
 export interface AuthTokens {
   accessToken: string;
