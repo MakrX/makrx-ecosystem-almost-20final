@@ -538,31 +538,37 @@ export default function Inventory() {
           </p>
         </div>
         
-        <FeatureGate featureKey="inventory.full_management">
-          <div className="flex gap-3">
-            <button 
+        <div className="flex gap-3">
+          <FeatureGate featureKey="inventory.qr_scanning">
+            <button
               onClick={() => setShowQRScanner(true)}
               className="makrcave-btn-secondary flex items-center gap-2"
             >
               <QrCode className="w-4 h-4" />
               Scan QR
             </button>
-            <button 
+          </FeatureGate>
+
+          <FeatureGate featureKey="inventory.qr_generation">
+            <button
               onClick={() => setShowBulkModal(true)}
               className="makrcave-btn-secondary flex items-center gap-2"
             >
               <MoreHorizontal className="w-4 h-4" />
               Bulk Actions
             </button>
-            <button 
+          </FeatureGate>
+
+          <FeatureGate featureKey="inventory.makerspace_management">
+            <button
               onClick={() => setShowAddModal(true)}
               className="makrcave-btn-primary flex items-center gap-2"
             >
               <Plus className="w-4 h-4" />
               Add Item
             </button>
-          </div>
-        </FeatureGate>
+          </FeatureGate>
+        </div>
       </div>
 
       {/* Stats Cards */}
