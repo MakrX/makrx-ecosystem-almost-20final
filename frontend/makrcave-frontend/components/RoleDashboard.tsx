@@ -228,21 +228,21 @@ function ServiceProviderDashboard() {
             Service provider features are currently being developed. Your future capabilities will include:
           </p>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-md mx-auto">
-            <div className="bg-yellow-50 p-4 rounded-lg">
-              <h4 className="font-medium text-yellow-800 mb-2">Job Management</h4>
-              <p className="text-sm text-yellow-700">Accept and manage external orders</p>
+            <div className="bg-slate-50 p-4 rounded-lg">
+              <h4 className="font-medium text-slate-800 mb-2">Job Management</h4>
+              <p className="text-sm text-slate-700">Accept and manage external orders</p>
             </div>
-            <div className="bg-yellow-50 p-4 rounded-lg">
-              <h4 className="font-medium text-yellow-800 mb-2">Stock Control</h4>
-              <p className="text-sm text-yellow-700">Filament and material tracking</p>
+            <div className="bg-slate-50 p-4 rounded-lg">
+              <h4 className="font-medium text-slate-800 mb-2">Stock Control</h4>
+              <p className="text-sm text-slate-700">Filament and material tracking</p>
             </div>
-            <div className="bg-yellow-50 p-4 rounded-lg">
-              <h4 className="font-medium text-yellow-800 mb-2">Processing</h4>
-              <p className="text-sm text-yellow-700">G-code slicing and preparation</p>
+            <div className="bg-slate-50 p-4 rounded-lg">
+              <h4 className="font-medium text-slate-800 mb-2">Processing</h4>
+              <p className="text-sm text-slate-700">G-code slicing and preparation</p>
             </div>
-            <div className="bg-yellow-50 p-4 rounded-lg">
-              <h4 className="font-medium text-yellow-800 mb-2">Earnings</h4>
-              <p className="text-sm text-yellow-700">Revenue tracking and reports</p>
+            <div className="bg-slate-50 p-4 rounded-lg">
+              <h4 className="font-medium text-slate-800 mb-2">Earnings</h4>
+              <p className="text-sm text-slate-700">Revenue tracking and reports</p>
             </div>
           </div>
         </div>
