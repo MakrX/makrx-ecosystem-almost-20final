@@ -24,7 +24,7 @@ export default function Header() {
             placeholder="Search inventory, equipment, projects..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-10 pr-4 py-2 bg-white border border-border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-makrx-teal focus:border-transparent"
+            className="w-full pl-10 pr-4 py-2 bg-background border border-border rounded-lg text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-makrx-teal focus:border-transparent"
           />
         </div>
       </div>
