@@ -64,12 +64,33 @@ function SuperAdminDashboard() {
         </div>
       </div>
 
-      <div className="makrcave-card">
-        <h3 className="text-lg font-semibold mb-4">System Overview</h3>
-        <p className="text-muted-foreground">
-          As a Super Admin, you have complete control over the MakrX ecosystem including creating/deleting makerspaces, 
-          managing all users, viewing system logs, and configuring feature flags.
-        </p>
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div className="makrcave-card">
+          <h3 className="text-lg font-semibold mb-4">System Overview</h3>
+          <p className="text-muted-foreground">
+            As a Super Admin, you have complete control over the MakrX ecosystem including creating/deleting makerspaces,
+            managing all users, viewing system logs, and configuring feature flags.
+          </p>
+        </div>
+
+        <NotificationWidget
+          category="system"
+          title="System Notifications"
+          maxItems={3}
+        />
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <NotificationWidget
+          category="inventory"
+          title="Inventory Alerts"
+          maxItems={4}
+        />
+
+        <NotificationWidget
+          title="Recent Activity"
+          maxItems={4}
+        />
       </div>
     </div>
   );
