@@ -257,7 +257,7 @@ export default function Dashboard() {
             Quick Actions
           </h3>
           <FeatureGate
-            featureKey="dashboard.quick_actions"
+            featureKey="dashboard.personal_view"
             fallback={
               <div className="text-center py-4 text-muted-foreground">
                 <p className="text-sm">Quick actions not available</p>
