@@ -107,6 +107,7 @@ export default function Inventory() {
   const [selectedItem, setSelectedItem] = useState<any>(null);
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   const [isScannedItem, setIsScannedItem] = useState(false);
+  const [duplicateWarning, setDuplicateWarning] = useState<string>('');
   
   // Form states
   const [newItem, setNewItem] = useState({
