@@ -1,6 +1,6 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-
-type UserRole = 'super_admin' | 'makrcave_manager' | 'maker';
+import { UserRole, RolePermissions } from '@makrx/types';
+import { getRolePermissions, hasPermission, UI_ACCESS } from '../config/rolePermissions';
 
 interface User {
   id: string;
