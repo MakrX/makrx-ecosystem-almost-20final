@@ -87,20 +87,35 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   ];
 
   useEffect(() => {
-    // Demo: Start with Makerspace Admin role for showcase
-    setUser(demoUsers.makerspace_admin);
+    // Check for saved user session
+    const savedUser = localStorage.getItem('makrcave_user');
+    if (savedUser) {
+      try {
+        const userData = JSON.parse(savedUser);
+        const user = demoUsers.find(u => u.id === userData.id);
+        if (user) {
+          setUser(user);
+        }
+      } catch (error) {
+        console.warn('Failed to parse saved user:', error);
+      }
+    }
     setIsLoading(false);
   }, []);
 
   const login = async (email: string, password: string) => {
-    // Demo login - determine role based on email
-    let role: UserRole = 'maker';
-    if (email.includes('superadmin')) role = 'super_admin';
-    else if (email.includes('admin') && !email.includes('makerspace')) role = 'admin';
-    else if (email.includes('makerspace') || email.includes('manager')) role = 'makerspace_admin';
-    else if (email.includes('provider')) role = 'service_provider';
+    // Find user by email
+    const user = demoUsers.find(u => u.email === email);
 
-    setUser(demoUsers[role]);
+    if (!user) {
+      throw new Error('User not found');
+    }
+
+    // In a real app, you'd validate the password here
+    // For demo purposes, any password works
+
+    setUser(user);
+    localStorage.setItem('makrcave_user', JSON.stringify({ id: user.id }));
   };
 
   const logout = () => {
@@ -109,9 +124,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setUser(null);
   };
 
-  const switchRole = (role: UserRole) => {
-    setUser(demoUsers[role]);
-  };
+  const getDemoUsers = () => demoUsers;
 
   const getCurrentRole = (): UserRole => {
     return user?.role || 'maker';
