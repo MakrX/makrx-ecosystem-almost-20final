@@ -24,6 +24,23 @@ export default function Projects() {
         </button>
       </div>
 
+      {/* Version Control Feature - Under Development */}
+      <FeatureGate
+        featureKey="projects.version_control"
+        showReasonWhenBlocked={true}
+        fallback={<FeatureInDevelopment featureName="Project Version Control" />}
+      >
+        <div className="makrcave-card">
+          <h3 className="text-lg font-semibold mb-4">Version Control</h3>
+          <p className="text-sm text-muted-foreground">
+            Track changes and manage versions of your project files.
+          </p>
+          <button className="makrcave-btn-primary text-sm mt-4">
+            View History
+          </button>
+        </div>
+      </FeatureGate>
+
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {projects.map((project) => (
           <div key={project.id} className="makrcave-card">
