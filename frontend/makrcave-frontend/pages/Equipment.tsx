@@ -67,13 +67,19 @@ export default function Equipment() {
                 </button>
               </FeatureGate>
 
-              {maintenanceAccess.hasAccess ? (
-                <button className="makrcave-btn-secondary text-sm">
+              {addEditAccess.hasAccess && (
+                <button className="makrcave-btn-secondary text-sm mr-2">
                   <Settings className="w-4 h-4" />
                 </button>
+              )}
+
+              {maintenanceAccess.hasAccess ? (
+                <button className="makrcave-btn-secondary text-sm" title="Equipment Maintenance">
+                  <Play className="w-4 h-4" />
+                </button>
               ) : (
-                <button disabled className="makrcave-btn-secondary text-sm opacity-50 cursor-not-allowed" title="Maintenance mode requires manager role">
-                  <Settings className="w-4 h-4" />
+                <button disabled className="makrcave-btn-secondary text-sm opacity-50 cursor-not-allowed" title="Maintenance mode requires makerspace admin role">
+                  <Pause className="w-4 h-4" />
                 </button>
               )}
             </div>
