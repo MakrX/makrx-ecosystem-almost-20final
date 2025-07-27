@@ -105,9 +105,9 @@ export default function AddItemModal({ isOpen, onClose, editItem, onSubmit }: Ad
     }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (duplicateWarning) {
       if (!confirm('This item name already exists. Continue adding anyway?')) {
         return;
@@ -120,20 +120,22 @@ export default function AddItemModal({ isOpen, onClose, editItem, onSubmit }: Ad
       minThreshold: parseInt(formData.minThreshold),
       price: formData.price ? parseFloat(formData.price) : undefined,
       makerspaceId: user?.assignedMakerspaces?.[0] || 'ms-1',
-      history: [{
-        id: `log-${Date.now()}`,
-        timestamp: new Date().toISOString(),
-        userId: user?.id || '',
-        userName: `${user?.firstName} ${user?.lastName}` || 'Unknown User',
-        action: 'add' as const,
-        quantityBefore: 0,
-        quantityAfter: parseFloat(formData.quantity),
-        reason: editItem ? 'Item updated' : 'Initial stock'
-      }] as InventoryUsageLog[]
+      history: [] as InventoryUsageLog[]
     };
 
-    onSubmit(newItem);
-    onClose();
+    try {
+      if (editItem) {
+        // Call onSubmit for edit mode (handled by parent component)
+        onSubmit(newItem);
+      } else {
+        // Use context API function for adding new item
+        await addInventoryItem(newItem);
+      }
+      onClose();
+    } catch (error) {
+      console.error('Failed to save item:', error);
+      alert('Failed to save item. Please try again.');
+    }
   };
 
   const QRScannerModal = () => {
