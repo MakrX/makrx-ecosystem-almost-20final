@@ -197,7 +197,7 @@ export default function Login() {
             >
               {isLoading ? (
                 <>
-                  <div className="w-5 h-5 border-2 border-makrx-blue/30 border-t-makrx-blue rounded-full animate-spin" />
+                  <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
                   Signing in...
                 </>
               ) : (
