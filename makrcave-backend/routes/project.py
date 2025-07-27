@@ -494,3 +494,152 @@ async def feature_project(
     
     action = "featured" if featured else "unfeatured"
     return {"message": f"Project {action} successfully"}
+
+# GitHub Integration Routes
+@router.post("/{project_id}/github/connect")
+async def connect_github_repository(
+    project_id: str,
+    github_data: GitHubRepoConnect,
+    current_user: dict = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    """Connect a GitHub repository to the project"""
+    # Check permissions
+    if not crud_project.has_project_edit_access(db, project_id, current_user["user_id"]):
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Insufficient permissions to connect GitHub repository"
+        )
+
+    result = crud_project.connect_github_repo(
+        db, project_id, github_data.repo_url, github_data.access_token, current_user["user_id"]
+    )
+
+    if not result:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Failed to connect GitHub repository. Check repository URL and access permissions."
+        )
+
+    return {"message": "GitHub repository connected successfully"}
+
+@router.delete("/{project_id}/github/disconnect")
+async def disconnect_github_repository(
+    project_id: str,
+    current_user: dict = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    """Disconnect GitHub repository from the project"""
+    # Check permissions
+    if not crud_project.has_project_edit_access(db, project_id, current_user["user_id"]):
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Insufficient permissions to disconnect GitHub repository"
+        )
+
+    result = crud_project.disconnect_github_repo(db, project_id, current_user["user_id"])
+
+    if not result:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Project not found"
+        )
+
+    return {"message": "GitHub repository disconnected successfully"}
+
+@router.post("/{project_id}/github/sync")
+async def sync_github_activity(
+    project_id: str,
+    current_user: dict = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    """Sync recent GitHub activity for the project"""
+    # Check permissions
+    if not crud_project.has_project_access(db, project_id, current_user["user_id"]):
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Access denied"
+        )
+
+    new_activities = crud_project.sync_github_activity(db, project_id)
+
+    return {
+        "message": f"Synced {len(new_activities)} new GitHub activities",
+        "activities_count": len(new_activities)
+    }
+
+@router.get("/{project_id}/github/files", response_model=List[GitHubFile])
+async def get_github_files(
+    project_id: str,
+    path: str = Query("", description="Directory path in repository"),
+    branch: str = Query(None, description="Branch name (defaults to repository default)"),
+    current_user: dict = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    """Get files from connected GitHub repository"""
+    # Check permissions
+    if not crud_project.has_project_access(db, project_id, current_user["user_id"]):
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Access denied"
+        )
+
+    files = crud_project.get_github_files(db, project_id, path, branch)
+    return files
+
+@router.get("/{project_id}/github/files/content")
+async def get_github_file_content(
+    project_id: str,
+    file_path: str = Query(..., description="File path in repository"),
+    branch: str = Query(None, description="Branch name (defaults to repository default)"),
+    current_user: dict = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    """Get content of a specific file from GitHub repository"""
+    # Check permissions
+    if not crud_project.has_project_access(db, project_id, current_user["user_id"]):
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Access denied"
+        )
+
+    content = crud_project.get_github_file_content(db, project_id, file_path, branch)
+
+    if content is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="File not found or GitHub integration not enabled"
+        )
+
+    return {"file_path": file_path, "content": content}
+
+@router.get("/{project_id}/github/commits", response_model=List[GitHubCommit])
+async def get_github_commits(
+    project_id: str,
+    branch: str = Query(None, description="Branch name (defaults to repository default)"),
+    per_page: int = Query(30, ge=1, le=100),
+    page: int = Query(1, ge=1),
+    current_user: dict = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    """Get commit history from connected GitHub repository"""
+    # Check permissions
+    if not crud_project.has_project_access(db, project_id, current_user["user_id"]):
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Access denied"
+        )
+
+    project = crud_project.get_project(db, project_id, current_user["user_id"])
+    if not project or not project.github_integration_enabled:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Project not found or GitHub integration not enabled"
+        )
+
+    from ..utils.github_service import GitHubService
+    github_service = GitHubService(project.github_access_token)
+    branch = branch or project.github_default_branch
+
+    commits = github_service.get_commits(project.github_repo_url, branch, per_page, page)
+    return commits
