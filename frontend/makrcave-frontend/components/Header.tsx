@@ -42,8 +42,11 @@ export default function Header() {
           </button>
 
           {showRoleSwitcher && (
-            <div className="absolute right-0 top-full mt-1 bg-card border border-border rounded-lg shadow-lg z-50 min-w-[150px]">
+            <div className="absolute right-0 top-full mt-1 bg-card border border-border rounded-lg shadow-lg z-50 min-w-[180px]">
               <div className="py-1">
+                <div className="px-3 py-1 text-xs font-medium text-muted-foreground border-b border-border">
+                  Switch Role (Demo)
+                </div>
                 <button
                   onClick={() => {
                     switchRole('super_admin');
@@ -51,16 +54,34 @@ export default function Header() {
                   }}
                   className="w-full text-left px-3 py-2 text-xs hover:bg-accent transition-colors"
                 >
-                  Super Admin
+                  🔐 Super Admin
                 </button>
                 <button
                   onClick={() => {
-                    switchRole('makrcave_manager');
+                    switchRole('admin');
                     setShowRoleSwitcher(false);
                   }}
                   className="w-full text-left px-3 py-2 text-xs hover:bg-accent transition-colors"
                 >
-                  MakrCave Manager
+                  🛠 Admin
+                </button>
+                <button
+                  onClick={() => {
+                    switchRole('makerspace_admin');
+                    setShowRoleSwitcher(false);
+                  }}
+                  className="w-full text-left px-3 py-2 text-xs hover:bg-accent transition-colors"
+                >
+                  🧑‍🏭 Makerspace Admin
+                </button>
+                <button
+                  onClick={() => {
+                    switchRole('service_provider');
+                    setShowRoleSwitcher(false);
+                  }}
+                  className="w-full text-left px-3 py-2 text-xs hover:bg-accent transition-colors"
+                >
+                  🤝 Service Provider
                 </button>
                 <button
                   onClick={() => {
@@ -69,7 +90,7 @@ export default function Header() {
                   }}
                   className="w-full text-left px-3 py-2 text-xs hover:bg-accent transition-colors"
                 >
-                  Maker
+                  👩‍🔬 Maker
                 </button>
               </div>
             </div>
