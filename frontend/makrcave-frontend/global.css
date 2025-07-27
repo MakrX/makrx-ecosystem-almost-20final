@@ -92,7 +92,8 @@
   }
 
   .makrcave-main {
-    @apply ml-64 min-h-screen bg-background;
+    @apply ml-64 min-h-screen;
+    background-color: hsl(var(--background));
   }
 
   .makrcave-header {
