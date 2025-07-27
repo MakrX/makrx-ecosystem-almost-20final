@@ -133,7 +133,8 @@ export default function Inventory() {
     supplier: '',
     description: '',
     sku: '',
-    location: ''
+    location: '',
+    isScanned: false
   });
 
   const resetForm = () => {
