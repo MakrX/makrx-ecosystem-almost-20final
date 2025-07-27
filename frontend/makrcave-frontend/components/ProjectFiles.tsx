@@ -28,7 +28,8 @@ import {
   Share2,
   ExternalLink,
   Github,
-  HardDrive
+  HardDrive,
+  AlertTriangle
 } from 'lucide-react';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator } from './ui/dropdown-menu';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
