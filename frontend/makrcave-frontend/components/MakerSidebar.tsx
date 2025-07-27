@@ -85,7 +85,7 @@ export default function MakerSidebar() {
       {/* Logo & Title */}
       <div className="p-6 border-b border-green-200">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 bg-gradient-to-br from-makrx-yellow to-amber-500 rounded-lg flex items-center justify-center">
+          <div className="w-10 h-10 bg-gradient-to-br from-makrx-teal to-makrx-teal-dark rounded-lg flex items-center justify-center">
             <Heart className="w-6 h-6 text-white" />
           </div>
           <div>
