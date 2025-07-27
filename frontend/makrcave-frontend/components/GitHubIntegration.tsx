@@ -16,7 +16,7 @@ import {
   Eye, 
   Download, 
   ExternalLink,
-  Sync,
+  RefreshCw,
   Link,
   Unlink,
   AlertCircle,
