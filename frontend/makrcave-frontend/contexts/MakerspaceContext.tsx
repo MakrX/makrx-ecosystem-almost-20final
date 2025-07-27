@@ -31,6 +31,11 @@ interface InventoryItem {
   price?: number;
   supplier?: string;
   lastRestocked?: string;
+  makerspaceId: string;
+  sku?: string;
+  location?: string;
+  description?: string;
+  isScanned?: boolean;
 }
 
 interface Project {
