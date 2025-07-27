@@ -67,8 +67,9 @@ export default function Dashboard() {
     <div className="space-y-6">
       {/* Welcome Header */}
       <div>
-        <h1 className="text-3xl font-bold">
+        <h1 className="text-3xl font-bold flex items-center gap-3">
           Welcome back, {user?.firstName || user?.username}!
+          <FeatureFlagBadge featureKey="dashboard.advanced_analytics" />
         </h1>
         <p className="text-muted-foreground mt-1">
           Here's what's happening in your makerspace today.
