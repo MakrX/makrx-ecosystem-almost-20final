@@ -78,6 +78,12 @@ export default function SuperAdminSidebar() {
       href: '/portal/system/logs',
       icon: Activity,
       active: isActive('/portal/system/logs')
+    },
+    {
+      name: 'Feature Flags',
+      href: '/portal/admin/feature-flags',
+      icon: Toggles,
+      active: isActive('/portal/admin/feature-flags')
     }
   ];
 
