@@ -628,36 +628,37 @@ export default function Equipment() {
               console.log('Response status:', response.status);
               console.log('Response headers:', response.headers);
 
+              // Read response body once
+              let responseData;
+              let isJson = false;
+
+              try {
+                responseData = await response.json();
+                isJson = true;
+              } catch (e) {
+                try {
+                  responseData = await response.text();
+                } catch (e2) {
+                  responseData = 'Unknown error';
+                }
+              }
+
+              console.log('Response data:', responseData);
+
               if (response.ok) {
-                const result = await response.json();
-                console.log('Success response:', result);
+                console.log('Success response:', responseData);
                 alert(selectedEquipment ? 'Equipment updated successfully!' : 'Equipment created successfully!');
                 loadEquipment(); // Refresh equipment list
               } else {
-                // Clone the response to avoid "body stream already read" error
-                const responseClone = response.clone();
                 let errorMessage = `Failed to save equipment (${response.status})`;
 
-                try {
-                  // Try to parse as JSON first (FastAPI usually returns JSON errors)
-                  const errorJson = await response.json();
-                  console.error('Error response JSON:', errorJson);
-                  if (errorJson.detail) {
-                    errorMessage = `Failed to save equipment: ${errorJson.detail}`;
-                  }
-                } catch (jsonError) {
-                  // If JSON parsing fails, try to get text
-                  try {
-                    const errorText = await responseClone.text();
-                    console.error('Error response text:', errorText);
-                    if (errorText) {
-                      errorMessage = `Failed to save equipment: ${errorText}`;
-                    }
-                  } catch (textError) {
-                    console.error('Could not read error response:', textError);
-                  }
+                if (isJson && responseData.detail) {
+                  errorMessage = `Failed to save equipment: ${responseData.detail}`;
+                } else if (typeof responseData === 'string' && responseData) {
+                  errorMessage = `Failed to save equipment: ${responseData}`;
                 }
 
+                console.error('Error response:', responseData);
                 throw new Error(errorMessage);
               }
             } catch (error) {
