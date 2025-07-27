@@ -18,14 +18,14 @@
     --primary: 222 49% 23%; /* MakrX Blue #1A3D7C */
     --primary-foreground: 0 0% 98%;
 
-    --secondary: 45 85% 47%; /* MakrX Yellow #FFC107 */
-    --secondary-foreground: 222 49% 23%;
+    --secondary: 158 64% 52%; /* MakrX Teal #10B981 */
+    --secondary-foreground: 0 0% 98%;
 
     --muted: 220 13% 97.5%;
     --muted-foreground: 215.4 16.3% 46.9%;
 
-    --accent: 45 85% 47%; /* MakrX Yellow */
-    --accent-foreground: 222 49% 23%;
+    --accent: 158 64% 52%; /* MakrX Teal */
+    --accent-foreground: 0 0% 98%;
 
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 210 40% 98%;
