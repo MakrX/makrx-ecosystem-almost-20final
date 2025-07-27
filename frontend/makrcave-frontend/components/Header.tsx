@@ -44,11 +44,7 @@ export default function Header() {
         <div className="hidden md:flex items-center gap-2">
           <FeatureGate
             featureKey="equipment.reservation_system"
-            fallback={
-              <button disabled className="makrcave-btn-secondary text-xs opacity-50 cursor-not-allowed">
-                Quick Reserve (N/A)
-              </button>
-            }
+            fallback={null}
           >
             <button className="makrcave-btn-secondary text-xs">
               Quick Reserve
