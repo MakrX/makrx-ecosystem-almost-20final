@@ -18,11 +18,11 @@ interface AuthContextType {
   isLoading: boolean;
   login: (email: string, password: string) => Promise<void>;
   logout: () => void;
-  switchRole: (role: UserRole) => void; // Demo function to switch between roles
   getCurrentRole: () => UserRole;
   getRolePermissions: () => RolePermissions;
   hasPermission: (area: keyof RolePermissions, action: string, context?: any) => boolean;
   getUIAccess: () => typeof UI_ACCESS[UserRole];
+  getDemoUsers: () => User[];
   // Role check helpers
   isSuperAdmin: boolean;
   isAdmin: boolean;
