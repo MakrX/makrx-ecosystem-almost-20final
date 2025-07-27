@@ -98,8 +98,8 @@ export default function MakerSidebar() {
       {/* User Info */}
       <div className="p-4 border-b border-green-200">
         <div className="flex items-center gap-3">
-          <div className="w-8 h-8 bg-makrx-yellow rounded-full flex items-center justify-center">
-            <span className="text-sm font-semibold text-green-700">
+          <div className="w-8 h-8 bg-makrx-teal rounded-full flex items-center justify-center">
+            <span className="text-sm font-semibold text-white">
               {user?.firstName?.[0] || 'M'}
             </span>
           </div>
