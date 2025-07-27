@@ -1,8 +1,9 @@
-import { Bell, Search, Menu, ExternalLink, User as UserIcon } from 'lucide-react';
+import { Search, Menu, ExternalLink, User as UserIcon } from 'lucide-react';
 import { useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { FeatureGate } from './FeatureGate';
 import MakrXThemeToggle from './MakrXThemeToggle';
+import NotificationPanel from './NotificationPanel';
 
 export default function Header() {
   const [searchQuery, setSearchQuery] = useState('');
