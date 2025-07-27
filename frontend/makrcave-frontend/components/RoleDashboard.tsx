@@ -1,8 +1,9 @@
 import { useAuth } from '../contexts/AuthContext';
-import { 
-  Crown, Shield, Wrench, Settings, UserCheck, 
-  BarChart3, Users, Building2, Package, 
-  FolderOpen, Calendar, AlertTriangle, Activity 
+import NotificationWidget from './NotificationWidget';
+import {
+  Crown, Shield, Wrench, Settings, UserCheck,
+  BarChart3, Users, Building2, Package,
+  FolderOpen, Calendar, AlertTriangle, Activity
 } from 'lucide-react';
 
 // Super Admin Dashboard
