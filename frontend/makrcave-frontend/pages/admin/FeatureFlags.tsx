@@ -97,9 +97,11 @@ function FeatureFlagsPage() {
               onChange={(e) => setSelectedRole(e.target.value as UserRole | 'all')}
             >
               <option value="all">All Roles</option>
-              <option value="super_admin">Super Admin</option>
-              <option value="makrcave_manager">MakrCave Manager</option>
-              <option value="maker">Maker</option>
+              <option value="super_admin">🔐 Super Admin</option>
+              <option value="admin">🛠 Admin</option>
+              <option value="makerspace_admin">🧑‍🏭 Makerspace Admin</option>
+              <option value="service_provider">🤝 Service Provider</option>
+              <option value="maker">👩‍🔬 Maker</option>
             </select>
           </div>
 
