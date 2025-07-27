@@ -210,12 +210,12 @@ function ServiceProviderDashboard() {
   
   return (
     <div className="space-y-6">
-      <div className="bg-gradient-to-r from-yellow-600 to-yellow-700 rounded-lg p-6 text-white">
+      <div className="bg-gradient-to-r from-slate-600 to-slate-700 rounded-lg p-6 text-white">
         <div className="flex items-center gap-4">
           <Settings className="w-12 h-12" />
           <div>
             <h1 className="text-2xl font-bold">Service Provider</h1>
-            <p className="text-yellow-100">Hi, {user?.firstName}! Your account is currently restricted.</p>
+            <p className="text-slate-100">Hi, {user?.firstName}! Your account is currently restricted.</p>
           </div>
         </div>
       </div>
