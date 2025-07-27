@@ -464,6 +464,155 @@ export function MakerspaceProvider({ children }: { children: ReactNode }) {
     updateInventoryItem(id, { quantity });
   };
 
+  const issueInventoryItem = async (id: string, quantity: number, reason?: string, projectId?: string, jobId?: string) => {
+    try {
+      const response = await fetch(`/api/v1/inventory/${id}/issue`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('auth_token')}`
+        },
+        body: JSON.stringify({
+          quantity,
+          reason,
+          project_id: projectId,
+          job_id: jobId
+        })
+      });
+
+      if (response.ok) {
+        const result = await response.json();
+        // Update local state with new quantity
+        setInventory(prev => prev.map(item =>
+          item.id === id ? {
+            ...item,
+            quantity: result.remaining_quantity,
+            history: [...item.history, {
+              id: `log-${Date.now()}`,
+              timestamp: new Date().toISOString(),
+              userId: 'current_user',
+              userName: 'Current User',
+              action: 'issue',
+              quantityBefore: item.quantity,
+              quantityAfter: result.remaining_quantity,
+              reason,
+              linkedProjectId: projectId,
+              linkedJobId: jobId
+            }]
+          } : item
+        ));
+      } else {
+        throw new Error('Failed to issue inventory item');
+      }
+    } catch (error) {
+      console.error('Error issuing inventory item:', error);
+      throw error;
+    }
+  };
+
+  const restockInventoryItem = async (id: string, quantity: number, reason?: string) => {
+    try {
+      const response = await fetch(`/api/v1/inventory/${id}/restock`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('auth_token')}`
+        },
+        body: JSON.stringify({
+          quantity,
+          reason
+        })
+      });
+
+      if (response.ok) {
+        const result = await response.json();
+        // Update local state with new quantity
+        setInventory(prev => prev.map(item =>
+          item.id === id ? {
+            ...item,
+            quantity: result.new_quantity,
+            history: [...item.history, {
+              id: `log-${Date.now()}`,
+              timestamp: new Date().toISOString(),
+              userId: 'current_user',
+              userName: 'Current User',
+              action: 'restock',
+              quantityBefore: item.quantity,
+              quantityAfter: result.new_quantity,
+              reason
+            }]
+          } : item
+        ));
+      } else {
+        throw new Error('Failed to restock inventory item');
+      }
+    } catch (error) {
+      console.error('Error restocking inventory item:', error);
+      throw error;
+    }
+  };
+
+  const deleteInventoryItem = async (id: string) => {
+    try {
+      const response = await fetch(`/api/v1/inventory/${id}`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('auth_token')}`
+        }
+      });
+
+      if (response.ok) {
+        setInventory(prev => prev.filter(item => item.id !== id));
+      } else {
+        throw new Error('Failed to delete inventory item');
+      }
+    } catch (error) {
+      console.error('Error deleting inventory item:', error);
+      throw error;
+    }
+  };
+
+  const loadInventoryItems = async () => {
+    try {
+      const response = await fetch('/api/v1/inventory/', {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('auth_token')}`
+        }
+      });
+
+      if (response.ok) {
+        const items = await response.json();
+        const mappedItems = items.map((item: any) => ({
+          id: item.id,
+          name: item.name,
+          category: item.category,
+          subcategory: item.subcategory,
+          quantity: item.quantity,
+          unit: item.unit,
+          minThreshold: item.min_threshold,
+          location: item.location,
+          status: item.status,
+          supplierType: item.supplier_type,
+          productCode: item.product_code,
+          makerspaceId: item.linked_makerspace_id,
+          imageUrl: item.image_url,
+          notes: item.notes,
+          ownerUserId: item.owner_user_id,
+          restrictedAccessLevel: item.restricted_access_level,
+          price: item.price,
+          supplier: item.supplier,
+          description: item.description,
+          isScanned: item.is_scanned,
+          history: item.usage_logs || []
+        }));
+        setInventory(mappedItems);
+      }
+    } catch (error) {
+      console.error('Error loading inventory items:', error);
+      // Keep using mock data as fallback
+    }
+  };
+
   const addEquipment = (equipment: Omit<Equipment, 'id'>) => {
     const newEquipment = {
       ...equipment,
