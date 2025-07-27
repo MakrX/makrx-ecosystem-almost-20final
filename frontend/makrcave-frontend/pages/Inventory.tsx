@@ -975,29 +975,32 @@ export default function Inventory() {
               : 'Start by adding your first inventory item'
             }
           </p>
-          <FeatureGate featureKey="inventory.full_management">
-            <div className="flex gap-3 justify-center">
-              <button 
+          <div className="flex gap-3 justify-center">
+            <FeatureGate featureKey="inventory.qr_scanning">
+              <button
                 onClick={() => setShowQRScanner(true)}
                 className="makrcave-btn-secondary"
               >
                 <QrCode className="w-4 h-4 mr-2" />
                 Scan QR Code
               </button>
-              <button 
+            </FeatureGate>
+            <FeatureGate featureKey="inventory.makerspace_management">
+              <button
                 onClick={() => setShowAddModal(true)}
                 className="makrcave-btn-primary"
               >
                 <Plus className="w-4 h-4 mr-2" />
                 Add First Item
               </button>
-            </div>
-          </FeatureGate>
+            </FeatureGate>
+          </div>
         </div>
       )}
 
       {/* Modals */}
       <AddInventoryModal />
+      <EditInventoryModal />
       <BulkOperationsModal />
       {showQRScanner && (
         <QRScanner 
