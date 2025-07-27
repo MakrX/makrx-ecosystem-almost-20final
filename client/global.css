@@ -50,8 +50,8 @@
     --sidebar-ring: 217.2 91.2% 59.8%;
 
     /* MakrX Custom Variables */
-    --makrx-glow: 0 0 20px rgba(255, 193, 7, 0.3);
-    --makrx-hover-glow: 0 0 30px rgba(255, 193, 7, 0.5);
+    --makrx-glow: 0 0 20px rgba(16, 185, 129, 0.3);
+    --makrx-hover-glow: 0 0 30px rgba(16, 185, 129, 0.5);
     --makrx-blue-glow: 0 0 20px rgba(26, 61, 124, 0.3);
   }
 
