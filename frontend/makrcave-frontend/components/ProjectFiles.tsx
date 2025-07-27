@@ -65,7 +65,11 @@ const ProjectFiles: React.FC<ProjectFilesProps> = ({
   projectId,
   files,
   canEdit,
-  onUpdate
+  onUpdate,
+  githubIntegrationEnabled = false,
+  githubRepoUrl,
+  githubRepoName,
+  githubDefaultBranch = 'main'
 }) => {
   const [showUploadModal, setShowUploadModal] = useState(false);
   const [selectedFiles, setSelectedFiles] = useState<FileList | null>(null);
