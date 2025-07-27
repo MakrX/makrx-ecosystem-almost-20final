@@ -412,14 +412,37 @@ export default function Inventory() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm font-medium mb-2">Item Name *</label>
-                <input 
-                  type="text" 
+                <input
+                  type="text"
                   required
                   value={newItem.name}
-                  onChange={(e) => setNewItem({...newItem, name: e.target.value})}
-                  className="w-full px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-makrx-teal"
+                  onChange={(e) => {
+                    const newName = e.target.value;
+                    setNewItem({...newItem, name: newName});
+
+                    // Check for duplicates in real-time
+                    if (newName.trim()) {
+                      const duplicate = inventory.find(item =>
+                        item.name.toLowerCase().trim() === newName.toLowerCase().trim() &&
+                        item.category === newItem.category
+                      );
+                      if (duplicate) {
+                        setDuplicateWarning(`Item "${duplicate.name}" already exists in ${duplicate.category} category`);
+                      } else {
+                        setDuplicateWarning('');
+                      }
+                    } else {
+                      setDuplicateWarning('');
+                    }
+                  }}
+                  className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-makrx-teal ${
+                    duplicateWarning ? 'border-red-300 bg-red-50' : 'border-border'
+                  }`}
                   placeholder="e.g., PLA Filament - Blue"
                 />
+                {duplicateWarning && (
+                  <p className="text-sm text-red-600 mt-1">{duplicateWarning}</p>
+                )}
               </div>
               <div>
                 <label className="block text-sm font-medium mb-2">Category *</label>
