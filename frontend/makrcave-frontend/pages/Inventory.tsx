@@ -49,7 +49,15 @@ interface InventoryItem {
 }
 
 export default function Inventory() {
-  const { inventory, addInventoryItem, updateInventoryItem } = useMakerspace();
+  const {
+    inventory,
+    addInventoryItem,
+    updateInventoryItem,
+    issueInventoryItem,
+    restockInventoryItem,
+    deleteInventoryItem,
+    loadInventoryItems
+  } = useMakerspace();
   const { user, hasPermission } = useAuth();
   
   // State management
