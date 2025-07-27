@@ -11,7 +11,8 @@ import {
   Database,
   Activity,
   LogOut,
-  Crown
+  Crown,
+  Toggles
 } from 'lucide-react';
 
 export default function SuperAdminSidebar() {
