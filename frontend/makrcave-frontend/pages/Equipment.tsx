@@ -1,9 +1,10 @@
 import { useState, useMemo, useEffect } from 'react';
-import { 
-  Wrench, Plus, Search, Filter, Calendar, Star, MapPin, 
+import {
+  Wrench, Plus, Search, Filter, Calendar, Star, MapPin,
   Clock, AlertTriangle, CheckCircle, XCircle, Settings,
-  Grid, List, Eye, Edit, Trash2, BookOpen, Shield, 
-  PlayCircle, PauseCircle, BarChart3, Users, Activity
+  Grid, List, Eye, Edit, Trash2, BookOpen, Shield,
+  PlayCircle, PauseCircle, BarChart3, Users, Activity,
+  X, DollarSign
 } from 'lucide-react';
 import { useMakerspace } from '../contexts/MakerspaceContext';
 import { useAuth } from '../contexts/AuthContext';
