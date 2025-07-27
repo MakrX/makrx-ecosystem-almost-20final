@@ -29,6 +29,52 @@ export default function Header() {
       </div>
 
       <div className="flex items-center gap-4">
+        {/* Role Switcher for Demo */}
+        <div className="relative">
+          <button
+            onClick={() => setShowRoleSwitcher(!showRoleSwitcher)}
+            className="flex items-center gap-2 px-3 py-1 text-xs border border-border rounded hover:bg-accent transition-colors"
+          >
+            <Users className="w-3 h-3" />
+            <span className="capitalize">{getCurrentRole().replace('_', ' ')}</span>
+            <ChevronDown className="w-3 h-3" />
+          </button>
+
+          {showRoleSwitcher && (
+            <div className="absolute right-0 top-full mt-1 bg-card border border-border rounded-lg shadow-lg z-50 min-w-[150px]">
+              <div className="py-1">
+                <button
+                  onClick={() => {
+                    switchRole('super_admin');
+                    setShowRoleSwitcher(false);
+                  }}
+                  className="w-full text-left px-3 py-2 text-xs hover:bg-accent transition-colors"
+                >
+                  Super Admin
+                </button>
+                <button
+                  onClick={() => {
+                    switchRole('makrcave_manager');
+                    setShowRoleSwitcher(false);
+                  }}
+                  className="w-full text-left px-3 py-2 text-xs hover:bg-accent transition-colors"
+                >
+                  MakrCave Manager
+                </button>
+                <button
+                  onClick={() => {
+                    switchRole('maker');
+                    setShowRoleSwitcher(false);
+                  }}
+                  className="w-full text-left px-3 py-2 text-xs hover:bg-accent transition-colors"
+                >
+                  Maker
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
+
         {/* Quick Actions */}
         <div className="hidden md:flex items-center gap-2">
           <button className="makrcave-btn-secondary text-xs">
