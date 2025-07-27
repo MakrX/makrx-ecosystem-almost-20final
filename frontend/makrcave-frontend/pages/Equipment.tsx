@@ -601,11 +601,15 @@ export default function Equipment() {
           editEquipment={selectedEquipment}
           onSubmit={async (equipmentData) => {
             try {
+              console.log('Submitting equipment data:', equipmentData);
+
               const url = selectedEquipment
                 ? `/api/v1/equipment/${selectedEquipment.id}`
                 : '/api/v1/equipment/';
 
               const method = selectedEquipment ? 'PUT' : 'POST';
+
+              console.log(`Making ${method} request to:`, url);
 
               const response = await fetch(url, {
                 method,
@@ -616,15 +620,35 @@ export default function Equipment() {
                 body: JSON.stringify(equipmentData)
               });
 
+              console.log('Response status:', response.status);
+              console.log('Response headers:', response.headers);
+
               if (response.ok) {
+                const result = await response.json();
+                console.log('Success response:', result);
                 alert(selectedEquipment ? 'Equipment updated successfully!' : 'Equipment created successfully!');
                 loadEquipment(); // Refresh equipment list
               } else {
-                throw new Error('Failed to save equipment');
+                const errorText = await response.text();
+                console.error('Error response body:', errorText);
+
+                let errorMessage = `Failed to save equipment (${response.status})`;
+                try {
+                  const errorJson = JSON.parse(errorText);
+                  if (errorJson.detail) {
+                    errorMessage = `Failed to save equipment: ${errorJson.detail}`;
+                  }
+                } catch (e) {
+                  if (errorText) {
+                    errorMessage = `Failed to save equipment: ${errorText}`;
+                  }
+                }
+
+                throw new Error(errorMessage);
               }
             } catch (error) {
               console.error('Error saving equipment:', error);
-              alert('Failed to save equipment. Please try again.');
+              alert(`Failed to save equipment: ${error.message}`);
             }
           }}
         />
