@@ -1,5 +1,6 @@
 import { useAuth } from '../contexts/AuthContext';
 import { useMakerspace } from '../contexts/MakerspaceContext';
+import { FeatureGate, FeatureFlagBadge } from '../components/FeatureGate';
 import { 
   Users, 
   FolderOpen, 
