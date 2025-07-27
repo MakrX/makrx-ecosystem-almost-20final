@@ -132,6 +132,11 @@ class ProjectResponse(BaseModel):
     is_approved: bool = True
     created_at: datetime
     updated_at: datetime
+    # GitHub Integration
+    github_repo_url: Optional[str] = None
+    github_repo_name: Optional[str] = None
+    github_integration_enabled: bool = False
+    github_default_branch: str = "main"
     
     # Related data
     collaborators: List[ProjectCollaboratorResponse] = []
