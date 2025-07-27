@@ -80,13 +80,13 @@ export default function Login() {
           {/* Header */}
           <div className="text-center mb-8">
             <div className="flex justify-center mb-4">
-              <div className="w-16 h-16 bg-makrx-yellow rounded-2xl flex items-center justify-center">
-                <Building2 className="w-8 h-8 text-makrx-blue" />
-              </div>
+              <div className="w-16 h-16 bg-makrx-teal rounded-2xl flex items-center justify-center">
+              <Building2 className="w-8 h-8 text-white" />
             </div>
-            <h1 className="text-2xl font-bold text-white mb-2">
-              Welcome to <span className="text-makrx-yellow">MakrCave</span>
-            </h1>
+          </div>
+          <h1 className="text-2xl font-bold text-white mb-2">
+            Welcome to <span className="text-makrx-teal">MakrCave</span>
+          </h1>
             <p className="text-white/80">Sign in to your makerspace portal</p>
           </div>
 
