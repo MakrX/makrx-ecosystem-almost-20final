@@ -96,3 +96,32 @@ export interface PaginatedResponse<T> {
   hasNext: boolean;
   hasPrev: boolean;
 }
+
+// Feature Flag Types
+export interface FeatureFlag {
+  id: string;
+  name: string;
+  description: string;
+  enabled: boolean;
+  allowedRoles: UserRole[];
+  environment?: 'development' | 'staging' | 'production' | 'all';
+  metadata?: Record<string, any>;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface FeatureFlagConfig {
+  [featureKey: string]: FeatureFlag;
+}
+
+export interface FeatureContext {
+  user: User | null;
+  environment: string;
+  flags: FeatureFlagConfig;
+}
+
+export interface FeatureAccessResult {
+  hasAccess: boolean;
+  flag?: FeatureFlag;
+  reason?: 'disabled' | 'insufficient_role' | 'not_found' | 'environment_mismatch';
+}
