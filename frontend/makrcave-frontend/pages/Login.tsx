@@ -70,7 +70,7 @@ export default function Login() {
       {/* Background Pattern */}
       <div className="absolute inset-0 opacity-20">
         <div className="absolute top-20 left-20 w-32 h-32 border border-white/20 rounded-lg rotate-12"></div>
-        <div className="absolute bottom-20 right-20 w-24 h-24 border border-makrx-yellow/30 rounded-full"></div>
+        <div className="absolute bottom-20 right-20 w-24 h-24 border border-makrx-teal/30 rounded-full"></div>
         <div className="absolute top-1/2 left-10 w-16 h-16 border border-white/10 rounded-lg -rotate-12"></div>
       </div>
       
