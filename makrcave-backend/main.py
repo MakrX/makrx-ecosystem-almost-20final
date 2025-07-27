@@ -4,6 +4,7 @@ from fastapi.responses import JSONResponse
 import uvicorn
 
 from .routes.inventory import router as inventory_router
+from .routes.equipment import router as equipment_router
 
 # Create FastAPI application
 app = FastAPI(
