@@ -9,8 +9,7 @@ interface User {
   firstName?: string;
   lastName?: string;
   role: UserRole;
-  makerspaceId?: string;
-  makerspaces?: string[]; // For super admins who can manage multiple spaces
+  assignedMakerspaces?: string[]; // For roles that are assigned to specific makerspaces
 }
 
 interface AuthContextType {
@@ -20,10 +19,16 @@ interface AuthContextType {
   login: (email: string, password: string) => Promise<void>;
   logout: () => void;
   switchRole: (role: UserRole) => void; // Demo function to switch between roles
+  getCurrentRole: () => UserRole;
+  getRolePermissions: () => RolePermissions;
+  hasPermission: (area: keyof RolePermissions, action: string, context?: any) => boolean;
+  getUIAccess: () => typeof UI_ACCESS[UserRole];
+  // Role check helpers
   isSuperAdmin: boolean;
-  isMakrcaveManager: boolean;
+  isAdmin: boolean;
+  isMakerspaceAdmin: boolean;
+  isServiceProvider: boolean;
   isMaker: boolean;
-  getCurrentRole: () => string;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
