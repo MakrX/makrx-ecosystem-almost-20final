@@ -186,14 +186,34 @@ export default function AddEquipmentModal({
       // Prepare data for submission
       const submitData = {
         ...formData,
-        linked_makerspace_id: user?.makerspace_id,
+        linked_makerspace_id: user?.makerspace_id || 'default-makerspace',
+        created_by: user?.name || 'Unknown User',
         purchase_date: formData.purchase_date ? `${formData.purchase_date}T00:00:00Z` : undefined,
         warranty_expiry: formData.warranty_expiry ? `${formData.warranty_expiry}T00:00:00Z` : undefined,
-        hourly_rate: formData.hourly_rate || undefined,
-        deposit_required: formData.deposit_required || undefined,
-        maintenance_interval_hours: formData.maintenance_interval_hours || undefined
+        hourly_rate: formData.hourly_rate ? Number(formData.hourly_rate) : undefined,
+        deposit_required: formData.deposit_required ? Number(formData.deposit_required) : undefined,
+        maintenance_interval_hours: formData.maintenance_interval_hours ? Number(formData.maintenance_interval_hours) : undefined,
+        // Ensure required fields have proper defaults
+        requires_certification: Boolean(formData.requires_certification),
+        // Remove any undefined values to avoid validation issues
+        sub_category: formData.sub_category || undefined,
+        certification_required: formData.requires_certification ? formData.certification_required : undefined,
+        manufacturer: formData.manufacturer || undefined,
+        model: formData.model || undefined,
+        serial_number: formData.serial_number || undefined,
+        description: formData.description || undefined,
+        image_url: formData.image_url || undefined,
+        notes: formData.notes || undefined
       };
 
+      // Remove undefined values to clean up the payload
+      Object.keys(submitData).forEach(key => {
+        if (submitData[key] === undefined || submitData[key] === '') {
+          delete submitData[key];
+        }
+      });
+
+      console.log('Final submit data:', submitData);
       onSubmit(submitData);
       onClose();
     }
