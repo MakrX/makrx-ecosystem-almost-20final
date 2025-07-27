@@ -188,7 +188,7 @@ export function MakerspaceProvider({ children }: { children: ReactNode }) {
     }
   ]);
 
-  const [inventory] = useState<InventoryItem[]>([
+  const [inventory, setInventory] = useState<InventoryItem[]>([
     {
       id: 'inv-1',
       name: 'PLA Filament - White',
@@ -198,6 +198,10 @@ export function MakerspaceProvider({ children }: { children: ReactNode }) {
       lowStockThreshold: 3,
       price: 25.99,
       supplier: 'Hatchbox',
+      makerspaceId: 'ms-1',
+      sku: 'MKX-FIL-HAT-PLA001-WHT',
+      location: 'Shelf A-1',
+      isScanned: true,
       lastRestocked: '2024-01-10'
     },
     {
