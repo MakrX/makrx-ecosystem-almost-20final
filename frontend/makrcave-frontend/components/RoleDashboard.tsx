@@ -124,8 +124,8 @@ function AdminDashboard() {
 
       <div className="makrcave-card">
         <h3 className="text-lg font-semibold mb-4">Access Limitations</h3>
-        <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
-          <p className="text-sm text-yellow-800">
+        <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+          <p className="text-sm text-blue-800">
             <strong>Note:</strong> As an Admin, you can view all makerspaces and manage users, but you cannot 
             modify makerspace-level inventory or equipment. Contact a Super Admin for advanced system changes.
           </p>
