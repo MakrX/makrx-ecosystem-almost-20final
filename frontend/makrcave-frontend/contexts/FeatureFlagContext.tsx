@@ -13,35 +13,35 @@ interface FeatureFlagContextType {
 
 const FeatureFlagContext = createContext<FeatureFlagContextType | undefined>(undefined);
 
-// Default feature flag configuration
+// Default feature flag configuration aligned with role permissions
 const defaultFlags: FeatureFlagConfig = {
   // Dashboard Features
-  'dashboard.advanced_analytics': {
-    id: 'dashboard.advanced_analytics',
-    name: 'Advanced Analytics',
-    description: 'Enable advanced analytics and reporting features on dashboard',
+  'dashboard.global_view': {
+    id: 'dashboard.global_view',
+    name: 'Global Dashboard View',
+    description: 'Access to global dashboard with system-wide visibility',
     enabled: true,
-    allowedRoles: ['super_admin', 'makrcave_manager'],
+    allowedRoles: ['super_admin', 'admin'],
     environment: 'all',
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
   },
-  'dashboard.quick_actions': {
-    id: 'dashboard.quick_actions',
-    name: 'Quick Actions Panel',
-    description: 'Show quick action buttons on dashboard',
+  'dashboard.makerspace_view': {
+    id: 'dashboard.makerspace_view',
+    name: 'Makerspace Dashboard',
+    description: 'Access to makerspace-specific dashboard and management',
     enabled: true,
-    allowedRoles: ['super_admin', 'makrcave_manager', 'maker'],
+    allowedRoles: ['super_admin', 'makerspace_admin'],
     environment: 'all',
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
   },
-  'dashboard.inventory_alerts': {
-    id: 'dashboard.inventory_alerts',
-    name: 'Inventory Alerts',
-    description: 'Display low stock inventory alerts on dashboard',
+  'dashboard.personal_view': {
+    id: 'dashboard.personal_view',
+    name: 'Personal Dashboard',
+    description: 'Access to personal projects and reservations dashboard',
     enabled: true,
-    allowedRoles: ['super_admin', 'makrcave_manager'],
+    allowedRoles: ['super_admin', 'admin', 'makerspace_admin', 'service_provider', 'maker'],
     environment: 'all',
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
