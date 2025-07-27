@@ -140,26 +140,29 @@ export default function Inventory() {
     { value: 'consumables', label: 'Consumables' },
   ];
 
-  const handleIssueItem = (id: string, quantity: number, reason: string) => {
-    const item = filteredInventory.find(i => i.id === id);
-    if (!item) return;
+  const handleIssueItem = async (id: string, quantity: number, reason: string) => {
+    try {
+      await issueInventoryItem(id, quantity, reason);
+    } catch (error) {
+      console.error('Failed to issue item:', error);
+      // Could show a toast notification here
+    }
+  };
 
-    const newQuantity = Math.max(0, item.quantity - quantity);
-    const usageLog: InventoryUsageLog = {
-      id: `log-${Date.now()}`,
-      timestamp: new Date().toISOString(),
-      userId: user?.id || '',
-      userName: `${user?.firstName} ${user?.lastName}` || 'Unknown User',
-      action: 'issue',
-      quantityBefore: item.quantity,
-      quantityAfter: newQuantity,
-      reason
-    };
+  const handleRestockItem = async (id: string, quantity: number, reason: string) => {
+    try {
+      await restockInventoryItem(id, quantity, reason);
+    } catch (error) {
+      console.error('Failed to restock item:', error);
+    }
+  };
 
-    updateInventoryItem(id, {
-      quantity: newQuantity,
-      history: [...(item.history || []), usageLog]
-    });
+  const handleDeleteItem = async (id: string) => {
+    try {
+      await deleteInventoryItem(id);
+    } catch (error) {
+      console.error('Failed to delete item:', error);
+    }
   };
 
   const handleReorderItem = (item: InventoryItem) => {
