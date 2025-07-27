@@ -48,16 +48,16 @@ export default function Index() {
 
             {/* Hero Title */}
             <h1 className="text-5xl lg:text-7xl font-display font-black mb-6 text-balance">
-              <span className="text-makrx-blue">Makr</span>
+              <span className="text-white">Makr</span>
               <span className="text-makrx-yellow makrx-glow-text">X</span>
               <br />
-              <span className="text-2xl lg:text-4xl font-light text-muted-foreground">
+              <span className="text-2xl lg:text-4xl font-light text-white/90">
                 The Modular OS of Making
               </span>
             </h1>
 
             {/* Hero Description */}
-            <p className="text-xl lg:text-2xl text-muted-foreground mb-12 max-w-3xl mx-auto text-balance">
+            <p className="text-xl lg:text-2xl text-white/80 mb-12 max-w-3xl mx-auto text-balance">
               Unify everything a maker needs — from makerspace management to 3D printing, 
               education, and community — in one open-source, customizable ecosystem.
             </p>
