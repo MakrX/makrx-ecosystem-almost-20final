@@ -7,6 +7,7 @@ import {
 import { useMakerspace } from '../contexts/MakerspaceContext';
 import { useAuth } from '../contexts/AuthContext';
 import { FeatureGate, withFeatureFlag, FeatureFlagBadge, useFeatureAccess } from '../components/FeatureGate';
+import ReservationModal from '../components/ReservationModal';
 
 interface Equipment {
   id: string;
