@@ -17,14 +17,51 @@ export default function Login() {
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
+    setError('');
 
     try {
       await login(email, password);
       navigate('/portal/dashboard');
     } catch (error) {
-      console.error('Login failed:', error);
+      setError(error instanceof Error ? error.message : 'Login failed');
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const quickLogin = async (userEmail: string) => {
+    setIsLoading(true);
+    setError('');
+
+    try {
+      await login(userEmail, 'demo');
+      navigate('/portal/dashboard');
+    } catch (error) {
+      setError(error instanceof Error ? error.message : 'Login failed');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const getRoleIcon = (role: string) => {
+    switch (role) {
+      case 'super_admin': return Crown;
+      case 'admin': return Shield;
+      case 'makerspace_admin': return Wrench;
+      case 'service_provider': return Settings;
+      case 'maker': return UserCheck;
+      default: return User;
+    }
+  };
+
+  const getRoleColor = (role: string) => {
+    switch (role) {
+      case 'super_admin': return 'from-purple-500 to-purple-600';
+      case 'admin': return 'from-blue-500 to-blue-600';
+      case 'makerspace_admin': return 'from-makrx-blue to-blue-700';
+      case 'service_provider': return 'from-yellow-500 to-yellow-600';
+      case 'maker': return 'from-green-500 to-green-600';
+      default: return 'from-gray-500 to-gray-600';
     }
   };
 
