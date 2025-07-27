@@ -643,3 +643,45 @@ async def get_github_commits(
 
     commits = github_service.get_commits(project.github_repo_url, branch, per_page, page)
     return commits
+
+@router.post("/{project_id}/github/readme/generate")
+async def generate_project_readme(
+    project_id: str,
+    current_user: dict = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    """Generate and commit README.md file to connected GitHub repository"""
+    # Check permissions
+    if not crud_project.has_project_edit_access(db, project_id, current_user["user_id"]):
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Insufficient permissions to generate README"
+        )
+
+    from ..utils.readme_generator import create_github_readme, generate_project_readme
+
+    project = crud_project.get_project(db, project_id, current_user["user_id"])
+    if not project:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Project not found"
+        )
+
+    if project.github_integration_enabled:
+        # Create README in GitHub repository
+        success = create_github_readme(db, project_id, current_user["user_id"])
+        if success:
+            return {"message": "README.md generated and committed to GitHub repository"}
+        else:
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail="Failed to create README in GitHub repository"
+            )
+    else:
+        # Generate README content for preview/download
+        readme_content = generate_project_readme(project)
+        return {
+            "message": "README content generated",
+            "content": readme_content,
+            "suggestion": "Connect a GitHub repository to automatically commit README files"
+        }
