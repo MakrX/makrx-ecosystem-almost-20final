@@ -104,9 +104,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       isLoading,
       login,
       logout,
-      hasRole,
-      isMakerspaceAdmin,
-      isAdmin
+      switchRole,
+      isSuperAdmin,
+      isMakrcaveManager,
+      isMaker,
+      getCurrentRole
     }}>
       {children}
     </AuthContext.Provider>
