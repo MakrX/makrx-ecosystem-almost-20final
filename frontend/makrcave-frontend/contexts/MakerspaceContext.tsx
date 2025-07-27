@@ -113,22 +113,42 @@ export function MakerspaceProvider({ children }: { children: ReactNode }) {
     completedProjectsThisMonth: 8
   });
 
-  const [equipment] = useState<Equipment[]>([
+  const [equipment, setEquipment] = useState<Equipment[]>([
     {
       id: 'eq-1',
       name: 'Prusa i3 MK3S+',
       type: 'printer_3d',
       status: 'available',
       location: 'Station A1',
-      lastMaintenance: '2024-01-15'
+      lastMaintenance: '2024-01-15',
+      makerspaceId: 'ms-1',
+      description: 'High-precision FDM 3D printer perfect for prototyping and small-scale production. Features automatic bed leveling and filament detection.',
+      hourlyRate: 12,
+      totalHours: 1247,
+      successRate: 94,
+      monthlyHours: 89,
+      nextMaintenance: '2024-02-15',
+      accessMethod: 'nfc',
+      operatorRequired: false,
+      requiredCertifications: ['3D Printing', 'Safety Certified']
     },
     {
       id: 'eq-2',
-      name: 'Ultimaker S3',
+      name: 'Ultimaker S5 Pro',
       type: 'printer_3d',
       status: 'in_use',
       location: 'Station A2',
-      lastMaintenance: '2024-01-10'
+      lastMaintenance: '2024-01-10',
+      makerspaceId: 'ms-1',
+      description: 'Professional FDM 3D printer with dual extrusion and air manager',
+      hourlyRate: 15,
+      totalHours: 856,
+      successRate: 96,
+      monthlyHours: 67,
+      nextMaintenance: '2024-02-10',
+      accessMethod: 'nfc',
+      operatorRequired: true,
+      requiredCertifications: ['3D Printing', 'Safety Certified']
     },
     {
       id: 'eq-3',
@@ -136,7 +156,17 @@ export function MakerspaceProvider({ children }: { children: ReactNode }) {
       type: 'laser_cutter',
       status: 'available',
       location: 'Station B1',
-      lastMaintenance: '2024-01-20'
+      lastMaintenance: '2024-01-20',
+      makerspaceId: 'ms-1',
+      description: 'Precision laser cutter for wood, acrylic, leather, and fabric',
+      hourlyRate: 25,
+      totalHours: 543,
+      successRate: 98,
+      monthlyHours: 45,
+      nextMaintenance: '2024-02-20',
+      accessMethod: 'badge',
+      operatorRequired: true,
+      requiredCertifications: ['Laser Safety', 'Material Safety']
     },
     {
       id: 'eq-4',
@@ -144,7 +174,17 @@ export function MakerspaceProvider({ children }: { children: ReactNode }) {
       type: 'cnc_machine',
       status: 'maintenance',
       location: 'Station C1',
-      lastMaintenance: '2023-12-15'
+      lastMaintenance: '2023-12-15',
+      makerspaceId: 'ms-2',
+      description: 'CNC machine for precision cutting and carving',
+      hourlyRate: 30,
+      totalHours: 234,
+      successRate: 92,
+      monthlyHours: 12,
+      nextMaintenance: '2024-01-15',
+      accessMethod: 'manual',
+      operatorRequired: true,
+      requiredCertifications: ['CNC Operation', 'Safety Certified', 'Material Handling']
     }
   ]);
 
