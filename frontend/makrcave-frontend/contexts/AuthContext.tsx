@@ -46,16 +46,34 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       firstName: 'System',
       lastName: 'Administrator',
       role: 'super_admin',
-      makerspaces: ['ms-1', 'ms-2', 'ms-3'] // Can manage multiple makerspaces
+      assignedMakerspaces: ['ms-1', 'ms-2', 'ms-3'] // Can manage all makerspaces
     },
-    makrcave_manager: {
-      id: 'mgr-1',
-      email: 'manager@makrcave.local',
-      username: 'manager',
-      firstName: 'Cave',
-      lastName: 'Manager',
-      role: 'makrcave_manager',
-      makerspaceId: 'ms-1'
+    admin: {
+      id: 'adm-1',
+      email: 'admin@makrx.org',
+      username: 'admin',
+      firstName: 'Organization',
+      lastName: 'Admin',
+      role: 'admin',
+      assignedMakerspaces: [] // Can view all but not assigned to specific ones
+    },
+    makerspace_admin: {
+      id: 'msa-1',
+      email: 'makerspaceadmin@makrcave.local',
+      username: 'makerspaceadmin',
+      firstName: 'MakrCave',
+      lastName: 'Admin',
+      role: 'makerspace_admin',
+      assignedMakerspaces: ['ms-1'] // Assigned to specific makerspace
+    },
+    service_provider: {
+      id: 'sp-1',
+      email: 'provider@makrcave.local',
+      username: 'serviceprovider',
+      firstName: 'Service',
+      lastName: 'Provider',
+      role: 'service_provider',
+      assignedMakerspaces: ['ms-1'] // Currently restricted
     },
     maker: {
       id: 'mkr-1',
@@ -64,7 +82,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       firstName: 'Creative',
       lastName: 'Maker',
       role: 'maker',
-      makerspaceId: 'ms-1'
+      assignedMakerspaces: ['ms-1'] // Assigned to their makerspace
     }
   };
 
