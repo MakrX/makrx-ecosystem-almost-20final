@@ -591,3 +591,237 @@ def get_user_projects_summary(db: Session, user_id: str) -> Dict[str, int]:
         "active_projects": active_count,
         "completed_projects": completed_count
     }
+
+# GitHub Integration Functions
+def connect_github_repo(db: Session, project_id: str, repo_url: str, access_token: str = None, user_id: str = None) -> Optional[Project]:
+    """Connect a GitHub repository to a project"""
+    project = db.query(Project).filter(Project.project_id == project_id).first()
+    if not project:
+        return None
+
+    # Initialize GitHub service
+    github_service = GitHubService(access_token)
+
+    # Validate repository access
+    if not github_service.validate_access(repo_url):
+        return None
+
+    # Get repository information
+    repo_info = github_service.get_repository_info(repo_url)
+    if not repo_info:
+        return None
+
+    # Update project with GitHub information
+    project.github_repo_url = repo_url
+    project.github_repo_name = repo_info.full_name
+    project.github_access_token = access_token  # Should be encrypted in production
+    project.github_integration_enabled = True
+    project.github_default_branch = repo_info.default_branch
+
+    # Log the connection
+    if user_id:
+        activity_log = ProjectActivityLog(
+            project_id=project_id,
+            activity_type=ActivityType.GITHUB_REPO_CONNECTED,
+            title="GitHub repository connected",
+            description=f"Connected repository: {repo_info.full_name}",
+            user_id=user_id,
+            user_name="User",
+            metadata={
+                "repo_name": repo_info.full_name,
+                "repo_url": repo_url,
+                "default_branch": repo_info.default_branch,
+                "is_private": repo_info.is_private
+            }
+        )
+        db.add(activity_log)
+
+    db.commit()
+    db.refresh(project)
+    return project
+
+def disconnect_github_repo(db: Session, project_id: str, user_id: str = None) -> Optional[Project]:
+    """Disconnect GitHub repository from a project"""
+    project = db.query(Project).filter(Project.project_id == project_id).first()
+    if not project:
+        return None
+
+    old_repo_name = project.github_repo_name
+
+    # Clear GitHub integration fields
+    project.github_repo_url = None
+    project.github_repo_name = None
+    project.github_access_token = None
+    project.github_integration_enabled = False
+    project.github_webhook_secret = None
+
+    # Log the disconnection
+    if user_id:
+        activity_log = ProjectActivityLog(
+            project_id=project_id,
+            activity_type=ActivityType.GITHUB_REPO_DISCONNECTED,
+            title="GitHub repository disconnected",
+            description=f"Disconnected repository: {old_repo_name}",
+            user_id=user_id,
+            user_name="User",
+            metadata={
+                "repo_name": old_repo_name
+            }
+        )
+        db.add(activity_log)
+
+    db.commit()
+    db.refresh(project)
+    return project
+
+def sync_github_activity(db: Session, project_id: str, limit: int = 50) -> List[ProjectActivityLog]:
+    """Sync recent GitHub activity for a project"""
+    project = db.query(Project).filter(Project.project_id == project_id).first()
+    if not project or not project.github_integration_enabled:
+        return []
+
+    github_service = GitHubService(project.github_access_token)
+    new_activities = []
+
+    try:
+        # Get recent commits
+        commits = github_service.get_commits(
+            project.github_repo_url,
+            project.github_default_branch,
+            per_page=min(limit // 3, 20)
+        )
+
+        for commit in commits:
+            # Check if activity already exists
+            existing = db.query(ProjectActivityLog).filter(
+                and_(
+                    ProjectActivityLog.project_id == project_id,
+                    ProjectActivityLog.activity_type == ActivityType.GITHUB_COMMIT_PUSHED,
+                    ProjectActivityLog.metadata["commit_sha"].astext == commit.sha
+                )
+            ).first()
+
+            if not existing:
+                activity_log = ProjectActivityLog(
+                    project_id=project_id,
+                    activity_type=ActivityType.GITHUB_COMMIT_PUSHED,
+                    title=f"Commit: {commit.message[:50]}{'...' if len(commit.message) > 50 else ''}",
+                    description=commit.message,
+                    user_id=commit.author_email,
+                    user_name=commit.author_name,
+                    created_at=commit.author_date,
+                    metadata={
+                        "commit_sha": commit.sha,
+                        "commit_url": commit.url,
+                        "added_files": commit.added_files,
+                        "modified_files": commit.modified_files,
+                        "removed_files": commit.removed_files
+                    }
+                )
+                db.add(activity_log)
+                new_activities.append(activity_log)
+
+        # Get recent pull requests
+        pull_requests = github_service.get_pull_requests(
+            project.github_repo_url,
+            per_page=min(limit // 3, 10)
+        )
+
+        for pr in pull_requests:
+            activity_type = ActivityType.GITHUB_PULL_REQUEST_OPENED
+            if pr.metadata.get("merged"):
+                activity_type = ActivityType.GITHUB_PULL_REQUEST_MERGED
+
+            # Check if activity already exists
+            existing = db.query(ProjectActivityLog).filter(
+                and_(
+                    ProjectActivityLog.project_id == project_id,
+                    ProjectActivityLog.activity_type == activity_type,
+                    ProjectActivityLog.metadata["pr_number"].astext == str(pr.metadata["number"])
+                )
+            ).first()
+
+            if not existing:
+                activity_log = ProjectActivityLog(
+                    project_id=project_id,
+                    activity_type=activity_type,
+                    title=pr.title,
+                    description=pr.description,
+                    user_id=pr.author,
+                    user_name=pr.author,
+                    created_at=pr.created_at,
+                    metadata={
+                        "pr_number": pr.metadata["number"],
+                        "pr_url": pr.url,
+                        "head_branch": pr.metadata["head_branch"],
+                        "base_branch": pr.metadata["base_branch"]
+                    }
+                )
+                db.add(activity_log)
+                new_activities.append(activity_log)
+
+        # Get recent issues
+        issues = github_service.get_issues(
+            project.github_repo_url,
+            per_page=min(limit // 3, 10)
+        )
+
+        for issue in issues:
+            activity_type = ActivityType.GITHUB_ISSUE_CREATED if issue.action == "open" else ActivityType.GITHUB_ISSUE_CLOSED
+
+            # Check if activity already exists
+            existing = db.query(ProjectActivityLog).filter(
+                and_(
+                    ProjectActivityLog.project_id == project_id,
+                    ProjectActivityLog.activity_type == activity_type,
+                    ProjectActivityLog.metadata["issue_number"].astext == str(issue.metadata["number"])
+                )
+            ).first()
+
+            if not existing:
+                activity_log = ProjectActivityLog(
+                    project_id=project_id,
+                    activity_type=activity_type,
+                    title=issue.title,
+                    description=issue.description,
+                    user_id=issue.author,
+                    user_name=issue.author,
+                    created_at=issue.created_at,
+                    metadata={
+                        "issue_number": issue.metadata["number"],
+                        "issue_url": issue.url,
+                        "labels": issue.metadata.get("labels", [])
+                    }
+                )
+                db.add(activity_log)
+                new_activities.append(activity_log)
+
+        db.commit()
+        return new_activities
+
+    except Exception as e:
+        print(f"Error syncing GitHub activity: {e}")
+        db.rollback()
+        return []
+
+def get_github_files(db: Session, project_id: str, path: str = "", branch: str = None):
+    """Get files from connected GitHub repository"""
+    project = db.query(Project).filter(Project.project_id == project_id).first()
+    if not project or not project.github_integration_enabled:
+        return []
+
+    github_service = GitHubService(project.github_access_token)
+    branch = branch or project.github_default_branch
+
+    return github_service.get_repository_files(project.github_repo_url, path, branch)
+
+def get_github_file_content(db: Session, project_id: str, file_path: str, branch: str = None):
+    """Get content of a specific file from GitHub repository"""
+    project = db.query(Project).filter(Project.project_id == project_id).first()
+    if not project or not project.github_integration_enabled:
+        return None
+
+    github_service = GitHubService(project.github_access_token)
+    branch = branch or project.github_default_branch
+
+    return github_service.get_file_content(project.github_repo_url, file_path, branch)
