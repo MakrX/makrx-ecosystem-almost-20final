@@ -29,71 +29,14 @@ export default function Header() {
       </div>
 
       <div className="flex items-center gap-4">
-        {/* Role Switcher for Demo */}
-        <div className="relative">
-          <button
-            onClick={() => setShowRoleSwitcher(!showRoleSwitcher)}
-            className="flex items-center gap-2 px-3 py-1 text-xs border border-border rounded hover:bg-accent transition-colors"
-          >
-            <Users className="w-3 h-3" />
-            <span className="capitalize">{getCurrentRole().replace('_', ' ')}</span>
-            <ChevronDown className="w-3 h-3" />
-          </button>
-
-          {showRoleSwitcher && (
-            <div className="absolute right-0 top-full mt-1 bg-card border border-border rounded-lg shadow-lg z-50 min-w-[180px]">
-              <div className="py-1">
-                <div className="px-3 py-1 text-xs font-medium text-muted-foreground border-b border-border">
-                  Switch Role (Demo)
-                </div>
-                <button
-                  onClick={() => {
-                    switchRole('super_admin');
-                    setShowRoleSwitcher(false);
-                  }}
-                  className="w-full text-left px-3 py-2 text-xs hover:bg-accent transition-colors"
-                >
-                  🔐 Super Admin
-                </button>
-                <button
-                  onClick={() => {
-                    switchRole('admin');
-                    setShowRoleSwitcher(false);
-                  }}
-                  className="w-full text-left px-3 py-2 text-xs hover:bg-accent transition-colors"
-                >
-                  🛠 Admin
-                </button>
-                <button
-                  onClick={() => {
-                    switchRole('makerspace_admin');
-                    setShowRoleSwitcher(false);
-                  }}
-                  className="w-full text-left px-3 py-2 text-xs hover:bg-accent transition-colors"
-                >
-                  🧑‍🏭 Makerspace Admin
-                </button>
-                <button
-                  onClick={() => {
-                    switchRole('service_provider');
-                    setShowRoleSwitcher(false);
-                  }}
-                  className="w-full text-left px-3 py-2 text-xs hover:bg-accent transition-colors"
-                >
-                  🤝 Service Provider
-                </button>
-                <button
-                  onClick={() => {
-                    switchRole('maker');
-                    setShowRoleSwitcher(false);
-                  }}
-                  className="w-full text-left px-3 py-2 text-xs hover:bg-accent transition-colors"
-                >
-                  👩‍🔬 Maker
-                </button>
-              </div>
-            </div>
-          )}
+        {/* User Info */}
+        <div className="flex items-center gap-2 px-3 py-1 text-xs border border-border rounded">
+          <UserIcon className="w-3 h-3" />
+          <span className="font-medium">{user?.firstName} {user?.lastName}</span>
+          <span className="text-muted-foreground">•</span>
+          <span className="capitalize text-muted-foreground">
+            {user?.role.replace('_', ' ')}
+          </span>
         </div>
 
         {/* Quick Actions */}
