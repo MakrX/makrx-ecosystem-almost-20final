@@ -82,7 +82,7 @@ export default function SuperAdminSidebar() {
     {
       name: 'Feature Flags',
       href: '/portal/admin/feature-flags',
-      icon: Toggles,
+      icon: ToggleLeft,
       active: isActive('/portal/admin/feature-flags')
     }
   ];
