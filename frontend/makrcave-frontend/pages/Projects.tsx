@@ -1,5 +1,6 @@
 import { FolderOpen, Plus, Users, Calendar } from 'lucide-react';
 import { useMakerspace } from '../contexts/MakerspaceContext';
+import { FeatureGate, FeatureFlagBadge, FeatureInDevelopment } from '../components/FeatureGate';
 
 export default function Projects() {
   const { projects } = useMakerspace();
