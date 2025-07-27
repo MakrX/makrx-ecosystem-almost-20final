@@ -253,3 +253,47 @@ class ErrorResponse(BaseModel):
 class SuccessResponse(BaseModel):
     message: str
     data: Optional[Dict[str, Any]] = None
+
+# Additional response schemas for API routes
+class InventoryItemResponse(InventoryItem):
+    """Response schema for inventory items with usage logs"""
+    pass
+
+class InventoryUsageLogResponse(InventoryUsageLog):
+    """Response schema for usage logs"""
+    item_name: Optional[str] = None
+
+class IssueItemRequest(BaseModel):
+    quantity: float = Field(..., gt=0)
+    reason: Optional[str] = None
+    project_id: Optional[str] = None
+    job_id: Optional[str] = None
+
+class ReorderRequest(BaseModel):
+    quantity: float = Field(..., gt=0)
+    notes: Optional[str] = None
+
+class InventoryStatsResponse(BaseModel):
+    total_items: int
+    low_stock_items: int
+    critical_items: int
+    makrx_items: int
+    external_items: int
+    total_categories: int
+    recent_activities: int
+    estimated_total_value: Optional[float] = None
+    category_breakdown: Dict[str, int]
+    location_breakdown: Dict[str, int]
+
+class LowStockAlertResponse(BaseModel):
+    item_id: str
+    item_name: str
+    current_quantity: float
+    min_threshold: float
+    category: str
+    location: str
+    supplier_type: SupplierType
+    product_code: Optional[str] = None
+    can_reorder: bool = False
+    suggested_order_quantity: Optional[float] = None
+    days_until_stockout: Optional[int] = None
