@@ -60,8 +60,8 @@ export default function Header() {
                   to={item.href}
                   className={`flex items-center gap-2 px-3 py-2 rounded-lg font-medium transition-all duration-200 ${
                     isActive(item.href)
-                      ? 'text-makrx-yellow bg-makrx-yellow/10'
-                      : 'text-muted-foreground hover:text-foreground hover:bg-accent/50'
+                      ? 'text-makrx-yellow bg-makrx-yellow/20'
+                      : 'text-white/80 hover:text-white hover:bg-white/10'
                   }`}
                 >
                   <Icon className="w-4 h-4" />
