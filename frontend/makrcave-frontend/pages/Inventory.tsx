@@ -599,7 +599,7 @@ export default function Inventory() {
               setSelectedItem(item);
               setShowAddModal(true);
             } : undefined}
-            onDelete={canDelete ? (id) => console.log('Delete item:', id) : undefined}
+            onDelete={canDelete ? handleDeleteItem : undefined}
             onIssue={canIssue ? handleIssueItem : undefined}
             onReorder={canReorder ? handleReorderItem : undefined}
             onViewDetails={(item) => {
