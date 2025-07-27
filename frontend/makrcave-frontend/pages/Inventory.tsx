@@ -310,6 +310,7 @@ export default function Inventory() {
             <button
               onClick={() => {
                 setSelectedItem(item);
+                loadItemForEdit(item);
                 setShowEditModal(true);
               }}
               className="flex-1 makrcave-btn-primary text-sm"
