@@ -153,6 +153,7 @@ export default function Inventory() {
       isScanned: false
     });
     setIsScannedItem(false);
+    setDuplicateWarning('');
   };
 
   const loadItemForEdit = (item: any) => {
