@@ -144,15 +144,28 @@ function AdminDashboard() {
         </div>
       </div>
 
-      <div className="makrcave-card">
-        <h3 className="text-lg font-semibold mb-4">Access Limitations</h3>
-        <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-          <p className="text-sm text-blue-800">
-            <strong>Note:</strong> As an Admin, you can view all makerspaces and manage users, but you cannot 
-            modify makerspace-level inventory or equipment. Contact a Super Admin for advanced system changes.
-          </p>
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div className="makrcave-card">
+          <h3 className="text-lg font-semibold mb-4">Access Limitations</h3>
+          <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+            <p className="text-sm text-blue-800">
+              <strong>Note:</strong> As an Admin, you can view all makerspaces and manage users, but you cannot
+              modify makerspace-level inventory or equipment. Contact a Super Admin for advanced system changes.
+            </p>
+          </div>
         </div>
+
+        <NotificationWidget
+          category="inventory"
+          title="Inventory Alerts"
+          maxItems={4}
+        />
       </div>
+
+      <NotificationWidget
+        title="Recent Notifications"
+        maxItems={5}
+      />
     </div>
   );
 }
