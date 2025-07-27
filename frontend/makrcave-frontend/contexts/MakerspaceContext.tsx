@@ -375,16 +375,85 @@ export function MakerspaceProvider({ children }: { children: ReactNode }) {
     console.log('Updating stats...');
   };
 
-  const addInventoryItem = (item: Omit<InventoryItem, 'id'>) => {
-    // Would call API to add item
-    console.log('Adding inventory item:', item);
+  const addInventoryItem = async (item: Omit<InventoryItem, 'id'>) => {
+    try {
+      const response = await fetch('/api/v1/inventory/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('auth_token')}`
+        },
+        body: JSON.stringify({
+          ...item,
+          linked_makerspace_id: item.makerspaceId,
+          min_threshold: item.minThreshold,
+          supplier_type: item.supplierType,
+          product_code: item.productCode,
+          image_url: item.imageUrl,
+          owner_user_id: item.ownerUserId,
+          restricted_access_level: item.restrictedAccessLevel,
+          created_by: 'current_user'
+        })
+      });
+
+      if (response.ok) {
+        const newItem = await response.json();
+        setInventory(prev => [...prev, {
+          ...item,
+          id: newItem.id,
+          history: newItem.usage_logs || []
+        }]);
+      } else {
+        throw new Error('Failed to add inventory item');
+      }
+    } catch (error) {
+      console.error('Error adding inventory item:', error);
+      // Fallback to local state update for now
+      const newItem = { ...item, id: `inv-${Date.now()}`, history: [] };
+      setInventory(prev => [...prev, newItem]);
+    }
   };
 
-  const updateInventoryItem = (id: string, updates: Partial<InventoryItem>) => {
-    setInventory(prev => prev.map(item =>
-      item.id === id ? { ...item, ...updates } : item
-    ));
-    console.log('Updated inventory item:', id, updates);
+  const updateInventoryItem = async (id: string, updates: Partial<InventoryItem>) => {
+    try {
+      const response = await fetch(`/api/v1/inventory/${id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('auth_token')}`
+        },
+        body: JSON.stringify({
+          ...updates,
+          linked_makerspace_id: updates.makerspaceId,
+          min_threshold: updates.minThreshold,
+          supplier_type: updates.supplierType,
+          product_code: updates.productCode,
+          image_url: updates.imageUrl,
+          owner_user_id: updates.ownerUserId,
+          restricted_access_level: updates.restrictedAccessLevel,
+          updated_by: 'current_user'
+        })
+      });
+
+      if (response.ok) {
+        const updatedItem = await response.json();
+        setInventory(prev => prev.map(item =>
+          item.id === id ? {
+            ...item,
+            ...updates,
+            history: updatedItem.usage_logs || item.history
+          } : item
+        ));
+      } else {
+        throw new Error('Failed to update inventory item');
+      }
+    } catch (error) {
+      console.error('Error updating inventory item:', error);
+      // Fallback to local state update
+      setInventory(prev => prev.map(item =>
+        item.id === id ? { ...item, ...updates } : item
+      ));
+    }
   };
 
   const updateInventoryQuantity = (id: string, quantity: number) => {
