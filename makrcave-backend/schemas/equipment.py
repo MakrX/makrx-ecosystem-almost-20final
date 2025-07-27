@@ -210,7 +210,7 @@ class EquipmentBase(BaseModel):
 
 class EquipmentCreate(EquipmentBase):
     equipment_id: str = Field(..., min_length=1, max_length=100)
-    created_by: str
+    # created_by is handled by the backend route, not sent from frontend
 
 class EquipmentUpdate(BaseModel):
     name: Optional[str] = Field(None, min_length=1, max_length=255)
