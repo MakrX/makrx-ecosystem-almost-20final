@@ -669,11 +669,12 @@ export default function Equipment() {
           equipment={selectedEquipment}
           onSubmit={async (maintenanceData) => {
             try {
+              const authToken = localStorage.getItem('auth_token') || 'mock-token';
               const response = await fetch(`/api/v1/equipment/${selectedEquipment.id}/maintenance`, {
                 method: 'POST',
                 headers: {
                   'Content-Type': 'application/json',
-                  'Authorization': `Bearer ${localStorage.getItem('auth_token')}`
+                  'Authorization': `Bearer ${authToken}`
                 },
                 body: JSON.stringify(maintenanceData)
               });
