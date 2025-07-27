@@ -10,6 +10,7 @@ import Dashboard from "./pages/Dashboard";
 import Inventory from "./pages/Inventory";
 import Equipment from "./pages/Equipment";
 import Projects from "./pages/Projects";
+import ProjectDetail from "./pages/ProjectDetail";
 import Reservations from "./pages/Reservations";
 import AdminUsers from "./pages/admin/Users";
 import AdminMakerspace from "./pages/admin/Makerspace";
