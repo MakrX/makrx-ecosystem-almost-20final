@@ -106,6 +106,7 @@ export default function Inventory() {
   const [showHistoryModal, setShowHistoryModal] = useState(false);
   const [selectedItem, setSelectedItem] = useState<any>(null);
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
+  const [isScannedItem, setIsScannedItem] = useState(false);
   
   // Form states
   const [newItem, setNewItem] = useState({
