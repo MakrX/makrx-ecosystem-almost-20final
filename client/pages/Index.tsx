@@ -88,24 +88,24 @@ export default function Index() {
                 <div className="w-16 h-16 mx-auto mb-4 bg-makrx-yellow/20 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform">
                   <Zap className="w-8 h-8 text-makrx-yellow" />
                 </div>
-                <h3 className="text-xl font-semibold mb-2">Lightning Fast</h3>
-                <p className="text-muted-foreground">Built for speed with modern tech stack</p>
+                <h3 className="text-xl font-semibold mb-2 text-white">Lightning Fast</h3>
+                <p className="text-white/80">Built for speed with modern tech stack</p>
               </div>
-              
+
               <div className="makrx-glass-card text-center group">
-                <div className="w-16 h-16 mx-auto mb-4 bg-makrx-blue/20 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform">
-                  <Users className="w-8 h-8 text-makrx-blue" />
+                <div className="w-16 h-16 mx-auto mb-4 bg-white/20 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform">
+                  <Users className="w-8 h-8 text-white" />
                 </div>
-                <h3 className="text-xl font-semibold mb-2">Community Driven</h3>
-                <p className="text-muted-foreground">Built by makers, for makers worldwide</p>
+                <h3 className="text-xl font-semibold mb-2 text-white">Community Driven</h3>
+                <p className="text-white/80">Built by makers, for makers worldwide</p>
               </div>
-              
+
               <div className="makrx-glass-card text-center group">
-                <div className="w-16 h-16 mx-auto mb-4 bg-makrx-brown/20 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform">
-                  <Sparkles className="w-8 h-8 text-makrx-brown" />
+                <div className="w-16 h-16 mx-auto mb-4 bg-makrx-yellow/20 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform">
+                  <Sparkles className="w-8 h-8 text-makrx-yellow" />
                 </div>
-                <h3 className="text-xl font-semibold mb-2">Modular Design</h3>
-                <p className="text-muted-foreground">Enable only what you need</p>
+                <h3 className="text-xl font-semibold mb-2 text-white">Modular Design</h3>
+                <p className="text-white/80">Enable only what you need</p>
               </div>
             </div>
           </div>
