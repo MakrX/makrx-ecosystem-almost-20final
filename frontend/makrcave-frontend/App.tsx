@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider } from "./contexts/AuthContext";
 import { MakerspaceProvider } from "./contexts/MakerspaceContext";
 import { FeatureFlagProvider } from "./contexts/FeatureFlagContext";
+import { ThemeProvider } from "./contexts/ThemeContext";
 import Layout from "./components/Layout";
 import Dashboard from "./pages/Dashboard";
 import Inventory from "./pages/Inventory";
@@ -16,32 +17,34 @@ import Login from "./pages/Login";
 import { createRoot } from "react-dom/client";
 
 const App = () => (
-  <AuthProvider>
-    <FeatureFlagProvider>
-      <MakerspaceProvider>
-        <BrowserRouter>
-        <Routes>
-          <Route path="/login" element={<Login />} />
-          <Route path="/" element={<Layout />}>
-            <Route index element={<Navigate to="/portal/dashboard" replace />} />
-            <Route path="portal">
-              <Route path="dashboard" element={<Dashboard />} />
-              <Route path="inventory" element={<Inventory />} />
-              <Route path="equipment" element={<Equipment />} />
-              <Route path="projects" element={<Projects />} />
-              <Route path="reservations" element={<Reservations />} />
-              <Route path="admin">
-                <Route path="users" element={<AdminUsers />} />
-                <Route path="makerspace" element={<AdminMakerspace />} />
-                <Route path="feature-flags" element={<AdminFeatureFlags />} />
+  <ThemeProvider>
+    <AuthProvider>
+      <FeatureFlagProvider>
+        <MakerspaceProvider>
+          <BrowserRouter>
+          <Routes>
+            <Route path="/login" element={<Login />} />
+            <Route path="/" element={<Layout />}>
+              <Route index element={<Navigate to="/portal/dashboard" replace />} />
+              <Route path="portal">
+                <Route path="dashboard" element={<Dashboard />} />
+                <Route path="inventory" element={<Inventory />} />
+                <Route path="equipment" element={<Equipment />} />
+                <Route path="projects" element={<Projects />} />
+                <Route path="reservations" element={<Reservations />} />
+                <Route path="admin">
+                  <Route path="users" element={<AdminUsers />} />
+                  <Route path="makerspace" element={<AdminMakerspace />} />
+                  <Route path="feature-flags" element={<AdminFeatureFlags />} />
+                </Route>
               </Route>
             </Route>
-          </Route>
-        </Routes>
-        </BrowserRouter>
-      </MakerspaceProvider>
-    </FeatureFlagProvider>
-  </AuthProvider>
+          </Routes>
+          </BrowserRouter>
+        </MakerspaceProvider>
+      </FeatureFlagProvider>
+    </AuthProvider>
+  </ThemeProvider>
 );
 
 createRoot(document.getElementById("root")!).render(<App />);
