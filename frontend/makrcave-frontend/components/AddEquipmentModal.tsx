@@ -186,8 +186,7 @@ export default function AddEquipmentModal({
       // Prepare data for submission
       const submitData = {
         ...formData,
-        linked_makerspace_id: user?.makerspace_id || 'default-makerspace',
-        created_by: user?.name || 'Unknown User',
+        // linked_makerspace_id will be set by the backend based on current user
         purchase_date: formData.purchase_date ? `${formData.purchase_date}T00:00:00Z` : undefined,
         warranty_expiry: formData.warranty_expiry ? `${formData.warranty_expiry}T00:00:00Z` : undefined,
         hourly_rate: formData.hourly_rate ? Number(formData.hourly_rate) : undefined,
