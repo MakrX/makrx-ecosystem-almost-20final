@@ -21,21 +21,48 @@ interface Equipment {
   operatorRequired?: boolean;
 }
 
-interface InventoryItem {
+interface InventoryUsageLog {
   id: string;
+  timestamp: string;
+  userId: string;
+  userName: string;
+  action: 'add' | 'issue' | 'restock' | 'adjust' | 'damage' | 'transfer';
+  quantityBefore: number;
+  quantityAfter: number;
+  reason?: string;
+  linkedProjectId?: string;
+  linkedJobId?: string;
+}
+
+interface InventoryItem {
+  id: string; // item_id in spec
   name: string;
-  category: 'filament' | 'resin' | 'tools' | 'electronics' | 'materials' | 'consumables';
+  category: 'filament' | 'resin' | 'tools' | 'electronics' | 'materials' | 'consumables' | 'machines' | 'sensors' | 'components';
+  subcategory?: string; // PLA, Capacitor, etc.
   quantity: number;
-  unit: string;
-  lowStockThreshold: number;
+  unit: string; // gram, pcs, mL, etc.
+  minThreshold: number; // min_threshold in spec
+  location: string; // Rack/Shelf code
+  status: 'active' | 'in_use' | 'damaged' | 'reserved' | 'discontinued';
+  supplierType: 'makrx' | 'external'; // supplier_type in spec
+  productCode?: string; // Used for reorder integration with MakrX.Store
+  makerspaceId: string; // linked_makerspace_id in spec
+  history: InventoryUsageLog[]; // Usage, issue, refill logs
+
+  // Optional fields
+  imageUrl?: string;
+  notes?: string;
+  ownerUserId?: string; // for personal tools
+  restrictedAccessLevel?: 'basic' | 'certified' | 'admin_only';
   price?: number;
   supplier?: string;
   lastRestocked?: string;
-  makerspaceId: string;
   sku?: string;
-  location?: string;
   description?: string;
   isScanned?: boolean;
+
+  // Legacy fields (for backward compatibility)
+  lowStockThreshold?: number; // maps to minThreshold
 }
 
 interface Project {
