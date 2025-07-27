@@ -11,6 +11,7 @@ import Projects from "./pages/Projects";
 import Reservations from "./pages/Reservations";
 import AdminUsers from "./pages/admin/Users";
 import AdminMakerspace from "./pages/admin/Makerspace";
+import AdminFeatureFlags from "./pages/admin/FeatureFlags";
 import Login from "./pages/Login";
 import { createRoot } from "react-dom/client";
 
