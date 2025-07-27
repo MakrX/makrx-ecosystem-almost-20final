@@ -589,6 +589,80 @@ export default function Equipment() {
         />
       )}
 
+      {/* Add Equipment Modal */}
+      {showAddModal && (
+        <AddEquipmentModal
+          isOpen={showAddModal}
+          onClose={() => {
+            setShowAddModal(false);
+            setSelectedEquipment(null);
+          }}
+          editEquipment={selectedEquipment}
+          onSubmit={async (equipmentData) => {
+            try {
+              const url = selectedEquipment
+                ? `/api/v1/equipment/${selectedEquipment.id}`
+                : '/api/v1/equipment/';
+
+              const method = selectedEquipment ? 'PUT' : 'POST';
+
+              const response = await fetch(url, {
+                method,
+                headers: {
+                  'Content-Type': 'application/json',
+                  'Authorization': `Bearer ${localStorage.getItem('auth_token')}`
+                },
+                body: JSON.stringify(equipmentData)
+              });
+
+              if (response.ok) {
+                alert(selectedEquipment ? 'Equipment updated successfully!' : 'Equipment created successfully!');
+                loadEquipment(); // Refresh equipment list
+              } else {
+                throw new Error('Failed to save equipment');
+              }
+            } catch (error) {
+              console.error('Error saving equipment:', error);
+              alert('Failed to save equipment. Please try again.');
+            }
+          }}
+        />
+      )}
+
+      {/* Maintenance Modal */}
+      {showMaintenanceModal && selectedEquipment && (
+        <MaintenanceModal
+          isOpen={showMaintenanceModal}
+          onClose={() => {
+            setShowMaintenanceModal(false);
+            setSelectedEquipment(null);
+          }}
+          equipment={selectedEquipment}
+          onSubmit={async (maintenanceData) => {
+            try {
+              const response = await fetch(`/api/v1/equipment/${selectedEquipment.id}/maintenance`, {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                  'Authorization': `Bearer ${localStorage.getItem('auth_token')}`
+                },
+                body: JSON.stringify(maintenanceData)
+              });
+
+              if (response.ok) {
+                alert('Maintenance log created successfully!');
+                loadEquipment(); // Refresh equipment list
+              } else {
+                throw new Error('Failed to create maintenance log');
+              }
+            } catch (error) {
+              console.error('Error creating maintenance log:', error);
+              alert('Failed to create maintenance log. Please try again.');
+            }
+          }}
+        />
+      )}
+
       {/* Equipment Detail Modal */}
       {showDetailModal && selectedEquipment && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
