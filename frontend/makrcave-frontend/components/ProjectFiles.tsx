@@ -54,6 +54,11 @@ interface ProjectFilesProps {
   files: ProjectFile[];
   canEdit: boolean;
   onUpdate: () => void;
+  // GitHub Integration props
+  githubIntegrationEnabled?: boolean;
+  githubRepoUrl?: string;
+  githubRepoName?: string;
+  githubDefaultBranch?: string;
 }
 
 const ProjectFiles: React.FC<ProjectFilesProps> = ({
