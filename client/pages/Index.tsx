@@ -18,8 +18,8 @@ export default function Index() {
   return (
     <div className="min-h-screen bg-background">
       {/* Hero Section */}
-      <section className="relative overflow-hidden makrx-circuit-bg">
-        <div className="absolute inset-0 bg-gradient-to-br from-makrx-blue/10 via-transparent to-makrx-yellow/10" />
+      <section className="relative overflow-hidden bg-gradient-to-br from-makrx-blue via-makrx-blue/95 to-makrx-blue/90">
+        <div className="absolute inset-0 makrx-circuit-bg opacity-20" />
         
         {/* Floating Elements */}
         <div className="absolute top-20 left-10 makrx-float opacity-20">
