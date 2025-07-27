@@ -42,8 +42,8 @@ export default function AdminUsers() {
                 <tr key={user.id} className="border-b border-border/50">
                   <td className="py-3 px-4">
                     <div className="flex items-center gap-3">
-                      <div className="w-8 h-8 bg-makrx-yellow rounded-full flex items-center justify-center">
-                        <span className="text-sm font-semibold text-makrx-blue">
+                      <div className="w-8 h-8 bg-makrx-teal rounded-full flex items-center justify-center">
+                        <span className="text-sm font-semibold text-white">
                           {user.name.split(' ').map(n => n[0]).join('')}
                         </span>
                       </div>
