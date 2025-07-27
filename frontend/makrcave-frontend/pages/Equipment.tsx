@@ -11,6 +11,8 @@ import { FeatureGate } from '../components/FeatureGate';
 import EquipmentCard from '../components/EquipmentCard';
 import ReservationModal from '../components/ReservationModal';
 import EquipmentRating from '../components/EquipmentRating';
+import AddEquipmentModal from '../components/AddEquipmentModal';
+import MaintenanceModal from '../components/MaintenanceModal';
 
 interface Equipment {
   id: string;
