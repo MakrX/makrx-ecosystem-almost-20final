@@ -24,6 +24,8 @@ class ProjectUpdate(BaseModel):
     start_date: Optional[datetime] = None
     end_date: Optional[datetime] = None
     tags: Optional[List[str]] = None
+    github_repo_url: Optional[str] = None
+    github_integration_enabled: Optional[bool] = None
 
 # Response schemas
 class ProjectCollaboratorResponse(BaseModel):
