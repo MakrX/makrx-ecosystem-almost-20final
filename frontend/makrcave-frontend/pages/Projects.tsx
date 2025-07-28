@@ -24,6 +24,7 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import { useAuth } from '../contexts/AuthContext';
 import AddProjectModal from '../components/AddProjectModal';
 import ProjectCard from '../components/ProjectCard';
+import AnalyticsWidget from '../components/AnalyticsWidget';
 
 interface Project {
   project_id: string;
