@@ -54,92 +54,28 @@ const Billing: React.FC = () => {
     failed_transactions: state.analytics?.transactions.failed_count || 0
   };
 
-  const getStatusIcon = (status: string) => {
-    switch (status) {
-      case 'success':
-      case 'paid':
-        return <CheckCircle className="h-4 w-4 text-green-600" />;
-      case 'failed':
-        return <XCircle className="h-4 w-4 text-red-600" />;
-      case 'pending':
-        return <Clock className="h-4 w-4 text-yellow-600" />;
-      default:
-        return <AlertCircle className="h-4 w-4 text-gray-600" />;
-    }
-  };
-
-  const getStatusBadge = (status: string) => {
-    const variants = {
-      success: 'bg-green-100 text-green-800',
-      paid: 'bg-green-100 text-green-800',
-      failed: 'bg-red-100 text-red-800',
-      pending: 'bg-yellow-100 text-yellow-800',
-      overdue: 'bg-red-100 text-red-800',
-    };
-    
-    return (
-      <Badge variant="outline" className={variants[status as keyof typeof variants] || 'bg-gray-100 text-gray-800'}>
-        {status.charAt(0).toUpperCase() + status.slice(1)}
-      </Badge>
-    );
-  };
-
-  const getTypeIcon = (type: string) => {
-    switch (type) {
-      case 'membership':
-        return <CreditCard className="h-4 w-4 text-blue-600" />;
-      case 'credit_purchase':
-        return <Wallet className="h-4 w-4 text-purple-600" />;
-      case 'printing_3d':
-        return <FileText className="h-4 w-4 text-green-600" />;
-      case 'laser_cutting':
-        return <FileText className="h-4 w-4 text-orange-600" />;
-      case 'workshop':
-        return <Calendar className="h-4 w-4 text-indigo-600" />;
-      default:
-        return <Receipt className="h-4 w-4 text-gray-600" />;
-    }
-  };
-
   const formatCurrency = (amount: number, currency: string = 'INR') => {
     const symbol = currency === 'INR' ? '₹' : '$';
     return `${symbol}${amount.toFixed(2)}`;
   };
 
-  const formatDate = (dateString: string) => {
-    try {
-      return new Date(dateString).toLocaleDateString('en-US', {
-        year: 'numeric',
-        month: 'short',
-        day: 'numeric'
-      });
-    } catch {
-      return 'Invalid date';
-    }
+  const handleBuyCredits = () => {
+    const creditItems = [
+      {
+        id: 'credits',
+        type: 'credits' as const,
+        title: 'Credit Purchase',
+        description: 'Purchase credits for makerspace services',
+        price: 100,
+        quantity: 1
+      }
+    ];
+    showCheckout(creditItems);
   };
 
-  const handleDownloadInvoice = (invoiceId: string) => {
-    // Simulate invoice download
-    console.log(`Downloading invoice ${invoiceId}`);
+  const handleExportReports = () => {
+    exportReport('month', 'csv');
   };
-
-  const handleViewTransaction = (transactionId: string) => {
-    console.log(`Viewing transaction ${transactionId}`);
-  };
-
-  const filteredTransactions = transactions.filter(transaction => {
-    const matchesSearch = transaction.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                         transaction.id.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchesStatus = statusFilter === 'all' || transaction.status === statusFilter;
-    const matchesType = typeFilter === 'all' || transaction.type === typeFilter;
-    return matchesSearch && matchesStatus && matchesType;
-  });
-
-  const filteredInvoices = invoices.filter(invoice => {
-    const matchesSearch = invoice.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                         invoice.invoice_number.toLowerCase().includes(searchQuery.toLowerCase());
-    return matchesSearch;
-  });
 
   return (
     <div className="space-y-6">
