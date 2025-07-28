@@ -116,6 +116,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     setUser(user);
     localStorage.setItem('makrcave_user', JSON.stringify({ id: user.id }));
+    // Generate mock auth token for API calls
+    const mockToken = `mock-jwt-token-${user.id}-${Date.now()}`;
+    localStorage.setItem('authToken', mockToken);
+    localStorage.setItem('makrcave_access_token', mockToken);
   };
 
   const logout = () => {
