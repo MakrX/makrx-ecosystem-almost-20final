@@ -1,34 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import { Card, CardHeader, CardTitle, CardContent } from '../components/ui/card';
 import { Button } from '../components/ui/button';
-import { Input } from '../components/ui/input';
 import { Badge } from '../components/ui/badge';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../components/ui/select';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../components/ui/tabs';
 import {
-  CreditCard,
   DollarSign,
-  Receipt,
   Download,
   Plus,
-  Search,
-  Filter,
   TrendingUp,
-  TrendingDown,
   Calendar,
-  FileText,
   Wallet,
-  RefreshCw,
-  AlertCircle,
   CheckCircle,
-  Clock,
-  XCircle,
-  MoreHorizontal,
-  Eye,
-  ArrowUpRight,
-  ArrowDownRight
+  TrendingDown
 } from 'lucide-react';
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator } from '../components/ui/dropdown-menu';
 import CreditWalletWidget from '../components/billing/CreditWalletWidget';
 import PaymentMethodCard from '../components/billing/PaymentMethodCard';
 import TransactionsList from '../components/billing/TransactionsList';
@@ -36,6 +20,7 @@ import InvoicesList from '../components/billing/InvoicesList';
 import BillingAnalytics from '../components/billing/BillingAnalytics';
 import CheckoutModal from '../components/billing/CheckoutModal';
 import { useAuth } from '../contexts/AuthContext';
+import { useBilling } from '../contexts/BillingContext';
 
 interface Transaction {
   id: string;
