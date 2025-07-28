@@ -16,6 +16,7 @@ import ProjectDetail from "./pages/ProjectDetail";
 import Reservations from "./pages/Reservations";
 import Members from "./pages/Members";
 import Billing from "./pages/Billing";
+import Settings from "./pages/Settings";
 import AdminUsers from "./pages/admin/Users";
 import AdminMakerspace from "./pages/admin/Makerspace";
 import AdminFeatureFlags from "./pages/admin/FeatureFlags";
