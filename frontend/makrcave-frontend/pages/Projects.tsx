@@ -522,17 +522,7 @@ const Projects: React.FC = () => {
         </CardContent>
       </Card>
 
-      {/* Error State */}
-      {error && (
-        <Card className="border-red-200 bg-red-50">
-          <CardContent className="p-4">
-            <div className="flex items-center gap-2 text-red-800">
-              <AlertCircle className="h-4 w-4" />
-              <span>Error loading projects: {error}</span>
-            </div>
-          </CardContent>
-        </Card>
-      )}
+
 
       {/* Projects Grid/List */}
       {filteredProjects.length === 0 && !loading && !error ? (
