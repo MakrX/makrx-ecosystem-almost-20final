@@ -4,7 +4,7 @@ interface Equipment {
   id: string;
   name: string;
   type: 'printer_3d' | 'laser_cutter' | 'cnc_machine' | 'workstation' | 'tool';
-  status: 'available' | 'in_use' | 'maintenance' | 'offline';
+  status: 'available' | 'in_use' | 'under_maintenance' | 'offline';
   location?: string;
   lastMaintenance?: string;
   makerspaceId: string;
