@@ -173,6 +173,69 @@ const Projects: React.FC = () => {
         </Button>
       </div>
 
+      {/* Quick Analytics */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-lg flex items-center gap-2">
+              <Package className="h-5 w-5" />
+              Project Overview
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-3 gap-4">
+              <div className="text-center">
+                <p className="text-2xl font-bold text-blue-600">{projects.length}</p>
+                <p className="text-sm text-gray-600">Total Projects</p>
+              </div>
+              <div className="text-center">
+                <p className="text-2xl font-bold text-green-600">
+                  {projects.filter(p => p.status === 'in-progress').length}
+                </p>
+                <p className="text-sm text-gray-600">Active</p>
+              </div>
+              <div className="text-center">
+                <p className="text-2xl font-bold text-purple-600">
+                  {projects.filter(p => p.status === 'complete').length}
+                </p>
+                <p className="text-sm text-gray-600">Completed</p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-lg flex items-center gap-2">
+              <Users className="h-5 w-5" />
+              Collaboration Stats
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-3 gap-4">
+              <div className="text-center">
+                <p className="text-2xl font-bold text-orange-600">
+                  {Math.round(projects.reduce((sum, p) => sum + p.collaborator_count, 0) / projects.length) || 0}
+                </p>
+                <p className="text-sm text-gray-600">Avg Collaborators</p>
+              </div>
+              <div className="text-center">
+                <p className="text-2xl font-bold text-teal-600">
+                  {Math.round(projects.reduce((sum, p) => sum + p.bom_items_count, 0) / projects.length) || 0}
+                </p>
+                <p className="text-sm text-gray-600">Avg BOM Items</p>
+              </div>
+              <div className="text-center">
+                <p className="text-2xl font-bold text-red-600">
+                  {projects.filter(p => p.visibility === 'public').length}
+                </p>
+                <p className="text-sm text-gray-600">Public Projects</p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
       {/* Filters and Search */}
       <Card>
         <CardContent className="p-4">
