@@ -69,6 +69,102 @@ const Projects: React.FC = () => {
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
   const [showFilters, setShowFilters] = useState(false);
 
+  // Mock data for development/fallback
+  const getMockProjects = (): Project[] => [
+    {
+      project_id: 'proj-1',
+      name: 'Smart Home Automation',
+      description: 'IoT-based home automation system with Arduino and sensors',
+      owner_id: 'user-1',
+      visibility: 'public',
+      status: 'in-progress',
+      start_date: '2024-01-15',
+      end_date: '2024-03-15',
+      tags: ['IoT', 'Arduino', 'Smart Home'],
+      is_featured: true,
+      created_at: '2024-01-15T10:00:00Z',
+      updated_at: '2024-02-01T15:30:00Z',
+      collaborator_count: 3,
+      bom_items_count: 12,
+      files_count: 8,
+      milestones_count: 5,
+      completed_milestones_count: 2
+    },
+    {
+      project_id: 'proj-2',
+      name: '3D Printed Drone Frame',
+      description: 'Custom drone frame designed and printed for racing applications',
+      owner_id: 'user-2',
+      visibility: 'public',
+      status: 'complete',
+      start_date: '2023-12-01',
+      end_date: '2024-01-10',
+      tags: ['3D Printing', 'Drone', 'Racing'],
+      is_featured: false,
+      created_at: '2023-12-01T09:00:00Z',
+      updated_at: '2024-01-10T18:45:00Z',
+      collaborator_count: 1,
+      bom_items_count: 8,
+      files_count: 15,
+      milestones_count: 4,
+      completed_milestones_count: 4
+    },
+    {
+      project_id: 'proj-3',
+      name: 'Laser Cut Furniture',
+      description: 'Modular furniture pieces cut from plywood using laser cutter',
+      owner_id: 'user-3',
+      visibility: 'team-only',
+      status: 'draft',
+      tags: ['Laser Cutting', 'Furniture', 'Design'],
+      is_featured: false,
+      created_at: '2024-02-05T14:20:00Z',
+      updated_at: '2024-02-05T14:20:00Z',
+      collaborator_count: 2,
+      bom_items_count: 5,
+      files_count: 3,
+      milestones_count: 3,
+      completed_milestones_count: 0
+    },
+    {
+      project_id: 'proj-4',
+      name: 'Arduino Weather Station',
+      description: 'Weather monitoring system with data logging capabilities',
+      owner_id: 'user-4',
+      visibility: 'public',
+      status: 'on-hold',
+      start_date: '2024-01-20',
+      tags: ['Arduino', 'Weather', 'Sensors', 'Data Logging'],
+      is_featured: false,
+      created_at: '2024-01-20T11:15:00Z',
+      updated_at: '2024-01-25T16:00:00Z',
+      collaborator_count: 2,
+      bom_items_count: 10,
+      files_count: 6,
+      milestones_count: 6,
+      completed_milestones_count: 1
+    },
+    {
+      project_id: 'proj-5',
+      name: 'CNC Machined Parts',
+      description: 'Precision parts for mechanical assembly using CNC machining',
+      owner_id: 'user-5',
+      visibility: 'private',
+      status: 'in-progress',
+      start_date: '2024-02-01',
+      end_date: '2024-02-28',
+      tags: ['CNC', 'Machining', 'Precision'],
+      is_featured: true,
+      created_at: '2024-02-01T08:30:00Z',
+      updated_at: '2024-02-08T12:45:00Z',
+      collaborator_count: 1,
+      bom_items_count: 6,
+      files_count: 12,
+      milestones_count: 4,
+      completed_milestones_count: 1
+    }
+  ];
+
   // Fetch projects from API
   const fetchProjects = async () => {
     try {
