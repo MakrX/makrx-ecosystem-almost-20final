@@ -135,6 +135,54 @@ export default function Equipment() {
     }
   };
 
+  // Export equipment data to CSV
+  const exportToCSV = () => {
+    const csvHeaders = [
+      'Equipment ID', 'Name', 'Category', 'Sub Category', 'Status', 'Location',
+      'Requires Certification', 'Certification Required', 'Last Maintenance', 'Next Maintenance',
+      'Total Usage Hours', 'Usage Count', 'Average Rating', 'Total Ratings',
+      'Manufacturer', 'Model', 'Hourly Rate', 'Description'
+    ];
+
+    const csvData = filteredEquipment.map(item => [
+      item.equipment_id,
+      item.name,
+      item.category,
+      item.sub_category || '',
+      item.status,
+      item.location,
+      item.requires_certification ? 'Yes' : 'No',
+      item.certification_required || '',
+      item.last_maintenance_date || '',
+      item.next_maintenance_date || '',
+      item.total_usage_hours,
+      item.usage_count,
+      item.average_rating,
+      item.total_ratings,
+      item.manufacturer || '',
+      item.model || '',
+      item.hourly_rate || '',
+      item.description || ''
+    ]);
+
+    const csvContent = [
+      csvHeaders.join(','),
+      ...csvData.map(row => row.map(field =>
+        typeof field === 'string' && field.includes(',') ? `"${field}"` : field
+      ).join(','))
+    ].join('\n');
+
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    const url = URL.createObjectURL(blob);
+    link.setAttribute('href', url);
+    link.setAttribute('download', `equipment_export_${new Date().toISOString().split('T')[0]}.csv`);
+    link.style.visibility = 'hidden';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   // Role-based permissions
   const canViewEquipment = user?.role === 'super_admin' || user?.role === 'makerspace_admin' || 
                           user?.role === 'admin' || user?.role === 'user' || user?.role === 'service_provider';
