@@ -6,11 +6,11 @@ import { Badge } from '../components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../components/ui/tabs';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../components/ui/select';
 import { 
-  Plus, 
-  Search, 
-  Filter, 
-  Grid3X3, 
-  List, 
+  Plus,
+  Search,
+  Filter,
+  Grid3X3,
+  List,
   Calendar,
   Users,
   Package,
@@ -18,7 +18,8 @@ import {
   CheckCircle,
   AlertCircle,
   Star,
-  MoreHorizontal
+  MoreHorizontal,
+  Download
 } from 'lucide-react';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '../components/ui/dropdown-menu';
 import { useAuth } from '../contexts/AuthContext';
