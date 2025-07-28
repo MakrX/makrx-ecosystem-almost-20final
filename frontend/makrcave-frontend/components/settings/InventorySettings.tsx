@@ -238,7 +238,7 @@ const InventorySettings: React.FC<InventorySettingsProps> = ({
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
-            <Sync className="h-5 w-5" />
+            <RefreshCw className="h-5 w-5" />
             Integration Settings
           </CardTitle>
         </CardHeader>
