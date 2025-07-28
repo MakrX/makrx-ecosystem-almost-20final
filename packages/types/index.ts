@@ -60,6 +60,11 @@ export interface RolePermissions {
     link: 'all' | 'assigned_makerspace' | 'own_projects' | 'none';
     approve: 'all' | 'assigned_makerspace' | 'none';
   };
+  analytics: {
+    view: 'all' | 'assigned_makerspace' | 'none';
+    export: 'all' | 'assigned_makerspace' | 'none';
+    generate_reports: 'all' | 'assigned_makerspace' | 'none';
+  };
   admin: {
     userRoleManagement: boolean;
     systemLogs: boolean;
