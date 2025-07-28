@@ -156,24 +156,22 @@ async def get_equipment_metrics(
 
 @router.get("/projects", response_model=ProjectAnalyticsResponse)
 async def get_project_analytics(
-    current_user=Depends(get_current_user),
+    current_user=Depends(require_role(["admin", "super_admin"])),
     makerspace=Depends(get_current_makerspace),
     analytics_crud: AnalyticsCRUD = Depends(get_analytics_crud)
 ):
     """Get project and BOM analytics"""
-    require_role(current_user, ["admin", "super_admin"])
     
     analytics = analytics_crud.get_project_analytics(str(makerspace.id))
     return ProjectAnalyticsResponse(**analytics)
 
 @router.get("/revenue", response_model=RevenueAnalyticsResponse)
 async def get_revenue_analytics(
-    current_user=Depends(get_current_user),
+    current_user=Depends(require_role(["admin", "super_admin"])),
     makerspace=Depends(get_current_makerspace),
     analytics_crud: AnalyticsCRUD = Depends(get_analytics_crud)
 ):
     """Get revenue and payment analytics"""
-    require_role(current_user, ["admin", "super_admin"])
     
     revenue = analytics_crud.get_revenue_analytics(str(makerspace.id))
     return RevenueAnalyticsResponse(**revenue)
@@ -186,12 +184,11 @@ async def get_usage_events(
     user_id: Optional[str] = Query(None, description="Filter by specific user"),
     skip: int = Query(0, ge=0),
     limit: int = Query(100, ge=1, le=1000),
-    current_user=Depends(get_current_user),
+    current_user=Depends(require_role(["admin", "super_admin"])),
     makerspace=Depends(get_current_makerspace),
     analytics_crud: AnalyticsCRUD = Depends(get_analytics_crud)
 ):
     """Get filtered usage events"""
-    require_role(current_user, ["admin", "super_admin"])
     
     filters = AnalyticsFilters(
         start_date=start_date,
