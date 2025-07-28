@@ -297,50 +297,7 @@ const Projects: React.FC = () => {
     return Math.round((project.completed_milestones_count / project.milestones_count) * 100);
   };
 
-  const exportToCSV = () => {
-    const csvHeaders = [
-      'Project ID', 'Name', 'Description', 'Owner ID', 'Status', 'Visibility',
-      'Start Date', 'End Date', 'Tags', 'Featured', 'Collaborators', 'BOM Items',
-      'Files Count', 'Milestones', 'Completed Milestones', 'Progress %', 'Created At'
-    ];
 
-    const csvData = filteredProjects.map(project => [
-      project.project_id,
-      project.name,
-      project.description || '',
-      project.owner_id,
-      project.status,
-      project.visibility,
-      project.start_date || '',
-      project.end_date || '',
-      project.tags.join('; '),
-      project.is_featured ? 'Yes' : 'No',
-      project.collaborator_count,
-      project.bom_items_count,
-      project.files_count,
-      project.milestones_count,
-      project.completed_milestones_count,
-      `${getProgressPercentage(project)}%`,
-      project.created_at
-    ]);
-
-    const csvContent = [
-      csvHeaders.join(','),
-      ...csvData.map(row => row.map(field =>
-        typeof field === 'string' && field.includes(',') ? `"${field}"` : field
-      ).join(','))
-    ].join('\n');
-
-    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-    const link = document.createElement('a');
-    const url = URL.createObjectURL(blob);
-    link.setAttribute('href', url);
-    link.setAttribute('download', `projects_export_${new Date().toISOString().split('T')[0]}.csv`);
-    link.style.visibility = 'hidden';
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-  };
 
   if (loading) {
     return (
