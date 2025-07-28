@@ -11,7 +11,8 @@ import {
   Award,
   MessageSquare,
   Heart,
-  LogOut
+  LogOut,
+  CreditCard
 } from 'lucide-react';
 
 export default function MakerSidebar() {
