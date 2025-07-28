@@ -204,192 +204,35 @@ const Billing: React.FC = () => {
 
         {/* Transactions Tab */}
         <TabsContent value="transactions" className="space-y-6">
-          {/* Search and Filters */}
-          <Card>
-            <CardContent className="p-6">
-              <div className="flex flex-col md:flex-row gap-4">
-                <div className="flex-1">
-                  <div className="relative">
-                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
-                    <Input
-                      placeholder="Search transactions..."
-                      value={searchQuery}
-                      onChange={(e) => setSearchQuery(e.target.value)}
-                      className="pl-10"
-                    />
-                  </div>
-                </div>
-                <div className="flex gap-2">
-                  <Select value={statusFilter} onValueChange={setStatusFilter}>
-                    <SelectTrigger className="w-32">
-                      <SelectValue placeholder="Status" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="all">All Status</SelectItem>
-                      <SelectItem value="success">Success</SelectItem>
-                      <SelectItem value="pending">Pending</SelectItem>
-                      <SelectItem value="failed">Failed</SelectItem>
-                    </SelectContent>
-                  </Select>
-                  
-                  <Select value={typeFilter} onValueChange={setTypeFilter}>
-                    <SelectTrigger className="w-40">
-                      <SelectValue placeholder="Type" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="all">All Types</SelectItem>
-                      <SelectItem value="membership">Membership</SelectItem>
-                      <SelectItem value="credit_purchase">Credits</SelectItem>
-                      <SelectItem value="printing_3d">3D Printing</SelectItem>
-                      <SelectItem value="laser_cutting">Laser Cutting</SelectItem>
-                      <SelectItem value="workshop">Workshop</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Transactions List */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Transactions ({filteredTransactions.length})</CardTitle>
-            </CardHeader>
-            <CardContent>
-              {filteredTransactions.length === 0 ? (
-                <div className="text-center py-8 text-gray-500">
-                  <Receipt className="h-8 w-8 mx-auto mb-2 opacity-50" />
-                  <p>No transactions found</p>
-                  <p className="text-sm">Try adjusting your search or filters</p>
-                </div>
-              ) : (
-                <div className="space-y-4">
-                  {filteredTransactions.map((transaction) => (
-                    <div key={transaction.id} className="border rounded-lg p-4 hover:shadow-md transition-shadow">
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-4">
-                          {getTypeIcon(transaction.type)}
-                          <div>
-                            <h3 className="font-medium">{transaction.description}</h3>
-                            <div className="flex items-center gap-4 text-sm text-gray-600">
-                              <span>ID: {transaction.id}</span>
-                              <span>•</span>
-                              <span>{formatDate(transaction.created_at)}</span>
-                              <span>•</span>
-                              <span className="capitalize">{transaction.gateway}</span>
-                            </div>
-                          </div>
-                        </div>
-                        
-                        <div className="flex items-center gap-4">
-                          <div className="text-right">
-                            <p className="font-medium text-lg">{formatCurrency(transaction.amount, transaction.currency)}</p>
-                            <div className="flex items-center gap-2">
-                              {getStatusIcon(transaction.status)}
-                              {getStatusBadge(transaction.status)}
-                            </div>
-                          </div>
-                          
-                          <DropdownMenu>
-                            <DropdownMenuTrigger asChild>
-                              <Button variant="ghost" size="sm">
-                                <MoreHorizontal className="h-4 w-4" />
-                              </Button>
-                            </DropdownMenuTrigger>
-                            <DropdownMenuContent align="end">
-                              <DropdownMenuItem onClick={() => handleViewTransaction(transaction.id)}>
-                                <Eye className="h-4 w-4 mr-2" />
-                                View Details
-                              </DropdownMenuItem>
-                              <DropdownMenuItem>
-                                <Download className="h-4 w-4 mr-2" />
-                                Download Receipt
-                              </DropdownMenuItem>
-                              {transaction.status === 'failed' && (
-                                <DropdownMenuItem>
-                                  <RefreshCw className="h-4 w-4 mr-2" />
-                                  Retry Payment
-                                </DropdownMenuItem>
-                              )}
-                            </DropdownMenuContent>
-                          </DropdownMenu>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </CardContent>
-          </Card>
+          <TransactionsList
+            transactions={state.transactions}
+            showSearch={true}
+            showFilters={true}
+            showPagination={true}
+            onViewTransaction={(transaction) => console.log('View transaction:', transaction)}
+            onDownloadReceipt={downloadReceipt}
+            onRetryPayment={retryTransaction}
+          />
         </TabsContent>
 
         {/* Invoices Tab */}
         <TabsContent value="invoices" className="space-y-6">
-          <Card>
-            <CardHeader>
-              <CardTitle>Invoices ({filteredInvoices.length})</CardTitle>
-            </CardHeader>
-            <CardContent>
-              {filteredInvoices.length === 0 ? (
-                <div className="text-center py-8 text-gray-500">
-                  <FileText className="h-8 w-8 mx-auto mb-2 opacity-50" />
-                  <p>No invoices found</p>
-                </div>
-              ) : (
-                <div className="space-y-4">
-                  {filteredInvoices.map((invoice) => (
-                    <div key={invoice.id} className="border rounded-lg p-4 hover:shadow-md transition-shadow">
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-4">
-                          <Receipt className="h-8 w-8 text-blue-600" />
-                          <div>
-                            <h3 className="font-medium">{invoice.invoice_number}</h3>
-                            <p className="text-sm text-gray-600">{invoice.title}</p>
-                            <div className="flex items-center gap-4 text-xs text-gray-500 mt-1">
-                              <span>Issued: {formatDate(invoice.issue_date)}</span>
-                              {invoice.due_date && (
-                                <>
-                                  <span>•</span>
-                                  <span>Due: {formatDate(invoice.due_date)}</span>
-                                </>
-                              )}
-                              {invoice.paid_date && (
-                                <>
-                                  <span>•</span>
-                                  <span>Paid: {formatDate(invoice.paid_date)}</span>
-                                </>
-                              )}
-                            </div>
-                          </div>
-                        </div>
-                        
-                        <div className="flex items-center gap-4">
-                          <div className="text-right">
-                            <p className="font-medium text-lg">{formatCurrency(invoice.total_amount, invoice.currency)}</p>
-                            {getStatusBadge(invoice.status)}
-                          </div>
-                          
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() => handleDownloadInvoice(invoice.id)}
-                          >
-                            <Download className="h-4 w-4 mr-2" />
-                            Download
-                          </Button>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </CardContent>
-          </Card>
+          <InvoicesList
+            invoices={state.invoices}
+            showSearch={true}
+            showFilters={true}
+            showPagination={true}
+            onViewInvoice={(invoice) => console.log('View invoice:', invoice)}
+            onDownloadInvoice={downloadInvoice}
+          />
         </TabsContent>
 
         {/* Analytics Tab */}
         <TabsContent value="analytics" className="space-y-6">
-          <BillingAnalytics />
+          <BillingAnalytics
+            data={state.analytics}
+            onExportReport={handleExportReports}
+          />
         </TabsContent>
       </Tabs>
 
