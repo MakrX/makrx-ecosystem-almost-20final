@@ -223,10 +223,6 @@ const Members: React.FC = () => {
           <p className="text-gray-600">Manage makerspace members, plans, and access</p>
         </div>
         <div className="flex items-center gap-3">
-          <Button variant="outline" onClick={exportToCSV}>
-            <Download className="h-4 w-4 mr-2" />
-            Export CSV
-          </Button>
           <Button variant="outline" onClick={() => setShowInviteModal(true)}>
             <Mail className="h-4 w-4 mr-2" />
             Send Invite
