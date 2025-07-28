@@ -34,7 +34,7 @@ def get_db():
 # Initialize database tables
 def init_db():
     """Initialize database tables"""
-    from .models import inventory  # Import all models
+    from .models import inventory, member, project, equipment  # Import all models
     Base.metadata.create_all(bind=engine)
 
 # Database utility functions
