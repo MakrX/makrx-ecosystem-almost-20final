@@ -180,72 +180,25 @@ const Billing: React.FC = () => {
         <TabsContent value="overview" className="space-y-6">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {/* Recent Transactions */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center justify-between">
-                  Recent Transactions
-                  <Button variant="ghost" size="sm" onClick={() => setActiveTab('transactions')}>
-                    View All
-                    <ArrowUpRight className="h-4 w-4 ml-1" />
-                  </Button>
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  {transactions.slice(0, 5).map((transaction) => (
-                    <div key={transaction.id} className="flex items-center justify-between p-3 border rounded-lg">
-                      <div className="flex items-center gap-3">
-                        {getTypeIcon(transaction.type)}
-                        <div>
-                          <p className="font-medium text-sm">{transaction.description}</p>
-                          <p className="text-xs text-gray-500">
-                            {formatDate(transaction.created_at)} • {transaction.gateway}
-                          </p>
-                        </div>
-                      </div>
-                      <div className="text-right">
-                        <p className="font-medium">{formatCurrency(transaction.amount, transaction.currency)}</p>
-                        {getStatusBadge(transaction.status)}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
+            <TransactionsList
+              transactions={state.transactions.slice(0, 5)}
+              showSearch={false}
+              showFilters={false}
+              showPagination={false}
+              onViewTransaction={(transaction) => console.log('View transaction:', transaction)}
+              onDownloadReceipt={downloadReceipt}
+              onRetryPayment={retryTransaction}
+            />
 
             {/* Recent Invoices */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center justify-between">
-                  Recent Invoices
-                  <Button variant="ghost" size="sm" onClick={() => setActiveTab('invoices')}>
-                    View All
-                    <ArrowUpRight className="h-4 w-4 ml-1" />
-                  </Button>
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  {invoices.slice(0, 5).map((invoice) => (
-                    <div key={invoice.id} className="flex items-center justify-between p-3 border rounded-lg">
-                      <div className="flex items-center gap-3">
-                        <Receipt className="h-4 w-4 text-blue-600" />
-                        <div>
-                          <p className="font-medium text-sm">{invoice.invoice_number}</p>
-                          <p className="text-xs text-gray-500">
-                            {invoice.title} • {formatDate(invoice.issue_date)}
-                          </p>
-                        </div>
-                      </div>
-                      <div className="text-right">
-                        <p className="font-medium">{formatCurrency(invoice.total_amount, invoice.currency)}</p>
-                        {getStatusBadge(invoice.status)}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
+            <InvoicesList
+              invoices={state.invoices.slice(0, 5)}
+              showSearch={false}
+              showFilters={false}
+              showPagination={false}
+              onViewInvoice={(invoice) => console.log('View invoice:', invoice)}
+              onDownloadInvoice={downloadInvoice}
+            />
           </div>
         </TabsContent>
 
