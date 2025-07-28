@@ -257,6 +257,39 @@ function MakerspaceAdminDashboard() {
           maxItems={4}
         />
       </div>
+
+      {/* Analytics Widgets */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-2 gap-6">
+        <AnalyticsWidget
+          type="usage"
+          title="Usage Analytics"
+          timeframe="7d"
+          height={250}
+        />
+
+        <AnalyticsWidget
+          type="equipment"
+          title="Equipment Status"
+          timeframe="7d"
+          height={250}
+        />
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-2 gap-6">
+        <AnalyticsWidget
+          type="inventory"
+          title="Inventory Distribution"
+          timeframe="30d"
+          height={250}
+        />
+
+        <AnalyticsWidget
+          type="revenue"
+          title="Revenue Trends"
+          timeframe="30d"
+          height={250}
+        />
+      </div>
     </div>
   );
 }
