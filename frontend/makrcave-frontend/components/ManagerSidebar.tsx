@@ -53,6 +53,12 @@ export default function ManagerSidebar() {
       active: isActive('/portal/reservations')
     },
     {
+      name: 'Maintenance',
+      href: '/portal/maintenance',
+      icon: Wrench,
+      active: isActive('/portal/maintenance')
+    },
+    {
       name: 'Analytics & Reports',
       href: '/portal/analytics',
       icon: BarChart3,
