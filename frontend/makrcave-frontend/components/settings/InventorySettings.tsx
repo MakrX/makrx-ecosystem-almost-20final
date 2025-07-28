@@ -8,11 +8,10 @@ import { Badge } from '../ui/badge';
 import {
   Package,
   AlertTriangle,
-  Sync,
+  RefreshCw,
   User,
   Bell,
   Save,
-  RefreshCw,
   Info,
   Gauge,
   ShoppingCart
