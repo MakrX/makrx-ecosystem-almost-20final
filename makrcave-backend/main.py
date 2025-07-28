@@ -8,6 +8,8 @@ from .routes.equipment import router as equipment_router
 from .routes.project import router as project_router
 from .routes.member import router as member_router
 from .routes.billing import router as billing_router
+from .routes.analytics import router as analytics_router
+from .routes.makerspace_settings import router as settings_router
 
 # Create FastAPI application
 app = FastAPI(
