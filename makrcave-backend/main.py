@@ -45,6 +45,7 @@ app.include_router(inventory_router, prefix="/api/v1")
 app.include_router(equipment_router, prefix="/api/v1")
 app.include_router(project_router, prefix="/api/v1/projects", tags=["projects"])
 app.include_router(member_router, prefix="/api/v1/members", tags=["members"])
+app.include_router(billing_router, prefix="/api/v1/billing", tags=["billing"])
 
 # Root endpoint
 @app.get("/")
