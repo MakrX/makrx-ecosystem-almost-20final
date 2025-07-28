@@ -48,6 +48,12 @@ export default function SuperAdminSidebar() {
       active: isActive('/portal/analytics')
     },
     {
+      name: 'Billing & Finance',
+      href: '/portal/billing',
+      icon: DollarSign,
+      active: isActive('/portal/billing')
+    },
+    {
       name: 'Network Status',
       href: '/portal/network',
       icon: Globe,
