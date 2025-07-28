@@ -12,6 +12,7 @@ import Equipment from "./pages/Equipment";
 import Projects from "./pages/Projects";
 import ProjectDetail from "./pages/ProjectDetail";
 import Reservations from "./pages/Reservations";
+import Members from "./pages/Members";
 import AdminUsers from "./pages/admin/Users";
 import AdminMakerspace from "./pages/admin/Makerspace";
 import AdminFeatureFlags from "./pages/admin/FeatureFlags";
