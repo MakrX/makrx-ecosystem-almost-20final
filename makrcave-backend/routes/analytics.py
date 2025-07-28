@@ -23,12 +23,11 @@ def get_analytics_crud(db: Session = Depends(get_db)) -> AnalyticsCRUD:
 
 @router.get("/overview", response_model=AnalyticsOverviewResponse)
 async def get_analytics_overview(
-    current_user=Depends(get_current_user),
+    current_user=Depends(require_role(["admin", "super_admin"])),
     makerspace=Depends(get_current_makerspace),
     analytics_crud: AnalyticsCRUD = Depends(get_analytics_crud)
 ):
     """Get comprehensive analytics overview for the dashboard"""
-    require_role(current_user, ["admin", "super_admin"])
     
     overview_data = analytics_crud.get_analytics_overview(str(makerspace.id))
     return AnalyticsOverviewResponse(**overview_data)
