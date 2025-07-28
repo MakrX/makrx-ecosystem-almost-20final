@@ -370,20 +370,81 @@ async def generate_report(request_id: str, analytics_crud: AnalyticsCRUD):
 
 async def generate_usage_report(report_request, analytics_crud: AnalyticsCRUD) -> str:
     """Generate usage analytics report"""
-    # Placeholder implementation - would generate CSV/PDF
-    return f"/reports/usage_{report_request.id}.csv"
+    from utils.report_generator import ReportGenerator
+
+    generator = ReportGenerator(analytics_crud.db)
+    start_date = report_request.filters.get('start_date') if report_request.filters else None
+    end_date = report_request.filters.get('end_date') if report_request.filters else None
+
+    # Default to last 30 days if no dates provided
+    if not start_date:
+        start_date = (datetime.now() - timedelta(days=30)).date()
+    if not end_date:
+        end_date = datetime.now().date()
+
+    filepath = generator.generate_usage_report_csv(
+        str(report_request.makerspace_id),
+        start_date,
+        end_date
+    )
+    return filepath
 
 async def generate_inventory_report(report_request, analytics_crud: AnalyticsCRUD) -> str:
     """Generate inventory analytics report"""
-    # Placeholder implementation
-    return f"/reports/inventory_{report_request.id}.csv"
+    from utils.report_generator import ReportGenerator
+
+    generator = ReportGenerator(analytics_crud.db)
+    start_date = report_request.filters.get('start_date') if report_request.filters else None
+    end_date = report_request.filters.get('end_date') if report_request.filters else None
+
+    if not start_date:
+        start_date = (datetime.now() - timedelta(days=30)).date()
+    if not end_date:
+        end_date = datetime.now().date()
+
+    filepath = generator.generate_inventory_report_xlsx(
+        str(report_request.makerspace_id),
+        start_date,
+        end_date
+    )
+    return filepath
 
 async def generate_revenue_report(report_request, analytics_crud: AnalyticsCRUD) -> str:
     """Generate revenue analytics report"""
-    # Placeholder implementation
-    return f"/reports/revenue_{report_request.id}.pdf"
+    from utils.report_generator import ReportGenerator
+
+    generator = ReportGenerator(analytics_crud.db)
+    start_date = report_request.filters.get('start_date') if report_request.filters else None
+    end_date = report_request.filters.get('end_date') if report_request.filters else None
+
+    if not start_date:
+        start_date = (datetime.now() - timedelta(days=30)).date()
+    if not end_date:
+        end_date = datetime.now().date()
+
+    filepath = generator.generate_revenue_report_pdf(
+        str(report_request.makerspace_id),
+        start_date,
+        end_date
+    )
+    return filepath
 
 async def generate_equipment_report(report_request, analytics_crud: AnalyticsCRUD) -> str:
     """Generate equipment analytics report"""
-    # Placeholder implementation
-    return f"/reports/equipment_{report_request.id}.xlsx"
+    from utils.report_generator import ReportGenerator
+
+    generator = ReportGenerator(analytics_crud.db)
+    start_date = report_request.filters.get('start_date') if report_request.filters else None
+    end_date = report_request.filters.get('end_date') if report_request.filters else None
+
+    if not start_date:
+        start_date = (datetime.now() - timedelta(days=30)).date()
+    if not end_date:
+        end_date = datetime.now().date()
+
+    filepath = generator.generate_equipment_report_xlsx(
+        str(report_request.makerspace_id),
+        start_date,
+        end_date
+    )
+    return filepath
