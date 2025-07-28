@@ -579,9 +579,9 @@ export default function Inventory() {
             </button>
           </div>
 
-          <button className="makrcave-btn-secondary">
+          <button className="makrcave-btn-secondary" onClick={exportToCSV}>
             <Download className="w-4 h-4 mr-2" />
-            Export
+            Export CSV
           </button>
         </div>
 
