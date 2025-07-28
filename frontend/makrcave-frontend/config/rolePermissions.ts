@@ -161,6 +161,11 @@ export const ROLE_PERMISSIONS: Record<UserRole, RolePermissions> = {
       link: 'assigned_makerspace',
       approve: 'assigned_makerspace',
     },
+    analytics: {
+      view: 'assigned_makerspace',
+      export: 'assigned_makerspace',
+      generate_reports: 'assigned_makerspace',
+    },
     admin: {
       userRoleManagement: false,
       systemLogs: false,
