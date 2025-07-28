@@ -14,6 +14,7 @@ import ReservationModal from '../components/ReservationModal';
 import EquipmentRating from '../components/EquipmentRating';
 import AddEquipmentModal from '../components/AddEquipmentModal';
 import MaintenanceModal from '../components/MaintenanceModal';
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar } from 'recharts';
 
 interface Equipment {
   id: string;
