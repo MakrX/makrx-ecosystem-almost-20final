@@ -73,12 +73,7 @@ export default function ManagerSidebar() {
       icon: DollarSign,
       active: isActive('/portal/billing')
     },
-    {
-      name: 'Maintenance',
-      href: '/portal/maintenance',
-      icon: AlertTriangle,
-      active: isActive('/portal/maintenance')
-    },
+
     {
       name: 'Makerspace Settings',
       href: '/portal/settings',
