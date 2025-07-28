@@ -45,6 +45,7 @@ const App = () => (
                       <Route path="reservations" element={<Reservations />} />
                       <Route path="members" element={<Members />} />
                       <Route path="billing" element={<Billing />} />
+                      <Route path="settings" element={<Settings />} />
                       <Route path="admin">
                         <Route path="users" element={<AdminUsers />} />
                         <Route path="makerspace" element={<AdminMakerspace />} />
