@@ -86,11 +86,11 @@ const Billing: React.FC = () => {
           <p className="text-gray-600">Manage your payments, invoices, and billing information</p>
         </div>
         <div className="flex items-center gap-3">
-          <Button variant="outline" onClick={() => setShowCheckoutModal(true)}>
+          <Button variant="outline" onClick={handleBuyCredits}>
             <Plus className="h-4 w-4 mr-2" />
             Buy Credits
           </Button>
-          <Button onClick={() => window.location.href = '/portal/billing/invoices'}>
+          <Button onClick={handleExportReports}>
             <Download className="h-4 w-4 mr-2" />
             Download Reports
           </Button>
