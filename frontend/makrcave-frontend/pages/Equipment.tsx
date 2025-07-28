@@ -411,25 +411,15 @@ export default function Equipment() {
           <p className="text-gray-600">Manage and reserve makerspace equipment</p>
         </div>
         
-        <div className="flex items-center gap-3">
+        {canCreateEquipment && (
           <button
-            onClick={exportToCSV}
-            className="inline-flex items-center px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors"
+            onClick={() => setShowAddModal(true)}
+            className="inline-flex items-center px-4 py-2 bg-makrx-blue text-white rounded-lg hover:bg-makrx-blue/90 transition-colors"
           >
-            <Download className="w-5 h-5 mr-2" />
-            Export CSV
+            <Plus className="w-5 h-5 mr-2" />
+            Add Equipment
           </button>
-
-          {canCreateEquipment && (
-            <button
-              onClick={() => setShowAddModal(true)}
-              className="inline-flex items-center px-4 py-2 bg-makrx-blue text-white rounded-lg hover:bg-makrx-blue/90 transition-colors"
-            >
-              <Plus className="w-5 h-5 mr-2" />
-              Add Equipment
-            </button>
-          )}
-        </div>
+        )}
       </div>
 
       {/* Statistics Cards */}
