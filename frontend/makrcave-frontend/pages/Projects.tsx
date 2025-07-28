@@ -386,18 +386,18 @@ const Projects: React.FC = () => {
           <CardContent>
             <div className="grid grid-cols-3 gap-4">
               <div className="text-center">
-                <p className="text-2xl font-bold text-blue-600">{projects.length}</p>
-                <p className="text-sm text-gray-600">Total Projects</p>
+                <p className="text-2xl font-bold text-blue-600">{filteredProjects.length}</p>
+                <p className="text-sm text-gray-600">{searchTerm || statusFilter !== 'all' || visibilityFilter !== 'all' ? 'Filtered' : 'Total'} Projects</p>
               </div>
               <div className="text-center">
                 <p className="text-2xl font-bold text-green-600">
-                  {projects.filter(p => p.status === 'in-progress').length}
+                  {filteredProjects.filter(p => p.status === 'in-progress').length}
                 </p>
                 <p className="text-sm text-gray-600">Active</p>
               </div>
               <div className="text-center">
                 <p className="text-2xl font-bold text-purple-600">
-                  {projects.filter(p => p.status === 'complete').length}
+                  {filteredProjects.filter(p => p.status === 'complete').length}
                 </p>
                 <p className="text-sm text-gray-600">Completed</p>
               </div>
