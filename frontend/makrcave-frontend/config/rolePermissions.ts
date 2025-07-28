@@ -368,7 +368,7 @@ export const UI_ACCESS: Record<UserRole, {
 }> = {
   super_admin: {
     dashboard: 'global',
-    adminPanels: ['users', 'makerspaces', 'inventory', 'analytics', 'feature-flags', 'system-logs'],
+    adminPanels: ['users', 'makerspaces', 'inventory', 'analytics', 'maintenance', 'feature-flags', 'system-logs'],
     inventoryAccess: 'full',
     canViewAllMakerspaces: true,
     canManageUsers: true,
