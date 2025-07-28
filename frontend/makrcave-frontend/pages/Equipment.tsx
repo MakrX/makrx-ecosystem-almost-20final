@@ -485,6 +485,70 @@ export default function Equipment() {
         </div>
       )}
 
+      {/* Equipment Usage Analytics */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+        <div className="bg-white p-6 rounded-lg border border-gray-200">
+          <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
+            <BarChart3 className="w-5 h-5" />
+            Equipment Usage Distribution
+          </h3>
+          <div className="h-64">
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart data={filteredEquipment.slice(0, 8)}>
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis
+                  dataKey="name"
+                  angle={-45}
+                  textAnchor="end"
+                  height={60}
+                  fontSize={12}
+                />
+                <YAxis />
+                <Tooltip formatter={(value) => [`${value} hours`, 'Usage Hours']} />
+                <Bar dataKey="total_usage_hours" fill="#3B82F6" />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
+
+        <div className="bg-white p-6 rounded-lg border border-gray-200">
+          <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
+            <Activity className="w-5 h-5" />
+            Equipment Status Overview
+          </h3>
+          <div className="space-y-4">
+            {['available', 'in_use', 'under_maintenance', 'offline'].map(status => {
+              const count = filteredEquipment.filter(eq => eq.status === status).length;
+              const percentage = filteredEquipment.length > 0 ? (count / filteredEquipment.length) * 100 : 0;
+              const statusColors = {
+                available: 'bg-green-500',
+                in_use: 'bg-blue-500',
+                under_maintenance: 'bg-yellow-500',
+                offline: 'bg-red-500'
+              };
+
+              return (
+                <div key={status} className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <div className={`w-3 h-3 rounded-full ${statusColors[status as keyof typeof statusColors]}`}></div>
+                    <span className="text-sm font-medium capitalize">{status.replace('_', ' ')}</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-sm text-gray-600">{count} ({percentage.toFixed(0)}%)</span>
+                    <div className="w-20 h-2 bg-gray-200 rounded-full">
+                      <div
+                        className={`h-2 rounded-full ${statusColors[status as keyof typeof statusColors]}`}
+                        style={{ width: `${percentage}%` }}
+                      ></div>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </div>
+
       {/* Search and Filters */}
       <div className="bg-white p-4 rounded-lg border border-gray-200 mb-6">
         <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between space-y-4 lg:space-y-0">
