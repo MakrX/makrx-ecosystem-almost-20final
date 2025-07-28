@@ -229,12 +229,11 @@ async def record_equipment_usage(
 @router.post("/inventory-analytics", response_model=dict)
 async def record_inventory_analytics(
     analytics_data: InventoryAnalyticsCreate,
-    current_user=Depends(get_current_user),
+    current_user=Depends(require_role(["admin", "super_admin"])),
     makerspace=Depends(get_current_makerspace),
     analytics_crud: AnalyticsCRUD = Depends(get_analytics_crud)
 ):
     """Record inventory consumption analytics"""
-    require_role(current_user, ["admin", "super_admin"])
     
     analytics = analytics_crud.record_inventory_analytics(str(makerspace.id), analytics_data)
     return {"id": str(analytics.id), "message": "Inventory analytics recorded successfully"}
@@ -253,12 +252,11 @@ async def record_project_analytics(
 @router.post("/revenue-analytics", response_model=dict)
 async def record_revenue_analytics(
     revenue_data: RevenueAnalyticsCreate,
-    current_user=Depends(get_current_user),
+    current_user=Depends(require_role(["admin", "super_admin"])),
     makerspace=Depends(get_current_makerspace),
     analytics_crud: AnalyticsCRUD = Depends(get_analytics_crud)
 ):
     """Record revenue transaction"""
-    require_role(current_user, ["admin", "super_admin"])
     
     revenue = analytics_crud.record_revenue_analytics(str(makerspace.id), revenue_data)
     return {"id": str(revenue.id), "message": "Revenue analytics recorded successfully"}
@@ -267,12 +265,11 @@ async def record_revenue_analytics(
 async def request_report(
     report_data: ReportRequestCreate,
     background_tasks: BackgroundTasks,
-    current_user=Depends(get_current_user),
+    current_user=Depends(require_role(["admin", "super_admin"])),
     makerspace=Depends(get_current_makerspace),
     analytics_crud: AnalyticsCRUD = Depends(get_analytics_crud)
 ):
     """Request a downloadable report"""
-    require_role(current_user, ["admin", "super_admin"])
     
     # Create report request
     report_request = analytics_crud.create_report_request(
@@ -288,12 +285,11 @@ async def request_report(
 
 @router.get("/reports", response_model=List[ReportRequestResponse])
 async def get_report_requests(
-    current_user=Depends(get_current_user),
+    current_user=Depends(require_role(["admin", "super_admin"])),
     makerspace=Depends(get_current_makerspace),
     analytics_crud: AnalyticsCRUD = Depends(get_analytics_crud)
 ):
     """Get user's report requests"""
-    require_role(current_user, ["admin", "super_admin"])
     
     requests = analytics_crud.get_report_requests(str(makerspace.id), str(current_user.id))
     return [ReportRequestResponse.from_orm(req) for req in requests]
@@ -301,12 +297,11 @@ async def get_report_requests(
 @router.get("/reports/{request_id}/download")
 async def download_report(
     request_id: str,
-    current_user=Depends(get_current_user),
+    current_user=Depends(require_role(["admin", "super_admin"])),
     makerspace=Depends(get_current_makerspace),
     analytics_crud: AnalyticsCRUD = Depends(get_analytics_crud)
 ):
     """Download generated report file"""
-    require_role(current_user, ["admin", "super_admin"])
     
     # Get report request
     report_request = analytics_crud.db.query(analytics_crud.ReportRequest).filter(
