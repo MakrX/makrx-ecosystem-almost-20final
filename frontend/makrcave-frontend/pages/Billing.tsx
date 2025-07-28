@@ -58,22 +58,23 @@ interface BillingStats {
 
 const Billing: React.FC = () => {
   const { user } = useAuth();
+  const {
+    state,
+    showCheckout,
+    hideCheckout,
+    setTransactionFilters,
+    setInvoiceFilters,
+    downloadReceipt,
+    downloadInvoice,
+    retryTransaction,
+    fetchAnalytics,
+    exportReport,
+    addPaymentMethod,
+    setDefaultPaymentMethod,
+    deletePaymentMethod
+  } = useBilling();
+
   const [activeTab, setActiveTab] = useState('overview');
-  const [transactions, setTransactions] = useState<Transaction[]>([]);
-  const [invoices, setInvoices] = useState<Invoice[]>([]);
-  const [billingStats, setBillingStats] = useState<BillingStats>({
-    total_spent: 2450.50,
-    this_month_spent: 320.75,
-    pending_amount: 0,
-    credits_balance: 150,
-    successful_transactions: 24,
-    failed_transactions: 1
-  });
-  const [loading, setLoading] = useState(false);
-  const [searchQuery, setSearchQuery] = useState('');
-  const [statusFilter, setStatusFilter] = useState('all');
-  const [typeFilter, setTypeFilter] = useState('all');
-  const [showCheckoutModal, setShowCheckoutModal] = useState(false);
 
   // Mock data for demonstration
   const mockTransactions: Transaction[] = [
