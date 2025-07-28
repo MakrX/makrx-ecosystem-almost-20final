@@ -154,14 +154,53 @@ const Members: React.FC = () => {
       admin: 'bg-red-100 text-red-800',
       makerspace_admin: 'bg-yellow-100 text-yellow-800',
     };
-    
+
     return (
       <Badge variant="outline" className={variants[role as keyof typeof variants] || 'bg-gray-100 text-gray-800'}>
-        {role === 'service_provider' ? 'Service Provider' : 
-         role === 'makerspace_admin' ? 'Manager' : 
+        {role === 'service_provider' ? 'Service Provider' :
+         role === 'makerspace_admin' ? 'Manager' :
          role.charAt(0).toUpperCase() + role.slice(1)}
       </Badge>
     );
+  };
+
+  const exportToCSV = () => {
+    const csvHeaders = [
+      'Member ID', 'Name', 'Email', 'Phone', 'Role', 'Status', 'Plan',
+      'Join Date', 'Last Login', 'Projects Count', 'Skills', 'Location'
+    ];
+
+    const csvData = filteredMembers.map(member => [
+      member.id,
+      `${member.firstName} ${member.lastName}`,
+      member.email,
+      member.phone || '',
+      member.role,
+      member.membership_status,
+      member.membership_plan || '',
+      member.joinDate,
+      member.lastLogin || '',
+      member.projectsCount || 0,
+      member.skills?.join('; ') || '',
+      member.location || ''
+    ]);
+
+    const csvContent = [
+      csvHeaders.join(','),
+      ...csvData.map(row => row.map(field =>
+        typeof field === 'string' && field.includes(',') ? `"${field}"` : field
+      ).join(','))
+    ].join('\n');
+
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    const url = URL.createObjectURL(blob);
+    link.setAttribute('href', url);
+    link.setAttribute('download', `members_export_${new Date().toISOString().split('T')[0]}.csv`);
+    link.style.visibility = 'hidden';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
   };
 
   if (loading) {
