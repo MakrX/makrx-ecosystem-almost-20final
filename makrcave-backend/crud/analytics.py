@@ -60,6 +60,15 @@ class AnalyticsCRUD:
 
     # Analytics Overview
     def get_analytics_overview(self, makerspace_id: str) -> Dict[str, Any]:
+        # Check if we have any data, if not use mock data
+        total_events = self.db.query(func.count(UsageEvent.id)).filter(
+            UsageEvent.makerspace_id == uuid.UUID(makerspace_id)
+        ).scalar() or 0
+
+        if total_events == 0:
+            # No data available, use mock data
+            from utils.analytics_mock_data import get_mock_analytics_overview
+            return get_mock_analytics_overview()
         today = datetime.now().date()
         week_ago = today - timedelta(days=7)
         month_ago = today - timedelta(days=30)
