@@ -54,7 +54,7 @@ export default function ManagerSidebar() {
     },
     {
       name: 'Analytics & Reports',
-      href: '/portal/reports',
+      href: '/portal/analytics',
       icon: BarChart3,
       active: isActive('/portal/reports')
     }
