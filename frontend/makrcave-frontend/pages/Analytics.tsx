@@ -396,13 +396,7 @@ const Analytics: React.FC = () => {
         </TabsContent>
       </Tabs>
 
-      {/* Download Report Modal */}
-      {showReportModal && (
-        <DownloadReportModal
-          isOpen={showReportModal}
-          onClose={() => setShowReportModal(false)}
-        />
-      )}
+
     </div>
   );
 };
