@@ -201,11 +201,144 @@ app.get('/api/v1/analytics/revenue', (req, res) => {
   });
 });
 
+// Maintenance endpoints
+app.get('/api/v1/maintenance/logs', (req, res) => {
+  const mockLogs = [
+    {
+      id: 'log-1',
+      equipment_id: 'eq-1',
+      equipment_name: '3D Printer Pro',
+      makerspace_id: 'ms-1',
+      type: 'preventive',
+      status: 'scheduled',
+      priority: 'medium',
+      description: 'Monthly preventive maintenance - nozzle cleaning and calibration',
+      created_by: 'Sarah Martinez',
+      assigned_to: 'Tech Team',
+      created_at: '2024-01-15T10:00:00Z',
+      scheduled_date: '2024-01-20T14:00:00Z',
+      estimated_duration: 120,
+      cost: 50
+    },
+    {
+      id: 'log-2',
+      equipment_id: 'eq-2',
+      equipment_name: 'Laser Cutter X1',
+      makerspace_id: 'ms-1',
+      type: 'breakdown',
+      status: 'in_progress',
+      priority: 'high',
+      description: 'Laser alignment issue - cutting accuracy problems reported',
+      created_by: 'Mike Johnson',
+      assigned_to: 'Alex Tech',
+      created_at: '2024-01-18T09:30:00Z',
+      estimated_duration: 180,
+      parts_used: ['Laser mirror', 'Alignment tool'],
+      cost: 150
+    },
+    {
+      id: 'log-3',
+      equipment_id: 'eq-3',
+      equipment_name: 'CNC Mill Pro',
+      makerspace_id: 'ms-1',
+      type: 'repair',
+      status: 'resolved',
+      priority: 'medium',
+      description: 'Spindle bearing replacement',
+      created_by: 'Sarah Martinez',
+      assigned_to: 'Tech Team',
+      created_at: '2024-01-10T08:00:00Z',
+      resolved_at: '2024-01-12T16:30:00Z',
+      actual_duration: 240,
+      cost: 300,
+      parts_used: ['Spindle bearing set', 'Lubricant']
+    }
+  ];
+  res.json(mockLogs);
+});
+
+app.get('/api/v1/maintenance/schedules', (req, res) => {
+  const mockSchedules = [
+    {
+      id: 'sched-1',
+      equipment_id: 'eq-1',
+      equipment_name: '3D Printer Pro',
+      interval_type: 'days',
+      interval_value: 30,
+      last_maintenance_date: '2023-12-20',
+      next_due_date: '2024-01-20',
+      is_active: true,
+      maintenance_type: 'Preventive Cleaning',
+      responsible_team: 'Tech Team'
+    },
+    {
+      id: 'sched-2',
+      equipment_id: 'eq-2',
+      equipment_name: 'Laser Cutter X1',
+      interval_type: 'hours',
+      interval_value: 100,
+      last_maintenance_date: '2024-01-05',
+      next_due_date: '2024-02-15',
+      is_active: true,
+      maintenance_type: 'Lens Cleaning & Calibration',
+      responsible_team: 'Laser Specialists'
+    }
+  ];
+  res.json(mockSchedules);
+});
+
+app.get('/api/v1/maintenance/equipment-status', (req, res) => {
+  const mockStatuses = [
+    {
+      equipment_id: 'eq-1',
+      name: '3D Printer Pro',
+      status: 'maintenance_scheduled',
+      last_maintenance: '2023-12-20',
+      next_maintenance: '2024-01-20'
+    },
+    {
+      equipment_id: 'eq-2',
+      name: 'Laser Cutter X1',
+      status: 'out_of_service',
+      current_issue: 'Laser alignment issue',
+      estimated_repair_time: '3 hours',
+      last_maintenance: '2024-01-05',
+      next_maintenance: '2024-02-15'
+    },
+    {
+      equipment_id: 'eq-3',
+      name: 'CNC Mill Pro',
+      status: 'available',
+      last_maintenance: '2024-01-12',
+      next_maintenance: '2024-02-12'
+    }
+  ];
+  res.json(mockStatuses);
+});
+
+app.post('/api/v1/maintenance/logs', (req, res) => {
+  const newLog = {
+    id: `log-${Date.now()}`,
+    ...req.body,
+    created_at: new Date().toISOString()
+  };
+  res.status(201).json(newLog);
+});
+
+app.post('/api/v1/maintenance/schedules', (req, res) => {
+  const newSchedule = {
+    id: `sched-${Date.now()}`,
+    ...req.body,
+    created_at: new Date().toISOString()
+  };
+  res.status(201).json(newSchedule);
+});
+
 // Generic 404 handler for other endpoints
 app.use('*', (req, res) => {
-  res.status(404).json({ 
+  res.status(404).json({
     detail: `Endpoint ${req.method} ${req.originalUrl} not found`,
-    mock_server: true 
+    mock_server: true
   });
 });
 
