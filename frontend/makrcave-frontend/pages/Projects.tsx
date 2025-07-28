@@ -214,6 +214,55 @@ const Projects: React.FC = () => {
     }
   };
 
+  // Filter and sort projects
+  const filteredProjects = projects.filter(project => {
+    // Search filter
+    if (searchTerm) {
+      const searchLower = searchTerm.toLowerCase();
+      const matchesSearch =
+        project.name.toLowerCase().includes(searchLower) ||
+        (project.description && project.description.toLowerCase().includes(searchLower)) ||
+        project.tags.some(tag => tag.toLowerCase().includes(searchLower));
+      if (!matchesSearch) return false;
+    }
+
+    // Status filter
+    if (statusFilter !== 'all' && project.status !== statusFilter) {
+      return false;
+    }
+
+    // Visibility filter
+    if (visibilityFilter !== 'all' && project.visibility !== visibilityFilter) {
+      return false;
+    }
+
+    return true;
+  }).sort((a, b) => {
+    let aValue: any, bValue: any;
+
+    switch (sortBy) {
+      case 'name':
+        aValue = a.name.toLowerCase();
+        bValue = b.name.toLowerCase();
+        break;
+      case 'created_at':
+        aValue = new Date(a.created_at);
+        bValue = new Date(b.created_at);
+        break;
+      case 'updated_at':
+      default:
+        aValue = new Date(a.updated_at);
+        bValue = new Date(b.updated_at);
+        break;
+    }
+
+    if (sortDirection === 'asc') {
+      return aValue < bValue ? -1 : aValue > bValue ? 1 : 0;
+    } else {
+      return aValue > bValue ? -1 : aValue < bValue ? 1 : 0;
+    }
+  });
+
   useEffect(() => {
     fetchProjects();
   }, [searchTerm, statusFilter, visibilityFilter, sortBy, sortDirection]);
