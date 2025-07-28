@@ -14,7 +14,7 @@ from schemas.analytics import (
     EquipmentUsageLogCreate, InventoryAnalyticsCreate, ProjectAnalyticsCreate,
     RevenueAnalyticsCreate, TimePeriodEnum, ChartData, DashboardSection
 )
-from utils.role_checker import require_role
+from dependencies import require_role
 
 router = APIRouter(prefix="/analytics", tags=["analytics"])
 
