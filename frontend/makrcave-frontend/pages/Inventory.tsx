@@ -87,6 +87,47 @@ export default function Inventory() {
   const canViewUsage = user?.role === 'super_admin' || user?.role === 'makerspace_admin' || user?.role === 'service_provider';
   const canLinkToBOM = user?.role !== 'admin'; // All except global admin
 
+  // Export functionality
+  const exportToCSV = () => {
+    const csvHeaders = [
+      'Name', 'Category', 'Subcategory', 'Quantity', 'Unit', 'Min Threshold',
+      'Location', 'Status', 'Supplier Type', 'Product Code', 'Price', 'Supplier', 'Description'
+    ];
+
+    const csvData = filteredInventory.map(item => [
+      item.name,
+      item.category,
+      item.subcategory || '',
+      item.quantity,
+      item.unit,
+      item.minThreshold,
+      item.location,
+      item.status,
+      item.supplierType,
+      item.productCode || '',
+      item.price || '',
+      item.supplier || '',
+      item.description || ''
+    ]);
+
+    const csvContent = [
+      csvHeaders.join(','),
+      ...csvData.map(row => row.map(field =>
+        typeof field === 'string' && field.includes(',') ? `"${field}"` : field
+      ).join(','))
+    ].join('\n');
+
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    const url = URL.createObjectURL(blob);
+    link.setAttribute('href', url);
+    link.setAttribute('download', `inventory_export_${new Date().toISOString().split('T')[0]}.csv`);
+    link.style.visibility = 'hidden';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   // Filter inventory based on user role and makerspace
   const filteredInventory = useMemo(() => {
     let items = inventory as InventoryItem[];
