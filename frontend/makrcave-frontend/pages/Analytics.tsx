@@ -24,7 +24,7 @@ import InventoryInsights from '../components/analytics/InventoryInsights';
 import EquipmentMetrics from '../components/analytics/EquipmentMetrics';
 import ProjectAnalytics from '../components/analytics/ProjectAnalytics';
 import RevenueCharts from '../components/analytics/RevenueCharts';
-import DownloadReportModal from '../components/analytics/DownloadReportModal';
+
 import DataExports from '../components/analytics/DataExports';
 
 interface AnalyticsOverview {
