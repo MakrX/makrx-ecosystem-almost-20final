@@ -303,7 +303,7 @@ const Analytics: React.FC = () => {
 
       {/* Analytics Tabs */}
       <Tabs value={activeTab} onValueChange={setActiveTab}>
-        <TabsList className="grid w-full grid-cols-5">
+        <TabsList className="grid w-full grid-cols-6">
           <TabsTrigger value="overview" className="flex items-center gap-2">
             <TrendingUp className="h-4 w-4" />
             Overview
@@ -323,6 +323,10 @@ const Analytics: React.FC = () => {
           <TabsTrigger value="revenue" className="flex items-center gap-2">
             <CreditCard className="h-4 w-4" />
             Revenue
+          </TabsTrigger>
+          <TabsTrigger value="exports" className="flex items-center gap-2">
+            <Download className="h-4 w-4" />
+            Data Exports
           </TabsTrigger>
         </TabsList>
 
