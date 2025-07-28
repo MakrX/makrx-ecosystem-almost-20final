@@ -18,8 +18,7 @@ import {
   CheckCircle,
   AlertCircle,
   Star,
-  MoreHorizontal,
-  Download
+  MoreHorizontal
 } from 'lucide-react';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '../components/ui/dropdown-menu';
 import { useAuth } from '../contexts/AuthContext';
