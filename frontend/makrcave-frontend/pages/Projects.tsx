@@ -535,7 +535,7 @@ const Projects: React.FC = () => {
       )}
 
       {/* Projects Grid/List */}
-      {projects.length === 0 && !loading && !error ? (
+      {filteredProjects.length === 0 && !loading && !error ? (
         <Card>
           <CardContent className="p-12 text-center">
             <div className="max-w-md mx-auto">
