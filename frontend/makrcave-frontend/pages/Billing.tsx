@@ -76,104 +76,15 @@ const Billing: React.FC = () => {
 
   const [activeTab, setActiveTab] = useState('overview');
 
-  // Mock data for demonstration
-  const mockTransactions: Transaction[] = [
-    {
-      id: '1',
-      amount: 99.99,
-      currency: 'INR',
-      type: 'membership',
-      status: 'success',
-      description: 'Pro Maker Membership - Monthly',
-      gateway: 'razorpay',
-      created_at: '2024-01-20T10:30:00Z',
-      completed_at: '2024-01-20T10:31:15Z'
-    },
-    {
-      id: '2',
-      amount: 150.00,
-      currency: 'INR',
-      type: 'credit_purchase',
-      status: 'success',
-      description: 'Credit Purchase - 150 Credits',
-      gateway: 'razorpay',
-      created_at: '2024-01-18T14:20:00Z',
-      completed_at: '2024-01-18T14:21:05Z'
-    },
-    {
-      id: '3',
-      amount: 45.50,
-      currency: 'INR',
-      type: 'printing_3d',
-      status: 'success',
-      description: '3D Print Job #PRT001',
-      gateway: 'credit',
-      created_at: '2024-01-17T09:15:00Z',
-      completed_at: '2024-01-17T09:15:00Z'
-    },
-    {
-      id: '4',
-      amount: 25.25,
-      currency: 'INR',
-      type: 'laser_cutting',
-      status: 'failed',
-      description: 'Laser Cut Job #LC003',
-      gateway: 'razorpay',
-      created_at: '2024-01-16T16:45:00Z'
-    },
-    {
-      id: '5',
-      amount: 200.00,
-      currency: 'INR',
-      type: 'workshop',
-      status: 'pending',
-      description: 'Arduino Workshop Registration',
-      gateway: 'razorpay',
-      created_at: '2024-01-15T11:00:00Z'
-    }
-  ];
-
-  const mockInvoices: Invoice[] = [
-    {
-      id: '1',
-      invoice_number: 'INV-2024-01-00124',
-      amount: 99.99,
-      total_amount: 99.99,
-      currency: 'INR',
-      status: 'paid',
-      title: 'Pro Maker Membership',
-      issue_date: '2024-01-20T00:00:00Z',
-      due_date: '2024-02-19T00:00:00Z',
-      paid_date: '2024-01-20T10:31:15Z'
-    },
-    {
-      id: '2',
-      invoice_number: 'INV-2024-01-00125',
-      amount: 150.00,
-      total_amount: 150.00,
-      currency: 'INR',
-      status: 'paid',
-      title: 'Credit Purchase',
-      issue_date: '2024-01-18T00:00:00Z',
-      paid_date: '2024-01-18T14:21:05Z'
-    },
-    {
-      id: '3',
-      invoice_number: 'INV-2024-01-00126',
-      amount: 200.00,
-      total_amount: 200.00,
-      currency: 'INR',
-      status: 'pending',
-      title: 'Arduino Workshop Registration',
-      issue_date: '2024-01-15T00:00:00Z',
-      due_date: '2024-01-30T00:00:00Z'
-    }
-  ];
-
-  useEffect(() => {
-    setTransactions(mockTransactions);
-    setInvoices(mockInvoices);
-  }, []);
+  // Calculate billing stats from context data
+  const billingStats = {
+    total_spent: state.analytics?.revenue.total || 0,
+    this_month_spent: state.analytics?.revenue.monthly || 0,
+    pending_amount: state.transactions.filter(t => t.status === 'pending').reduce((sum, t) => sum + t.amount, 0),
+    credits_balance: state.creditWallet?.balance || 0,
+    successful_transactions: state.analytics?.transactions.successful_count || 0,
+    failed_transactions: state.analytics?.transactions.failed_count || 0
+  };
 
   const getStatusIcon = (status: string) => {
     switch (status) {
