@@ -84,7 +84,7 @@ const Analytics: React.FC = () => {
   const fetchDashboardData = async () => {
     setLoading(true);
     try {
-      const response = await fetch('/api/analytics/dashboard', {
+      const response = await fetch('/api/v1/analytics/dashboard', {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
           'Content-Type': 'application/json',
