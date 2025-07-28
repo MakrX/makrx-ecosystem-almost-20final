@@ -34,12 +34,11 @@ async def get_analytics_overview(
 
 @router.get("/dashboard", response_model=AnalyticsDashboardResponse)
 async def get_analytics_dashboard(
-    current_user=Depends(get_current_user),
+    current_user=Depends(require_role(["admin", "super_admin"])),
     makerspace=Depends(get_current_makerspace),
     analytics_crud: AnalyticsCRUD = Depends(get_analytics_crud)
 ):
     """Get complete dashboard data with all sections"""
-    require_role(current_user, ["admin", "super_admin"])
     
     # Get overview data
     overview = analytics_crud.get_analytics_overview(str(makerspace.id))
@@ -124,36 +123,33 @@ async def get_analytics_dashboard(
 @router.get("/usage", response_model=UsageStatsResponse)
 async def get_usage_analytics(
     period: TimePeriodEnum = TimePeriodEnum.DAILY,
-    current_user=Depends(get_current_user),
+    current_user=Depends(require_role(["admin", "super_admin"])),
     makerspace=Depends(get_current_makerspace),
     analytics_crud: AnalyticsCRUD = Depends(get_analytics_crud)
 ):
     """Get user activity and usage statistics"""
-    require_role(current_user, ["admin", "super_admin"])
     
     usage_stats = analytics_crud.get_usage_stats(str(makerspace.id), period)
     return UsageStatsResponse(**usage_stats)
 
 @router.get("/inventory", response_model=InventoryInsightsResponse)
 async def get_inventory_insights(
-    current_user=Depends(get_current_user),
+    current_user=Depends(require_role(["admin", "super_admin"])),
     makerspace=Depends(get_current_makerspace),
     analytics_crud: AnalyticsCRUD = Depends(get_analytics_crud)
 ):
     """Get inventory consumption and efficiency insights"""
-    require_role(current_user, ["admin", "super_admin"])
     
     insights = analytics_crud.get_inventory_insights(str(makerspace.id))
     return InventoryInsightsResponse(**insights)
 
 @router.get("/equipment", response_model=List[EquipmentMetricsResponse])
 async def get_equipment_metrics(
-    current_user=Depends(get_current_user),
+    current_user=Depends(require_role(["admin", "super_admin"])),
     makerspace=Depends(get_current_makerspace),
     analytics_crud: AnalyticsCRUD = Depends(get_analytics_crud)
 ):
     """Get equipment usage, uptime, and maintenance metrics"""
-    require_role(current_user, ["admin", "super_admin"])
     
     metrics = analytics_crud.get_equipment_metrics(str(makerspace.id))
     return [EquipmentMetricsResponse(**metric) for metric in metrics]
