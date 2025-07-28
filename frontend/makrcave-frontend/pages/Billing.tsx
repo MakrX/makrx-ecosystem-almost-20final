@@ -236,10 +236,26 @@ const Billing: React.FC = () => {
         </TabsContent>
       </Tabs>
 
+      {/* Payment Methods Section */}
+      {activeTab === 'overview' && (
+        <PaymentMethodCard
+          paymentMethods={state.paymentMethods}
+          onAddPaymentMethod={() => console.log('Add payment method')}
+          onEditPaymentMethod={(method) => console.log('Edit payment method:', method)}
+          onDeletePaymentMethod={deletePaymentMethod}
+          onSetDefaultMethod={setDefaultPaymentMethod}
+        />
+      )}
+
       {/* Checkout Modal */}
       <CheckoutModal
-        open={showCheckoutModal}
-        onOpenChange={setShowCheckoutModal}
+        open={state.showCheckoutModal}
+        onOpenChange={hideCheckout}
+        items={state.checkoutItems}
+        availablePaymentMethods={state.paymentMethods}
+        creditBalance={state.creditWallet?.balance || 0}
+        onProcessPayment={(paymentData) => console.log('Process payment:', paymentData)}
+        onAddPaymentMethod={() => console.log('Add payment method from checkout')}
       />
     </div>
   );
