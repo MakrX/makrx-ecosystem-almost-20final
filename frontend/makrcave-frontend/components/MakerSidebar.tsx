@@ -51,6 +51,12 @@ export default function MakerSidebar() {
       href: '/portal/materials',
       icon: Package,
       active: isActive('/portal/materials')
+    },
+    {
+      name: 'Billing & Payments',
+      href: '/portal/billing',
+      icon: CreditCard,
+      active: isActive('/portal/billing')
     }
   ];
 
