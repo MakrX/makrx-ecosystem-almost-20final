@@ -541,6 +541,100 @@ export default function Inventory() {
         />
       )}
 
+      {/* Inventory Analytics */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+        <div className="makrcave-card">
+          <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
+            <Package className="w-5 h-5" />
+            Inventory by Category
+          </h3>
+          <div className="h-64">
+            <ResponsiveContainer width="100%" height="100%">
+              <PieChart>
+                <Pie
+                  data={[
+                    'filament', 'resin', 'tools', 'electronics', 'materials', 'consumables'
+                  ].map(category => ({
+                    name: category.charAt(0).toUpperCase() + category.slice(1),
+                    value: filteredInventory.filter(item => item.category === category).length,
+                    color: {
+                      filament: '#3B82F6',
+                      resin: '#10B981',
+                      tools: '#F59E0B',
+                      electronics: '#8B5CF6',
+                      materials: '#EF4444',
+                      consumables: '#06B6D4'
+                    }[category] || '#6B7280'
+                  })).filter(item => item.value > 0)}
+                  cx="50%"
+                  cy="50%"
+                  outerRadius={80}
+                  dataKey="value"
+                  label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(0)}%`}
+                >
+                  {[
+                    'filament', 'resin', 'tools', 'electronics', 'materials', 'consumables'
+                  ].map((category, index) => (
+                    <Cell key={`cell-${index}`} fill={({
+                      filament: '#3B82F6',
+                      resin: '#10B981',
+                      tools: '#F59E0B',
+                      electronics: '#8B5CF6',
+                      materials: '#EF4444',
+                      consumables: '#06B6D4'
+                    })[category] || '#6B7280'} />
+                  ))}
+                </Pie>
+                <Tooltip />
+              </PieChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
+
+        <div className="makrcave-card">
+          <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
+            <AlertTriangle className="w-5 h-5" />
+            Stock Status Overview
+          </h3>
+          <div className="space-y-4">
+            <div className="grid grid-cols-2 gap-4">
+              <div className="text-center p-4 bg-green-50 rounded-lg">
+                <p className="text-2xl font-bold text-green-600">
+                  {filteredInventory.filter(item => item.quantity > item.minThreshold).length}
+                </p>
+                <p className="text-sm text-green-700">Well Stocked</p>
+              </div>
+              <div className="text-center p-4 bg-red-50 rounded-lg">
+                <p className="text-2xl font-bold text-red-600">
+                  {filteredInventory.filter(item => item.quantity <= item.minThreshold).length}
+                </p>
+                <p className="text-sm text-red-700">Low Stock</p>
+              </div>
+            </div>
+            <div className="grid grid-cols-3 gap-4 text-center">
+              <div>
+                <p className="text-lg font-bold text-blue-600">
+                  {filteredInventory.filter(item => item.supplierType === 'makrx').length}
+                </p>
+                <p className="text-xs text-gray-600">MakrX Items</p>
+              </div>
+              <div>
+                <p className="text-lg font-bold text-purple-600">
+                  {filteredInventory.filter(item => item.supplierType === 'external').length}
+                </p>
+                <p className="text-xs text-gray-600">External Items</p>
+              </div>
+              <div>
+                <p className="text-lg font-bold text-orange-600">
+                  {filteredInventory.filter(item => item.status === 'active').length}
+                </p>
+                <p className="text-xs text-gray-600">Active Items</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
       {/* Filters and Search */}
       <div className="makrcave-card">
         <div className="flex items-center gap-4 mb-4">
