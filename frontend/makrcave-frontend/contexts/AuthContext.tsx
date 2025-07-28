@@ -125,6 +125,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const logout = () => {
     localStorage.removeItem('makrcave_user');
     localStorage.removeItem('makrcave_access_token');
+    localStorage.removeItem('authToken');
+    localStorage.removeItem('auth_token');
     setUser(null);
   };
 
