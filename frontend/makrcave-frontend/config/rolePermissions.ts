@@ -110,6 +110,11 @@ export const ROLE_PERMISSIONS: Record<UserRole, RolePermissions> = {
       link: 'none',
       approve: 'none',
     },
+    analytics: {
+      view: 'all',
+      export: 'all',
+      generate_reports: 'none',
+    },
     admin: {
       userRoleManagement: true,
       systemLogs: false,
