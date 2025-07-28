@@ -74,7 +74,7 @@ const Analytics: React.FC = () => {
   const [dashboardData, setDashboardData] = useState<AnalyticsDashboard | null>(null);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
-  const [showReportModal, setShowReportModal] = useState(false);
+
   const [lastRefresh, setLastRefresh] = useState<Date | null>(null);
 
   useEffect(() => {
