@@ -10,6 +10,7 @@ import { FeatureGate } from '../components/FeatureGate';
 import InventoryCard from '../components/InventoryCard';
 import LowStockBanner from '../components/LowStockBanner';
 import UsageTimeline from '../components/UsageTimeline';
+import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, BarChart, Bar, XAxis, YAxis, CartesianGrid } from 'recharts';
 
 interface InventoryUsageLog {
   id: string;
