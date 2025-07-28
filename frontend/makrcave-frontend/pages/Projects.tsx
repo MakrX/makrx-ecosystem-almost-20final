@@ -362,16 +362,10 @@ const Projects: React.FC = () => {
             Manage your collaborative and personal projects
           </p>
         </div>
-        <div className="flex items-center gap-3">
-          <Button variant="outline" onClick={exportToCSV} className="flex items-center gap-2">
-            <Download className="h-4 w-4" />
-            Export CSV
-          </Button>
-          <Button onClick={() => setShowAddModal(true)} className="flex items-center gap-2">
-            <Plus className="h-4 w-4" />
-            New Project
-          </Button>
-        </div>
+        <Button onClick={() => setShowAddModal(true)} className="flex items-center gap-2">
+          <Plus className="h-4 w-4" />
+          New Project
+        </Button>
       </div>
 
       {/* Quick Analytics */}
