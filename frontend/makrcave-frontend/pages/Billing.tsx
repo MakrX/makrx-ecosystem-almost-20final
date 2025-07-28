@@ -22,39 +22,7 @@ import CheckoutModal from '../components/billing/CheckoutModal';
 import { useAuth } from '../contexts/AuthContext';
 import { useBilling } from '../contexts/BillingContext';
 
-interface Transaction {
-  id: string;
-  amount: number;
-  currency: string;
-  type: string;
-  status: string;
-  description: string;
-  gateway: string;
-  created_at: string;
-  completed_at?: string;
-}
 
-interface Invoice {
-  id: string;
-  invoice_number: string;
-  amount: number;
-  total_amount: number;
-  currency: string;
-  status: string;
-  title: string;
-  issue_date: string;
-  due_date?: string;
-  paid_date?: string;
-}
-
-interface BillingStats {
-  total_spent: number;
-  this_month_spent: number;
-  pending_amount: number;
-  credits_balance: number;
-  successful_transactions: number;
-  failed_transactions: number;
-}
 
 const Billing: React.FC = () => {
   const { user } = useAuth();
