@@ -372,7 +372,7 @@ export const UI_ACCESS: Record<UserRole, {
   },
   makerspace_admin: {
     dashboard: 'makerspace',
-    adminPanels: ['inventory', 'reservations', 'makerspace-settings', 'assigned-users'],
+    adminPanels: ['inventory', 'reservations', 'makerspace-settings', 'assigned-users', 'analytics'],
     inventoryAccess: 'full',
     canViewAllMakerspaces: false,
     canManageUsers: false,
