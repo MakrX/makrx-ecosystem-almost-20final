@@ -128,6 +128,14 @@ class AnalyticsCRUD:
 
     # Usage Statistics
     def get_usage_stats(self, makerspace_id: str, period: TimePeriodEnum = TimePeriodEnum.DAILY) -> Dict[str, Any]:
+        # Check if we have usage data
+        total_events = self.db.query(func.count(UsageEvent.id)).filter(
+            UsageEvent.makerspace_id == uuid.UUID(makerspace_id)
+        ).scalar() or 0
+
+        if total_events == 0:
+            from utils.analytics_mock_data import get_mock_usage_stats
+            return get_mock_usage_stats(period.value)
         end_date = datetime.now()
         
         if period == TimePeriodEnum.DAILY:
