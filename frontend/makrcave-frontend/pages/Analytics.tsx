@@ -68,8 +68,22 @@ interface AnalyticsDashboard {
 }
 
 const Analytics: React.FC = () => {
-  const { user } = useAuth();
+  const { user, hasPermission } = useAuth();
   const { toast } = useToast();
+
+  // Check if user has analytics access
+  if (!hasPermission('analytics', 'view')) {
+    return (
+      <div className="flex items-center justify-center min-h-96">
+        <div className="text-center">
+          <AlertCircle className="h-12 w-12 mx-auto text-red-400 mb-4" />
+          <h3 className="text-lg font-medium text-gray-900 mb-2">Access Denied</h3>
+          <p className="text-gray-600 mb-4">You don't have permission to view analytics data</p>
+          <p className="text-sm text-gray-500">Contact your administrator for access</p>
+        </div>
+      </div>
+    );
+  }
   const [activeTab, setActiveTab] = useState('overview');
   const [dashboardData, setDashboardData] = useState<AnalyticsDashboard | null>(null);
   const [loading, setLoading] = useState(true);
