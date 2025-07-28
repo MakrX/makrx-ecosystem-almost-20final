@@ -189,10 +189,7 @@ const Analytics: React.FC = () => {
               Updated {lastRefresh.toLocaleTimeString()}
             </Badge>
           )}
-          <Button variant="outline" onClick={() => setShowReportModal(true)}>
-            <Download className="h-4 w-4 mr-2" />
-            Export Report
-          </Button>
+
           <Button 
             onClick={refreshData} 
             disabled={refreshing}
