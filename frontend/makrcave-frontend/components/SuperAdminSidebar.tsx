@@ -12,7 +12,8 @@ import {
   Activity,
   LogOut,
   Crown,
-  ToggleLeft
+  ToggleLeft,
+  DollarSign
 } from 'lucide-react';
 
 export default function SuperAdminSidebar() {
