@@ -49,6 +49,11 @@ export const ROLE_PERMISSIONS: Record<UserRole, RolePermissions> = {
       link: 'all',
       approve: 'all',
     },
+    analytics: {
+      view: 'all',
+      export: 'all',
+      generate_reports: 'all',
+    },
     admin: {
       userRoleManagement: true,
       systemLogs: true,
