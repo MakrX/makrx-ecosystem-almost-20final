@@ -17,6 +17,7 @@ import Reservations from "./pages/Reservations";
 import Members from "./pages/Members";
 import Billing from "./pages/Billing";
 import Analytics from "./pages/Analytics";
+import Maintenance from "./pages/Maintenance";
 import Settings from "./pages/Settings";
 import AdminUsers from "./pages/admin/Users";
 import AdminMakerspace from "./pages/admin/Makerspace";
@@ -47,6 +48,7 @@ const App = () => (
                       <Route path="members" element={<Members />} />
                       <Route path="billing" element={<Billing />} />
                       <Route path="analytics" element={<Analytics />} />
+                      <Route path="maintenance" element={<Maintenance />} />
                       <Route path="settings" element={<Settings />} />
                       <Route path="admin">
                         <Route path="users" element={<AdminUsers />} />
