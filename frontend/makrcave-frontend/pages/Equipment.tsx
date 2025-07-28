@@ -4,7 +4,7 @@ import {
   Clock, AlertTriangle, CheckCircle, XCircle, Settings,
   Grid, List, Eye, Edit, Trash2, BookOpen, Shield,
   PlayCircle, PauseCircle, BarChart3, Users, Activity,
-  X, DollarSign
+  X, DollarSign, Download
 } from 'lucide-react';
 import { useMakerspace } from '../contexts/MakerspaceContext';
 import { useAuth } from '../contexts/AuthContext';
