@@ -203,7 +203,7 @@ export function MakerspaceProvider({ children }: { children: ReactNode }) {
       id: 'eq-4',
       name: 'Shapeoko 4',
       type: 'cnc_machine',
-      status: 'maintenance',
+      status: 'under_maintenance',
       location: 'Station C1',
       lastMaintenance: '2023-12-15',
       makerspaceId: 'ms-2',
