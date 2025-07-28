@@ -392,6 +392,11 @@ const Analytics: React.FC = () => {
         <TabsContent value="revenue" className="space-y-6">
           <RevenueCharts />
         </TabsContent>
+
+        {/* Data Exports Tab */}
+        <TabsContent value="exports" className="space-y-6">
+          <DataExports />
+        </TabsContent>
       </Tabs>
 
       {/* Download Report Modal */}
