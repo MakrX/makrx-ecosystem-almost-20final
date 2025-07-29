@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react';
-import { 
-  X, Calendar, Clock, AlertTriangle, Shield, User, 
-  DollarSign, FileText, CheckCircle, Plus, Minus
+import {
+  X, Calendar, Clock, AlertTriangle, Shield, User,
+  DollarSign, FileText, CheckCircle, Plus, Minus, XCircle
 } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
+import { useSkills } from '../contexts/SkillContext';
 import AvailabilityCalendar from './AvailabilityCalendar';
 
 interface Equipment {
@@ -49,6 +50,7 @@ export default function ReservationModal({
   userProjects = []
 }: ReservationModalProps) {
   const { user } = useAuth();
+  const { canAccessEquipment, getRequiredSkillsForEquipment, hasSkillForEquipment } = useSkills();
   const [selectedSlots, setSelectedSlots] = useState<{ date: string; slot: TimeSlot }[]>([]);
   const [formData, setFormData] = useState({
     purpose: '',
@@ -59,6 +61,11 @@ export default function ReservationModal({
     certification_confirmed: false
   });
   const [showCertificationWarning, setShowCertificationWarning] = useState(false);
+  const [skillAccessCheck, setSkillAccessCheck] = useState<{
+    canAccess: boolean;
+    missingSkills: string[];
+    reason?: string;
+  }>({ canAccess: true, missingSkills: [] });
   const [totalCost, setTotalCost] = useState(0);
   const [totalHours, setTotalHours] = useState(0);
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -76,13 +83,17 @@ export default function ReservationModal({
         certification_confirmed: false
       });
       setErrors({});
-      
-      // Check certification requirements
-      if (equipment.requires_certification) {
+
+      // Check actual skill requirements using skill system
+      const accessCheck = canAccessEquipment(equipment.equipment_id);
+      setSkillAccessCheck(accessCheck);
+
+      // Show certification warning if skills are missing or if legacy certification flag is set
+      if (!accessCheck.canAccess || equipment.requires_certification) {
         setShowCertificationWarning(true);
       }
     }
-  }, [isOpen, equipment]);
+  }, [isOpen, equipment, canAccessEquipment]);
 
   useEffect(() => {
     // Calculate total hours and cost when slots change
@@ -131,7 +142,10 @@ export default function ReservationModal({
       newErrors.purpose = 'Purpose is required';
     }
 
-    if (equipment.requires_certification && !formData.certification_confirmed) {
+    // Check actual skills instead of just confirmation
+    if (!skillAccessCheck.canAccess) {
+      newErrors.certification = skillAccessCheck.reason || 'You do not have the required skills for this equipment';
+    } else if (equipment.requires_certification && !formData.certification_confirmed) {
       newErrors.certification = 'You must confirm you have the required certification';
     }
 
