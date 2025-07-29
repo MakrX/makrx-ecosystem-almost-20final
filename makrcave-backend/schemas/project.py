@@ -68,12 +68,17 @@ class ProjectBOMResponse(BaseModel):
     item_type: str
     item_id: str
     item_name: str
+    part_code: Optional[str] = None
     quantity: int
     unit_cost: Optional[float] = None
     total_cost: Optional[float] = None
     usage_notes: Optional[str] = None
+    alternatives: Optional[List[BOMAlternative]] = []
     is_critical: bool = False
     procurement_status: str = "needed"
+    availability_status: str = "unknown"
+    stock_level: Optional[int] = None
+    reorder_point: Optional[int] = None
     added_by: str
     added_at: datetime
 
@@ -208,21 +213,36 @@ class CollaboratorUpdate(BaseModel):
     role: CollaboratorRole
 
 # BOM schemas
+class BOMAlternative(BaseModel):
+    item_id: str = Field(..., min_length=1)
+    item_name: str = Field(..., min_length=1, max_length=200)
+    part_code: Optional[str] = None
+    unit_cost: Optional[float] = Field(None, ge=0)
+    availability_status: str = Field("unknown", regex="^(in-stock|low-stock|out-of-stock|unknown)$")
+    compatibility_notes: Optional[str] = None
+
 class BOMItemCreate(BaseModel):
     item_type: str = Field(..., regex="^(inventory|makrx_store)$")
     item_id: str = Field(..., min_length=1)
     item_name: str = Field(..., min_length=1, max_length=200)
+    part_code: Optional[str] = None
     quantity: int = Field(..., gt=0)
     unit_cost: Optional[float] = Field(None, ge=0)
     usage_notes: Optional[str] = None
+    alternatives: Optional[List[BOMAlternative]] = []
     is_critical: bool = False
 
 class BOMItemUpdate(BaseModel):
+    part_code: Optional[str] = None
     quantity: Optional[int] = Field(None, gt=0)
     unit_cost: Optional[float] = Field(None, ge=0)
     usage_notes: Optional[str] = None
+    alternatives: Optional[List[BOMAlternative]] = None
     is_critical: Optional[bool] = None
     procurement_status: Optional[str] = None
+    availability_status: Optional[str] = None
+    stock_level: Optional[int] = None
+    reorder_point: Optional[int] = None
 
 # Equipment reservation schemas
 class EquipmentReservationCreate(BaseModel):
