@@ -110,9 +110,12 @@ export default function InventoryCard({
 
   return (
     <>
-      <div className={`makrcave-card group hover:shadow-lg transition-all duration-200 ${
-        isLowStock ? 'border-red-200 bg-red-50 dark:bg-red-900/10' : ''
-      }`}>
+      <div
+        className={`makrcave-card group hover:shadow-lg transition-all duration-200 cursor-pointer ${
+          isLowStock ? 'border-red-200 bg-red-50 dark:bg-red-900/10' : ''
+        }`}
+        onClick={() => onViewDetails?.(item)}
+      >
         {/* Header */}
         <div className="flex items-start justify-between mb-3">
           <div className="flex-1 min-w-0">
