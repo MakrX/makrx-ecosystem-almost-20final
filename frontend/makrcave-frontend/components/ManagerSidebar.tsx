@@ -119,7 +119,7 @@ export default function ManagerSidebar() {
               {user?.firstName ? `${user.firstName} ${user.lastName}` : user?.username}
             </p>
             <p className="text-xs text-blue-600 truncate group-hover:text-blue-700">
-              MakrCave Manager
+              Makerspace Manager
             </p>
           </div>
         </Link>
