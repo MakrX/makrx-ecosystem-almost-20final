@@ -379,8 +379,23 @@ export default function Equipment() {
         )}
       </div>
 
-      {/* Statistics Cards */}
-      {stats && (
+      {/* Tabs Navigation */}
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="mb-6">
+        <TabsList className="grid w-full grid-cols-2">
+          <TabsTrigger value="equipment" className="flex items-center gap-2">
+            <Wrench className="h-4 w-4" />
+            Equipment List
+          </TabsTrigger>
+          <TabsTrigger value="skills" className="flex items-center gap-2">
+            <GraduationCap className="h-4 w-4" />
+            Skill Requirements
+          </TabsTrigger>
+        </TabsList>
+
+        {/* Equipment List Tab */}
+        <TabsContent value="equipment" className="space-y-6">
+          {/* Statistics Cards */}
+          {stats && (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
           <div className="bg-white p-6 rounded-lg border border-gray-200">
             <div className="flex items-center">
@@ -661,7 +676,14 @@ export default function Equipment() {
           }}
           userProjects={[]} // Would load user projects from context
         />
-      )}
+        )}
+        </TabsContent>
+
+        {/* Skill Requirements Tab */}
+        <TabsContent value="skills" className="space-y-6">
+          <EquipmentSkillRequirements />
+        </TabsContent>
+      </Tabs>
 
       {/* Add Equipment Modal */}
       {showAddModal && (
