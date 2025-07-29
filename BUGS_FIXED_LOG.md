@@ -28,6 +28,22 @@
 - **Status**: Already resolved in previous checkpoint
 - **Current State**: `hasPermission('equipment', 'maintenance', { isAssignedMakerspace: true })`
 
+### 4. **Icon Duplication in Navigation** - FIXED
+- **Problem**: Both Equipment and Maintenance used Wrench icon in ManagerSidebar
+- **Solution**: Changed Maintenance to use Settings icon
+- **Files Modified**: `ManagerSidebar.tsx`
+
+### 5. **Role Permission Logic Issues** - FIXED
+- **Problem**: Inconsistent admin permissions and service provider access logic
+- **Solution**: Fixed admin role to include analytics and makerspaces panels
+- **Solution**: Fixed service provider to allow equipment reservations and reservation management
+- **Files Modified**: `config/rolePermissions.ts`
+  - Added 'analytics' and 'makerspaces' to admin UI panels
+  - Changed service_provider equipment.reserve to true
+  - Changed service_provider reservations.create to true
+  - Changed service_provider reservations.edit to 'own'
+  - Changed service_provider reservations.cancel to 'own'
+
 ## 🔍 Additional Issues Identified (To Be Fixed)
 
 ### 4. **Button Style Inconsistencies**
