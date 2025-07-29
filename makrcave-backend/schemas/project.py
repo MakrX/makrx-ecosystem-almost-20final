@@ -1,24 +1,48 @@
 from pydantic import BaseModel, Field, validator
 from typing import List, Optional, Dict, Any
 from datetime import datetime
+from enum import Enum
 from ..models.project import ProjectStatus, ProjectVisibility, CollaboratorRole, ActivityType
+
+# Project type enum
+class ProjectType(str, enum.Enum):
+    INTERNAL = "internal"
+    OPEN_COLLAB = "open-collab"
+    SPONSORED = "sponsored"
 
 # Base schemas
 class ProjectBase(BaseModel):
     name: str = Field(..., min_length=1, max_length=200)
     description: Optional[str] = None
+    project_type: ProjectType = ProjectType.INTERNAL
     visibility: ProjectVisibility = ProjectVisibility.PRIVATE
     start_date: Optional[datetime] = None
     end_date: Optional[datetime] = None
     tags: Optional[List[str]] = []
 
+# Initial milestone schema for project creation
+class InitialMilestone(BaseModel):
+    title: str = Field(..., min_length=1, max_length=200)
+    description: Optional[str] = None
+    target_date: Optional[datetime] = None
+    priority: str = Field("medium", regex="^(low|medium|high|critical)$")
+
+# Initial collaborator schema for project creation
+class InitialCollaborator(BaseModel):
+    user_id: str = Field(..., min_length=1)
+    email: Optional[str] = None
+    role: CollaboratorRole = CollaboratorRole.VIEWER
+
 class ProjectCreate(ProjectBase):
     project_id: str = Field(..., min_length=1, max_length=100)
     makerspace_id: Optional[str] = None
+    initial_milestones: Optional[List[InitialMilestone]] = []
+    initial_collaborators: Optional[List[InitialCollaborator]] = []
 
 class ProjectUpdate(BaseModel):
     name: Optional[str] = Field(None, min_length=1, max_length=200)
     description: Optional[str] = None
+    project_type: Optional[ProjectType] = None
     visibility: Optional[ProjectVisibility] = None
     status: Optional[ProjectStatus] = None
     start_date: Optional[datetime] = None
@@ -121,6 +145,7 @@ class ProjectResponse(BaseModel):
     project_id: str
     name: str
     description: Optional[str] = None
+    project_type: ProjectType = ProjectType.INTERNAL
     owner_id: str
     makerspace_id: Optional[str] = None
     visibility: ProjectVisibility
@@ -153,6 +178,7 @@ class ProjectSummaryResponse(BaseModel):
     project_id: str
     name: str
     description: Optional[str] = None
+    project_type: ProjectType = ProjectType.INTERNAL
     owner_id: str
     visibility: ProjectVisibility
     status: ProjectStatus
