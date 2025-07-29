@@ -248,6 +248,64 @@ async def remove_bom_item(
             detail="BOM item not found or insufficient permissions"
         )
 
+@router.post("/{project_id}/bom/{bom_item_id}/reorder", status_code=status.HTTP_201_CREATED)
+async def reorder_bom_item(
+    project_id: str,
+    bom_item_id: int,
+    reorder_data: dict,
+    current_user: dict = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    """Create reorder request for BOM item"""
+    if not crud_project.has_project_edit_access(db, project_id, current_user["user_id"]):
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Insufficient permissions to create reorder requests"
+        )
+
+    # Get BOM item
+    bom_item = db.query(models.ProjectBOM).filter(models.ProjectBOM.id == bom_item_id).first()
+    if not bom_item:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="BOM item not found"
+        )
+
+    # Create reorder request (this would integrate with inventory/procurement system)
+    reorder_request = {
+        "project_id": project_id,
+        "item_id": bom_item.item_id,
+        "item_name": bom_item.item_name,
+        "quantity": reorder_data.get("quantity", bom_item.quantity),
+        "urgent": reorder_data.get("urgent", bom_item.is_critical),
+        "requested_by": current_user["user_id"],
+        "requested_at": datetime.utcnow(),
+        "status": "pending"
+    }
+
+    # Log the reorder activity
+    activity_log = models.ProjectActivityLog(
+        project_id=project_id,
+        activity_type=models.ActivityType.BOM_ITEM_UPDATED,
+        title="Reorder requested",
+        description=f"Reorder requested for {bom_item.item_name} (qty: {reorder_request['quantity']})",
+        user_id=current_user["user_id"],
+        user_name="User",
+        metadata=reorder_request
+    )
+    db.add(activity_log)
+
+    # Update BOM item status
+    bom_item.procurement_status = "ordered"
+
+    db.commit()
+
+    return {
+        "message": "Reorder request created successfully",
+        "reorder_id": f"ro-{int(datetime.utcnow().timestamp())}",
+        "estimated_delivery": "3-5 business days"
+    }
+
 # Equipment reservation routes
 @router.post("/{project_id}/equipment", status_code=status.HTTP_201_CREATED)
 async def add_equipment_reservation(
