@@ -247,8 +247,30 @@ export default function ReservationModal({
 
             {/* Right Column - Form */}
             <div className="space-y-6">
-              {/* Certification Warning */}
-              {showCertificationWarning && equipment.requires_certification && (
+              {/* Skill/Certification Warnings */}
+              {!skillAccessCheck.canAccess && (
+                <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+                  <div className="flex items-start">
+                    <XCircle className="h-5 w-5 text-red-500 mt-0.5 mr-3" />
+                    <div>
+                      <h4 className="text-sm font-medium text-red-800">Missing Required Skills</h4>
+                      <p className="text-sm text-red-700 mt-1">
+                        You need the following skills to access this equipment:
+                      </p>
+                      <ul className="mt-2 text-sm text-red-700 list-disc list-inside">
+                        {skillAccessCheck.missingSkills.map((skill, index) => (
+                          <li key={index}>{skill}</li>
+                        ))}
+                      </ul>
+                      <p className="text-sm text-red-700 mt-2">
+                        Please request these skills from your makerspace administrator or complete the required training.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {skillAccessCheck.canAccess && showCertificationWarning && equipment.requires_certification && (
                 <div className="bg-amber-50 border border-amber-200 rounded-lg p-4">
                   <div className="flex items-start">
                     <Shield className="w-5 h-5 text-amber-600 mr-2 mt-0.5" />
@@ -438,10 +460,11 @@ export default function ReservationModal({
                   </button>
                   <button
                     type="submit"
-                    disabled={selectedSlots.length === 0}
+                    disabled={selectedSlots.length === 0 || !skillAccessCheck.canAccess}
                     className="px-4 py-2 bg-makrx-blue text-white rounded-lg hover:bg-makrx-blue/90 disabled:opacity-50 disabled:cursor-not-allowed"
+                    title={!skillAccessCheck.canAccess ? "Missing required skills" : ""}
                   >
-                    Submit Reservation
+                    {!skillAccessCheck.canAccess ? "Skills Required" : "Submit Reservation"}
                   </button>
                 </div>
               </form>
