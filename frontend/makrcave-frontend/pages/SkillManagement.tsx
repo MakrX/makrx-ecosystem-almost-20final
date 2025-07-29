@@ -16,7 +16,8 @@ import {
   Settings,
   User,
   Shield,
-  Star
+  Star,
+  Wrench
 } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { useToast } from '../hooks/use-toast';
@@ -248,10 +249,16 @@ const SkillManagement: React.FC = () => {
           </h1>
           <p className="text-gray-600">Manage member certifications and skill levels</p>
         </div>
-        <Button className="flex items-center gap-2">
-          <Plus className="h-4 w-4" />
-          Certify Member
-        </Button>
+        <div className="flex gap-2">
+          <Button variant="outline" className="flex items-center gap-2">
+            <Wrench className="h-4 w-4" />
+            Equipment Requirements
+          </Button>
+          <Button className="flex items-center gap-2">
+            <Plus className="h-4 w-4" />
+            Certify Member
+          </Button>
+        </div>
       </div>
 
       {/* Stats Cards */}
