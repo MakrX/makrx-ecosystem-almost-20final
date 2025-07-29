@@ -1002,12 +1002,26 @@ const mockProjects = [
         item_type: 'inventory',
         item_id: 'inv-arduino-uno',
         item_name: 'Arduino Uno R3',
+        part_code: 'ARD-UNO-R3',
         quantity: 2,
         unit_cost: 25.00,
         total_cost: 50.00,
         usage_notes: 'Main microcontroller for sensor nodes',
+        alternatives: [
+          {
+            item_id: 'inv-arduino-nano',
+            item_name: 'Arduino Nano',
+            part_code: 'ARD-NANO',
+            unit_cost: 15.00,
+            availability_status: 'in-stock',
+            compatibility_notes: 'Smaller form factor, same functionality'
+          }
+        ],
         is_critical: true,
         procurement_status: 'received',
+        availability_status: 'in-stock',
+        stock_level: 15,
+        reorder_point: 5,
         added_by: 'user-001',
         added_at: '2024-01-15T12:00:00Z'
       },
@@ -1016,12 +1030,26 @@ const mockProjects = [
         item_type: 'inventory',
         item_id: 'inv-rpi-4',
         item_name: 'Raspberry Pi 4 Model B',
+        part_code: 'RPI-4B-4GB',
         quantity: 1,
         unit_cost: 75.00,
         total_cost: 75.00,
         usage_notes: 'Central hub processor',
+        alternatives: [
+          {
+            item_id: 'inv-rpi-zero',
+            item_name: 'Raspberry Pi Zero 2 W',
+            part_code: 'RPI-ZERO-2W',
+            unit_cost: 15.00,
+            availability_status: 'low-stock',
+            compatibility_notes: 'Lower performance but sufficient for basic tasks'
+          }
+        ],
         is_critical: true,
         procurement_status: 'received',
+        availability_status: 'low-stock',
+        stock_level: 2,
+        reorder_point: 3,
         added_by: 'user-001',
         added_at: '2024-01-15T12:00:00Z'
       },
@@ -1030,12 +1058,34 @@ const mockProjects = [
         item_type: 'external',
         item_id: 'ext-sensors',
         item_name: 'Temperature/Humidity Sensors',
+        part_code: 'DHT22-SENSOR',
         quantity: 5,
         unit_cost: 8.00,
         total_cost: 40.00,
         usage_notes: 'DHT22 sensors for environmental monitoring',
+        alternatives: [
+          {
+            item_id: 'ext-dht11',
+            item_name: 'DHT11 Temperature/Humidity Sensor',
+            part_code: 'DHT11-SENSOR',
+            unit_cost: 3.00,
+            availability_status: 'in-stock',
+            compatibility_notes: 'Lower accuracy but adequate for basic monitoring'
+          },
+          {
+            item_id: 'ext-sht30',
+            item_name: 'SHT30 Digital Sensor',
+            part_code: 'SHT30-SENSOR',
+            unit_cost: 12.00,
+            availability_status: 'in-stock',
+            compatibility_notes: 'Higher accuracy, I2C interface'
+          }
+        ],
         is_critical: false,
         procurement_status: 'ordered',
+        availability_status: 'out-of-stock',
+        stock_level: 0,
+        reorder_point: 10,
         added_by: 'user-002',
         added_at: '2024-01-16T10:00:00Z'
       }
