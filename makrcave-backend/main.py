@@ -10,6 +10,7 @@ from routes.member import router as member_router
 from routes.billing import router as billing_router
 from routes.analytics import router as analytics_router
 from routes.makerspace_settings import router as settings_router
+from routes.skill import router as skill_router
 
 # Create FastAPI application
 app = FastAPI(
