@@ -803,6 +803,159 @@ app.get('/api/v1/admin/users', (req, res) => {
   res.json(mockAdmins);
 });
 
+// Equipment Stats API
+app.get('/api/v1/equipment/stats', (req, res) => {
+  const mockStats = {
+    total_equipment: 12,
+    available_equipment: 8,
+    in_use_equipment: 2,
+    maintenance_equipment: 1,
+    offline_equipment: 1,
+    total_reservations_today: 5,
+    utilization_rate: 75.5,
+    average_rating: 4.2,
+    categories: {
+      '3D Printer': 4,
+      'Laser Cutter': 2,
+      'CNC Machine': 3,
+      'Electronics': 3
+    },
+    locations: {
+      'Workshop A': 6,
+      'Workshop B': 4,
+      'Electronics Lab': 2
+    }
+  };
+  res.json(mockStats);
+});
+
+// Equipment Reservations API
+app.get('/api/v1/equipment/reservations', (req, res) => {
+  const { start_date, end_date, equipment_id } = req.query;
+
+  const mockReservations = [
+    {
+      id: 'res-1',
+      equipment_id: 'eq-1',
+      user_id: 'user-1',
+      user_name: 'John Smith',
+      start_time: '2024-01-22T10:00:00Z',
+      end_time: '2024-01-22T12:00:00Z',
+      duration_hours: 2,
+      status: 'approved',
+      purpose: '3D Printing prototype parts',
+      project_name: 'Robot Chassis'
+    },
+    {
+      id: 'res-2',
+      equipment_id: 'eq-2',
+      user_id: 'user-2',
+      user_name: 'Emily Davis',
+      start_time: '2024-01-22T14:00:00Z',
+      end_time: '2024-01-22T16:00:00Z',
+      duration_hours: 2,
+      status: 'pending',
+      purpose: 'Laser cutting acrylic sheets',
+      project_name: 'Display Case'
+    }
+  ];
+
+  let filtered = mockReservations;
+  if (equipment_id) {
+    filtered = filtered.filter(r => r.equipment_id === equipment_id);
+  }
+
+  res.json(filtered);
+});
+
+// Equipment Skills Requirements API
+app.get('/api/v1/equipment/skill-requirements', (req, res) => {
+  const mockSkillRequirements = [
+    {
+      equipment_id: 'eq-1',
+      equipment_name: 'Prusa i3 MK3S #1',
+      required_skills: [
+        {
+          skill_id: 'skill-1',
+          skill_name: '3D Printer Operation',
+          skill_level: 'beginner',
+          required_level: 'beginner',
+          category: 'Digital Fabrication',
+          is_required: true
+        }
+      ]
+    },
+    {
+      equipment_id: 'eq-2',
+      equipment_name: 'Epilog Helix Laser Cutter',
+      required_skills: [
+        {
+          skill_id: 'skill-2',
+          skill_name: 'Laser Cutter Safety',
+          skill_level: 'beginner',
+          required_level: 'beginner',
+          category: 'Laser Cutting',
+          is_required: true
+        },
+        {
+          skill_id: 'skill-5',
+          skill_name: 'Material Handling',
+          skill_level: 'beginner',
+          required_level: 'beginner',
+          category: 'Safety',
+          is_required: true
+        }
+      ]
+    },
+    {
+      equipment_id: 'eq-3',
+      equipment_name: 'Tormach CNC Mill',
+      required_skills: [
+        {
+          skill_id: 'skill-3',
+          skill_name: 'CNC Operation',
+          skill_level: 'advanced',
+          required_level: 'intermediate',
+          category: 'Machining',
+          is_required: true
+        },
+        {
+          skill_id: 'skill-6',
+          skill_name: 'G-Code Programming',
+          skill_level: 'intermediate',
+          required_level: 'beginner',
+          category: 'Programming',
+          is_required: false
+        }
+      ]
+    },
+    {
+      equipment_id: 'eq-4',
+      equipment_name: 'Ultimaker S3',
+      required_skills: [
+        {
+          skill_id: 'skill-1',
+          skill_name: '3D Printer Operation',
+          skill_level: 'beginner',
+          required_level: 'beginner',
+          category: 'Digital Fabrication',
+          is_required: true
+        },
+        {
+          skill_id: 'skill-7',
+          skill_name: 'Advanced 3D Printing',
+          skill_level: 'intermediate',
+          required_level: 'intermediate',
+          category: 'Digital Fabrication',
+          is_required: false
+        }
+      ]
+    }
+  ];
+
+  res.json(mockSkillRequirements);
+});
+
 // Generic 404 handler for other endpoints
 app.use('*', (req, res) => {
   console.log(`🔍 Missing endpoint: ${req.method} ${req.originalUrl}`);
