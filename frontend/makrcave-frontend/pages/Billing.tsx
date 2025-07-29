@@ -47,6 +47,10 @@ const Billing: React.FC = () => {
   const [makerspaceUsers, setMakerspaceUsers] = useState<any[]>([]);
   const [loadingUsers, setLoadingUsers] = useState(false);
 
+  // Check if user can manage billing for others
+  const canManageBilling = hasPermission('billing', 'manage_payments', { isAssignedMakerspace: true });
+  const canCollectPayments = hasPermission('billing', 'collect_payments', { isAssignedMakerspace: true });
+
   // Calculate billing stats from context data
   const billingStats = {
     total_spent: state.analytics?.revenue.total || 0,
@@ -56,6 +60,43 @@ const Billing: React.FC = () => {
     successful_transactions: state.analytics?.transactions.successful_count || 0,
     failed_transactions: state.analytics?.transactions.failed_count || 0
   };
+
+  // Mock data for makerspace users billing
+  const getMakerspaceUsersBilling = () => [
+    {
+      id: 'mkr-1',
+      name: 'Casey Williams',
+      email: 'casey.williams@makrcave.local',
+      credits_balance: 150,
+      total_spent: 850,
+      this_month_spent: 120,
+      pending_amount: 45,
+      last_payment: '2024-01-15',
+      status: 'active'
+    },
+    {
+      id: 'sp-1',
+      name: 'Riley Thompson',
+      email: 'riley.thompson@makrcave.local',
+      credits_balance: 0,
+      total_spent: 320,
+      this_month_spent: 80,
+      pending_amount: 25,
+      last_payment: '2024-01-10',
+      status: 'overdue'
+    },
+    {
+      id: 'mkr-2',
+      name: 'Alex Johnson',
+      email: 'alex.johnson@makrcave.local',
+      credits_balance: 300,
+      total_spent: 1200,
+      this_month_spent: 180,
+      pending_amount: 0,
+      last_payment: '2024-01-18',
+      status: 'active'
+    }
+  ];
 
   const formatCurrency = (amount: number, currency: string = 'INR') => {
     const symbol = currency === 'INR' ? '₹' : '$';
