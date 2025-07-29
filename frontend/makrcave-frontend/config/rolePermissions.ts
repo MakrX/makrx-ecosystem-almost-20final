@@ -241,7 +241,7 @@ export const ROLE_PERMISSIONS: Record<UserRole, RolePermissions> = {
       view: 'assigned_makerspace',
       edit: 'none',
       add: 'none',
-      reserve: false,
+      reserve: true,
       maintenance: 'none',
     },
     reservations: {
