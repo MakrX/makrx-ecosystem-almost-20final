@@ -34,12 +34,24 @@ interface BOMItem {
   item_type: string;
   item_id: string;
   item_name: string;
+  part_code?: string;
   quantity: number;
   unit_cost?: number;
   total_cost?: number;
   usage_notes?: string;
+  alternatives?: Array<{
+    item_id: string;
+    item_name: string;
+    part_code?: string;
+    unit_cost?: number;
+    availability_status: string;
+    compatibility_notes?: string;
+  }>;
   is_critical: boolean;
   procurement_status: string;
+  availability_status: string;
+  stock_level?: number;
+  reorder_point?: number;
   added_by: string;
   added_at: string;
 }
@@ -65,10 +77,12 @@ const BOMManagement: React.FC<BOMManagementProps> = ({
   const [newItem, setNewItem] = useState({
     item_id: '',
     item_name: '',
+    part_code: '',
     quantity: 1,
     unit_cost: 0,
     usage_notes: '',
-    is_critical: false
+    is_critical: false,
+    alternatives: []
   });
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -156,10 +170,12 @@ const BOMManagement: React.FC<BOMManagementProps> = ({
           item_type: selectedItemType,
           item_id: newItem.item_id,
           item_name: newItem.item_name,
+          part_code: newItem.part_code || null,
           quantity: newItem.quantity,
           unit_cost: newItem.unit_cost || null,
           usage_notes: newItem.usage_notes || null,
           is_critical: newItem.is_critical,
+          alternatives: newItem.alternatives || [],
         }),
       });
 
@@ -227,10 +243,12 @@ const BOMManagement: React.FC<BOMManagementProps> = ({
     setNewItem({
       item_id: '',
       item_name: '',
+      part_code: '',
       quantity: 1,
       unit_cost: 0,
       usage_notes: '',
-      is_critical: false
+      is_critical: false,
+      alternatives: []
     });
     setSearchQuery('');
     setSearchResults([]);
@@ -242,6 +260,7 @@ const BOMManagement: React.FC<BOMManagementProps> = ({
       ...newItem,
       item_id: item.id || item.product_id,
       item_name: item.name || item.title,
+      part_code: item.part_code || item.sku || '',
       unit_cost: item.price || 0
     });
     setSearchResults([]);
@@ -284,6 +303,60 @@ const BOMManagement: React.FC<BOMManagementProps> = ({
     return bomItems.filter(item => item.procurement_status === status);
   };
 
+  const getAvailabilityColor = (status: string) => {
+    switch (status) {
+      case 'in-stock': return 'bg-green-100 text-green-800';
+      case 'low-stock': return 'bg-yellow-100 text-yellow-800';
+      case 'out-of-stock': return 'bg-red-100 text-red-800';
+      case 'unknown': return 'bg-gray-100 text-gray-800';
+      default: return 'bg-gray-100 text-gray-800';
+    }
+  };
+
+  const getLowStockItems = () => {
+    return bomItems.filter(item =>
+      item.availability_status === 'low-stock' ||
+      (item.stock_level && item.reorder_point && item.stock_level <= item.reorder_point)
+    );
+  };
+
+  const handleReorderItem = async (item: BOMItem) => {
+    try {
+      const token = localStorage.getItem('auth_token') || 'mock-token';
+      const response = await fetch(`/api/v1/projects/${projectId}/bom/${item.id}/reorder`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          quantity: item.quantity,
+          urgent: item.is_critical
+        }),
+      });
+
+      if (response.ok) {
+        onUpdate();
+        alert('Reorder request submitted successfully!');
+      } else {
+        throw new Error('Failed to submit reorder request');
+      }
+    } catch (err) {
+      console.error('Error creating reorder request:', err);
+      alert('Failed to submit reorder request');
+    }
+  };
+
+  const calculateEstimatedCost = () => {
+    const totalEstimatedCost = bomItems.reduce((total, item) => {
+      if (item.unit_cost && item.quantity) {
+        return total + (item.unit_cost * item.quantity);
+      }
+      return total;
+    }, 0);
+    return totalEstimatedCost;
+  };
+
   const filteredItems = filterStatus === 'all' 
     ? bomItems 
     : bomItems.filter(item => item.procurement_status === filterStatus);
@@ -313,7 +386,7 @@ const BOMManagement: React.FC<BOMManagementProps> = ({
       </div>
 
       {/* BOM Statistics */}
-      <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-6 gap-4">
         <Card>
           <CardContent className="p-4">
             <div className="flex items-center space-x-2">
@@ -365,6 +438,17 @@ const BOMManagement: React.FC<BOMManagementProps> = ({
               <div>
                 <p className="text-2xl font-bold">${getTotalCost().toFixed(2)}</p>
                 <p className="text-xs text-gray-600">Total Cost</p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardContent className="p-4">
+            <div className="flex items-center space-x-2">
+              <AlertTriangle className="h-4 w-4 text-orange-600" />
+              <div>
+                <p className="text-2xl font-bold">{getLowStockItems().length}</p>
+                <p className="text-xs text-gray-600">Low Stock</p>
               </div>
             </div>
           </CardContent>
@@ -422,16 +506,27 @@ const BOMManagement: React.FC<BOMManagementProps> = ({
                             )}
                           </h4>
                           <p className="text-sm text-gray-600">
-                            {item.item_type === 'inventory' ? 'Inventory Item' : 'MakrX Store'} • 
+                            {item.item_type === 'inventory' ? 'Inventory Item' : 'MakrX Store'} •
                             ID: {item.item_id}
+                            {item.part_code && ` • Part: ${item.part_code}`}
                           </p>
+                          {item.availability_status && (
+                            <Badge className={`${getAvailabilityColor(item.availability_status)} text-xs mt-1`}>
+                              {item.availability_status.replace('-', ' ')}
+                            </Badge>
+                          )}
                         </div>
                       </div>
                       
-                      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
+                      <div className="grid grid-cols-2 md:grid-cols-5 gap-4 text-sm">
                         <div>
                           <span className="text-gray-600">Quantity:</span>
                           <span className="ml-1 font-medium">{item.quantity}</span>
+                          {item.stock_level && (
+                            <div className="text-xs text-gray-500">
+                              Stock: {item.stock_level}
+                            </div>
+                          )}
                         </div>
                         <div>
                           <span className="text-gray-600">Unit Cost:</span>
@@ -451,6 +546,13 @@ const BOMManagement: React.FC<BOMManagementProps> = ({
                             {item.procurement_status}
                           </Badge>
                         </div>
+                        <div>
+                          {item.alternatives && item.alternatives.length > 0 && (
+                            <div className="text-xs text-blue-600">
+                              {item.alternatives.length} alternative(s)
+                            </div>
+                          )}
+                        </div>
                       </div>
 
                       {item.usage_notes && (
@@ -459,9 +561,42 @@ const BOMManagement: React.FC<BOMManagementProps> = ({
                           <span className="ml-1">{item.usage_notes}</span>
                         </div>
                       )}
+
+                      {item.alternatives && item.alternatives.length > 0 && (
+                        <div className="text-sm">
+                          <span className="text-gray-600">Alternatives:</span>
+                          <div className="ml-1 space-y-1">
+                            {item.alternatives.slice(0, 2).map((alt, index) => (
+                              <div key={index} className="text-xs bg-gray-50 p-2 rounded">
+                                <span className="font-medium">{alt.item_name}</span>
+                                {alt.part_code && <span className="text-gray-500"> • {alt.part_code}</span>}
+                                {alt.unit_cost && <span className="text-green-600"> • ${alt.unit_cost.toFixed(2)}</span>}
+                                <Badge className={`ml-1 ${getAvailabilityColor(alt.availability_status)} text-xs`}>
+                                  {alt.availability_status}
+                                </Badge>
+                              </div>
+                            ))}
+                            {item.alternatives.length > 2 && (
+                              <div className="text-xs text-gray-500">+{item.alternatives.length - 2} more alternatives</div>
+                            )}
+                          </div>
+                        </div>
+                      )}
                     </div>
 
                     <div className="flex items-center space-x-2">
+                      {item.availability_status === 'out-of-stock' && (
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => handleReorderItem(item)}
+                          className="text-orange-600 border-orange-600 hover:bg-orange-50"
+                        >
+                          <Zap className="h-4 w-4 mr-1" />
+                          Reorder
+                        </Button>
+                      )}
+
                       {item.item_type === 'makrx_store' && (
                         <Button variant="outline" size="sm">
                           <ExternalLink className="h-4 w-4 mr-1" />
@@ -522,6 +657,18 @@ const BOMManagement: React.FC<BOMManagementProps> = ({
           </DialogHeader>
           
           <div className="space-y-4">
+            {/* Estimated Total Cost Display */}
+            <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm text-blue-800 font-medium">Project BOM Estimated Cost</p>
+                  <p className="text-xs text-blue-600">Total estimated cost for all BOM items</p>
+                </div>
+                <div className="text-2xl font-bold text-blue-900">
+                  ${calculateEstimatedCost().toFixed(2)}
+                </div>
+              </div>
+            </div>
             {error && (
               <div className="bg-red-50 border border-red-200 rounded-md p-3">
                 <div className="flex items-center">
@@ -590,7 +737,18 @@ const BOMManagement: React.FC<BOMManagementProps> = ({
               )}
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
+            <div>
+              <Label htmlFor="part_code">Part Code / SKU (Optional)</Label>
+              <Input
+                id="part_code"
+                placeholder="e.g., ART-001, SKU-12345"
+                value={newItem.part_code}
+                onChange={(e) => setNewItem({ ...newItem, part_code: e.target.value })}
+                className="mt-1"
+              />
+            </div>
+
+            <div className="grid grid-cols-3 gap-4">
               <div>
                 <Label htmlFor="quantity">Quantity</Label>
                 <Input
@@ -612,6 +770,15 @@ const BOMManagement: React.FC<BOMManagementProps> = ({
                   value={newItem.unit_cost}
                   onChange={(e) => setNewItem({ ...newItem, unit_cost: parseFloat(e.target.value) || 0 })}
                   className="mt-1"
+                />
+              </div>
+              <div>
+                <Label htmlFor="total_cost">Est. Total</Label>
+                <Input
+                  id="total_cost"
+                  value={`$${(newItem.quantity * (newItem.unit_cost || 0)).toFixed(2)}`}
+                  disabled
+                  className="mt-1 bg-gray-50"
                 />
               </div>
             </div>
