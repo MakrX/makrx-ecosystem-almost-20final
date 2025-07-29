@@ -51,6 +51,7 @@ const App = () => (
                       <Route path="analytics" element={<Analytics />} />
                       <Route path="maintenance" element={<Maintenance />} />
                       <Route path="settings" element={<Settings />} />
+                      <Route path="profile" element={<Profile />} />
                       <Route path="admin">
                         <Route path="users" element={<AdminUsers />} />
                         <Route path="makerspace" element={<AdminMakerspace />} />
