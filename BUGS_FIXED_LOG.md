@@ -44,7 +44,23 @@
   - Changed service_provider reservations.edit to 'own'
   - Changed service_provider reservations.cancel to 'own'
 
-## 🔍 Additional Issues Identified (To Be Fixed)
+## 🔍 Remaining Issues Identified
+
+### 6. **Hardcoded Permission Checks** - DOCUMENTED
+- **Problem**: Inventory page uses hardcoded role checks instead of role permissions system
+- **Location**: `pages/Inventory.tsx` lines 84-91
+- **Impact**: Inconsistent with app architecture
+- **Severity**: Medium (Code quality)
+- **Recommendation**: Refactor to use `hasPermission()` with proper context
+
+### 7. **Code Quality Issues** - DOCUMENTED
+- **Problem**: Mix of `makrcave-btn-*` classes and `<Button>` components
+- **Impact**: Inconsistent styling and maintenance burden
+- **Files**: 15+ components across the app
+- **Severity**: Low (Visual/maintenance)
+- **Recommendation**: Standardize on `<Button>` component
+
+## 🔍 Previous Issues (Lower Priority)
 
 ### 4. **Button Style Inconsistencies**
 - **Problem**: Mix of `makrcave-btn-*` classes and `<Button>` components
