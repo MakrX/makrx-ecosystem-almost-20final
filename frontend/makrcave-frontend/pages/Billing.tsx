@@ -11,7 +11,10 @@ import {
   Calendar,
   Wallet,
   CheckCircle,
-  TrendingDown
+  TrendingDown,
+  Users,
+  AlertTriangle,
+  Eye
 } from 'lucide-react';
 import CreditWalletWidget from '../components/billing/CreditWalletWidget';
 import PaymentMethodCard from '../components/billing/PaymentMethodCard';
