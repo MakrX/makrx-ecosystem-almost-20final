@@ -229,7 +229,7 @@ export default function InventoryCard({
         )}
 
         {/* Action Buttons */}
-        <div className="flex gap-2">
+        <div className="flex gap-2" onClick={(e) => e.stopPropagation()}>
           {canIssue && item.quantity > 0 && item.status === 'active' && (
             <button
               onClick={() => setShowIssueModal(true)}
