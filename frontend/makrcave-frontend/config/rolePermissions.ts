@@ -246,10 +246,10 @@ export const ROLE_PERMISSIONS: Record<UserRole, RolePermissions> = {
     },
     reservations: {
       view: 'own',
-      create: false,
-      edit: 'none',
+      create: true,
+      edit: 'own',
       approve: 'none',
-      cancel: 'none',
+      cancel: 'own',
     },
     bom: {
       view: 'none',
