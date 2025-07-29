@@ -12,7 +12,9 @@ import {
   DollarSign,
   AlertTriangle,
   Building2,
-  LogOut
+  LogOut,
+  GraduationCap,
+  Bell
 } from 'lucide-react';
 
 export default function ManagerSidebar() {
@@ -63,6 +65,12 @@ export default function ManagerSidebar() {
       href: '/portal/analytics',
       icon: BarChart3,
       active: isActive('/portal/analytics')
+    },
+    {
+      name: 'Notifications Center',
+      href: '/portal/notifications',
+      icon: Bell,
+      active: isActive('/portal/notifications')
     }
   ];
 
@@ -72,6 +80,12 @@ export default function ManagerSidebar() {
       href: '/portal/members',
       icon: Users,
       active: isActive('/portal/members')
+    },
+    {
+      name: 'Skill Management',
+      href: '/portal/skills',
+      icon: GraduationCap,
+      active: isActive('/portal/skills')
     },
     {
       name: 'Billing & Payments',
