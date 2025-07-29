@@ -20,11 +20,12 @@ from ..schemas.project import (
 
 # Project CRUD operations
 def create_project(db: Session, project: ProjectCreate, owner_id: str) -> Project:
-    """Create a new project and add owner as collaborator"""
+    """Create a new project with initial milestones and collaborators"""
     db_project = Project(
         project_id=project.project_id,
         name=project.name,
         description=project.description,
+        project_type=project.project_type,
         owner_id=owner_id,
         makerspace_id=project.makerspace_id,
         visibility=project.visibility,
@@ -34,7 +35,7 @@ def create_project(db: Session, project: ProjectCreate, owner_id: str) -> Projec
     )
     db.add(db_project)
     db.flush()
-    
+
     # Add owner as collaborator with owner role
     owner_collaborator = ProjectCollaborator(
         project_id=project.project_id,
@@ -44,7 +45,34 @@ def create_project(db: Session, project: ProjectCreate, owner_id: str) -> Projec
         accepted_at=datetime.utcnow()
     )
     db.add(owner_collaborator)
-    
+
+    # Add initial collaborators
+    if project.initial_collaborators:
+        for collab in project.initial_collaborators:
+            if collab.user_id != owner_id:  # Don't duplicate owner
+                collaborator = ProjectCollaborator(
+                    project_id=project.project_id,
+                    user_id=collab.user_id,
+                    role=collab.role,
+                    invited_by=owner_id,
+                    accepted_at=None  # Will need to be accepted
+                )
+                db.add(collaborator)
+
+    # Add initial milestones
+    if project.initial_milestones:
+        for i, milestone_data in enumerate(project.initial_milestones):
+            milestone = ProjectMilestone(
+                project_id=project.project_id,
+                title=milestone_data.title,
+                description=milestone_data.description,
+                target_date=milestone_data.target_date,
+                priority=milestone_data.priority,
+                order_index=i,
+                created_by=owner_id
+            )
+            db.add(milestone)
+
     # Log project creation
     activity_log = ProjectActivityLog(
         project_id=project.project_id,
@@ -55,7 +83,31 @@ def create_project(db: Session, project: ProjectCreate, owner_id: str) -> Projec
         user_name="Project Owner"  # This should be fetched from user service
     )
     db.add(activity_log)
-    
+
+    # Log milestone creation if any
+    if project.initial_milestones:
+        milestone_activity = ProjectActivityLog(
+            project_id=project.project_id,
+            activity_type=ActivityType.MILESTONE_ADDED,
+            title="Initial milestones added",
+            description=f"{len(project.initial_milestones)} milestones added during project creation",
+            user_id=owner_id,
+            user_name="Project Owner"
+        )
+        db.add(milestone_activity)
+
+    # Log collaborator invitations if any
+    if project.initial_collaborators:
+        collab_activity = ProjectActivityLog(
+            project_id=project.project_id,
+            activity_type=ActivityType.MEMBER_ADDED,
+            title="Team members invited",
+            description=f"{len(project.initial_collaborators)} team members invited during project creation",
+            user_id=owner_id,
+            user_name="Project Owner"
+        )
+        db.add(collab_activity)
+
     db.commit()
     db.refresh(db_project)
     return db_project
