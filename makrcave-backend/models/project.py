@@ -16,6 +16,11 @@ class ProjectVisibility(str, enum.Enum):
     PRIVATE = "private"
     TEAM_ONLY = "team-only"
 
+class ProjectType(str, enum.Enum):
+    INTERNAL = "internal"
+    OPEN_COLLAB = "open-collab"
+    SPONSORED = "sponsored"
+
 class CollaboratorRole(str, enum.Enum):
     VIEWER = "viewer"
     EDITOR = "editor"
@@ -56,6 +61,7 @@ class Project(Base):
     project_id = Column(String(100), primary_key=True, index=True)
     name = Column(String(200), nullable=False, index=True)
     description = Column(Text, nullable=True)
+    project_type = Column(Enum(ProjectType), nullable=False, default=ProjectType.INTERNAL, index=True)
     owner_id = Column(String(100), nullable=False, index=True)
     makerspace_id = Column(String(100), nullable=True, index=True)
     visibility = Column(Enum(ProjectVisibility), nullable=False, default=ProjectVisibility.PRIVATE)
