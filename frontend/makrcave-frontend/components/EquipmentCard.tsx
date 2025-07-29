@@ -387,10 +387,16 @@ export default function EquipmentCard({
           {canReserve && equipment.status === 'available' && (
             <button
               onClick={() => onReserve?.(equipment)}
-              className="flex-1 inline-flex items-center justify-center px-3 py-2 text-sm bg-makrx-blue text-white rounded-lg hover:bg-makrx-blue/90"
+              disabled={!hasRequiredSkills}
+              className={`flex-1 inline-flex items-center justify-center px-3 py-2 text-sm rounded-lg ${
+                hasRequiredSkills
+                  ? 'bg-makrx-blue text-white hover:bg-makrx-blue/90'
+                  : 'bg-gray-200 text-gray-500 cursor-not-allowed'
+              }`}
+              title={!hasRequiredSkills ? `Missing skills: ${accessCheck.missingSkills.join(', ')}` : ''}
             >
               <Calendar className="w-4 h-4 mr-1" />
-              Reserve
+              {hasRequiredSkills ? 'Reserve' : 'Skills Required'}
             </button>
           )}
 
