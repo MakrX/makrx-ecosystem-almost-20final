@@ -330,6 +330,14 @@ export const ROLE_PERMISSIONS: Record<UserRole, RolePermissions> = {
       export: 'none',
       generate_reports: 'none',
     },
+    billing: {
+      view: 'own',
+      manage_payments: 'own',
+      collect_payments: 'none',
+      generate_invoices: 'none',
+      manage_credits: 'own',
+      view_reports: 'own',
+    },
     admin: {
       userRoleManagement: false,
       systemLogs: false,
