@@ -15,6 +15,8 @@ import ReservationModal from '../components/ReservationModal';
 import EquipmentRating from '../components/EquipmentRating';
 import AddEquipmentModal from '../components/AddEquipmentModal';
 import MaintenanceModal from '../components/MaintenanceModal';
+import EquipmentSkillRequirements from '../components/EquipmentSkillRequirements';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '../components/ui/tabs';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar } from 'recharts';
 
 interface Equipment {
@@ -76,6 +78,7 @@ export default function Equipment() {
   // State management
   const [equipment, setEquipment] = useState<Equipment[]>([]);
   const [stats, setStats] = useState<EquipmentStats | null>(null);
+  const [activeTab, setActiveTab] = useState('equipment');
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [selectedStatus, setSelectedStatus] = useState('all');
