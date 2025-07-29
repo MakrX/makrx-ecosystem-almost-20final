@@ -20,6 +20,8 @@ import Analytics from "./pages/Analytics";
 import Maintenance from "./pages/Maintenance";
 import Settings from "./pages/Settings";
 import Profile from "./pages/Profile";
+import SkillManagement from "./pages/SkillManagement";
+import NotificationsCenter from "./pages/NotificationsCenter";
 import AdminUsers from "./pages/admin/Users";
 import AdminMakerspace from "./pages/admin/Makerspace";
 import AdminMakerspaces from "./pages/admin/Makerspaces";
@@ -53,6 +55,8 @@ const App = () => (
                       <Route path="maintenance" element={<Maintenance />} />
                       <Route path="settings" element={<Settings />} />
                       <Route path="profile" element={<Profile />} />
+                      <Route path="skills" element={<SkillManagement />} />
+                      <Route path="notifications" element={<NotificationsCenter />} />
                       <Route path="makerspaces" element={<AdminMakerspaces />} />
                       <Route path="admin">
                         <Route path="users" element={<AdminUsers />} />
