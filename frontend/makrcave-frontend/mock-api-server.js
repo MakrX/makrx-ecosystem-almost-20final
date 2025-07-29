@@ -962,6 +962,7 @@ const mockProjects = [
     project_id: 'proj-001',
     name: 'Smart Home Automation Hub',
     description: 'Building a centralized IoT hub for home automation using Arduino and Raspberry Pi',
+    project_type: 'open-collab',
     owner_id: 'user-001',
     makerspace_id: 'ms-001',
     visibility: 'public',
