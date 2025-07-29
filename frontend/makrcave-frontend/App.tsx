@@ -19,6 +19,7 @@ import Billing from "./pages/Billing";
 import Analytics from "./pages/Analytics";
 import Maintenance from "./pages/Maintenance";
 import Settings from "./pages/Settings";
+import Profile from "./pages/Profile";
 import AdminUsers from "./pages/admin/Users";
 import AdminMakerspace from "./pages/admin/Makerspace";
 import AdminFeatureFlags from "./pages/admin/FeatureFlags";
