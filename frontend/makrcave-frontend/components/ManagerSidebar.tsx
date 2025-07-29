@@ -55,7 +55,7 @@ export default function ManagerSidebar() {
     {
       name: 'Maintenance',
       href: '/portal/maintenance',
-      icon: Wrench,
+      icon: Settings,
       active: isActive('/portal/maintenance')
     },
     {
