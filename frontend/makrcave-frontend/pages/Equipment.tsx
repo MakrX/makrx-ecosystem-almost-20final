@@ -8,6 +8,7 @@ import {
 } from 'lucide-react';
 import { useMakerspace } from '../contexts/MakerspaceContext';
 import { useAuth } from '../contexts/AuthContext';
+import { useSkills } from '../contexts/SkillContext';
 import { FeatureGate } from '../components/FeatureGate';
 import EquipmentCard from '../components/EquipmentCard';
 import ReservationModal from '../components/ReservationModal';
@@ -70,6 +71,7 @@ interface EquipmentStats {
 
 export default function Equipment() {
   const { user, hasPermission } = useAuth();
+  const { canAccessEquipment, hasSkillForEquipment } = useSkills();
   
   // State management
   const [equipment, setEquipment] = useState<Equipment[]>([]);
