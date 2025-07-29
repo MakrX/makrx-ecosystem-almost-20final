@@ -367,7 +367,7 @@ const Settings: React.FC = () => {
 
       {/* Settings Tabs */}
       <Tabs value={activeTab} onValueChange={setActiveTab}>
-        <TabsList className="grid w-full grid-cols-6">
+        <TabsList className="grid w-full grid-cols-5">
           <TabsTrigger value="general" className="flex items-center gap-2">
             <Building2 className="h-4 w-4" />
             General
@@ -387,10 +387,6 @@ const Settings: React.FC = () => {
           <TabsTrigger value="service" className="flex items-center gap-2">
             <Store className="h-4 w-4" />
             Service
-          </TabsTrigger>
-          <TabsTrigger value="appearance" className="flex items-center gap-2">
-            <Palette className="h-4 w-4" />
-            Appearance
           </TabsTrigger>
         </TabsList>
 
