@@ -100,7 +100,7 @@ export default function EquipmentCard({
       case 'laser_cutter':
         return '🔥';
       case 'cnc_machine':
-        return '⚙️';
+        return '��️';
       case 'testing_tool':
         return '🔬';
       case 'soldering_station':
@@ -214,10 +214,16 @@ export default function EquipmentCard({
             {canReserve && equipment.status === 'available' && (
               <button
                 onClick={() => onReserve?.(equipment)}
-                className="inline-flex items-center px-3 py-1 text-sm bg-makrx-blue text-white rounded-lg hover:bg-makrx-blue/90"
+                disabled={!hasRequiredSkills}
+                className={`inline-flex items-center px-3 py-1 text-sm rounded-lg ${
+                  hasRequiredSkills
+                    ? 'bg-makrx-blue text-white hover:bg-makrx-blue/90'
+                    : 'bg-gray-200 text-gray-500 cursor-not-allowed'
+                }`}
+                title={!hasRequiredSkills ? `Missing skills: ${accessCheck.missingSkills.join(', ')}` : ''}
               >
                 <Calendar className="w-4 h-4 mr-1" />
-                Reserve
+                {hasRequiredSkills ? 'Reserve' : 'Skills Required'}
               </button>
             )}
           </div>
