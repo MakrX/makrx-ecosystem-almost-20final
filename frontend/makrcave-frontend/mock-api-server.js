@@ -1286,37 +1286,124 @@ app.get('/api/v1/projects/:projectId', (req, res) => {
 });
 
 app.post('/api/v1/projects', (req, res) => {
+  const now = new Date().toISOString();
+  const projectId = req.body.project_id || `proj-${Date.now()}`;
+  const ownerId = req.body.owner_id || 'current-user';
+
+  // Handle initial collaborators
+  const initialCollaborators = req.body.initial_collaborators || [];
+  const collaborators = [
+    {
+      id: Date.now(),
+      user_id: ownerId,
+      role: 'owner',
+      invited_by: ownerId,
+      invited_at: now,
+      accepted_at: now
+    }
+  ];
+
+  // Add initial collaborators (excluding owner)
+  initialCollaborators.forEach((collab, index) => {
+    if (collab.user_id !== ownerId) {
+      collaborators.push({
+        id: Date.now() + index + 1,
+        user_id: collab.user_id,
+        role: collab.role || 'viewer',
+        invited_by: ownerId,
+        invited_at: now,
+        accepted_at: null // Not accepted yet
+      });
+    }
+  });
+
+  // Handle initial milestones
+  const initialMilestones = req.body.initial_milestones || [];
+  const milestones = initialMilestones.map((milestone, index) => ({
+    id: Date.now() + index,
+    title: milestone.title,
+    description: milestone.description || null,
+    target_date: milestone.target_date || null,
+    completion_date: null,
+    is_completed: false,
+    priority: milestone.priority || 'medium',
+    order_index: index,
+    created_by: ownerId,
+    created_at: now,
+    completed_by: null
+  }));
+
+  // Create activity logs
+  const activityLogs = [
+    {
+      id: Date.now(),
+      activity_type: 'project_created',
+      title: 'Project Created',
+      description: `${req.body.name} project was created`,
+      metadata: {
+        initial_status: req.body.status || 'draft',
+        project_type: req.body.project_type || 'internal'
+      },
+      user_id: ownerId,
+      user_name: 'Current User',
+      created_at: now
+    }
+  ];
+
+  // Add milestone creation activity if any
+  if (initialMilestones.length > 0) {
+    activityLogs.push({
+      id: Date.now() + 1,
+      activity_type: 'milestone_added',
+      title: 'Initial Milestones Added',
+      description: `${initialMilestones.length} milestones added during project creation`,
+      metadata: { milestone_count: initialMilestones.length },
+      user_id: ownerId,
+      user_name: 'Current User',
+      created_at: now
+    });
+  }
+
+  // Add collaborator invitation activity if any
+  if (initialCollaborators.length > 0) {
+    activityLogs.push({
+      id: Date.now() + 2,
+      activity_type: 'member_added',
+      title: 'Team Members Invited',
+      description: `${initialCollaborators.length} team members invited during project creation`,
+      metadata: { collaborator_count: initialCollaborators.length },
+      user_id: ownerId,
+      user_name: 'Current User',
+      created_at: now
+    });
+  }
+
   const newProject = {
-    project_id: `proj-${Date.now()}`,
-    ...req.body,
-    created_at: new Date().toISOString(),
-    updated_at: new Date().toISOString(),
-    collaborators: [
-      {
-        id: Date.now(),
-        user_id: req.body.owner_id,
-        role: 'owner',
-        invited_by: req.body.owner_id,
-        invited_at: new Date().toISOString(),
-        accepted_at: new Date().toISOString()
-      }
-    ],
+    project_id: projectId,
+    name: req.body.name,
+    description: req.body.description || null,
+    project_type: req.body.project_type || 'internal',
+    owner_id: ownerId,
+    makerspace_id: req.body.makerspace_id || null,
+    visibility: req.body.visibility || 'private',
+    status: req.body.status || 'draft',
+    start_date: req.body.start_date || null,
+    end_date: req.body.end_date || null,
+    tags: req.body.tags || [],
+    is_featured: false,
+    is_approved: true,
+    created_at: now,
+    updated_at: now,
+    github_repo_url: null,
+    github_repo_name: null,
+    github_integration_enabled: false,
+    github_default_branch: 'main',
+    collaborators,
     bom_items: [],
     equipment_reservations: [],
     files: [],
-    milestones: [],
-    activity_logs: [
-      {
-        id: Date.now(),
-        activity_type: 'project_created',
-        title: 'Project Created',
-        description: `${req.body.name} project was created`,
-        metadata: { initial_status: req.body.status || 'draft' },
-        user_id: req.body.owner_id,
-        user_name: 'Current User',
-        created_at: new Date().toISOString()
-      }
-    ]
+    milestones,
+    activity_logs: activityLogs
   };
 
   mockProjects.push(newProject);
