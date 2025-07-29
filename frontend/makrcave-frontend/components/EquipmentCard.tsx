@@ -57,6 +57,11 @@ export default function EquipmentCard({
   canMaintenance
 }: EquipmentCardProps) {
   const [showQuickActions, setShowQuickActions] = useState(false);
+  const { canAccessEquipment } = useSkills();
+
+  // Check if user has required skills for this equipment
+  const accessCheck = canAccessEquipment(equipment.equipment_id);
+  const hasRequiredSkills = accessCheck.canAccess;
 
   const getStatusIcon = (status: string) => {
     switch (status) {
