@@ -127,9 +127,20 @@ const Billing: React.FC = () => {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold text-gray-900">Billing & Payments</h1>
-          <p className="text-gray-600">Manage your payments, invoices, and billing information</p>
+          <p className="text-gray-600">
+            {isMakerspaceAdmin
+              ? "Manage billing and payments for your makerspace users"
+              : "Manage your payments, invoices, and billing information"
+            }
+          </p>
         </div>
         <div className="flex items-center gap-3">
+          {canCollectPayments && (
+            <Button variant="outline">
+              <DollarSign className="h-4 w-4 mr-2" />
+              Collect Payment
+            </Button>
+          )}
           <Button variant="outline" onClick={handleBuyCredits}>
             <Plus className="h-4 w-4 mr-2" />
             Buy Credits
