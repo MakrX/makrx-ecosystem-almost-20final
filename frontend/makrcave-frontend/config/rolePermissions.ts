@@ -54,6 +54,14 @@ export const ROLE_PERMISSIONS: Record<UserRole, RolePermissions> = {
       export: 'all',
       generate_reports: 'all',
     },
+    billing: {
+      view: 'all',
+      manage_payments: 'all',
+      collect_payments: 'all',
+      generate_invoices: 'all',
+      manage_credits: 'all',
+      view_reports: 'all',
+    },
     admin: {
       userRoleManagement: true,
       systemLogs: true,
