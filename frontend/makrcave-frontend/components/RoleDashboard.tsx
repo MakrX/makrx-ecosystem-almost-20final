@@ -275,13 +275,56 @@ function MakerspaceAdminDashboard() {
         />
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-2 gap-6">
-        <AnalyticsWidget
-          type="inventory"
-          title="Inventory Distribution"
-          timeframe="30d"
-          height={250}
-        />
+      <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
+        <div className="makrcave-card">
+          <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
+            <Activity className="h-5 w-5 text-makrx-blue" />
+            Performance Metrics
+          </h3>
+          <div className="space-y-3">
+            <div className="flex justify-between items-center">
+              <span className="text-sm text-muted-foreground">Equipment Utilization</span>
+              <span className="font-semibold text-green-600">87%</span>
+            </div>
+            <div className="flex justify-between items-center">
+              <span className="text-sm text-muted-foreground">Project Completion Rate</span>
+              <span className="font-semibold text-blue-600">92%</span>
+            </div>
+            <div className="flex justify-between items-center">
+              <span className="text-sm text-muted-foreground">Member Satisfaction</span>
+              <span className="font-semibold text-makrx-teal">4.8/5</span>
+            </div>
+            <div className="flex justify-between items-center">
+              <span className="text-sm text-muted-foreground">Space Capacity</span>
+              <span className="font-semibold text-orange-600">68%</span>
+            </div>
+          </div>
+        </div>
+
+        <div className="makrcave-card">
+          <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
+            <Calendar className="h-5 w-5 text-makrx-blue" />
+            Today's Schedule
+          </h3>
+          <div className="space-y-3">
+            <div className="border-l-4 border-blue-500 pl-3">
+              <p className="font-medium text-sm">10:00 AM - 3D Printer Workshop</p>
+              <p className="text-xs text-muted-foreground">Room A • 8 participants</p>
+            </div>
+            <div className="border-l-4 border-green-500 pl-3">
+              <p className="font-medium text-sm">2:00 PM - Laser Cutting Session</p>
+              <p className="text-xs text-muted-foreground">Room B • 5 participants</p>
+            </div>
+            <div className="border-l-4 border-orange-500 pl-3">
+              <p className="font-medium text-sm">4:00 PM - Electronics Lab</p>
+              <p className="text-xs text-muted-foreground">Lab C • 12 participants</p>
+            </div>
+            <div className="border-l-4 border-purple-500 pl-3">
+              <p className="font-medium text-sm">6:00 PM - Community Meeting</p>
+              <p className="text-xs text-muted-foreground">Main Hall • All members</p>
+            </div>
+          </div>
+        </div>
 
         <AnalyticsWidget
           type="revenue"
