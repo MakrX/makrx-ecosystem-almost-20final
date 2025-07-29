@@ -224,11 +224,14 @@ const Billing: React.FC = () => {
 
       {/* Main Content Tabs */}
       <Tabs value={activeTab} onValueChange={setActiveTab}>
-        <TabsList className="grid w-full grid-cols-4">
+        <TabsList className={`grid w-full ${isMakerspaceAdmin ? 'grid-cols-5' : 'grid-cols-4'}`}>
           <TabsTrigger value="overview">Overview</TabsTrigger>
           <TabsTrigger value="transactions">Transactions</TabsTrigger>
           <TabsTrigger value="invoices">Invoices</TabsTrigger>
           <TabsTrigger value="analytics">Analytics</TabsTrigger>
+          {isMakerspaceAdmin && (
+            <TabsTrigger value="users">User Billing</TabsTrigger>
+          )}
         </TabsList>
 
         {/* Overview Tab */}
