@@ -105,21 +105,24 @@ export default function ManagerSidebar() {
 
       {/* User Info */}
       <div className="p-4 border-b border-blue-200">
-        <div className="flex items-center gap-3">
-          <div className="w-8 h-8 bg-makrx-teal rounded-full flex items-center justify-center">
+        <Link
+          to="/portal/profile"
+          className="flex items-center gap-3 hover:bg-blue-100 rounded-lg p-2 -m-2 transition-colors group"
+        >
+          <div className="w-8 h-8 bg-makrx-teal rounded-full flex items-center justify-center group-hover:bg-makrx-teal-dark transition-colors">
             <span className="text-sm font-semibold text-white">
               {user?.firstName?.[0] || 'M'}
             </span>
           </div>
           <div className="flex-1 min-w-0">
-            <p className="text-sm font-medium truncate text-makrx-blue">
+            <p className="text-sm font-medium truncate text-makrx-blue group-hover:text-blue-800">
               {user?.firstName ? `${user.firstName} ${user.lastName}` : user?.username}
             </p>
-            <p className="text-xs text-blue-600 truncate">
+            <p className="text-xs text-blue-600 truncate group-hover:text-blue-700">
               MakrCave Manager
             </p>
           </div>
-        </div>
+        </Link>
       </div>
 
       {/* Navigation */}
