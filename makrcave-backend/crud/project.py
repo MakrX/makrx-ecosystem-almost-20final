@@ -398,10 +398,12 @@ def add_bom_item(
         item_type=bom_item.item_type,
         item_id=bom_item.item_id,
         item_name=bom_item.item_name,
+        part_code=bom_item.part_code,
         quantity=bom_item.quantity,
         unit_cost=bom_item.unit_cost,
         total_cost=total_cost,
         usage_notes=bom_item.usage_notes,
+        alternatives=[alt.dict() for alt in bom_item.alternatives] if bom_item.alternatives else [],
         is_critical=bom_item.is_critical,
         added_by=added_by
     )
