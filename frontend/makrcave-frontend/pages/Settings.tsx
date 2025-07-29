@@ -440,15 +440,7 @@ const Settings: React.FC = () => {
           />
         </TabsContent>
 
-        {/* Appearance Customizer Tab */}
-        <TabsContent value="appearance" className="space-y-6">
-          <AppearanceCustomizer
-            settings={settings}
-            onUpdate={(data) => updateSettings('appearance', data)}
-            onSave={(data) => saveSectionSettings('appearance', data)}
-            saving={saving}
-          />
-        </TabsContent>
+
       </Tabs>
 
       {/* Quick Actions */}
