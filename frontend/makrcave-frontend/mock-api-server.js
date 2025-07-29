@@ -1188,6 +1188,7 @@ const mockProjects = [
     project_id: 'proj-002',
     name: 'Sustainable Garden Monitor',
     description: 'IoT-based monitoring system for tracking soil moisture, light levels, and plant health',
+    project_type: 'sponsored',
     owner_id: 'user-003',
     makerspace_id: 'ms-001',
     visibility: 'team-only',
