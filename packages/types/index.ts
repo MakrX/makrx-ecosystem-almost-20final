@@ -65,6 +65,14 @@ export interface RolePermissions {
     export: 'all' | 'assigned_makerspace' | 'none';
     generate_reports: 'all' | 'assigned_makerspace' | 'none';
   };
+  billing: {
+    view: 'all' | 'assigned_makerspace' | 'own' | 'none';
+    manage_payments: 'all' | 'assigned_makerspace' | 'own' | 'none';
+    collect_payments: 'all' | 'assigned_makerspace' | 'none';
+    generate_invoices: 'all' | 'assigned_makerspace' | 'none';
+    manage_credits: 'all' | 'assigned_makerspace' | 'own' | 'none';
+    view_reports: 'all' | 'assigned_makerspace' | 'own' | 'none';
+  };
   admin: {
     userRoleManagement: boolean;
     systemLogs: boolean;
