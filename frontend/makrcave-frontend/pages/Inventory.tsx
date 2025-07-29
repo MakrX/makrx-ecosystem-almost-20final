@@ -786,6 +786,35 @@ export default function Inventory() {
       {/* Modals */}
       <ItemDetailModal />
 
+      {/* Add Item Modal */}
+      {showAddModal && (
+        <AddItemModal
+          isOpen={showAddModal}
+          onClose={() => setShowAddModal(false)}
+          onSubmit={(itemData) => {
+            addInventoryItem(itemData);
+            setShowAddModal(false);
+          }}
+        />
+      )}
+
+      {/* Edit Item Modal */}
+      {showEditModal && selectedItem && (
+        <AddItemModal
+          isOpen={showEditModal}
+          onClose={() => {
+            setShowEditModal(false);
+            setSelectedItem(null);
+          }}
+          editItem={selectedItem}
+          onSubmit={(itemData) => {
+            updateInventoryItem(selectedItem.id, itemData);
+            setShowEditModal(false);
+            setSelectedItem(null);
+          }}
+        />
+      )}
+
       {/* MakrX Store Integration Notice */}
       {showReorderModal && selectedItem && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
