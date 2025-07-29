@@ -226,49 +226,33 @@ export default function InventoryCard({
         )}
 
         {/* Action Buttons */}
-        <div className="flex gap-2 flex-wrap">
+        <div className="flex gap-2">
           {canIssue && item.quantity > 0 && item.status === 'active' && (
-            <button 
+            <button
               onClick={() => setShowIssueModal(true)}
-              className="flex-1 makrcave-btn-secondary text-xs"
+              className="flex-1 makrcave-btn-secondary text-sm py-2 px-3"
             >
-              <Minus className="w-3 h-3 mr-1" />
+              <Minus className="w-4 h-4 mr-2" />
               Issue
             </button>
           )}
 
           {canReorder && item.supplierType === 'makrx' && item.productCode && (
-            <button 
+            <button
               onClick={() => onReorder?.(item)}
-              className="flex-1 makrcave-btn-primary text-xs"
+              className="flex-1 makrcave-btn-primary text-sm py-2 px-3"
             >
-              <ShoppingCart className="w-3 h-3 mr-1" />
+              <ShoppingCart className="w-4 h-4 mr-2" />
               Reorder
             </button>
           )}
 
-          <button 
-            onClick={() => onViewDetails?.(item)}
-            className="makrcave-btn-secondary text-xs"
-          >
-            <Eye className="w-3 h-3" />
-          </button>
-
           {canEdit && (
-            <button 
+            <button
               onClick={() => onEdit?.(item)}
-              className="makrcave-btn-secondary text-xs"
+              className="makrcave-btn-secondary text-sm py-2 px-3"
             >
-              <Edit className="w-3 h-3" />
-            </button>
-          )}
-
-          {canDelete && (
-            <button 
-              onClick={() => onDelete?.(item.id)}
-              className="makrcave-btn-secondary text-xs text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20"
-            >
-              <Trash2 className="w-3 h-3" />
+              <Edit className="w-4 h-4" />
             </button>
           )}
         </div>
