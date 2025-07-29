@@ -72,7 +72,13 @@ const Analytics: React.FC = () => {
   const { toast } = useToast();
 
   // Check if user has analytics access
-  if (!hasPermission('analytics', 'view')) {
+  const context = {
+    isAssignedMakerspace: user?.assignedMakerspaces && user.assignedMakerspaces.length > 0,
+    isOwnResource: false,
+    isCertified: false
+  };
+
+  if (!hasPermission('analytics', 'view', context)) {
     return (
       <div className="flex items-center justify-center min-h-96">
         <div className="text-center">
