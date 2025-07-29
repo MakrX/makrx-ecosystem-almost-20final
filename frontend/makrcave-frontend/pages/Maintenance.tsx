@@ -92,8 +92,12 @@ const Maintenance: React.FC = () => {
   const [statusFilter, setStatusFilter] = useState('all');
   const [typeFilter, setTypeFilter] = useState('all');
 
-  // Check permissions
-  if (!hasPermission('equipment', 'maintenance')) {
+  // Check permissions - provide context for makerspace-level access
+  const canAccessMaintenance = hasPermission('equipment', 'maintenance', {
+    isAssignedMakerspace: true // Assume user is working within their assigned makerspace
+  });
+
+  if (!canAccessMaintenance) {
     return (
       <div className="flex items-center justify-center min-h-96">
         <div className="text-center">
