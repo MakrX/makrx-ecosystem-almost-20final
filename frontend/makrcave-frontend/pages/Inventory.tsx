@@ -739,7 +739,7 @@ export default function Inventory() {
             item={item}
             onEdit={canAddEdit ? () => {
               setSelectedItem(item);
-              setShowAddModal(true);
+              setShowEditModal(true);
             } : undefined}
             onDelete={canDelete ? handleDeleteItem : undefined}
             onIssue={canIssue ? handleIssueItem : undefined}
