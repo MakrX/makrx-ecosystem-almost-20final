@@ -956,6 +956,403 @@ app.get('/api/v1/equipment/skill-requirements', (req, res) => {
   res.json(mockSkillRequirements);
 });
 
+// Project Management Endpoints
+const mockProjects = [
+  {
+    project_id: 'proj-001',
+    name: 'Smart Home Automation Hub',
+    description: 'Building a centralized IoT hub for home automation using Arduino and Raspberry Pi',
+    owner_id: 'user-001',
+    makerspace_id: 'ms-001',
+    visibility: 'public',
+    status: 'in-progress',
+    start_date: '2024-01-15T00:00:00Z',
+    end_date: '2024-03-15T00:00:00Z',
+    tags: ['IoT', 'Arduino', 'Raspberry Pi', 'Home Automation'],
+    is_featured: true,
+    is_approved: true,
+    created_at: '2024-01-15T10:00:00Z',
+    updated_at: '2024-01-20T15:30:00Z',
+    github_repo_url: 'https://github.com/user/smart-home-hub',
+    github_repo_name: 'user/smart-home-hub',
+    github_integration_enabled: true,
+    github_default_branch: 'main',
+    collaborators: [
+      {
+        id: 1,
+        user_id: 'user-001',
+        role: 'owner',
+        invited_by: 'user-001',
+        invited_at: '2024-01-15T10:00:00Z',
+        accepted_at: '2024-01-15T10:00:00Z'
+      },
+      {
+        id: 2,
+        user_id: 'user-002',
+        role: 'editor',
+        invited_by: 'user-001',
+        invited_at: '2024-01-16T14:00:00Z',
+        accepted_at: '2024-01-16T16:30:00Z'
+      }
+    ],
+    bom_items: [
+      {
+        id: 1,
+        item_type: 'inventory',
+        item_id: 'inv-arduino-uno',
+        item_name: 'Arduino Uno R3',
+        quantity: 2,
+        unit_cost: 25.00,
+        total_cost: 50.00,
+        usage_notes: 'Main microcontroller for sensor nodes',
+        is_critical: true,
+        procurement_status: 'received',
+        added_by: 'user-001',
+        added_at: '2024-01-15T12:00:00Z'
+      },
+      {
+        id: 2,
+        item_type: 'inventory',
+        item_id: 'inv-rpi-4',
+        item_name: 'Raspberry Pi 4 Model B',
+        quantity: 1,
+        unit_cost: 75.00,
+        total_cost: 75.00,
+        usage_notes: 'Central hub processor',
+        is_critical: true,
+        procurement_status: 'received',
+        added_by: 'user-001',
+        added_at: '2024-01-15T12:00:00Z'
+      },
+      {
+        id: 3,
+        item_type: 'external',
+        item_id: 'ext-sensors',
+        item_name: 'Temperature/Humidity Sensors',
+        quantity: 5,
+        unit_cost: 8.00,
+        total_cost: 40.00,
+        usage_notes: 'DHT22 sensors for environmental monitoring',
+        is_critical: false,
+        procurement_status: 'ordered',
+        added_by: 'user-002',
+        added_at: '2024-01-16T10:00:00Z'
+      }
+    ],
+    equipment_reservations: [
+      {
+        id: 1,
+        equipment_id: 'eq-001',
+        reservation_id: 'res-001',
+        requested_start: '2024-01-22T10:00:00Z',
+        requested_end: '2024-01-22T14:00:00Z',
+        actual_start: '2024-01-22T10:15:00Z',
+        actual_end: '2024-01-22T13:45:00Z',
+        status: 'completed',
+        usage_notes: '3D printed enclosure components',
+        requested_by: 'user-001',
+        requested_at: '2024-01-20T09:00:00Z'
+      },
+      {
+        id: 2,
+        equipment_id: 'eq-002',
+        reservation_id: 'res-002',
+        requested_start: '2024-01-25T14:00:00Z',
+        requested_end: '2024-01-25T16:00:00Z',
+        status: 'confirmed',
+        usage_notes: 'Laser cut acrylic panels for display',
+        requested_by: 'user-002',
+        requested_at: '2024-01-22T11:00:00Z'
+      }
+    ],
+    files: [
+      {
+        id: 1,
+        filename: 'circuit-diagram-v2.pdf',
+        original_filename: 'Smart_Home_Circuit_Diagram_v2.pdf',
+        file_type: 'document',
+        file_size: 1024000,
+        file_url: '/files/proj-001/circuit-diagram-v2.pdf',
+        description: 'Updated circuit diagram with all sensor connections',
+        is_public: false,
+        version: '2.0',
+        uploaded_by: 'user-001',
+        uploaded_at: '2024-01-18T16:00:00Z'
+      },
+      {
+        id: 2,
+        filename: 'enclosure-3d-model.stl',
+        original_filename: 'Hub_Enclosure_Final.stl',
+        file_type: '3d_model',
+        file_size: 2048000,
+        file_url: '/files/proj-001/enclosure-3d-model.stl',
+        description: '3D printable enclosure for the main hub',
+        is_public: true,
+        version: '1.0',
+        uploaded_by: 'user-002',
+        uploaded_at: '2024-01-19T14:30:00Z'
+      }
+    ],
+    milestones: [
+      {
+        id: 1,
+        title: 'Hardware Setup Complete',
+        description: 'All hardware components assembled and tested',
+        target_date: '2024-02-01T00:00:00Z',
+        completion_date: '2024-01-28T18:00:00Z',
+        is_completed: true,
+        priority: 'high',
+        order_index: 1,
+        created_by: 'user-001',
+        created_at: '2024-01-15T10:00:00Z',
+        completed_by: 'user-001'
+      },
+      {
+        id: 2,
+        title: 'Software Development',
+        description: 'Core software functionality implemented',
+        target_date: '2024-02-15T00:00:00Z',
+        is_completed: false,
+        priority: 'high',
+        order_index: 2,
+        created_by: 'user-001',
+        created_at: '2024-01-15T10:00:00Z'
+      },
+      {
+        id: 3,
+        title: 'Testing & Deployment',
+        description: 'Complete system testing and deployment',
+        target_date: '2024-03-01T00:00:00Z',
+        is_completed: false,
+        priority: 'medium',
+        order_index: 3,
+        created_by: 'user-001',
+        created_at: '2024-01-15T10:00:00Z'
+      }
+    ],
+    activity_logs: [
+      {
+        id: 1,
+        activity_type: 'project_created',
+        title: 'Project Created',
+        description: 'Smart Home Automation Hub project was created',
+        metadata: { initial_status: 'draft' },
+        user_id: 'user-001',
+        user_name: 'John Maker',
+        created_at: '2024-01-15T10:00:00Z'
+      },
+      {
+        id: 2,
+        activity_type: 'member_added',
+        title: 'Team Member Added',
+        description: 'Jane Smith was added as an editor',
+        metadata: { member_role: 'editor', member_id: 'user-002' },
+        user_id: 'user-001',
+        user_name: 'John Maker',
+        created_at: '2024-01-16T14:00:00Z'
+      },
+      {
+        id: 3,
+        activity_type: 'bom_item_added',
+        title: 'BOM Item Added',
+        description: 'Arduino Uno R3 added to project BOM',
+        metadata: { item_name: 'Arduino Uno R3', quantity: 2 },
+        user_id: 'user-001',
+        user_name: 'John Maker',
+        created_at: '2024-01-15T12:00:00Z'
+      },
+      {
+        id: 4,
+        activity_type: 'milestone_completed',
+        title: 'Milestone Completed',
+        description: 'Hardware Setup Complete milestone was finished',
+        metadata: { milestone_title: 'Hardware Setup Complete' },
+        user_id: 'user-001',
+        user_name: 'John Maker',
+        created_at: '2024-01-28T18:00:00Z'
+      },
+      {
+        id: 5,
+        activity_type: 'file_uploaded',
+        title: 'File Uploaded',
+        description: '3D model for enclosure uploaded',
+        metadata: { filename: 'enclosure-3d-model.stl', file_type: '3d_model' },
+        user_id: 'user-002',
+        user_name: 'Jane Smith',
+        created_at: '2024-01-19T14:30:00Z'
+      }
+    ]
+  },
+  {
+    project_id: 'proj-002',
+    name: 'Sustainable Garden Monitor',
+    description: 'IoT-based monitoring system for tracking soil moisture, light levels, and plant health',
+    owner_id: 'user-003',
+    makerspace_id: 'ms-001',
+    visibility: 'team-only',
+    status: 'draft',
+    start_date: '2024-02-01T00:00:00Z',
+    end_date: '2024-04-01T00:00:00Z',
+    tags: ['IoT', 'Sustainability', 'Agriculture', 'Sensors'],
+    is_featured: false,
+    is_approved: true,
+    created_at: '2024-02-01T09:00:00Z',
+    updated_at: '2024-02-01T09:00:00Z',
+    github_integration_enabled: false,
+    github_default_branch: 'main',
+    collaborators: [
+      {
+        id: 3,
+        user_id: 'user-003',
+        role: 'owner',
+        invited_by: 'user-003',
+        invited_at: '2024-02-01T09:00:00Z',
+        accepted_at: '2024-02-01T09:00:00Z'
+      }
+    ],
+    bom_items: [],
+    equipment_reservations: [],
+    files: [],
+    milestones: [
+      {
+        id: 4,
+        title: 'Requirements Gathering',
+        description: 'Define project requirements and specifications',
+        target_date: '2024-02-07T00:00:00Z',
+        is_completed: false,
+        priority: 'high',
+        order_index: 1,
+        created_by: 'user-003',
+        created_at: '2024-02-01T09:00:00Z'
+      }
+    ],
+    activity_logs: [
+      {
+        id: 6,
+        activity_type: 'project_created',
+        title: 'Project Created',
+        description: 'Sustainable Garden Monitor project was created',
+        metadata: { initial_status: 'draft' },
+        user_id: 'user-003',
+        user_name: 'Alice Green',
+        created_at: '2024-02-01T09:00:00Z'
+      }
+    ]
+  }
+];
+
+// Projects API endpoints
+app.get('/api/v1/projects', (req, res) => {
+  const { visibility, status, owner_id, search } = req.query;
+
+  let filtered = [...mockProjects];
+
+  if (visibility) {
+    filtered = filtered.filter(p => p.visibility === visibility);
+  }
+
+  if (status) {
+    filtered = filtered.filter(p => p.status === status);
+  }
+
+  if (owner_id) {
+    filtered = filtered.filter(p => p.owner_id === owner_id);
+  }
+
+  if (search) {
+    const searchLower = search.toLowerCase();
+    filtered = filtered.filter(p =>
+      p.name.toLowerCase().includes(searchLower) ||
+      p.description?.toLowerCase().includes(searchLower) ||
+      p.tags.some(tag => tag.toLowerCase().includes(searchLower))
+    );
+  }
+
+  res.json(filtered);
+});
+
+app.get('/api/v1/projects/:projectId', (req, res) => {
+  const { projectId } = req.params;
+  const project = mockProjects.find(p => p.project_id === projectId);
+
+  if (!project) {
+    return res.status(404).json({
+      detail: 'Project not found',
+      project_id: projectId
+    });
+  }
+
+  res.json(project);
+});
+
+app.post('/api/v1/projects', (req, res) => {
+  const newProject = {
+    project_id: `proj-${Date.now()}`,
+    ...req.body,
+    created_at: new Date().toISOString(),
+    updated_at: new Date().toISOString(),
+    collaborators: [
+      {
+        id: Date.now(),
+        user_id: req.body.owner_id,
+        role: 'owner',
+        invited_by: req.body.owner_id,
+        invited_at: new Date().toISOString(),
+        accepted_at: new Date().toISOString()
+      }
+    ],
+    bom_items: [],
+    equipment_reservations: [],
+    files: [],
+    milestones: [],
+    activity_logs: [
+      {
+        id: Date.now(),
+        activity_type: 'project_created',
+        title: 'Project Created',
+        description: `${req.body.name} project was created`,
+        metadata: { initial_status: req.body.status || 'draft' },
+        user_id: req.body.owner_id,
+        user_name: 'Current User',
+        created_at: new Date().toISOString()
+      }
+    ]
+  };
+
+  mockProjects.push(newProject);
+  res.status(201).json(newProject);
+});
+
+app.put('/api/v1/projects/:projectId', (req, res) => {
+  const { projectId } = req.params;
+  const index = mockProjects.findIndex(p => p.project_id === projectId);
+
+  if (index === -1) {
+    return res.status(404).json({ detail: 'Project not found' });
+  }
+
+  mockProjects[index] = {
+    ...mockProjects[index],
+    ...req.body,
+    project_id: projectId,
+    updated_at: new Date().toISOString()
+  };
+
+  res.json(mockProjects[index]);
+});
+
+app.delete('/api/v1/projects/:projectId', (req, res) => {
+  const { projectId } = req.params;
+  const index = mockProjects.findIndex(p => p.project_id === projectId);
+
+  if (index === -1) {
+    return res.status(404).json({ detail: 'Project not found' });
+  }
+
+  mockProjects.splice(index, 1);
+  res.status(204).send();
+});
+
 // Generic 404 handler for other endpoints
 app.use('*', (req, res) => {
   console.log(`🔍 Missing endpoint: ${req.method} ${req.originalUrl}`);
