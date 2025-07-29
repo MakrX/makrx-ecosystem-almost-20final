@@ -515,12 +515,11 @@ app.use('*', (req, res) => {
 const PORT = 8000;
 app.listen(PORT, () => {
   console.log(`🚀 Mock API server running on http://localhost:${PORT}`);
-  console.log(`📊 Analytics endpoints available:`);
-  console.log(`   GET /api/v1/analytics/overview`);
-  console.log(`   GET /api/v1/analytics/dashboard`);
-  console.log(`   GET /api/v1/analytics/usage`);
-  console.log(`   GET /api/v1/analytics/inventory`);
-  console.log(`   GET /api/v1/analytics/equipment`);
-  console.log(`   GET /api/v1/analytics/projects`);
-  console.log(`   GET /api/v1/analytics/revenue`);
+  console.log(`📊 Available endpoints:`);
+  console.log(`   Analytics: /api/v1/analytics/*`);
+  console.log(`   Maintenance: /api/v1/maintenance/*`);
+  console.log(`   Billing: /api/v1/billing/*`);
+  console.log(`   Inventory: /api/v1/inventory/*`);
+  console.log(`   Equipment: /api/v1/equipment/*`);
+  console.log(`⚠️  All other endpoints will return 404 with debug info`);
 });
