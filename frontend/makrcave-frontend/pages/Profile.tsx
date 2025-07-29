@@ -236,7 +236,7 @@ const Profile: React.FC = () => {
       case 'makerspace_admin': return 'Makerspace Manager';
       case 'service_provider': return 'Service Provider';
       case 'maker': return 'Maker';
-      default: return role;
+      default: return role.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase());
     }
   };
 
