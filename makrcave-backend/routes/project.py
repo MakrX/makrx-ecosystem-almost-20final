@@ -5,6 +5,8 @@ from typing import List, Optional
 import uuid
 from datetime import datetime
 
+from .. import models
+
 from ..database import get_db
 from ..dependencies import get_current_user
 from ..schemas.project import (
