@@ -104,11 +104,27 @@
   }
 
   .makrcave-btn-primary {
-    @apply bg-makrx-blue text-white px-4 py-2 rounded-lg font-medium hover:bg-makrx-blue/90 transition-colors;
+    @apply bg-makrx-blue text-white px-4 py-2.5 rounded-lg font-medium hover:bg-makrx-blue/90 transition-colors inline-flex items-center justify-center gap-2 text-sm;
   }
 
   .makrcave-btn-secondary {
-    @apply bg-makrx-teal text-white px-4 py-2 rounded-lg font-medium hover:bg-makrx-teal-light transition-colors;
+    @apply bg-makrx-teal text-white px-4 py-2.5 rounded-lg font-medium hover:bg-makrx-teal-light transition-colors inline-flex items-center justify-center gap-2 text-sm;
+  }
+
+  .makrcave-btn-outline {
+    @apply border border-border bg-background text-foreground px-4 py-2.5 rounded-lg font-medium hover:bg-accent transition-colors inline-flex items-center justify-center gap-2 text-sm;
+  }
+
+  .makrcave-btn-ghost {
+    @apply text-foreground px-3 py-2 rounded-lg font-medium hover:bg-accent transition-colors inline-flex items-center justify-center gap-2 text-sm;
+  }
+
+  .makrcave-btn-sm {
+    @apply px-3 py-1.5 text-xs;
+  }
+
+  .makrcave-btn-lg {
+    @apply px-6 py-3 text-base;
   }
 
   .makrcave-status-available {
