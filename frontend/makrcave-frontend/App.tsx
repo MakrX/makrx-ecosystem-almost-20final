@@ -7,6 +7,7 @@ import { ThemeProvider } from "./contexts/ThemeContext";
 import { NotificationProvider } from "./contexts/NotificationContext";
 import { MemberProvider } from "./contexts/MemberContext";
 import { BillingProvider } from "./contexts/BillingContext";
+import { SkillProvider } from "./contexts/SkillContext";
 import Layout from "./components/Layout";
 import Dashboard from "./pages/Dashboard";
 import Inventory from "./pages/Inventory";
@@ -37,7 +38,8 @@ const App = () => (
           <MakerspaceProvider>
             <MemberProvider>
               <BillingProvider>
-                <BrowserRouter>
+                <SkillProvider>
+                  <BrowserRouter>
                 <Routes>
                   <Route path="/login" element={<Login />} />
                   <Route path="/" element={<Layout />}>
@@ -66,7 +68,8 @@ const App = () => (
                     </Route>
                   </Route>
                 </Routes>
-                </BrowserRouter>
+                  </BrowserRouter>
+                </SkillProvider>
               </BillingProvider>
             </MemberProvider>
           </MakerspaceProvider>
