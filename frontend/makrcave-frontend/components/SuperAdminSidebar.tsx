@@ -111,21 +111,24 @@ export default function SuperAdminSidebar() {
 
       {/* User Info */}
       <div className="p-4 border-b border-red-200">
-        <div className="flex items-center gap-3">
-          <div className="w-8 h-8 bg-red-100 rounded-full flex items-center justify-center">
+        <Link
+          to="/portal/profile"
+          className="flex items-center gap-3 hover:bg-red-100 rounded-lg p-2 -m-2 transition-colors group"
+        >
+          <div className="w-8 h-8 bg-red-100 rounded-full flex items-center justify-center group-hover:bg-red-200 transition-colors">
             <span className="text-sm font-semibold text-red-700">
               {user?.firstName?.[0] || 'S'}
             </span>
           </div>
           <div className="flex-1 min-w-0">
-            <p className="text-sm font-medium truncate text-red-700">
+            <p className="text-sm font-medium truncate text-red-700 group-hover:text-red-800">
               {user?.firstName ? `${user.firstName} ${user.lastName}` : user?.username}
             </p>
-            <p className="text-xs text-red-600 truncate">
+            <p className="text-xs text-red-600 truncate group-hover:text-red-700">
               System Administrator
             </p>
           </div>
-        </div>
+        </Link>
       </div>
 
       {/* Navigation */}
