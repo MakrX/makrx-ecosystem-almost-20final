@@ -1,8 +1,8 @@
 import { useState, useMemo, useEffect } from 'react';
-import { 
-  Package, Plus, Search, Filter, Download, Upload, ShoppingCart, 
+import {
+  Package, Plus, Search, Filter, Download, Upload, ShoppingCart,
   AlertTriangle, BarChart3, Grid, List, Calendar, Eye, Edit,
-  X, Save, FileText, MapPin, Shield, ExternalLink, QrCode
+  X, Save, FileText, MapPin, Shield, ExternalLink, QrCode, Trash2
 } from 'lucide-react';
 import { useMakerspace } from '../contexts/MakerspaceContext';
 import { useAuth } from '../contexts/AuthContext';
