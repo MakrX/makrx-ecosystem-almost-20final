@@ -292,6 +292,126 @@ const Billing: React.FC = () => {
             onExportReport={handleExportReports}
           />
         </TabsContent>
+
+        {/* User Billing Tab - Only for Makerspace Admins */}
+        {isMakerspaceAdmin && (
+          <TabsContent value="users" className="space-y-6">
+            <div className="space-y-6">
+              {/* Makerspace Billing Overview */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <Card>
+                  <CardContent className="p-6">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="text-sm font-medium text-gray-600">Total Users</p>
+                        <p className="text-2xl font-bold text-gray-900">{getMakerspaceUsersBilling().length}</p>
+                        <p className="text-xs text-gray-500">Active members</p>
+                      </div>
+                      <Users className="h-8 w-8 text-blue-600" />
+                    </div>
+                  </CardContent>
+                </Card>
+
+                <Card>
+                  <CardContent className="p-6">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="text-sm font-medium text-gray-600">Total Revenue</p>
+                        <p className="text-2xl font-bold text-gray-900">
+                          {formatCurrency(getMakerspaceUsersBilling().reduce((sum, user) => sum + user.total_spent, 0))}
+                        </p>
+                        <p className="text-xs text-green-600">From all users</p>
+                      </div>
+                      <DollarSign className="h-8 w-8 text-green-600" />
+                    </div>
+                  </CardContent>
+                </Card>
+
+                <Card>
+                  <CardContent className="p-6">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="text-sm font-medium text-gray-600">Pending Payments</p>
+                        <p className="text-2xl font-bold text-red-600">
+                          {formatCurrency(getMakerspaceUsersBilling().reduce((sum, user) => sum + user.pending_amount, 0))}
+                        </p>
+                        <p className="text-xs text-red-500">Requires attention</p>
+                      </div>
+                      <AlertTriangle className="h-8 w-8 text-red-600" />
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+
+              {/* Users Billing Table */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Users className="h-5 w-5" />
+                    User Billing Management
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    {getMakerspaceUsersBilling().map((user) => (
+                      <div key={user.id} className="flex items-center justify-between p-4 border rounded-lg">
+                        <div className="flex items-center gap-4">
+                          <div className="w-10 h-10 bg-gray-200 rounded-full flex items-center justify-center">
+                            <span className="text-sm font-medium">{user.name.split(' ').map(n => n[0]).join('')}</span>
+                          </div>
+                          <div>
+                            <h3 className="font-semibold">{user.name}</h3>
+                            <p className="text-sm text-gray-600">{user.email}</p>
+                            <div className="flex items-center gap-2 mt-1">
+                              <Badge variant={user.status === 'active' ? 'default' : 'destructive'}>
+                                {user.status}
+                              </Badge>
+                              {user.pending_amount > 0 && (
+                                <Badge variant="outline" className="text-red-600">
+                                  {formatCurrency(user.pending_amount)} pending
+                                </Badge>
+                              )}
+                            </div>
+                          </div>
+                        </div>
+
+                        <div className="text-right">
+                          <div className="grid grid-cols-3 gap-4 text-sm mb-2">
+                            <div>
+                              <p className="text-gray-500">Credits</p>
+                              <p className="font-medium">{formatCurrency(user.credits_balance)}</p>
+                            </div>
+                            <div>
+                              <p className="text-gray-500">This Month</p>
+                              <p className="font-medium">{formatCurrency(user.this_month_spent)}</p>
+                            </div>
+                            <div>
+                              <p className="text-gray-500">Total</p>
+                              <p className="font-medium">{formatCurrency(user.total_spent)}</p>
+                            </div>
+                          </div>
+
+                          <div className="flex items-center gap-2">
+                            <Button variant="outline" size="sm">
+                              <Eye className="h-4 w-4 mr-1" />
+                              View Details
+                            </Button>
+                            {user.pending_amount > 0 && (
+                              <Button size="sm">
+                                <DollarSign className="h-4 w-4 mr-1" />
+                                Collect Payment
+                              </Button>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          </TabsContent>
+        )}
       </Tabs>
 
       {/* Payment Methods Section */}
