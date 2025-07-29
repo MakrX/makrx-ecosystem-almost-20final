@@ -261,6 +261,14 @@ export const ROLE_PERMISSIONS: Record<UserRole, RolePermissions> = {
       export: 'none',
       generate_reports: 'none',
     },
+    billing: {
+      view: 'none',
+      manage_payments: 'none',
+      collect_payments: 'none',
+      generate_invoices: 'none',
+      manage_credits: 'none',
+      view_reports: 'none',
+    },
     admin: {
       userRoleManagement: false,
       systemLogs: false,
