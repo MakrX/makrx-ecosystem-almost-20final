@@ -4,6 +4,7 @@ import {
   Eye, Edit, PlayCircle, PauseCircle, CheckCircle, XCircle,
   AlertTriangle, User, DollarSign, BookOpen, Zap, BarChart3
 } from 'lucide-react';
+import { useSkills } from '../contexts/SkillContext';
 
 interface Equipment {
   id: string;
