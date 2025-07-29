@@ -264,12 +264,28 @@ export default function Inventory() {
                 </div>
               </div>
             </div>
-            <button
-              onClick={() => setShowDetailModal(false)}
-              className="p-2 hover:bg-accent rounded-lg"
-            >
-              <X className="w-5 h-5" />
-            </button>
+            <div className="flex items-center gap-2">
+              {canDelete && (!selectedItem.ownerUserId || selectedItem.ownerUserId === user?.id) && (
+                <button
+                  onClick={() => {
+                    if (window.confirm(`Are you sure you want to delete "${selectedItem.name}"? This action cannot be undone.`)) {
+                      handleDeleteItem(selectedItem.id);
+                      setShowDetailModal(false);
+                    }
+                  }}
+                  className="p-2 hover:bg-red-50 text-red-600 hover:text-red-700 rounded-lg transition-colors"
+                  title="Delete Item"
+                >
+                  <Trash2 className="w-5 h-5" />
+                </button>
+              )}
+              <button
+                onClick={() => setShowDetailModal(false)}
+                className="p-2 hover:bg-accent rounded-lg"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
           </div>
 
           {/* Content */}
