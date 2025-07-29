@@ -120,14 +120,19 @@ class ProjectBOM(Base):
     item_type = Column(String(50), nullable=False)  # "inventory" or "makrx_store"
     item_id = Column(String(100), nullable=False)  # Reference to inventory or store item
     item_name = Column(String(200), nullable=False)
+    part_code = Column(String(100), nullable=True)  # Part number, SKU, or catalog code
     quantity = Column(Integer, nullable=False, default=1)
     unit_cost = Column(Float, nullable=True)
     total_cost = Column(Float, nullable=True)
     
     # Usage details
     usage_notes = Column(Text, nullable=True)
+    alternatives = Column(JSON, nullable=True, default=list)  # List of alternative items
     is_critical = Column(Boolean, default=False)  # Critical path item
     procurement_status = Column(String(50), default="needed")  # needed, ordered, received, reserved
+    availability_status = Column(String(50), default="unknown")  # in-stock, low-stock, out-of-stock, unknown
+    stock_level = Column(Integer, nullable=True)  # Current stock level
+    reorder_point = Column(Integer, nullable=True)  # Reorder threshold
     
     # Metadata
     added_by = Column(String(100), nullable=False)
