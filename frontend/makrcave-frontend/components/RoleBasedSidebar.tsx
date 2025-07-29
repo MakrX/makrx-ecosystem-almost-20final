@@ -150,21 +150,24 @@ function ServiceProviderSidebar() {
 
       {/* User Info */}
       <div className="p-4 border-b border-yellow-200">
-        <div className="flex items-center gap-3">
-          <div className="w-8 h-8 bg-yellow-100 rounded-full flex items-center justify-center">
+        <Link
+          to="/portal/profile"
+          className="flex items-center gap-3 hover:bg-yellow-100 rounded-lg p-2 -m-2 transition-colors group"
+        >
+          <div className="w-8 h-8 bg-yellow-100 rounded-full flex items-center justify-center group-hover:bg-yellow-200 transition-colors">
             <span className="text-sm font-semibold text-yellow-700">
               {user?.firstName?.[0] || 'S'}
             </span>
           </div>
           <div className="flex-1 min-w-0">
-            <p className="text-sm font-medium truncate text-yellow-700">
+            <p className="text-sm font-medium truncate text-yellow-700 group-hover:text-yellow-800">
               {user?.firstName ? `${user.firstName} ${user.lastName}` : user?.username}
             </p>
-            <p className="text-xs text-yellow-600 truncate">
+            <p className="text-xs text-yellow-600 truncate group-hover:text-yellow-700">
               Service Provider
             </p>
           </div>
-        </div>
+        </Link>
       </div>
 
       {/* Restricted Notice */}
