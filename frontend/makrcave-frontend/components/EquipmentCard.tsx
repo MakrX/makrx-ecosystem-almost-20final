@@ -250,11 +250,15 @@ export default function EquipmentCard({
           <span className="ml-1 capitalize">{equipment.status.replace('_', ' ')}</span>
         </div>
 
-        {/* Certification Badge */}
-        {equipment.requires_certification && (
-          <div className="absolute top-3 left-3 inline-flex items-center px-2 py-1 bg-amber-100 text-amber-800 border border-amber-200 rounded-full text-xs font-medium">
+        {/* Skill/Certification Badge */}
+        {(equipment.requires_certification || !hasRequiredSkills) && (
+          <div className={`absolute top-3 left-3 inline-flex items-center px-2 py-1 border rounded-full text-xs font-medium ${
+            hasRequiredSkills
+              ? 'bg-green-100 text-green-800 border-green-200'
+              : 'bg-red-100 text-red-800 border-red-200'
+          }`}>
             <Shield className="w-3 h-3 mr-1" />
-            Cert Required
+            {hasRequiredSkills ? 'Certified' : 'Skills Required'}
           </div>
         )}
 
