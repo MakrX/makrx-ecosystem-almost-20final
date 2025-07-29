@@ -105,6 +105,9 @@ class Equipment(Base):
     reservations = relationship("EquipmentReservation", back_populates="equipment", cascade="all, delete-orphan")
     ratings = relationship("EquipmentRating", back_populates="equipment", cascade="all, delete-orphan")
 
+    # Skill requirements (many-to-many relationship)
+    required_skills = relationship("Skill", secondary="skill_equipment", back_populates="equipment")
+
 class EquipmentMaintenanceLog(Base):
     __tablename__ = "equipment_maintenance_logs"
     
