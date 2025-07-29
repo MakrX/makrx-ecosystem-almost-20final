@@ -502,6 +502,307 @@ app.put('/api/v1/equipment/:id', (req, res) => {
   res.json(updatedEquipment);
 });
 
+// Mock Makerspaces Data
+const mockMakerspaces = [
+  {
+    id: 'ms-1',
+    name: 'Downtown MakrCave',
+    slug: 'downtown',
+    location: 'San Francisco, CA',
+    address: '123 Mission St, San Francisco, CA 94105',
+    subdomain: 'downtown.makrcave.com',
+    createdAt: '2023-01-15T10:00:00Z',
+    updatedAt: '2024-01-10T15:30:00Z',
+    adminIds: ['msa-1', 'msa-2'],
+    modules: ['inventory', 'projects', 'reservations', 'billing', 'analytics'],
+    maxUsers: 100,
+    maxEquipment: 25,
+    timezone: 'America/Los_Angeles',
+    country: 'United States',
+    status: 'active',
+    description: 'A state-of-the-art makerspace in downtown San Francisco',
+    contactEmail: 'info@downtown.makrcave.com',
+    phone: '+1-415-555-0123'
+  },
+  {
+    id: 'ms-2',
+    name: 'Brooklyn FabLab',
+    slug: 'brooklyn',
+    location: 'Brooklyn, NY',
+    address: '456 Atlantic Ave, Brooklyn, NY 11217',
+    subdomain: 'brooklyn.makrcave.com',
+    createdAt: '2023-03-20T14:00:00Z',
+    updatedAt: '2024-01-05T09:15:00Z',
+    adminIds: ['msa-3'],
+    modules: ['inventory', 'projects', 'reservations', 'analytics'],
+    maxUsers: 75,
+    maxEquipment: 20,
+    timezone: 'America/New_York',
+    country: 'United States',
+    status: 'active',
+    description: 'Community-focused fabrication laboratory in Brooklyn',
+    contactEmail: 'hello@brooklyn.makrcave.com',
+    phone: '+1-718-555-0456'
+  },
+  {
+    id: 'ms-3',
+    name: 'Austin Maker Hub',
+    slug: 'austin',
+    location: 'Austin, TX',
+    address: '789 Congress Ave, Austin, TX 78701',
+    subdomain: 'austin.makrcave.com',
+    createdAt: '2023-06-10T16:30:00Z',
+    updatedAt: '2023-12-28T11:45:00Z',
+    adminIds: ['msa-4'],
+    modules: ['inventory', 'projects', 'skill_management'],
+    maxUsers: 150,
+    maxEquipment: 30,
+    timezone: 'America/Chicago',
+    country: 'United States',
+    status: 'pending',
+    description: 'Largest makerspace in central Texas',
+    contactEmail: 'contact@austin.makrcave.com',
+    phone: '+1-512-555-0789'
+  }
+];
+
+const mockMakerspaceStats = {
+  'ms-1': {
+    makerspaceId: 'ms-1',
+    totalUsers: 89,
+    activeUsers: 34,
+    totalEquipment: 18,
+    activeReservations: 12,
+    inventoryValue: 25680.50,
+    monthlyUsageHours: 1250,
+    monthlyRevenue: 8950.75,
+    projectCount: 67,
+    completedProjects: 42
+  },
+  'ms-2': {
+    makerspaceId: 'ms-2',
+    totalUsers: 56,
+    activeUsers: 23,
+    totalEquipment: 14,
+    activeReservations: 8,
+    inventoryValue: 18420.25,
+    monthlyUsageHours: 890,
+    monthlyRevenue: 5340.50,
+    projectCount: 45,
+    completedProjects: 31
+  },
+  'ms-3': {
+    makerspaceId: 'ms-3',
+    totalUsers: 124,
+    activeUsers: 67,
+    totalEquipment: 22,
+    activeReservations: 18,
+    inventoryValue: 34250.75,
+    monthlyUsageHours: 1680,
+    monthlyRevenue: 12450.25,
+    projectCount: 89,
+    completedProjects: 58
+  }
+};
+
+const mockAdmins = [
+  { id: 'msa-1', email: 'sarah.martinez@makrcave.local', firstName: 'Sarah', lastName: 'Martinez', assignedAt: '2023-01-15T10:00:00Z' },
+  { id: 'msa-2', email: 'alex.carter@makrx.org', firstName: 'Alex', lastName: 'Carter', assignedAt: '2023-06-01T12:00:00Z' },
+  { id: 'msa-3', email: 'mike.johnson@brooklyn.makrcave.com', firstName: 'Mike', lastName: 'Johnson', assignedAt: '2023-03-20T14:00:00Z' },
+  { id: 'msa-4', email: 'lisa.wong@austin.makrcave.com', firstName: 'Lisa', lastName: 'Wong', assignedAt: '2023-06-10T16:30:00Z' }
+];
+
+// Makerspaces API endpoints
+app.get('/api/v1/makerspaces', (req, res) => {
+  const { status, country, search } = req.query;
+
+  let filtered = [...mockMakerspaces];
+
+  if (status) {
+    filtered = filtered.filter(ms => ms.status === status);
+  }
+
+  if (country) {
+    filtered = filtered.filter(ms => ms.country === country);
+  }
+
+  if (search) {
+    const searchLower = search.toLowerCase();
+    filtered = filtered.filter(ms =>
+      ms.name.toLowerCase().includes(searchLower) ||
+      ms.location.toLowerCase().includes(searchLower) ||
+      ms.description?.toLowerCase().includes(searchLower)
+    );
+  }
+
+  // Add admin details and stats to each makerspace
+  const enriched = filtered.map(ms => ({
+    ...ms,
+    admins: ms.adminIds.map(adminId => mockAdmins.find(admin => admin.id === adminId)).filter(Boolean),
+    stats: mockMakerspaceStats[ms.id] || null
+  }));
+
+  res.json(enriched);
+});
+
+app.get('/api/v1/makerspaces/:id', (req, res) => {
+  const { id } = req.params;
+  const makerspace = mockMakerspaces.find(ms => ms.id === id);
+
+  if (!makerspace) {
+    return res.status(404).json({ detail: 'Makerspace not found' });
+  }
+
+  const enriched = {
+    ...makerspace,
+    admins: makerspace.adminIds.map(adminId => mockAdmins.find(admin => admin.id === adminId)).filter(Boolean),
+    stats: mockMakerspaceStats[id] || null
+  };
+
+  res.json(enriched);
+});
+
+app.post('/api/v1/makerspaces', (req, res) => {
+  const newMakerspace = {
+    id: `ms-${Date.now()}`,
+    ...req.body,
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+    status: 'pending'
+  };
+
+  mockMakerspaces.push(newMakerspace);
+  res.status(201).json(newMakerspace);
+});
+
+app.put('/api/v1/makerspaces/:id', (req, res) => {
+  const { id } = req.params;
+  const index = mockMakerspaces.findIndex(ms => ms.id === id);
+
+  if (index === -1) {
+    return res.status(404).json({ detail: 'Makerspace not found' });
+  }
+
+  mockMakerspaces[index] = {
+    ...mockMakerspaces[index],
+    ...req.body,
+    id,
+    updatedAt: new Date().toISOString()
+  };
+
+  res.json(mockMakerspaces[index]);
+});
+
+app.delete('/api/v1/makerspaces/:id', (req, res) => {
+  const { id } = req.params;
+  const index = mockMakerspaces.findIndex(ms => ms.id === id);
+
+  if (index === -1) {
+    return res.status(404).json({ detail: 'Makerspace not found' });
+  }
+
+  mockMakerspaces.splice(index, 1);
+  res.status(204).send();
+});
+
+app.patch('/api/v1/makerspaces/:id/status', (req, res) => {
+  const { id } = req.params;
+  const { status } = req.body;
+  const index = mockMakerspaces.findIndex(ms => ms.id === id);
+
+  if (index === -1) {
+    return res.status(404).json({ detail: 'Makerspace not found' });
+  }
+
+  mockMakerspaces[index].status = status;
+  mockMakerspaces[index].updatedAt = new Date().toISOString();
+
+  res.json(mockMakerspaces[index]);
+});
+
+app.post('/api/v1/makerspaces/:id/assign-admin', (req, res) => {
+  const { id } = req.params;
+  const { adminId, replace = false } = req.body;
+  const index = mockMakerspaces.findIndex(ms => ms.id === id);
+
+  if (index === -1) {
+    return res.status(404).json({ detail: 'Makerspace not found' });
+  }
+
+  if (replace) {
+    mockMakerspaces[index].adminIds = [adminId];
+  } else {
+    if (!mockMakerspaces[index].adminIds.includes(adminId)) {
+      mockMakerspaces[index].adminIds.push(adminId);
+    }
+  }
+
+  mockMakerspaces[index].updatedAt = new Date().toISOString();
+  res.json(mockMakerspaces[index]);
+});
+
+app.patch('/api/v1/makerspaces/:id/toggle-module', (req, res) => {
+  const { id } = req.params;
+  const { moduleKey, enabled } = req.body;
+  const index = mockMakerspaces.findIndex(ms => ms.id === id);
+
+  if (index === -1) {
+    return res.status(404).json({ detail: 'Makerspace not found' });
+  }
+
+  if (enabled && !mockMakerspaces[index].modules.includes(moduleKey)) {
+    mockMakerspaces[index].modules.push(moduleKey);
+  } else if (!enabled) {
+    mockMakerspaces[index].modules = mockMakerspaces[index].modules.filter(m => m !== moduleKey);
+  }
+
+  mockMakerspaces[index].updatedAt = new Date().toISOString();
+  res.json(mockMakerspaces[index]);
+});
+
+app.get('/api/v1/makerspaces/:id/analytics', (req, res) => {
+  const { id } = req.params;
+  const { period = 'weekly' } = req.query;
+
+  const stats = mockMakerspaceStats[id];
+  if (!stats) {
+    return res.status(404).json({ detail: 'Makerspace analytics not found' });
+  }
+
+  // Generate mock analytics data
+  const mockAnalytics = {
+    makerspaceId: id,
+    period,
+    data: {
+      userGrowth: Array.from({ length: 7 }, (_, i) => ({
+        date: new Date(Date.now() - (6 - i) * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+        count: Math.floor(Math.random() * 10) + 5
+      })),
+      equipmentUsage: Array.from({ length: 7 }, (_, i) => ({
+        date: new Date(Date.now() - (6 - i) * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+        hours: Math.floor(Math.random() * 50) + 20
+      })),
+      projectActivity: Array.from({ length: 7 }, (_, i) => ({
+        date: new Date(Date.now() - (6 - i) * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+        created: Math.floor(Math.random() * 5),
+        completed: Math.floor(Math.random() * 3)
+      })),
+      revenue: Array.from({ length: 7 }, (_, i) => ({
+        date: new Date(Date.now() - (6 - i) * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+        amount: Math.floor(Math.random() * 500) + 200
+      }))
+    },
+    summary: stats
+  };
+
+  res.json(mockAnalytics);
+});
+
+app.get('/api/v1/admin/users', (req, res) => {
+  // Return mock admin users for assignment
+  res.json(mockAdmins);
+});
+
 // Generic 404 handler for other endpoints
 app.use('*', (req, res) => {
   console.log(`🔍 Missing endpoint: ${req.method} ${req.originalUrl}`);
