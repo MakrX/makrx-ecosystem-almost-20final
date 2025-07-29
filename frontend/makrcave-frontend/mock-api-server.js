@@ -334,11 +334,181 @@ app.post('/api/v1/maintenance/schedules', (req, res) => {
   res.status(201).json(newSchedule);
 });
 
+// Billing endpoints
+app.get('/api/v1/billing/transactions', (req, res) => {
+  const mockTransactions = [
+    {
+      id: 'tx-001',
+      type: 'subscription',
+      description: 'Professional Plan - Monthly',
+      amount: 99,
+      status: 'completed',
+      date: '2024-01-15',
+      invoiceId: 'inv-001'
+    },
+    {
+      id: 'tx-002',
+      type: 'credits',
+      description: 'Credit Purchase - 100 Credits',
+      amount: 50,
+      status: 'completed',
+      date: '2024-01-12',
+      invoiceId: 'inv-002'
+    }
+  ];
+  res.json(mockTransactions);
+});
+
+app.get('/api/v1/billing/invoices', (req, res) => {
+  const mockInvoices = [
+    {
+      id: 'inv-001',
+      date: '2024-01-15',
+      amount: 99,
+      status: 'paid',
+      description: 'Professional Plan - Monthly',
+      downloadUrl: '#'
+    },
+    {
+      id: 'inv-002',
+      date: '2024-01-12',
+      amount: 50,
+      status: 'paid',
+      description: 'Credit Purchase',
+      downloadUrl: '#'
+    }
+  ];
+  res.json(mockInvoices);
+});
+
+app.get('/api/v1/billing/credit-wallet', (req, res) => {
+  res.json({
+    balance: 250,
+    totalSpent: 1850,
+    totalPurchased: 2100
+  });
+});
+
+app.post('/api/v1/billing/credits/purchase', (req, res) => {
+  const { amount, credits } = req.body;
+  res.json({
+    success: true,
+    transactionId: `tx-${Date.now()}`,
+    amount,
+    credits,
+    message: 'Credit purchase successful'
+  });
+});
+
+// Inventory CRUD endpoints
+app.get('/api/v1/inventory', (req, res) => {
+  const mockInventory = [
+    {
+      id: 'inv-001',
+      name: 'PLA Filament - Red',
+      category: 'filament',
+      quantity: 10,
+      unit: 'kg',
+      minThreshold: 2,
+      location: 'Storage A1',
+      status: 'active',
+      supplierType: 'makrx',
+      price: 25,
+      history: []
+    },
+    {
+      id: 'inv-002',
+      name: 'ABS Filament - Black',
+      category: 'filament',
+      quantity: 5,
+      unit: 'kg',
+      minThreshold: 1,
+      location: 'Storage A2',
+      status: 'active',
+      supplierType: 'external',
+      price: 30,
+      history: []
+    }
+  ];
+  res.json(mockInventory);
+});
+
+app.post('/api/v1/inventory', (req, res) => {
+  const newItem = {
+    id: `inv-${Date.now()}`,
+    ...req.body,
+    createdAt: new Date().toISOString(),
+    history: []
+  };
+  res.json(newItem);
+});
+
+app.put('/api/v1/inventory/:id', (req, res) => {
+  const { id } = req.params;
+  const updatedItem = {
+    id,
+    ...req.body,
+    updatedAt: new Date().toISOString()
+  };
+  res.json(updatedItem);
+});
+
+app.delete('/api/v1/inventory/:id', (req, res) => {
+  const { id } = req.params;
+  res.json({ success: true, message: `Item ${id} deleted successfully` });
+});
+
+// Equipment management endpoints
+app.get('/api/v1/equipment', (req, res) => {
+  const mockEquipment = [
+    {
+      id: 'eq-001',
+      name: '3D Printer Pro',
+      type: '3d_printer',
+      status: 'available',
+      location: 'Workshop A',
+      lastMaintenance: '2024-01-01',
+      nextMaintenance: '2024-02-01'
+    },
+    {
+      id: 'eq-002',
+      name: 'Laser Cutter X1',
+      type: 'laser_cutter',
+      status: 'in_use',
+      location: 'Workshop B',
+      lastMaintenance: '2024-01-05',
+      nextMaintenance: '2024-02-05'
+    }
+  ];
+  res.json(mockEquipment);
+});
+
+app.post('/api/v1/equipment', (req, res) => {
+  const newEquipment = {
+    id: `eq-${Date.now()}`,
+    ...req.body,
+    createdAt: new Date().toISOString()
+  };
+  res.json(newEquipment);
+});
+
+app.put('/api/v1/equipment/:id', (req, res) => {
+  const { id } = req.params;
+  const updatedEquipment = {
+    id,
+    ...req.body,
+    updatedAt: new Date().toISOString()
+  };
+  res.json(updatedEquipment);
+});
+
 // Generic 404 handler for other endpoints
 app.use('*', (req, res) => {
+  console.log(`🔍 Missing endpoint: ${req.method} ${req.originalUrl}`);
   res.status(404).json({
     detail: `Endpoint ${req.method} ${req.originalUrl} not found`,
-    mock_server: true
+    mock_server: true,
+    suggestion: "Check if this endpoint needs to be implemented"
   });
 });
 
