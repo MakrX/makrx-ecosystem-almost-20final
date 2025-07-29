@@ -459,14 +459,14 @@ export default function Inventory() {
 
         <div className="flex gap-3">
           <FeatureGate featureKey="inventory.qr_scanning" fallback={null}>
-            <button className="makrcave-btn-secondary flex items-center gap-2">
+            <button className="makrcave-btn-outline">
               <QrCode className="w-4 h-4" />
               Scan QR
             </button>
           </FeatureGate>
 
           <FeatureGate featureKey="inventory.makerspace_management" fallback={null}>
-            <button className="makrcave-btn-secondary flex items-center gap-2">
+            <button className="makrcave-btn-outline">
               <Upload className="w-4 h-4" />
               Import CSV
             </button>
