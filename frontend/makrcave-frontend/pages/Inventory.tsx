@@ -69,6 +69,7 @@ export default function Inventory() {
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   const [showFilters, setShowFilters] = useState(false);
   const [showAddModal, setShowAddModal] = useState(false);
+  const [showEditModal, setShowEditModal] = useState(false);
   const [showDetailModal, setShowDetailModal] = useState(false);
   const [showReorderModal, setShowReorderModal] = useState(false);
   const [selectedItem, setSelectedItem] = useState<InventoryItem | null>(null);
