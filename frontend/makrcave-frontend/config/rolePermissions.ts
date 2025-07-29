@@ -192,6 +192,14 @@ export const ROLE_PERMISSIONS: Record<UserRole, RolePermissions> = {
       export: 'assigned_makerspace',
       generate_reports: 'assigned_makerspace',
     },
+    billing: {
+      view: 'assigned_makerspace',
+      manage_payments: 'assigned_makerspace',
+      collect_payments: 'assigned_makerspace',
+      generate_invoices: 'assigned_makerspace',
+      manage_credits: 'assigned_makerspace',
+      view_reports: 'assigned_makerspace',
+    },
     admin: {
       userRoleManagement: false,
       systemLogs: false,
