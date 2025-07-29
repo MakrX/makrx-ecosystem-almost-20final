@@ -10,7 +10,6 @@ import {
   Package,
   CreditCard,
   Store,
-  Palette,
   Save,
   RefreshCw,
   Download,
@@ -25,7 +24,6 @@ import AccessControlSettings from '../components/settings/AccessControlSettings'
 import InventorySettings from '../components/settings/InventorySettings';
 import BillingConfig from '../components/settings/BillingConfig';
 import ServiceModeToggle from '../components/settings/ServiceModeToggle';
-import AppearanceCustomizer from '../components/settings/AppearanceCustomizer';
 import { useToast } from '../hooks/use-toast';
 
 interface MakerspaceSettings {
