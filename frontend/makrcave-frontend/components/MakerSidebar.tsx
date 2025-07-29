@@ -104,21 +104,24 @@ export default function MakerSidebar() {
 
       {/* User Info */}
       <div className="p-4 border-b border-green-200">
-        <div className="flex items-center gap-3">
-          <div className="w-8 h-8 bg-makrx-teal rounded-full flex items-center justify-center">
+        <Link
+          to="/portal/profile"
+          className="flex items-center gap-3 hover:bg-green-100 rounded-lg p-2 -m-2 transition-colors group"
+        >
+          <div className="w-8 h-8 bg-makrx-teal rounded-full flex items-center justify-center group-hover:bg-makrx-teal-dark transition-colors">
             <span className="text-sm font-semibold text-white">
               {user?.firstName?.[0] || 'M'}
             </span>
           </div>
           <div className="flex-1 min-w-0">
-            <p className="text-sm font-medium truncate text-green-700">
+            <p className="text-sm font-medium truncate text-green-700 group-hover:text-green-800">
               {user?.firstName ? `${user.firstName} ${user.lastName}` : user?.username}
             </p>
-            <p className="text-xs text-green-600 truncate">
+            <p className="text-xs text-green-600 truncate group-hover:text-green-700">
               Creative Maker
             </p>
           </div>
-        </div>
+        </Link>
       </div>
 
       {/* Quick Stats */}
