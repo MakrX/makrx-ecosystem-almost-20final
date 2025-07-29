@@ -1372,6 +1372,7 @@ app.listen(PORT, () => {
   console.log(`   Billing: /api/v1/billing/*`);
   console.log(`   Inventory: /api/v1/inventory/*`);
   console.log(`   Equipment: /api/v1/equipment/*`);
+  console.log(`   Projects: /api/v1/projects/*`);
   console.log(`   Makerspaces: /api/v1/makerspaces/*`);
   console.log(`   Equipment Stats: /api/v1/equipment/stats`);
   console.log(`   Equipment Skills: /api/v1/equipment/skill-requirements`);
