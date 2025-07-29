@@ -25,7 +25,7 @@ import { useBilling } from '../contexts/BillingContext';
 
 
 const Billing: React.FC = () => {
-  const { user } = useAuth();
+  const { user, hasPermission, isMakerspaceAdmin } = useAuth();
   const {
     state,
     showCheckout,
@@ -43,6 +43,9 @@ const Billing: React.FC = () => {
   } = useBilling();
 
   const [activeTab, setActiveTab] = useState('overview');
+  const [selectedUser, setSelectedUser] = useState<string | null>(null);
+  const [makerspaceUsers, setMakerspaceUsers] = useState<any[]>([]);
+  const [loadingUsers, setLoadingUsers] = useState(false);
 
   // Calculate billing stats from context data
   const billingStats = {
