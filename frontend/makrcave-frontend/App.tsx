@@ -22,6 +22,7 @@ import Settings from "./pages/Settings";
 import Profile from "./pages/Profile";
 import AdminUsers from "./pages/admin/Users";
 import AdminMakerspace from "./pages/admin/Makerspace";
+import AdminMakerspaces from "./pages/admin/Makerspaces";
 import AdminFeatureFlags from "./pages/admin/FeatureFlags";
 import Login from "./pages/Login";
 import { createRoot } from "react-dom/client";
@@ -52,6 +53,7 @@ const App = () => (
                       <Route path="maintenance" element={<Maintenance />} />
                       <Route path="settings" element={<Settings />} />
                       <Route path="profile" element={<Profile />} />
+                      <Route path="makerspaces" element={<AdminMakerspaces />} />
                       <Route path="admin">
                         <Route path="users" element={<AdminUsers />} />
                         <Route path="makerspace" element={<AdminMakerspace />} />
