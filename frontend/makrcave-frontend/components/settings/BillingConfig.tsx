@@ -257,75 +257,31 @@ const BillingConfig: React.FC<BillingConfigProps> = ({
         </CardContent>
       </Card>
 
-      {/* Payment Gateway Settings */}
+      {/* Payment Information */}
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <DollarSign className="h-5 w-5" />
-            Payment Gateway Settings
+            Payment Processing
           </CardTitle>
         </CardHeader>
-        <CardContent className="space-y-6">
-          <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3">
-            <div className="flex items-start gap-2">
-              <AlertTriangle className="h-4 w-4 text-yellow-600 mt-0.5" />
-              <div className="text-sm text-yellow-800">
-                <p className="font-medium">Optional Configuration</p>
-                <p className="text-yellow-700 mt-1">
-                  These settings override global payment gateway keys. Leave empty to use system defaults.
+        <CardContent>
+          <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+            <div className="flex items-start gap-3">
+              <Info className="h-5 w-5 text-blue-600 mt-0.5" />
+              <div className="text-sm text-blue-800">
+                <p className="font-medium">Centralized Payment Processing</p>
+                <p className="text-blue-700 mt-1">
+                  All payments are processed through our secure payment gateway. You receive monthly payouts for all transactions in your makerspace. No additional setup required.
                 </p>
+                <div className="mt-3 space-y-1 text-blue-600">
+                  <p>✓ Secure payment processing</p>
+                  <p>✓ Monthly revenue payouts</p>
+                  <p>✓ Automatic transaction reporting</p>
+                  <p>✓ No payment gateway fees for you</p>
+                </div>
               </div>
             </div>
-          </div>
-
-          {/* Razorpay Override */}
-          <div className="space-y-2">
-            <Label htmlFor="razorpay_key_override">Razorpay Key Override (India)</Label>
-            <div className="flex items-center gap-2">
-              <Input
-                id="razorpay_key_override"
-                type={showRazorpayKey ? "text" : "password"}
-                value={settings.razorpay_key_override || ''}
-                onChange={(e) => handleInputChange('razorpay_key_override', e.target.value)}
-                placeholder="rzp_live_xxxxxxxxxx or rzp_test_xxxxxxxxxx"
-              />
-              <Button
-                type="button"
-                variant="outline"
-                size="sm"
-                onClick={() => setShowRazorpayKey(!showRazorpayKey)}
-              >
-                {showRazorpayKey ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-              </Button>
-            </div>
-            <p className="text-xs text-gray-500">
-              Razorpay is used for processing payments in India (INR)
-            </p>
-          </div>
-
-          {/* Stripe Override */}
-          <div className="space-y-2">
-            <Label htmlFor="stripe_key_override">Stripe Key Override (International)</Label>
-            <div className="flex items-center gap-2">
-              <Input
-                id="stripe_key_override"
-                type={showStripeKey ? "text" : "password"}
-                value={settings.stripe_key_override || ''}
-                onChange={(e) => handleInputChange('stripe_key_override', e.target.value)}
-                placeholder="pk_live_xxxxxxxxxx or pk_test_xxxxxxxxxx"
-              />
-              <Button
-                type="button"
-                variant="outline"
-                size="sm"
-                onClick={() => setShowStripeKey(!showStripeKey)}
-              >
-                {showStripeKey ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-              </Button>
-            </div>
-            <p className="text-xs text-gray-500">
-              Stripe is used for processing international payments (USD, EUR, etc.)
-            </p>
           </div>
         </CardContent>
       </Card>
