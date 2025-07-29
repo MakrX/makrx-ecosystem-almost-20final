@@ -1492,6 +1492,47 @@ app.delete('/api/v1/projects/:projectId', (req, res) => {
   res.status(204).send();
 });
 
+// BOM reorder endpoint
+app.post('/api/v1/projects/:projectId/bom/:bomItemId/reorder', (req, res) => {
+  const { projectId, bomItemId } = req.params;
+  const project = mockProjects.find(p => p.project_id === projectId);
+
+  if (!project) {
+    return res.status(404).json({ detail: 'Project not found' });
+  }
+
+  const bomItem = project.bom_items.find(item => item.id === parseInt(bomItemId));
+  if (!bomItem) {
+    return res.status(404).json({ detail: 'BOM item not found' });
+  }
+
+  // Update BOM item status
+  bomItem.procurement_status = 'ordered';
+
+  // Add activity log
+  project.activity_logs.push({
+    id: Date.now(),
+    activity_type: 'bom_item_updated',
+    title: 'Reorder Requested',
+    description: `Reorder requested for ${bomItem.item_name} (qty: ${req.body.quantity || bomItem.quantity})`,
+    metadata: {
+      reorder_id: `ro-${Date.now()}`,
+      item_id: bomItem.item_id,
+      quantity: req.body.quantity || bomItem.quantity,
+      urgent: req.body.urgent || bomItem.is_critical
+    },
+    user_id: 'current-user',
+    user_name: 'Current User',
+    created_at: new Date().toISOString()
+  });
+
+  res.status(201).json({
+    message: 'Reorder request created successfully',
+    reorder_id: `ro-${Date.now()}`,
+    estimated_delivery: '3-5 business days'
+  });
+});
+
 // Generic 404 handler for other endpoints
 app.use('*', (req, res) => {
   console.log(`🔍 Missing endpoint: ${req.method} ${req.originalUrl}`);
