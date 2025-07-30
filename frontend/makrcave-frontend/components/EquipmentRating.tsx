@@ -44,8 +44,8 @@ interface RatingFormData {
 interface EquipmentRatingProps {
   equipmentId: string;
   equipmentName: string;
-  averageRating: number;
-  totalRatings: number;
+  averageRating?: number;
+  totalRatings?: number;
   canRate: boolean;
   onRatingSubmit?: (ratingData: any) => void;
 }
