@@ -869,7 +869,7 @@ export default function Equipment() {
                       </div>
                       <div>
                         <dt className="text-sm font-medium text-gray-500">Category</dt>
-                        <dd className="text-sm text-gray-900">{selectedEquipment.category.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase())}</dd>
+                        <dd className="text-sm text-gray-900">{(selectedEquipment.category || '').replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase())}</dd>
                       </div>
                       <div>
                         <dt className="text-sm font-medium text-gray-500">Status</dt>
