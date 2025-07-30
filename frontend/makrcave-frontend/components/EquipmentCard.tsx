@@ -198,7 +198,7 @@ export default function EquipmentCard({
             {equipment.hourly_rate && (
               <div className="flex items-center">
                 <DollarSign className="w-4 h-4 mr-1" />
-                ${equipment.hourly_rate.toFixed(2)}/h
+                ${(equipment.hourly_rate || 0).toFixed(2)}/h
               </div>
             )}
           </div>
