@@ -314,11 +314,11 @@ export default function EquipmentRating({
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {/* Overall Rating */}
           <div className="text-center">
-            <div className="text-4xl font-bold text-gray-900 mb-2">{averageRating.toFixed(1)}</div>
+            <div className="text-4xl font-bold text-gray-900 mb-2">{(averageRating || 0).toFixed(1)}</div>
             <div className="flex items-center justify-center mb-2">
-              {renderStars(averageRating, 'lg')}
+              {renderStars(averageRating || 0, 'lg')}
             </div>
-            <p className="text-sm text-gray-600">{totalRatings} rating{totalRatings !== 1 ? 's' : ''}</p>
+            <p className="text-sm text-gray-600">{totalRatings || 0} rating{(totalRatings || 0) !== 1 ? 's' : ''}</p>
           </div>
 
           {/* Rating Breakdown */}
