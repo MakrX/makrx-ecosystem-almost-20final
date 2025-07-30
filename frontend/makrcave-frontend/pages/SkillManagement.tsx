@@ -301,12 +301,16 @@ const SkillManagement: React.FC = () => {
           <p className="text-gray-600">Manage member certifications and skill levels</p>
         </div>
         <div className="flex gap-2">
-          <Button variant="outline" className="flex items-center gap-2">
+          <Button variant="outline" className="flex items-center gap-2" onClick={handleOpenEquipmentRequirements}>
             <Wrench className="h-4 w-4" />
             Equipment Requirements
           </Button>
-          <Button className="flex items-center gap-2">
+          <Button variant="outline" className="flex items-center gap-2" onClick={() => setAddSkillModalOpen(true)}>
             <Plus className="h-4 w-4" />
+            Add Skill
+          </Button>
+          <Button className="flex items-center gap-2" onClick={handleOpenCertifyModal}>
+            <Award className="h-4 w-4" />
             Certify Member
           </Button>
         </div>
