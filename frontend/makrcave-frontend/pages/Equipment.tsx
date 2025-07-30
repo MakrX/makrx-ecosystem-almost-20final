@@ -440,7 +440,7 @@ export default function Equipment() {
               </div>
               <div className="ml-4">
                 <p className="text-sm font-medium text-gray-600">Avg Rating</p>
-                <p className="text-2xl font-bold text-gray-900">{stats.average_rating.toFixed(1)}</p>
+                <p className="text-2xl font-bold text-gray-900">{(stats.average_rating || 0).toFixed(1)}</p>
               </div>
             </div>
           </div>
