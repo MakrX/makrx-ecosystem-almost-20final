@@ -71,9 +71,24 @@ export default function AddEquipmentModal({
     if (isOpen) {
       if (editEquipment) {
         setFormData({
-          ...editEquipment,
+          equipment_id: editEquipment.equipment_id || '',
+          name: editEquipment.name || '',
+          category: editEquipment.category || 'printer_3d',
+          sub_category: editEquipment.sub_category || '',
+          location: editEquipment.location || '',
+          requires_certification: editEquipment.requires_certification || false,
+          certification_required: editEquipment.certification_required || '',
+          maintenance_interval_hours: editEquipment.maintenance_interval_hours || 100,
+          manufacturer: editEquipment.manufacturer || '',
+          model: editEquipment.model || '',
+          serial_number: editEquipment.serial_number || '',
           purchase_date: editEquipment.purchase_date ? editEquipment.purchase_date.split('T')[0] : '',
-          warranty_expiry: editEquipment.warranty_expiry ? editEquipment.warranty_expiry.split('T')[0] : ''
+          warranty_expiry: editEquipment.warranty_expiry ? editEquipment.warranty_expiry.split('T')[0] : '',
+          hourly_rate: editEquipment.hourly_rate || 0,
+          deposit_required: editEquipment.deposit_required || 0,
+          description: editEquipment.description || '',
+          image_url: editEquipment.image_url || '',
+          notes: editEquipment.notes || ''
         });
       } else {
         // Reset form for new equipment
