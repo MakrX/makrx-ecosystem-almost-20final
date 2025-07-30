@@ -90,7 +90,10 @@ const Projects: React.FC = () => {
       bom_items_count: 12,
       files_count: 8,
       milestones_count: 5,
-      completed_milestones_count: 2
+      completed_milestones_count: 2,
+      github_repo_url: 'https://github.com/johnmaker/smart-home-automation',
+      github_branch: 'main',
+      enable_github_integration: true
     },
     {
       project_id: 'proj-2',
