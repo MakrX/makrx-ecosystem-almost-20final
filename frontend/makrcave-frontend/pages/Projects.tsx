@@ -112,7 +112,10 @@ const Projects: React.FC = () => {
       bom_items_count: 8,
       files_count: 15,
       milestones_count: 4,
-      completed_milestones_count: 4
+      completed_milestones_count: 4,
+      github_repo_url: 'https://github.com/sarahdev/drone-frame-3d',
+      github_branch: 'main',
+      enable_github_integration: true
     },
     {
       project_id: 'proj-3',
