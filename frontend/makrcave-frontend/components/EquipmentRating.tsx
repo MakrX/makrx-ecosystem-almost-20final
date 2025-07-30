@@ -262,7 +262,7 @@ export default function EquipmentRating({
     }
   };
 
-  const renderStars = (rating: number, size: 'sm' | 'lg' = 'sm', interactive = false, onClick?: (rating: number) => void) => {
+  const renderStars = (rating?: number, size: 'sm' | 'lg' = 'sm', interactive = false, onClick?: (rating: number) => void) => {
     const starSize = size === 'lg' ? 'w-6 h-6' : 'w-4 h-4';
     const safeRating = rating || 0;
 
