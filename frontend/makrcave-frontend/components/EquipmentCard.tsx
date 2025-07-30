@@ -336,10 +336,10 @@ export default function EquipmentCard({
           
           <div className="flex items-center text-sm text-gray-600">
             <Clock className="w-4 h-4 mr-2" />
-            <span className={getUtilizationColor(equipment.total_usage_hours)}>
-              {equipment.total_usage_hours.toFixed(1)}h used
+            <span className={getUtilizationColor(equipment.total_usage_hours || 0)}>
+              {(equipment.total_usage_hours || 0).toFixed(1)}h used
             </span>
-            <span className="text-gray-400 ml-1">({equipment.usage_count} sessions)</span>
+            <span className="text-gray-400 ml-1">({equipment.usage_count || 0} sessions)</span>
           </div>
 
           <div className="flex items-center text-sm text-gray-600">
