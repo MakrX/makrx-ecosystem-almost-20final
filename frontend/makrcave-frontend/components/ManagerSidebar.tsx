@@ -118,7 +118,9 @@ export default function ManagerSidebar() {
             <Building2 className="w-4 h-4 sm:w-6 sm:h-6 text-white" />
           </div>
           <div className="min-w-0">
-            <h2 className="font-bold text-base sm:text-lg text-makrx-blue truncate">MakrCave</h2>
+            <h2 className="font-bold text-base sm:text-lg text-makrx-blue truncate">
+              {managedMakerspace?.name || 'MakrCave'}
+            </h2>
             <p className="text-xs text-blue-600 truncate">Manager Portal</p>
           </div>
         </div>
