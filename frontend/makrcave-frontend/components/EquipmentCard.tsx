@@ -94,6 +94,7 @@ export default function EquipmentCard({
   };
 
   const getCategoryIcon = (category: string) => {
+    if (!category) return '🛠️';
     switch (category) {
       case 'printer_3d':
         return '🖨️';
