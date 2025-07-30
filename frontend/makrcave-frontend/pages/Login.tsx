@@ -28,27 +28,7 @@ export default function Login() {
     }
   };
 
-  const getRoleIcon = (role: string) => {
-    switch (role) {
-      case 'super_admin': return Crown;
-      case 'admin': return Shield;
-      case 'makerspace_admin': return Wrench;
-      case 'service_provider': return Settings;
-      case 'maker': return UserCheck;
-      default: return User;
-    }
-  };
 
-  const getRoleColor = (role: string) => {
-    switch (role) {
-      case 'super_admin': return 'from-purple-500 to-purple-600';
-      case 'admin': return 'from-blue-500 to-blue-600';
-      case 'makerspace_admin': return 'from-makrx-blue to-blue-700';
-      case 'service_provider': return 'from-yellow-500 to-yellow-600';
-      case 'maker': return 'from-green-500 to-green-600';
-      default: return 'from-gray-500 to-gray-600';
-    }
-  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-makrx-blue via-makrx-blue/95 to-makrx-blue/90 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 flex items-center justify-center p-6">
