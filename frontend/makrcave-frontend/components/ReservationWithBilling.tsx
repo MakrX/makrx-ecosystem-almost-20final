@@ -30,6 +30,7 @@ import { useAuth } from '../contexts/AuthContext';
 import { useMakerspace } from '../contexts/MakerspaceContext';
 import { EquipmentAccessPolicy, CostEstimate, AccessCheckResult, UserSubscription, UserWallet } from '../types/equipment-access';
 import { EquipmentBillingService } from '../services/billingService';
+import { api } from '../services/apiService';
 
 interface ReservationWithBillingProps {
   isOpen: boolean;
