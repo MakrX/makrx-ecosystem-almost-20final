@@ -837,7 +837,7 @@ export default function Equipment() {
 
                       <div className="flex items-center">
                         <Clock className="w-4 h-4 mr-2 text-gray-500" />
-                        <span className="text-sm">{selectedEquipment.total_usage_hours.toFixed(1)}h used ({selectedEquipment.usage_count} sessions)</span>
+                        <span className="text-sm">{(selectedEquipment.total_usage_hours || 0).toFixed(1)}h used ({selectedEquipment.usage_count || 0} sessions)</span>
                       </div>
 
                       {selectedEquipment.hourly_rate && (
