@@ -204,28 +204,30 @@ export default function EquipmentCard({
           </div>
 
           {/* Actions */}
-          <div className="flex items-center space-x-2 flex-shrink-0">
+          <div className="flex items-center gap-2 flex-shrink-0">
             <button
               onClick={() => onViewDetails?.(equipment)}
-              className="inline-flex items-center px-3 py-1 text-sm border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50"
+              className="inline-flex items-center px-2 sm:px-3 py-1 text-xs sm:text-sm border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 whitespace-nowrap"
             >
-              <Eye className="w-4 h-4 mr-1" />
-              Details
+              <Eye className="w-3 h-3 sm:w-4 sm:h-4 mr-1" />
+              <span className="hidden sm:inline">Details</span>
+              <span className="sm:hidden">View</span>
             </button>
 
             {canReserve && equipment.status === 'available' && (
               <button
                 onClick={() => onReserve?.(equipment)}
                 disabled={!hasRequiredSkills}
-                className={`inline-flex items-center px-3 py-1 text-sm rounded-lg ${
+                className={`inline-flex items-center px-2 sm:px-3 py-1 text-xs sm:text-sm rounded-lg whitespace-nowrap ${
                   hasRequiredSkills
                     ? 'bg-makrx-blue text-white hover:bg-makrx-blue/90'
                     : 'bg-gray-200 text-gray-500 cursor-not-allowed'
                 }`}
                 title={!hasRequiredSkills ? `Missing skills: ${accessCheck.missingSkills.join(', ')}` : ''}
               >
-                <Calendar className="w-4 h-4 mr-1" />
-                {hasRequiredSkills ? 'Reserve' : 'Skills Required'}
+                <Calendar className="w-3 h-3 sm:w-4 sm:h-4 mr-1" />
+                <span className="hidden sm:inline">{hasRequiredSkills ? 'Reserve' : 'Skills Required'}</span>
+                <span className="sm:hidden">{hasRequiredSkills ? 'Book' : 'Locked'}</span>
               </button>
             )}
           </div>
@@ -381,37 +383,47 @@ export default function EquipmentCard({
         )}
 
         {/* Action Buttons */}
-        <div className="flex items-center space-x-2">
-          <button
-            onClick={() => onViewDetails?.(equipment)}
-            className="flex-1 inline-flex items-center justify-center px-3 py-2 text-sm border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50"
-          >
-            <Eye className="w-4 h-4 mr-1" />
-            Details
-          </button>
-
-          {canReserve && equipment.status === 'available' && (
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
+          <div className="flex flex-1 gap-2">
             <button
-              onClick={() => onReserve?.(equipment)}
-              disabled={!hasRequiredSkills}
-              className={`flex-1 inline-flex items-center justify-center px-3 py-2 text-sm rounded-lg ${
-                hasRequiredSkills
-                  ? 'bg-makrx-blue text-white hover:bg-makrx-blue/90'
-                  : 'bg-gray-200 text-gray-500 cursor-not-allowed'
-              }`}
-              title={!hasRequiredSkills ? `Missing skills: ${accessCheck.missingSkills.join(', ')}` : ''}
+              onClick={() => onViewDetails?.(equipment)}
+              className="flex-1 inline-flex items-center justify-center px-3 py-2 text-xs sm:text-sm border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50"
             >
-              <Calendar className="w-4 h-4 mr-1" />
-              {hasRequiredSkills ? 'Reserve' : 'Skills Required'}
+              <Eye className="w-4 h-4 mr-1" />
+              <span className="truncate">Details</span>
             </button>
-          )}
+
+            {canReserve && equipment.status === 'available' && (
+              <button
+                onClick={() => onReserve?.(equipment)}
+                disabled={!hasRequiredSkills}
+                className={`flex-1 inline-flex items-center justify-center px-3 py-2 text-xs sm:text-sm rounded-lg ${
+                  hasRequiredSkills
+                    ? 'bg-makrx-blue text-white hover:bg-makrx-blue/90'
+                    : 'bg-gray-200 text-gray-500 cursor-not-allowed'
+                }`}
+                title={!hasRequiredSkills ? `Missing skills: ${accessCheck.missingSkills.join(', ')}` : ''}
+              >
+                <Calendar className="w-4 h-4 mr-1 flex-shrink-0" />
+                <span className="truncate">
+                  {hasRequiredSkills ? (
+                    <><span className="hidden sm:inline">Reserve</span><span className="sm:hidden">Book</span></>
+                  ) : (
+                    <><span className="hidden sm:inline">Skills Required</span><span className="sm:hidden">Locked</span></>
+                  )}
+                </span>
+              </button>
+            )}
+          </div>
 
           {canMaintenance && (
             <button
               onClick={() => onMaintenance?.(equipment)}
-              className="inline-flex items-center justify-center px-3 py-2 text-sm border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50"
+              className="inline-flex items-center justify-center px-3 py-2 text-xs sm:text-sm border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 sm:w-auto w-full"
+              title="Maintenance"
             >
-              <Wrench className="w-4 h-4" />
+              <Wrench className="w-4 h-4 sm:mr-0 mr-1" />
+              <span className="sm:hidden">Maintenance</span>
             </button>
           )}
         </div>
