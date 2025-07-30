@@ -552,11 +552,16 @@ export const BillingProvider: React.FC<BillingProviderProps> = ({ children }) =>
 
   // Payment method actions
   const fetchPaymentMethods = async () => {
-    await handleApiCall(
+    const result = await handleApiCall(
       () => billingApi.paymentMethods.getPaymentMethods(),
       'paymentMethods',
       (data) => dispatch({ type: 'SET_PAYMENT_METHODS', payload: data })
     );
+
+    // Fallback to empty array if API fails
+    if (!result) {
+      dispatch({ type: 'SET_PAYMENT_METHODS', payload: [] });
+    }
   };
 
   const addPaymentMethod = async (data: any) => {
