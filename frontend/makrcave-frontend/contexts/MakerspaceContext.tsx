@@ -625,15 +625,10 @@ export function MakerspaceProvider({ children }: { children: ReactNode }) {
 
   const loadInventoryItems = async () => {
     try {
-      const response = await fetch('/api/v1/inventory/', {
-        headers: {
-          'Authorization': `Bearer ${localStorage.getItem('auth_token')}`
-        }
-      });
+      const response = await api.inventory.getItems();
 
-      if (response.ok) {
-        const items = await response.json();
-        const mappedItems = items.map((item: any) => ({
+      if (response.data) {
+        const mappedItems = response.data.map((item: any) => ({
           id: item.id,
           name: item.name,
           category: item.category,
@@ -654,7 +649,7 @@ export function MakerspaceProvider({ children }: { children: ReactNode }) {
           supplier: item.supplier,
           description: item.description,
           isScanned: item.is_scanned,
-          history: item.usage_logs || []
+          history: [] // Would need separate API call for usage logs
         }));
         setInventory(mappedItems);
       }
