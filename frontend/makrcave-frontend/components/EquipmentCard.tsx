@@ -424,13 +424,13 @@ export default function EquipmentCard({
             <span>Rating</span>
           </div>
           <div className="flex items-center justify-between text-sm font-medium text-gray-900 mt-1">
-            <span className={getUtilizationColor(equipment.total_usage_hours)}>
-              {equipment.usage_count > 0 ? 'Active' : 'New'}
+            <span className={getUtilizationColor(equipment.total_usage_hours || 0)}>
+              {(equipment.usage_count || 0) > 0 ? 'Active' : 'New'}
             </span>
             <span>
-              {equipment.usage_count > 0 ? 'Recently' : 'Never'}
+              {(equipment.usage_count || 0) > 0 ? 'Recently' : 'Never'}
             </span>
-            <span>{equipment.average_rating.toFixed(1)}★</span>
+            <span>{(equipment.average_rating || 0).toFixed(1)}★</span>
           </div>
         </div>
       </div>
