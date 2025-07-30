@@ -428,6 +428,9 @@ const EquipmentReservationSystem: React.FC<EquipmentReservationSystemProps> = ({
       {/* Main Interface */}
       <Card>
         <CardHeader>
+          <CardTitle>Equipment Reservations Management</CardTitle>
+        </CardHeader>
+        <CardContent>
           <Tabs value={activeTab} onValueChange={setActiveTab}>
             <TabsList className="grid w-full grid-cols-4">
               <TabsTrigger value="calendar">Calendar View</TabsTrigger>
@@ -435,10 +438,6 @@ const EquipmentReservationSystem: React.FC<EquipmentReservationSystemProps> = ({
               <TabsTrigger value="analytics">Usage Analytics</TabsTrigger>
               <TabsTrigger value="settings">Equipment Settings</TabsTrigger>
             </TabsList>
-          </Tabs>
-        </CardHeader>
-
-        <CardContent>
           <TabsContent value="calendar" className="space-y-4">
             <div className="flex items-center gap-4 mb-4">
               <Select value={selectedEquipment} onValueChange={setSelectedEquipment}>
@@ -660,6 +659,7 @@ const EquipmentReservationSystem: React.FC<EquipmentReservationSystemProps> = ({
               })}
             </div>
           </TabsContent>
+          </Tabs>
         </CardContent>
       </Card>
 
