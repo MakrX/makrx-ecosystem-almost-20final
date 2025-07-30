@@ -112,6 +112,7 @@ const EquipmentReservationSystem: React.FC<EquipmentReservationSystemProps> = ({
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
   const [reservations, setReservations] = useState<EquipmentReservation[]>([]);
   const [policies, setPolicies] = useState<EquipmentPolicy[]>([]);
+  const [accessPolicies, setAccessPolicies] = useState<EquipmentAccessPolicy[]>([]);
   const [loading, setLoading] = useState(false);
   const [activeTab, setActiveTab] = useState('calendar');
   const [showCreateModal, setShowCreateModal] = useState(false);
