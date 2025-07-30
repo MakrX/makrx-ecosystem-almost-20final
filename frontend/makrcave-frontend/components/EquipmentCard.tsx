@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import {
   Wrench, Calendar, Star, MapPin, Clock, Shield, Settings,
   Eye, Edit, PlayCircle, PauseCircle, CheckCircle, XCircle,
@@ -57,7 +57,24 @@ export default function EquipmentCard({
   canMaintenance
 }: EquipmentCardProps) {
   const [showQuickActions, setShowQuickActions] = useState(false);
+  const quickActionsRef = useRef<HTMLDivElement>(null);
   const { canAccessEquipment } = useSkills();
+
+  // Close quick actions when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (quickActionsRef.current && !quickActionsRef.current.contains(event.target as Node)) {
+        setShowQuickActions(false);
+      }
+    };
+
+    if (showQuickActions) {
+      document.addEventListener('mousedown', handleClickOutside);
+      return () => {
+        document.removeEventListener('mousedown', handleClickOutside);
+      };
+    }
+  }, [showQuickActions]);
 
   // Check if user has required skills for this equipment
   const accessCheck = canAccessEquipment(equipment.equipment_id);
@@ -287,14 +304,14 @@ export default function EquipmentCard({
             )}
           </div>
           
-          <div className="relative">
+          <div className="relative" ref={quickActionsRef}>
             <button
               onClick={() => setShowQuickActions(!showQuickActions)}
               className="p-1 hover:bg-gray-100 rounded"
             >
               <Settings className="w-4 h-4 text-gray-500" />
             </button>
-            
+
             {showQuickActions && (
               <div className="absolute right-0 top-8 z-10 w-48 bg-white rounded-lg shadow-lg border border-gray-200 py-1">
                 <button
