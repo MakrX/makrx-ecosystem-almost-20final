@@ -206,9 +206,30 @@ const ReservationWithBilling: React.FC<ReservationWithBillingProps> = ({
         }
       }
 
-      // Create reservation (mock API call)
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
+      // Create reservation using real API
+      const startDateTime = new Date(formData.date);
+      const [startHour, startMinute] = formData.start_time.split(':').map(Number);
+      startDateTime.setHours(startHour, startMinute, 0, 0);
+
+      const endDateTime = new Date(formData.date);
+      const [endHour, endMinute] = formData.end_time.split(':').map(Number);
+      endDateTime.setHours(endHour, endMinute, 0, 0);
+
+      const reservationData = {
+        equipment_id: formData.equipment_id,
+        start_time: startDateTime.toISOString(),
+        end_time: endDateTime.toISOString(),
+        purpose: formData.purpose,
+        notes: formData.notes,
+        linked_project_id: formData.linked_project_id
+      };
+
+      const response = await api.reservations.createReservation(reservationData);
+
+      if (response.error) {
+        throw new Error(response.error);
+      }
+
       onReservationCreated();
       onClose();
       resetForm();
