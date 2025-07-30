@@ -105,7 +105,7 @@ const EquipmentReservationSystem: React.FC<EquipmentReservationSystemProps> = ({
   const { equipment } = useMakerspace();
   
   // State management
-  const [selectedEquipment, setSelectedEquipment] = useState<string>('');
+  const [selectedEquipment, setSelectedEquipment] = useState<string>('all');
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
   const [reservations, setReservations] = useState<EquipmentReservation[]>([]);
   const [policies, setPolicies] = useState<EquipmentPolicy[]>([]);
