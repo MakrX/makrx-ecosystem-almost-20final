@@ -18,10 +18,10 @@ interface Equipment {
   certification_required?: string;
   last_maintenance_date?: string;
   next_maintenance_date?: string;
-  total_usage_hours: number;
-  usage_count: number;
-  average_rating: number;
-  total_ratings: number;
+  total_usage_hours?: number;
+  usage_count?: number;
+  average_rating?: number;
+  total_ratings?: number;
   manufacturer?: string;
   model?: string;
   hourly_rate?: number;
