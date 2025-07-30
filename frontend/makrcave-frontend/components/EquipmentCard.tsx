@@ -191,8 +191,8 @@ export default function EquipmentCard({
             </div>
 
             <div className="flex items-center">
-              {renderStars(equipment.average_rating)}
-              <span className="ml-1">{equipment.average_rating.toFixed(1)}</span>
+              {renderStars(equipment.average_rating || 0)}
+              <span className="ml-1">{(equipment.average_rating || 0).toFixed(1)}</span>
             </div>
 
             {equipment.hourly_rate && (
