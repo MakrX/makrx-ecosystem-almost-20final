@@ -46,100 +46,62 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  // Predefined demo users for authentication
-  const demoUsers: User[] = [
-    {
-      id: 'sa-1',
-      email: 'alex.carter@makrx.org',
-      username: 'alex.carter',
-      firstName: 'Alex',
-      lastName: 'Carter',
-      role: 'super_admin',
-      assignedMakerspaces: ['ms-1', 'ms-2', 'ms-3'] // Can manage all makerspaces
-    },
-    {
-      id: 'adm-1',
-      email: 'jordan.kim@makrx.org',
-      username: 'jordan.kim',
-      firstName: 'Jordan',
-      lastName: 'Kim',
-      role: 'admin',
-      assignedMakerspaces: [] // Can view all but not assigned to specific ones
-    },
-    {
-      id: 'msa-1',
-      email: 'sarah.martinez@makrcave.local',
-      username: 'sarah.martinez',
-      firstName: 'Sarah',
-      lastName: 'Martinez',
-      role: 'makerspace_admin',
-      assignedMakerspaces: ['ms-1'] // Assigned to specific makerspace
-    },
-    {
-      id: 'sp-1',
-      email: 'riley.thompson@makrcave.local',
-      username: 'riley.thompson',
-      firstName: 'Riley',
-      lastName: 'Thompson',
-      role: 'service_provider',
-      assignedMakerspaces: ['ms-1'] // Currently restricted
-    },
-    {
-      id: 'mkr-1',
-      email: 'casey.williams@makrcave.local',
-      username: 'casey.williams',
-      firstName: 'Casey',
-      lastName: 'Williams',
-      role: 'maker',
-      assignedMakerspaces: ['ms-1'] // Assigned to their makerspace
-    }
-  ];
-
   useEffect(() => {
-    // Check for saved user session
-    const savedUser = localStorage.getItem('makrcave_user');
-    if (savedUser) {
-      try {
-        const userData = JSON.parse(savedUser);
-        const user = demoUsers.find(u => u.id === userData.id);
-        if (user) {
-          setUser(user);
-        }
-      } catch (error) {
-        console.warn('Failed to parse saved user:', error);
-      }
-    }
-    setIsLoading(false);
+    initializeAuth();
   }, []);
 
-  const login = async (email: string, password: string) => {
-    // Find user by email
-    const user = demoUsers.find(u => u.email === email);
-
-    if (!user) {
-      throw new Error('User not found');
+  const initializeAuth = async () => {
+    try {
+      if (authService.isAuthenticated()) {
+        const currentUser = await authService.getCurrentUser();
+        setUser(currentUser);
+      }
+    } catch (error) {
+      console.error('Failed to initialize auth:', error);
+      authService.clearAuthData();
+    } finally {
+      setIsLoading(false);
     }
-
-    // In a real app, you'd validate the password here
-    // For demo purposes, any password works
-
-    setUser(user);
-    localStorage.setItem('makrcave_user', JSON.stringify({ id: user.id }));
-    // Generate mock auth token for API calls
-    const mockToken = `mock-jwt-token-${user.id}-${Date.now()}`;
-    localStorage.setItem('authToken', mockToken);
-    localStorage.setItem('makrcave_access_token', mockToken);
   };
 
-  const logout = () => {
-    localStorage.removeItem('makrcave_user');
-    localStorage.removeItem('makrcave_access_token');
-    localStorage.removeItem('authToken');
-    localStorage.removeItem('auth_token');
-    setUser(null);
+  const login = async (credentials: LoginCredentials) => {
+    try {
+      const response = await authService.login(credentials);
+      setUser(response.user);
+    } catch (error) {
+      console.error('Login failed:', error);
+      throw error;
+    }
   };
 
-  const getDemoUsers = () => demoUsers;
+  const logout = async () => {
+    try {
+      await authService.logout();
+      setUser(null);
+    } catch (error) {
+      console.error('Logout failed:', error);
+    }
+  };
+
+  const register = async (data: any) => {
+    try {
+      const response = await authService.register(data);
+      setUser(response.user);
+    } catch (error) {
+      console.error('Registration failed:', error);
+      throw error;
+    }
+  };
+
+  const refreshUser = async () => {
+    try {
+      const currentUser = await authService.getCurrentUser();
+      setUser(currentUser);
+    } catch (error) {
+      console.error('Failed to refresh user:', error);
+      setUser(null);
+    }
+  };
 
   const getCurrentRole = (): UserRole => {
     return user?.role || 'maker';
