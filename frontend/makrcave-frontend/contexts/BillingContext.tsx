@@ -378,11 +378,16 @@ export const BillingProvider: React.FC<BillingProviderProps> = ({ children }) =>
 
   // Transaction actions
   const fetchTransactions = async (filters?: any) => {
-    await handleApiCall(
+    const result = await handleApiCall(
       () => billingApi.transactions.getTransactions(filters),
       'transactions',
       (data) => dispatch({ type: 'SET_TRANSACTIONS', payload: data })
     );
+
+    // Fallback to empty array if API fails
+    if (!result) {
+      dispatch({ type: 'SET_TRANSACTIONS', payload: [] });
+    }
   };
 
   const fetchTransaction = async (id: string) => {
