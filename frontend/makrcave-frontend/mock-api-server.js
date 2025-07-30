@@ -1533,6 +1533,267 @@ app.post('/api/v1/projects/:projectId/bom/:bomItemId/reorder', (req, res) => {
   });
 });
 
+// Billing API Endpoints
+const mockTransactions = [
+  {
+    id: 'txn_001',
+    amount: 250.00,
+    currency: 'USD',
+    type: 'membership',
+    status: 'success',
+    description: 'Monthly membership fee',
+    gateway: 'stripe',
+    gateway_transaction_id: 'pi_1234567890',
+    created_at: '2024-02-01T10:00:00Z',
+    completed_at: '2024-02-01T10:01:00Z'
+  },
+  {
+    id: 'txn_002',
+    amount: 75.50,
+    currency: 'USD',
+    type: 'printing_3d',
+    status: 'success',
+    description: '3D printing job - Prototype parts',
+    gateway: 'credit',
+    created_at: '2024-02-05T14:30:00Z',
+    completed_at: '2024-02-05T14:30:00Z'
+  }
+];
+
+const mockInvoices = [
+  {
+    id: 'inv_001',
+    invoice_number: 'INV-2024-001',
+    title: 'Equipment Usage - January 2024',
+    amount: 150.00,
+    total_amount: 150.00,
+    currency: 'USD',
+    status: 'paid',
+    issue_date: '2024-01-31',
+    due_date: '2024-02-15',
+    paid_date: '2024-02-01',
+    customer_name: 'John Maker',
+    customer_email: 'john@example.com'
+  }
+];
+
+const mockCreditWallet = {
+  id: 'wallet_001',
+  balance: 125.50,
+  total_earned: 300.00,
+  total_spent: 174.50,
+  conversion_rate: 1.0,
+  auto_recharge_enabled: true,
+  auto_recharge_threshold: 50.0,
+  auto_recharge_amount: 100.0
+};
+
+const mockPaymentMethods = [
+  {
+    id: 'pm_001',
+    type: 'card',
+    provider: 'stripe',
+    last_four: '4242',
+    brand: 'visa',
+    expiry_month: 12,
+    expiry_year: 2025,
+    holder_name: 'John Maker',
+    is_default: true,
+    is_verified: true,
+    created_at: '2024-01-15T10:00:00Z'
+  }
+];
+
+const mockBillingAnalytics = {
+  revenue: {
+    total: 5250.00,
+    monthly: 1250.00,
+    weekly: 320.00,
+    daily: 85.00,
+    growth_rate: 12.5,
+    previous_period: 1100.00
+  },
+  transactions: {
+    total_count: 156,
+    successful_count: 148,
+    failed_count: 8,
+    pending_count: 0,
+    success_rate: 94.8,
+    average_amount: 125.50
+  },
+  revenue_by_type: {
+    membership: 2500.00,
+    printing_3d: 1200.00,
+    laser_cutting: 800.00,
+    workshop: 450.00,
+    materials: 300.00
+  },
+  revenue_by_month: [
+    { month: '2024-01', revenue: 1100.00, transactions: 42 },
+    { month: '2024-02', revenue: 1250.00, transactions: 48 }
+  ],
+  top_customers: [
+    { customer_name: 'John Maker', customer_email: 'john@example.com', total_spent: 450.00, transaction_count: 12 }
+  ],
+  payment_methods: {
+    credit_card: 65,
+    credit_wallet: 25,
+    bank_transfer: 10
+  }
+};
+
+// Transactions endpoints
+app.get('/api/billing/transactions', (req, res) => {
+  res.json(mockTransactions);
+});
+
+app.get('/api/billing/transactions/:id', (req, res) => {
+  const transaction = mockTransactions.find(t => t.id === req.params.id);
+  if (!transaction) {
+    return res.status(404).json({ detail: 'Transaction not found' });
+  }
+  res.json(transaction);
+});
+
+app.post('/api/billing/transactions', (req, res) => {
+  const newTransaction = {
+    id: `txn_${Date.now()}`,
+    ...req.body,
+    status: 'pending',
+    created_at: new Date().toISOString()
+  };
+  mockTransactions.push(newTransaction);
+  res.status(201).json(newTransaction);
+});
+
+// Invoices endpoints
+app.get('/api/billing/invoices', (req, res) => {
+  res.json(mockInvoices);
+});
+
+app.get('/api/billing/invoices/:id', (req, res) => {
+  const invoice = mockInvoices.find(i => i.id === req.params.id);
+  if (!invoice) {
+    return res.status(404).json({ detail: 'Invoice not found' });
+  }
+  res.json(invoice);
+});
+
+app.post('/api/billing/invoices', (req, res) => {
+  const newInvoice = {
+    id: `inv_${Date.now()}`,
+    invoice_number: `INV-2024-${String(mockInvoices.length + 1).padStart(3, '0')}`,
+    ...req.body,
+    status: 'draft',
+    issue_date: new Date().toISOString().split('T')[0]
+  };
+  mockInvoices.push(newInvoice);
+  res.status(201).json(newInvoice);
+});
+
+// Credit Wallet endpoints
+app.get('/api/billing/credit-wallet', (req, res) => {
+  res.json(mockCreditWallet);
+});
+
+app.put('/api/billing/credit-wallet', (req, res) => {
+  Object.assign(mockCreditWallet, req.body);
+  res.json(mockCreditWallet);
+});
+
+app.get('/api/billing/credit-wallet/transactions', (req, res) => {
+  const creditTransactions = [
+    {
+      id: 'ct_001',
+      type: 'earned',
+      amount: 25.00,
+      description: 'Membership bonus credits',
+      created_at: '2024-02-01T10:00:00Z',
+      balance_after: 125.50
+    }
+  ];
+  res.json(creditTransactions);
+});
+
+app.post('/api/billing/credit-wallet/purchase', (req, res) => {
+  const transaction = {
+    id: `txn_${Date.now()}`,
+    amount: req.body.amount,
+    currency: 'USD',
+    type: 'credit_purchase',
+    status: 'success',
+    description: `Credit purchase - $${req.body.amount}`,
+    gateway: 'stripe',
+    created_at: new Date().toISOString(),
+    completed_at: new Date().toISOString()
+  };
+  mockCreditWallet.balance += req.body.amount;
+  res.status(201).json(transaction);
+});
+
+// Payment Methods endpoints
+app.get('/api/billing/payment-methods', (req, res) => {
+  res.json(mockPaymentMethods);
+});
+
+app.post('/api/billing/payment-methods', (req, res) => {
+  const newPaymentMethod = {
+    id: `pm_${Date.now()}`,
+    ...req.body,
+    is_verified: false,
+    created_at: new Date().toISOString()
+  };
+  mockPaymentMethods.push(newPaymentMethod);
+  res.status(201).json(newPaymentMethod);
+});
+
+app.delete('/api/billing/payment-methods/:id', (req, res) => {
+  const index = mockPaymentMethods.findIndex(pm => pm.id === req.params.id);
+  if (index === -1) {
+    return res.status(404).json({ detail: 'Payment method not found' });
+  }
+  mockPaymentMethods.splice(index, 1);
+  res.status(204).send();
+});
+
+// Analytics endpoints
+app.get('/api/billing/analytics', (req, res) => {
+  res.json(mockBillingAnalytics);
+});
+
+app.get('/api/billing/analytics/revenue-trends', (req, res) => {
+  res.json({
+    trends: [
+      { period: '2024-01', revenue: 1100.00, growth: 5.2 },
+      { period: '2024-02', revenue: 1250.00, growth: 13.6 }
+    ]
+  });
+});
+
+// Checkout endpoints
+app.post('/api/billing/checkout/create-session', (req, res) => {
+  res.json({
+    session_id: `cs_${Date.now()}`,
+    client_secret: 'pi_1234567890_secret_abcd',
+    redirect_url: '/billing/checkout/success'
+  });
+});
+
+app.post('/api/billing/checkout/verify-payment', (req, res) => {
+  const transaction = {
+    id: `txn_${Date.now()}`,
+    amount: 100.00,
+    currency: 'USD',
+    type: 'payment',
+    status: 'success',
+    description: 'Payment verification',
+    gateway: 'stripe',
+    created_at: new Date().toISOString(),
+    completed_at: new Date().toISOString()
+  };
+  res.json(transaction);
+});
+
 // Generic 404 handler for other endpoints
 app.use('*', (req, res) => {
   console.log(`🔍 Missing endpoint: ${req.method} ${req.originalUrl}`);
