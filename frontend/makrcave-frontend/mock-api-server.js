@@ -1642,7 +1642,7 @@ const mockBillingAnalytics = {
   }
 };
 
-// Transactions endpoints
+// Transactions endpoints (without v1 to match billingApi.ts)
 app.get('/api/billing/transactions', (req, res) => {
   res.json(mockTransactions);
 });
