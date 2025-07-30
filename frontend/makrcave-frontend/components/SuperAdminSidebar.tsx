@@ -154,8 +154,8 @@ export default function SuperAdminSidebar() {
         </div>
 
         {/* System Administration */}
-        <div className="mt-8">
-          <h3 className="px-3 mb-2 text-xs font-semibold text-red-600 uppercase tracking-wider">
+        <div className="mt-6 sm:mt-8">
+          <h3 className="px-2 sm:px-3 mb-2 text-xs font-semibold text-red-600 uppercase tracking-wider">
             System Administration
           </h3>
           <div className="space-y-1">
@@ -165,14 +165,14 @@ export default function SuperAdminSidebar() {
                 <Link
                   key={item.name}
                   to={item.href}
-                  className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
+                  className={`flex items-center gap-2 sm:gap-3 px-2 sm:px-3 py-2 rounded-lg text-xs sm:text-sm font-medium transition-colors ${
                     item.active
                       ? 'bg-red-100 text-red-800'
                       : 'text-gray-700 hover:text-red-700 hover:bg-red-50'
                   }`}
                 >
-                  <Icon className="w-4 h-4" />
-                  {item.name}
+                  <Icon className="w-4 h-4 flex-shrink-0" />
+                  <span className="truncate">{item.name}</span>
                 </Link>
               );
             })}
@@ -181,13 +181,13 @@ export default function SuperAdminSidebar() {
       </nav>
 
       {/* Logout */}
-      <div className="p-4 border-t border-red-200">
+      <div className="p-3 sm:p-4 border-t border-red-200 flex-shrink-0">
         <button
           onClick={logout}
-          className="flex items-center gap-3 w-full px-3 py-2 text-sm font-medium text-gray-700 hover:text-red-700 hover:bg-red-50 rounded-lg transition-colors"
+          className="flex items-center gap-2 sm:gap-3 w-full px-2 sm:px-3 py-2 text-xs sm:text-sm font-medium text-gray-700 hover:text-red-700 hover:bg-red-50 rounded-lg transition-colors"
         >
-          <LogOut className="w-4 h-4" />
-          Sign Out
+          <LogOut className="w-4 h-4 flex-shrink-0" />
+          <span className="truncate">Sign Out</span>
         </button>
       </div>
     </div>
