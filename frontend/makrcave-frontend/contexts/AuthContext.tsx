@@ -125,7 +125,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const isMakerspaceAdmin = user?.role === 'makerspace_admin';
   const isServiceProvider = user?.role === 'service_provider';
   const isMaker = user?.role === 'maker';
-  const isAuthenticated = !!user;
+  const isMakrcaveManager = isMakerspaceAdmin; // For backward compatibility
+  const isAuthenticated = !!user && authService.isAuthenticated();
 
   return (
     <AuthContext.Provider value={{
@@ -134,16 +135,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       isLoading,
       login,
       logout,
+      register,
       getCurrentRole,
       getRolePermissions: getUserRolePermissions,
       hasPermission: userHasPermission,
       getUIAccess: getUserUIAccess,
-      getDemoUsers,
+      refreshUser,
       isSuperAdmin,
       isAdmin,
       isMakerspaceAdmin,
       isServiceProvider,
-      isMaker
+      isMaker,
+      isMakrcaveManager
     }}>
       {children}
     </AuthContext.Provider>
