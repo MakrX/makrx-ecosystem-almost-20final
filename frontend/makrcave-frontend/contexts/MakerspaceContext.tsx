@@ -148,6 +148,42 @@ interface MakerspaceContextType {
 const MakerspaceContext = createContext<MakerspaceContextType | undefined>(undefined);
 
 export function MakerspaceProvider({ children }: { children: ReactNode }) {
+  // Mock makerspace data - would come from API in real app
+  const [allMakerspaces] = useState<Makerspace[]>([
+    {
+      id: 'ms-1',
+      name: 'Downtown Innovation Hub',
+      description: 'A state-of-the-art makerspace in the heart of the city',
+      location: '123 Innovation St, Downtown',
+      managerId: 'msa-1',
+      managerName: 'Sarah Martinez',
+      isActive: true,
+      createdAt: '2023-01-15'
+    },
+    {
+      id: 'ms-2',
+      name: 'University MakrLab',
+      description: 'Educational makerspace for students and faculty',
+      location: 'University Campus, Building A',
+      managerId: 'msa-2',
+      managerName: 'Jordan Kim',
+      isActive: true,
+      createdAt: '2023-03-20'
+    },
+    {
+      id: 'ms-3',
+      name: 'Community Workshop',
+      description: 'Community-focused making space for all skill levels',
+      location: '456 Community Ave',
+      managerId: 'msa-3',
+      managerName: 'Casey Williams',
+      isActive: true,
+      createdAt: '2023-06-10'
+    }
+  ]);
+
+  const [currentMakerspace, setCurrentMakerspace] = useState<Makerspace | null>(allMakerspaces[0]);
+
   // Mock data - would come from API in real app
   const [stats] = useState<MakerspaceStats>({
     totalMembers: 45,
