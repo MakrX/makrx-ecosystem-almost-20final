@@ -314,6 +314,12 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ project, viewMode, onUpdate }
             <div className="flex items-center gap-2 text-sm text-gray-500">
               <span>{getVisibilityIcon(project.visibility)}</span>
               <span className="capitalize">{project.visibility}</span>
+              {project.enable_github_integration && project.github_repo_url && (
+                <>
+                  <span>•</span>
+                  <Github className="h-3 w-3" />
+                </>
+              )}
               <span>•</span>
               <span>Updated {formatDate(project.updated_at)}</span>
             </div>
