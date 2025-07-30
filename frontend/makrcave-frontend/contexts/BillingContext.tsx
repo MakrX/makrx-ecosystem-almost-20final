@@ -501,11 +501,25 @@ export const BillingProvider: React.FC<BillingProviderProps> = ({ children }) =>
 
   // Credit wallet actions
   const fetchCreditWallet = async () => {
-    await handleApiCall(
+    const result = await handleApiCall(
       () => billingApi.creditWallet.getWallet(),
       'creditWallet',
       (data) => dispatch({ type: 'SET_CREDIT_WALLET', payload: data })
     );
+
+    // Fallback to default wallet if API fails
+    if (!result) {
+      dispatch({ type: 'SET_CREDIT_WALLET', payload: {
+        id: 'fallback',
+        balance: 0,
+        total_earned: 0,
+        total_spent: 0,
+        conversion_rate: 1.0,
+        auto_recharge_enabled: false,
+        auto_recharge_threshold: 50,
+        auto_recharge_amount: 100
+      }});
+    }
   };
 
   const updateCreditWallet = async (data: any) => {
