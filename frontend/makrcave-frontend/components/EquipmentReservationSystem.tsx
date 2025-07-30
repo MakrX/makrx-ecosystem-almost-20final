@@ -691,6 +691,10 @@ const EquipmentReservationSystem: React.FC<EquipmentReservationSystemProps> = ({
               })}
             </div>
           </TabsContent>
+
+          <TabsContent value="pricing" className="space-y-4">
+            <EquipmentAccessPricingManager />
+          </TabsContent>
           </Tabs>
         </CardContent>
       </Card>
