@@ -1,10 +1,41 @@
 import { Outlet, Navigate } from 'react-router-dom';
+import { useState, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import RoleBasedSidebar from './RoleBasedSidebar';
 import Header from './Header';
 
 export default function Layout() {
   const { isAuthenticated, isLoading } = useAuth();
+  const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
+
+  // Close mobile sidebar when window is resized to desktop
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth >= 1024) {
+        setIsMobileSidebarOpen(false);
+      }
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  // Close mobile sidebar when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (isMobileSidebarOpen && window.innerWidth < 1024) {
+        const sidebar = document.querySelector('.makrcave-sidebar');
+        const target = event.target as Node;
+
+        if (sidebar && !sidebar.contains(target)) {
+          setIsMobileSidebarOpen(false);
+        }
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [isMobileSidebarOpen]);
 
   if (isLoading) {
     return (
@@ -23,10 +54,19 @@ export default function Layout() {
 
   return (
     <div className="min-h-screen bg-background">
-      <RoleBasedSidebar />
+      {/* Mobile sidebar overlay */}
+      {isMobileSidebarOpen && (
+        <div className="makrcave-sidebar-overlay" onClick={() => setIsMobileSidebarOpen(false)} />
+      )}
+
+      {/* Sidebar with mobile support */}
+      <div className={`makrcave-sidebar ${isMobileSidebarOpen ? 'open' : ''}`}>
+        <RoleBasedSidebar onMobileClose={() => setIsMobileSidebarOpen(false)} />
+      </div>
+
       <div className="makrcave-main">
-        <Header />
-        <main className="p-6 bg-background">
+        <Header onMobileMenuClick={() => setIsMobileSidebarOpen(true)} />
+        <main className="p-3 sm:p-6 bg-background">
           <Outlet />
         </main>
       </div>
