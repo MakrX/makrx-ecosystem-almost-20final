@@ -575,13 +575,20 @@ const SkillManagement: React.FC = () => {
                         </div>
                       </div>
                       <div className="flex gap-2">
-                        <Button 
-                          size="sm" 
+                        <Button
+                          size="sm"
                           onClick={() => handleCertifyUser(`${userSkill.userId}-${userSkill.skillId}`)}
                         >
+                          <CheckCircle className="h-4 w-4 mr-1" />
                           Approve
                         </Button>
-                        <Button size="sm" variant="outline">
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => handleRevokeSkill(`${userSkill.userId}-${userSkill.skillId}`)}
+                          className="text-red-600 hover:text-red-700"
+                        >
+                          <XCircle className="h-4 w-4 mr-1" />
                           Decline
                         </Button>
                       </div>
