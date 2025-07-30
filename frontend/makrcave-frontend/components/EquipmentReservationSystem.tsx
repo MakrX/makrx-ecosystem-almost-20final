@@ -10,7 +10,7 @@ import { Popover, PopoverContent, PopoverTrigger } from './ui/popover';
 import { Switch } from './ui/switch';
 import { Label } from './ui/label';
 import { Textarea } from './ui/textarea';
-import { 
+import {
   Calendar as CalendarIcon,
   Clock,
   User,
@@ -30,7 +30,8 @@ import {
   Plus,
   Edit,
   Trash,
-  Eye
+  Eye,
+  BarChart3
 } from 'lucide-react';
 import { format, addHours, startOfDay, endOfDay, isWithinInterval } from 'date-fns';
 import { useAuth } from '../contexts/AuthContext';
