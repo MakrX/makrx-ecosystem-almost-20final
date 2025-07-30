@@ -19,21 +19,7 @@ export default function Login() {
     setError('');
 
     try {
-      await login(email, password);
-      navigate('/portal/dashboard');
-    } catch (error) {
-      setError(error instanceof Error ? error.message : 'Login failed');
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const quickLogin = async (userEmail: string) => {
-    setIsLoading(true);
-    setError('');
-
-    try {
-      await login(userEmail, 'demo');
+      await login({ username: email, password });
       navigate('/portal/dashboard');
     } catch (error) {
       setError(error instanceof Error ? error.message : 'Login failed');
