@@ -599,6 +599,68 @@ const SkillManagement: React.FC = () => {
           </Card>
         </TabsContent>
       </Tabs>
+
+      {/* All Modals */}
+      <CertifyMemberModal
+        open={certifyModalOpen}
+        onOpenChange={setCertifyModalOpen}
+        members={mockMembers}
+        skills={skills}
+        existingCertification={selectedUserSkill ? {
+          userId: selectedUserSkill.userId,
+          skillId: selectedUserSkill.skillId,
+          userName: selectedUserSkill.userName,
+          skillName: selectedUserSkill.skillName,
+          status: selectedUserSkill.status
+        } : undefined}
+      />
+
+      <SkillRequirementsModal
+        open={skillRequirementsModalOpen}
+        onOpenChange={setSkillRequirementsModalOpen}
+        equipment={mockEquipment}
+        skills={skills}
+        selectedEquipmentId={selectedEquipmentId}
+      />
+
+      {selectedUserSkill && (
+        <RevokeSkillModal
+          open={revokeModalOpen}
+          onOpenChange={setRevokeModalOpen}
+          userSkill={selectedUserSkill}
+        />
+      )}
+
+      <AddSkillModal
+        open={addSkillModalOpen}
+        onOpenChange={setAddSkillModalOpen}
+        equipment={mockEquipment}
+        existingSkills={skills}
+      />
+
+      {selectedSkill && (
+        <SkillDetailsModal
+          open={skillDetailsModalOpen}
+          onOpenChange={setSkillDetailsModalOpen}
+          skill={selectedSkill}
+          onEdit={() => {
+            setSkillDetailsModalOpen(false);
+            // You could open an edit modal here
+            toast({
+              title: "Edit Feature",
+              description: "Edit functionality would be implemented here",
+            });
+          }}
+          onDelete={() => {
+            setSkillDetailsModalOpen(false);
+            toast({
+              title: "Skill Deleted",
+              description: `${selectedSkill.name} has been removed`,
+              variant: "destructive",
+            });
+          }}
+        />
+      )}
     </div>
   );
 };
