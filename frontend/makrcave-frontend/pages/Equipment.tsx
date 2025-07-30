@@ -843,7 +843,7 @@ export default function Equipment() {
                       {selectedEquipment.hourly_rate && (
                         <div className="flex items-center">
                           <DollarSign className="w-4 h-4 mr-2 text-gray-500" />
-                          <span className="text-sm">${selectedEquipment.hourly_rate.toFixed(2)}/hour</span>
+                          <span className="text-sm">${(selectedEquipment.hourly_rate || 0).toFixed(2)}/hour</span>
                         </div>
                       )}
 
