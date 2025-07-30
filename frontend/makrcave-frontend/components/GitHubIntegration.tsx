@@ -1,651 +1,375 @@
 import React, { useState, useEffect } from 'react';
 import { Card, CardHeader, CardTitle, CardContent } from './ui/card';
 import { Button } from './ui/button';
-import { Input } from './ui/input';
 import { Badge } from './ui/badge';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from './ui/dialog';
-import { Label } from './ui/label';
-import { Textarea } from './ui/textarea';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from './ui/tabs';
 import { 
   Github, 
   GitBranch, 
   GitCommit, 
-  GitPullRequest, 
   FileText, 
-  Folder, 
+  Star, 
   Eye, 
-  Download, 
+  GitFork, 
   ExternalLink,
+  Calendar,
+  User,
+  Download,
   RefreshCw,
-  Link,
-  Unlink,
-  AlertCircle,
-  CheckCircle,
-  Clock,
-  Code,
-  Star,
-  Users
+  AlertCircle
 } from 'lucide-react';
+
+interface GitHubCommit {
+  sha: string;
+  message: string;
+  author: {
+    name: string;
+    email: string;
+    date: string;
+  };
+  url: string;
+}
 
 interface GitHubFile {
   name: string;
   path: string;
   type: 'file' | 'dir';
-  size: number;
-  url: string;
-  html_url: string;
+  size?: number;
   download_url?: string;
 }
 
-interface GitHubCommit {
-  sha: string;
-  message: string;
-  author_name: string;
-  author_email: string;
-  author_date: string;
-  url: string;
-  added_files: string[];
-  modified_files: string[];
-  removed_files: string[];
+interface GitHubRepo {
+  name: string;
+  full_name: string;
+  description?: string;
+  stargazers_count: number;
+  watchers_count: number;
+  forks_count: number;
+  language?: string;
+  updated_at: string;
+  html_url: string;
 }
 
 interface GitHubIntegrationProps {
-  projectId: string;
-  isConnected: boolean;
-  repoUrl?: string;
-  repoName?: string;
-  defaultBranch?: string;
-  canEdit: boolean;
-  onUpdate: () => void;
+  repoUrl: string;
+  branch?: string;
+  className?: string;
 }
 
-const GitHubIntegration: React.FC<GitHubIntegrationProps> = ({
-  projectId,
-  isConnected,
-  repoUrl,
-  repoName,
-  defaultBranch = 'main',
-  canEdit,
-  onUpdate
+const GitHubIntegration: React.FC<GitHubIntegrationProps> = ({ 
+  repoUrl, 
+  branch = 'main',
+  className = '' 
 }) => {
-  const [showConnectModal, setShowConnectModal] = useState(false);
-  const [newRepoUrl, setNewRepoUrl] = useState('');
-  const [accessToken, setAccessToken] = useState('');
-  const [files, setFiles] = useState<GitHubFile[]>([]);
+  const [repo, setRepo] = useState<GitHubRepo | null>(null);
   const [commits, setCommits] = useState<GitHubCommit[]>([]);
-  const [currentPath, setCurrentPath] = useState('');
-  const [selectedFile, setSelectedFile] = useState<GitHubFile | null>(null);
-  const [fileContent, setFileContent] = useState<string>('');
-  const [isLoading, setIsLoading] = useState(false);
+  const [files, setFiles] = useState<GitHubFile[]>([]);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [activeTab, setActiveTab] = useState<'files' | 'commits'>('files');
+  const [activeTab, setActiveTab] = useState('overview');
+
+  // Extract repo info from URL
+  const getRepoInfo = (url: string) => {
+    const match = url.match(/github\.com\/([^\/]+)\/([^\/]+)/);
+    if (!match) return null;
+    return { owner: match[1], repo: match[2] };
+  };
+
+  const repoInfo = getRepoInfo(repoUrl);
+
+  // Mock data for development (since GitHub API requires authentication)
+  const getMockData = () => {
+    const mockRepo: GitHubRepo = {
+      name: repoInfo?.repo || 'project-repo',
+      full_name: `${repoInfo?.owner}/${repoInfo?.repo}` || 'user/project-repo',
+      description: 'IoT home automation system with Arduino and sensors',
+      stargazers_count: 42,
+      watchers_count: 15,
+      forks_count: 8,
+      language: 'Arduino',
+      updated_at: new Date().toISOString(),
+      html_url: repoUrl
+    };
+
+    const mockCommits: GitHubCommit[] = [
+      {
+        sha: 'abc123',
+        message: 'Add temperature sensor calibration',
+        author: {
+          name: 'John Maker',
+          email: 'john@example.com',
+          date: new Date(Date.now() - 86400000).toISOString()
+        },
+        url: `${repoUrl}/commit/abc123`
+      },
+      {
+        sha: 'def456',
+        message: 'Update WiFi connection logic',
+        author: {
+          name: 'Sarah Developer',
+          email: 'sarah@example.com',
+          date: new Date(Date.now() - 172800000).toISOString()
+        },
+        url: `${repoUrl}/commit/def456`
+      },
+      {
+        sha: 'ghi789',
+        message: 'Initial project setup and documentation',
+        author: {
+          name: 'John Maker',
+          email: 'john@example.com',
+          date: new Date(Date.now() - 259200000).toISOString()
+        },
+        url: `${repoUrl}/commit/ghi789`
+      }
+    ];
+
+    const mockFiles: GitHubFile[] = [
+      { name: 'README.md', path: 'README.md', type: 'file', size: 2048 },
+      { name: 'src', path: 'src', type: 'dir' },
+      { name: 'main.ino', path: 'src/main.ino', type: 'file', size: 4096 },
+      { name: 'sensors.h', path: 'src/sensors.h', type: 'file', size: 1024 },
+      { name: 'wifi_config.h', path: 'src/wifi_config.h', type: 'file', size: 512 },
+      { name: 'schematics', path: 'schematics', type: 'dir' },
+      { name: 'circuit.png', path: 'schematics/circuit.png', type: 'file', size: 102400 },
+      { name: 'BOM.xlsx', path: 'BOM.xlsx', type: 'file', size: 8192 }
+    ];
+
+    return { mockRepo, mockCommits, mockFiles };
+  };
+
+  const fetchGitHubData = async () => {
+    if (!repoInfo) {
+      setError('Invalid GitHub repository URL');
+      return;
+    }
+
+    setLoading(true);
+    setError(null);
+
+    try {
+      // In a real implementation, you would fetch from GitHub API
+      // For now, we'll use mock data
+      const { mockRepo, mockCommits, mockFiles } = getMockData();
+      
+      // Simulate API delay
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
+      setRepo(mockRepo);
+      setCommits(mockCommits);
+      setFiles(mockFiles);
+    } catch (err) {
+      setError('Failed to fetch GitHub data');
+      console.error('GitHub API error:', err);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    if (isConnected) {
-      fetchFiles();
-      fetchCommits();
+    if (repoUrl && repoInfo) {
+      fetchGitHubData();
     }
-  }, [isConnected, currentPath]);
+  }, [repoUrl, branch]);
 
-  const fetchFiles = async () => {
-    if (!isConnected) return;
-
-    try {
-      setIsLoading(true);
-      const token = localStorage.getItem('auth_token') || 'mock-token';
-      const params = new URLSearchParams();
-      if (currentPath) params.append('path', currentPath);
-      
-      const response = await fetch(`/api/v1/projects/${projectId}/github/files?${params}`, {
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json',
-        },
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        setFiles(data);
-      } else {
-        setError('Failed to fetch repository files');
-      }
-    } catch (err) {
-      setError('Error fetching files');
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const fetchCommits = async () => {
-    if (!isConnected) return;
-
-    try {
-      const token = localStorage.getItem('auth_token') || 'mock-token';
-      const response = await fetch(`/api/v1/projects/${projectId}/github/commits?per_page=10`, {
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json',
-        },
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        setCommits(data);
-      }
-    } catch (err) {
-      console.error('Error fetching commits:', err);
-    }
-  };
-
-  const fetchFileContent = async (file: GitHubFile) => {
-    try {
-      setIsLoading(true);
-      const token = localStorage.getItem('auth_token') || 'mock-token';
-      const params = new URLSearchParams({ file_path: file.path });
-      
-      const response = await fetch(`/api/v1/projects/${projectId}/github/files/content?${params}`, {
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json',
-        },
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        setFileContent(data.content);
-        setSelectedFile(file);
-      } else {
-        setError('Failed to fetch file content');
-      }
-    } catch (err) {
-      setError('Error fetching file content');
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const handleConnect = async () => {
-    if (!newRepoUrl.trim()) {
-      setError('Please enter a repository URL');
-      return;
-    }
-
-    try {
-      setIsLoading(true);
-      setError(null);
-
-      const token = localStorage.getItem('auth_token') || 'mock-token';
-      const response = await fetch(`/api/v1/projects/${projectId}/github/connect`, {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          repo_url: newRepoUrl,
-          access_token: accessToken || null,
-          default_branch: 'main'
-        }),
-      });
-
-      if (response.ok) {
-        onUpdate();
-        setShowConnectModal(false);
-        setNewRepoUrl('');
-        setAccessToken('');
-      } else {
-        const errorData = await response.json();
-        setError(errorData.detail || 'Failed to connect repository');
-      }
-    } catch (err) {
-      setError('Error connecting repository');
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const handleDisconnect = async () => {
-    if (!window.confirm('Are you sure you want to disconnect the GitHub repository?')) {
-      return;
-    }
-
-    try {
-      const token = localStorage.getItem('auth_token') || 'mock-token';
-      const response = await fetch(`/api/v1/projects/${projectId}/github/disconnect`, {
-        method: 'DELETE',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-        },
-      });
-
-      if (response.ok) {
-        onUpdate();
-        setFiles([]);
-        setCommits([]);
-        setCurrentPath('');
-      } else {
-        setError('Failed to disconnect repository');
-      }
-    } catch (err) {
-      setError('Error disconnecting repository');
-    }
-  };
-
-  const handleSync = async () => {
-    try {
-      setIsLoading(true);
-      const token = localStorage.getItem('auth_token') || 'mock-token';
-      const response = await fetch(`/api/v1/projects/${projectId}/github/sync`, {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-        },
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        // Refresh activity and commits
-        onUpdate();
-        fetchCommits();
-        // Show success message
-      } else {
-        setError('Failed to sync GitHub activity');
-      }
-    } catch (err) {
-      setError('Error syncing GitHub activity');
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const navigateToPath = (path: string) => {
-    setCurrentPath(path);
-    setSelectedFile(null);
-    setFileContent('');
+  const formatDate = (dateString: string) => {
+    return new Date(dateString).toLocaleDateString('en-US', {
+      month: 'short',
+      day: 'numeric',
+      year: 'numeric'
+    });
   };
 
   const formatFileSize = (bytes: number) => {
-    if (bytes === 0) return '0 B';
-    const k = 1024;
     const sizes = ['B', 'KB', 'MB', 'GB'];
-    const i = Math.floor(Math.log(bytes) / Math.log(k));
-    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+    if (bytes === 0) return '0 B';
+    const i = Math.floor(Math.log(bytes) / Math.log(1024));
+    return Math.round(bytes / Math.pow(1024, i) * 100) / 100 + ' ' + sizes[i];
   };
 
-  const formatDate = (dateString: string) => {
-    try {
-      return new Date(dateString).toLocaleDateString('en-US', {
-        year: 'numeric',
-        month: 'short',
-        day: 'numeric',
-        hour: '2-digit',
-        minute: '2-digit'
-      });
-    } catch {
-      return 'Invalid date';
-    }
-  };
-
-  const getFileIcon = (file: GitHubFile) => {
-    if (file.type === 'dir') return <Folder className="h-4 w-4 text-blue-600" />;
-    
-    const ext = file.name.split('.').pop()?.toLowerCase();
-    switch (ext) {
-      case 'md':
-      case 'txt':
-      case 'rst':
-        return <FileText className="h-4 w-4 text-gray-600" />;
-      case 'js':
-      case 'ts':
-      case 'py':
-      case 'java':
-      case 'cpp':
-      case 'c':
-        return <Code className="h-4 w-4 text-green-600" />;
-      default:
-        return <FileText className="h-4 w-4 text-gray-600" />;
-    }
-  };
-
-  if (!isConnected) {
+  if (!repoInfo) {
     return (
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Github className="h-5 w-5" />
-            GitHub Integration
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="text-center py-8">
-            <Github className="h-12 w-12 mx-auto text-gray-400 mb-4" />
-            <h3 className="text-lg font-semibold mb-2">Connect GitHub Repository</h3>
-            <p className="text-gray-600 mb-4">
-              Connect your project to a GitHub repository to manage files and track commits directly from your project.
-            </p>
-            {canEdit && (
-              <Button onClick={() => setShowConnectModal(true)}>
-                <Link className="h-4 w-4 mr-2" />
-                Connect Repository
-              </Button>
-            )}
-          </div>
-
-          {/* Connect Repository Modal */}
-          <Dialog open={showConnectModal} onOpenChange={setShowConnectModal}>
-            <DialogContent className="max-w-md">
-              <DialogHeader>
-                <DialogTitle>Connect GitHub Repository</DialogTitle>
-              </DialogHeader>
-              
-              <div className="space-y-4">
-                {error && (
-                  <div className="bg-red-50 border border-red-200 rounded-md p-3">
-                    <div className="flex items-center">
-                      <AlertCircle className="h-4 w-4 text-red-600 mr-2" />
-                      <span className="text-red-800 text-sm">{error}</span>
-                    </div>
-                  </div>
-                )}
-
-                <div>
-                  <Label htmlFor="repo-url">Repository URL *</Label>
-                  <Input
-                    id="repo-url"
-                    placeholder="https://github.com/username/repository"
-                    value={newRepoUrl}
-                    onChange={(e) => setNewRepoUrl(e.target.value)}
-                    className="mt-1"
-                  />
-                </div>
-
-                <div>
-                  <Label htmlFor="access-token">Access Token (Optional)</Label>
-                  <Input
-                    id="access-token"
-                    type="password"
-                    placeholder="Required for private repositories"
-                    value={accessToken}
-                    onChange={(e) => setAccessToken(e.target.value)}
-                    className="mt-1"
-                  />
-                  <p className="text-xs text-gray-500 mt-1">
-                    Leave empty for public repositories. Required for private repositories.
-                  </p>
-                </div>
-
-                <div className="flex justify-end space-x-2 pt-4">
-                  <Button variant="outline" onClick={() => setShowConnectModal(false)}>
-                    Cancel
-                  </Button>
-                  <Button onClick={handleConnect} disabled={isLoading}>
-                    {isLoading ? (
-                      <>
-                        <Clock className="h-4 w-4 mr-2 animate-spin" />
-                        Connecting...
-                      </>
-                    ) : (
-                      <>
-                        <Link className="h-4 w-4 mr-2" />
-                        Connect
-                      </>
-                    )}
-                  </Button>
-                </div>
-              </div>
-            </DialogContent>
-          </Dialog>
+      <Card className={className}>
+        <CardContent className="p-6 text-center">
+          <AlertCircle className="h-8 w-8 text-red-500 mx-auto mb-2" />
+          <p className="text-red-600">Invalid GitHub repository URL</p>
         </CardContent>
       </Card>
     );
   }
 
   return (
-    <div className="space-y-6">
-      {/* Repository Header */}
-      <Card>
-        <CardHeader>
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <Github className="h-6 w-6 text-gray-700" />
-              <div>
-                <CardTitle className="flex items-center gap-2">
-                  {repoName}
-                  <Badge variant="outline" className="text-green-600">
-                    <CheckCircle className="h-3 w-3 mr-1" />
-                    Connected
-                  </Badge>
-                </CardTitle>
-                <p className="text-sm text-gray-600 mt-1">
-                  Branch: {defaultBranch} • 
-                  <a href={repoUrl} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline ml-1">
-                    View on GitHub
-                    <ExternalLink className="h-3 w-3 inline ml-1" />
-                  </a>
-                </p>
-              </div>
-            </div>
-            <div className="flex items-center gap-2">
-              <Button variant="outline" size="sm" onClick={handleSync} disabled={isLoading}>
-                <RefreshCw className={`h-4 w-4 mr-1 ${isLoading ? 'animate-spin' : ''}`} />
-                Sync
-              </Button>
-              {canEdit && (
-                <Button variant="outline" size="sm" onClick={handleDisconnect}>
-                  <Unlink className="h-4 w-4 mr-1" />
-                  Disconnect
-                </Button>
-              )}
-            </div>
+    <Card className={className}>
+      <CardHeader>
+        <CardTitle className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <Github className="h-5 w-5" />
+            GitHub Integration
           </div>
-        </CardHeader>
-      </Card>
+          <div className="flex items-center gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={fetchGitHubData}
+              disabled={loading}
+            >
+              <RefreshCw className={`h-4 w-4 ${loading ? 'animate-spin' : ''}`} />
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => window.open(repoUrl, '_blank')}
+            >
+              <ExternalLink className="h-4 w-4" />
+            </Button>
+          </div>
+        </CardTitle>
+      </CardHeader>
+      <CardContent>
+        {error ? (
+          <div className="text-center py-6">
+            <AlertCircle className="h-8 w-8 text-red-500 mx-auto mb-2" />
+            <p className="text-red-600">{error}</p>
+            <Button variant="outline" onClick={fetchGitHubData} className="mt-2">
+              Retry
+            </Button>
+          </div>
+        ) : (
+          <Tabs value={activeTab} onValueChange={setActiveTab}>
+            <TabsList className="grid w-full grid-cols-3">
+              <TabsTrigger value="overview">Overview</TabsTrigger>
+              <TabsTrigger value="commits">Commits</TabsTrigger>
+              <TabsTrigger value="files">Files</TabsTrigger>
+            </TabsList>
 
-      {/* Tabs */}
-      <Card>
-        <CardHeader>
-          <div className="flex items-center gap-4">
-            <Button
-              variant={activeTab === 'files' ? 'default' : 'ghost'}
-              size="sm"
-              onClick={() => setActiveTab('files')}
-            >
-              <FileText className="h-4 w-4 mr-2" />
-              Files
-            </Button>
-            <Button
-              variant={activeTab === 'commits' ? 'default' : 'ghost'}
-              size="sm"
-              onClick={() => setActiveTab('commits')}
-            >
-              <GitCommit className="h-4 w-4 mr-2" />
-              Commits
-            </Button>
-          </div>
-        </CardHeader>
-        <CardContent>
-          {/* Files Tab */}
-          {activeTab === 'files' && (
-            <div className="space-y-4">
-              {/* Breadcrumb Navigation */}
-              {currentPath && (
-                <div className="flex items-center space-x-2 text-sm text-gray-600">
-                  <Button variant="ghost" size="sm" onClick={() => navigateToPath('')}>
-                    {repoName}
-                  </Button>
-                  {currentPath.split('/').map((segment, index, array) => (
-                    <React.Fragment key={index}>
-                      <span>/</span>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => navigateToPath(array.slice(0, index + 1).join('/'))}
-                      >
-                        {segment}
-                      </Button>
-                    </React.Fragment>
+            <TabsContent value="overview" className="space-y-4">
+              {loading ? (
+                <div className="flex items-center justify-center py-8">
+                  <RefreshCw className="h-6 w-6 animate-spin" />
+                </div>
+              ) : repo ? (
+                <div className="space-y-4">
+                  <div>
+                    <h3 className="font-semibold text-lg">{repo.full_name}</h3>
+                    {repo.description && (
+                      <p className="text-gray-600 mt-1">{repo.description}</p>
+                    )}
+                  </div>
+
+                  <div className="flex items-center gap-4 text-sm text-gray-600">
+                    {repo.language && (
+                      <div className="flex items-center gap-1">
+                        <div className="w-3 h-3 bg-blue-500 rounded-full"></div>
+                        {repo.language}
+                      </div>
+                    )}
+                    <div className="flex items-center gap-1">
+                      <Star className="h-4 w-4" />
+                      {repo.stargazers_count}
+                    </div>
+                    <div className="flex items-center gap-1">
+                      <GitFork className="h-4 w-4" />
+                      {repo.forks_count}
+                    </div>
+                    <div className="flex items-center gap-1">
+                      <Eye className="h-4 w-4" />
+                      {repo.watchers_count}
+                    </div>
+                  </div>
+
+                  <div className="flex items-center gap-2 text-sm text-gray-600">
+                    <Calendar className="h-4 w-4" />
+                    Last updated {formatDate(repo.updated_at)}
+                  </div>
+
+                  <div className="flex items-center gap-2">
+                    <GitBranch className="h-4 w-4" />
+                    <Badge variant="outline">{branch}</Badge>
+                  </div>
+                </div>
+              ) : null}
+            </TabsContent>
+
+            <TabsContent value="commits" className="space-y-4">
+              {loading ? (
+                <div className="flex items-center justify-center py-8">
+                  <RefreshCw className="h-6 w-6 animate-spin" />
+                </div>
+              ) : (
+                <div className="space-y-3">
+                  {commits.map((commit) => (
+                    <div key={commit.sha} className="border rounded-lg p-3 hover:bg-gray-50">
+                      <div className="flex items-start justify-between">
+                        <div className="flex-1">
+                          <div className="flex items-center gap-2">
+                            <GitCommit className="h-4 w-4 text-gray-500" />
+                            <span className="font-medium">{commit.message}</span>
+                          </div>
+                          <div className="flex items-center gap-4 mt-2 text-sm text-gray-600">
+                            <div className="flex items-center gap-1">
+                              <User className="h-3 w-3" />
+                              {commit.author.name}
+                            </div>
+                            <div className="flex items-center gap-1">
+                              <Calendar className="h-3 w-3" />
+                              {formatDate(commit.author.date)}
+                            </div>
+                            <code className="text-xs bg-gray-100 px-2 py-1 rounded">
+                              {commit.sha.substring(0, 7)}
+                            </code>
+                          </div>
+                        </div>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => window.open(commit.url, '_blank')}
+                        >
+                          <ExternalLink className="h-3 w-3" />
+                        </Button>
+                      </div>
+                    </div>
                   ))}
                 </div>
               )}
+            </TabsContent>
 
-              {/* File List */}
-              <div className="space-y-2">
-                {files.map((file) => (
-                  <div
-                    key={file.path}
-                    className="flex items-center justify-between p-3 border rounded-lg hover:bg-gray-50 cursor-pointer"
-                    onClick={() => {
-                      if (file.type === 'dir') {
-                        navigateToPath(file.path);
-                      } else {
-                        fetchFileContent(file);
-                      }
-                    }}
-                  >
-                    <div className="flex items-center space-x-3">
-                      {getFileIcon(file)}
-                      <div>
-                        <p className="font-medium">{file.name}</p>
+            <TabsContent value="files" className="space-y-4">
+              {loading ? (
+                <div className="flex items-center justify-center py-8">
+                  <RefreshCw className="h-6 w-6 animate-spin" />
+                </div>
+              ) : (
+                <div className="space-y-2">
+                  {files.map((file) => (
+                    <div key={file.path} className="flex items-center justify-between p-2 hover:bg-gray-50 rounded">
+                      <div className="flex items-center gap-2">
+                        <FileText className="h-4 w-4 text-gray-500" />
+                        <span className="font-medium">{file.name}</span>
+                        {file.type === 'dir' && <Badge variant="secondary" className="text-xs">DIR</Badge>}
+                      </div>
+                      <div className="flex items-center gap-2">
+                        {file.size && (
+                          <span className="text-sm text-gray-500">{formatFileSize(file.size)}</span>
+                        )}
                         {file.type === 'file' && (
-                          <p className="text-sm text-gray-600">{formatFileSize(file.size)}</p>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => window.open(`${repoUrl}/blob/${branch}/${file.path}`, '_blank')}
+                          >
+                            <ExternalLink className="h-3 w-3" />
+                          </Button>
                         )}
                       </div>
                     </div>
-                    <div className="flex items-center space-x-2">
-                      {file.type === 'file' && file.download_url && (
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            window.open(file.download_url, '_blank');
-                          }}
-                        >
-                          <Download className="h-4 w-4" />
-                        </Button>
-                      )}
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          window.open(file.html_url, '_blank');
-                        }}
-                      >
-                        <ExternalLink className="h-4 w-4" />
-                      </Button>
-                    </div>
-                  </div>
-                ))}
-
-                {files.length === 0 && !isLoading && (
-                  <div className="text-center py-8 text-gray-500">
-                    <Folder className="h-8 w-8 mx-auto mb-2 opacity-50" />
-                    <p>No files found in this directory</p>
-                  </div>
-                )}
-              </div>
-            </div>
-          )}
-
-          {/* Commits Tab */}
-          {activeTab === 'commits' && (
-            <div className="space-y-4">
-              {commits.map((commit) => (
-                <div key={commit.sha} className="border rounded-lg p-4">
-                  <div className="flex items-start justify-between">
-                    <div className="flex-1">
-                      <h4 className="font-medium mb-1">{commit.message}</h4>
-                      <div className="flex items-center space-x-4 text-sm text-gray-600 mb-2">
-                        <span>{commit.author_name}</span>
-                        <span>{formatDate(commit.author_date)}</span>
-                        <span className="font-mono text-xs bg-gray-100 px-2 py-1 rounded">
-                          {commit.sha.substring(0, 7)}
-                        </span>
-                      </div>
-                      
-                      {/* File changes */}
-                      <div className="flex items-center space-x-4 text-xs">
-                        {commit.added_files.length > 0 && (
-                          <Badge variant="outline" className="text-green-600">
-                            +{commit.added_files.length} added
-                          </Badge>
-                        )}
-                        {commit.modified_files.length > 0 && (
-                          <Badge variant="outline" className="text-blue-600">
-                            ~{commit.modified_files.length} modified
-                          </Badge>
-                        )}
-                        {commit.removed_files.length > 0 && (
-                          <Badge variant="outline" className="text-red-600">
-                            -{commit.removed_files.length} removed
-                          </Badge>
-                        )}
-                      </div>
-                    </div>
-                    
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => window.open(commit.url, '_blank')}
-                    >
-                      <ExternalLink className="h-4 w-4" />
-                    </Button>
-                  </div>
-                </div>
-              ))}
-
-              {commits.length === 0 && !isLoading && (
-                <div className="text-center py-8 text-gray-500">
-                  <GitCommit className="h-8 w-8 mx-auto mb-2 opacity-50" />
-                  <p>No commits found</p>
+                  ))}
                 </div>
               )}
-            </div>
-          )}
-
-          {isLoading && (
-            <div className="flex items-center justify-center py-8">
-              <Clock className="h-6 w-6 animate-spin mr-2" />
-              <span>Loading...</span>
-            </div>
-          )}
-        </CardContent>
-      </Card>
-
-      {/* File Content Modal */}
-      {selectedFile && (
-        <Dialog open={!!selectedFile} onOpenChange={() => setSelectedFile(null)}>
-          <DialogContent className="max-w-4xl max-h-[80vh]">
-            <DialogHeader>
-              <DialogTitle className="flex items-center gap-2">
-                {getFileIcon(selectedFile)}
-                {selectedFile.name}
-              </DialogTitle>
-            </DialogHeader>
-            
-            <div className="flex-1 overflow-auto">
-              <pre className="bg-gray-50 p-4 rounded-lg text-sm overflow-auto max-h-96">
-                <code>{fileContent}</code>
-              </pre>
-            </div>
-            
-            <div className="flex justify-end space-x-2">
-              <Button variant="outline" onClick={() => window.open(selectedFile.html_url, '_blank')}>
-                <ExternalLink className="h-4 w-4 mr-2" />
-                View on GitHub
-              </Button>
-              {selectedFile.download_url && (
-                <Button onClick={() => window.open(selectedFile.download_url!, '_blank')}>
-                  <Download className="h-4 w-4 mr-2" />
-                  Download
-                </Button>
-              )}
-            </div>
-          </DialogContent>
-        </Dialog>
-      )}
-    </div>
+            </TabsContent>
+          </Tabs>
+        )}
+      </CardContent>
+    </Card>
   );
 };
 
