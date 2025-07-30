@@ -612,6 +612,81 @@ const AddProjectModal: React.FC<AddProjectModalProps> = ({ isOpen, onClose, onPr
                   </p>
                 )}
               </div>
+
+              {/* GitHub Integration */}
+              <div>
+                <Label className="text-sm font-medium mb-3 block">
+                  GitHub Integration (Optional)
+                </Label>
+                <div className="space-y-4">
+                  <div className="flex items-center space-x-2">
+                    <Switch
+                      checked={projectData.enable_github_integration}
+                      onCheckedChange={(checked) =>
+                        setProjectData({ ...projectData, enable_github_integration: checked })
+                      }
+                    />
+                    <Label className="text-sm">Enable GitHub integration</Label>
+                  </div>
+
+                  {projectData.enable_github_integration && (
+                    <div className="space-y-3 pl-6 border-l-2 border-blue-100">
+                      <div>
+                        <Label htmlFor="github_repo_url" className="text-sm font-medium">
+                          Repository URL
+                        </Label>
+                        <div className="relative mt-1">
+                          <Github className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+                          <Input
+                            id="github_repo_url"
+                            value={projectData.github_repo_url || ''}
+                            onChange={(e) => setProjectData({ ...projectData, github_repo_url: e.target.value })}
+                            placeholder="https://github.com/username/repository"
+                            className="pl-10"
+                          />
+                        </div>
+                        <p className="text-xs text-gray-500 mt-1">
+                          Link your project to a GitHub repository for version control
+                        </p>
+                      </div>
+
+                      <div>
+                        <Label htmlFor="github_branch" className="text-sm font-medium">
+                          Default Branch
+                        </Label>
+                        <div className="relative mt-1">
+                          <GitBranch className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+                          <Input
+                            id="github_branch"
+                            value={projectData.github_branch || 'main'}
+                            onChange={(e) => setProjectData({ ...projectData, github_branch: e.target.value })}
+                            placeholder="main"
+                            className="pl-10"
+                          />
+                        </div>
+                        <p className="text-xs text-gray-500 mt-1">
+                          Specify which branch to track for commits and files
+                        </p>
+                      </div>
+
+                      <div className="bg-blue-50 border border-blue-200 rounded-md p-3">
+                        <div className="flex items-start">
+                          <Github className="h-4 w-4 text-blue-600 mr-2 mt-0.5 flex-shrink-0" />
+                          <div className="text-sm">
+                            <p className="font-medium text-blue-800">GitHub Features</p>
+                            <p className="text-blue-700 mt-1">
+                              • View latest commits and repository activity<br/>
+                              • Browse and download project files<br/>
+                              • Track development progress<br/>
+                              • Link issues and pull requests
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
             </div>
           )}
 
