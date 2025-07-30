@@ -187,7 +187,7 @@ export default function EquipmentCard({
             
             <div className="flex items-center">
               <Clock className="w-4 h-4 mr-1" />
-              {equipment.total_usage_hours.toFixed(0)}h
+              {(equipment.total_usage_hours || 0).toFixed(0)}h
             </div>
 
             <div className="flex items-center">
