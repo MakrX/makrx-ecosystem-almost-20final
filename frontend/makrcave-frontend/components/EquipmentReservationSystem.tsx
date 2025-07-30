@@ -218,29 +218,52 @@ const EquipmentReservationSystem: React.FC<EquipmentReservationSystemProps> = ({
   ];
 
   useEffect(() => {
-    // Simulate API calls
-    setReservations(mockReservations);
-    setPolicies(mockPolicies);
+    if (user) {
+      loadReservationsData();
+    }
+  }, [user]);
 
-    // Initialize access policies
-    const mockAccessPolicies: EquipmentAccessPolicy[] = equipment.map(eq => ({
-      id: `access-policy-${eq.id}`,
-      equipment_id: eq.id,
-      access_type: eq.type === 'workstation' ? 'free' : eq.type === 'printer_3d' ? 'subscription_only' : 'pay_per_use',
-      membership_required: eq.type !== 'workstation',
-      price_per_unit: eq.type === 'laser_cutter' ? 150 : eq.type === 'cnc_machine' ? 200 : undefined,
-      cost_unit: eq.type === 'laser_cutter' || eq.type === 'cnc_machine' ? 'hour' : undefined,
-      minimum_billing_time: eq.type === 'laser_cutter' ? 15 : eq.type === 'cnc_machine' ? 30 : undefined,
-      grace_period_minutes: 5,
-      max_daily_cap: eq.type === 'laser_cutter' ? 500 : eq.type === 'cnc_machine' ? 800 : undefined,
-      overuse_penalty_flat: 50,
-      overuse_penalty_percent: 10,
-      created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString(),
-      created_by: user?.id || 'admin'
-    }));
-    setAccessPolicies(mockAccessPolicies);
-  }, [equipment, user]);
+  const loadReservationsData = async () => {
+    setLoading(true);
+    try {
+      // Load reservations from API
+      const reservationsResponse = await api.reservations.getAllReservations();
+      if (reservationsResponse.data) {
+        setReservations(reservationsResponse.data);
+      } else {
+        // Fallback to mock data if API fails
+        setReservations(mockReservations);
+      }
+
+      // Initialize access policies (mock for now, could be from API)
+      const mockAccessPolicies: EquipmentAccessPolicy[] = equipment.map(eq => ({
+        id: `access-policy-${eq.id}`,
+        equipment_id: eq.id,
+        access_type: eq.type === 'workstation' ? 'free' : eq.type === 'printer_3d' ? 'subscription_only' : 'pay_per_use',
+        membership_required: eq.type !== 'workstation',
+        price_per_unit: eq.type === 'laser_cutter' ? 150 : eq.type === 'cnc_machine' ? 200 : undefined,
+        cost_unit: eq.type === 'laser_cutter' || eq.type === 'cnc_machine' ? 'hour' : undefined,
+        minimum_billing_time: eq.type === 'laser_cutter' ? 15 : eq.type === 'cnc_machine' ? 30 : undefined,
+        grace_period_minutes: 5,
+        max_daily_cap: eq.type === 'laser_cutter' ? 500 : eq.type === 'cnc_machine' ? 800 : undefined,
+        overuse_penalty_flat: 50,
+        overuse_penalty_percent: 10,
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
+        created_by: user?.id || 'admin'
+      }));
+      setAccessPolicies(mockAccessPolicies);
+      setPolicies(mockPolicies);
+
+    } catch (error) {
+      console.error('Failed to load reservations data:', error);
+      // Fallback to mock data
+      setReservations(mockReservations);
+      setPolicies(mockPolicies);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   // Utility functions
   const getStatusColor = (status: string) => {
