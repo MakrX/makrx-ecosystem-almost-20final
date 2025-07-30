@@ -20,7 +20,13 @@ import {
 
 export default function ManagerSidebar() {
   const { user, logout } = useAuth();
+  const { currentMakerspace, allMakerspaces } = useMakerspace();
   const location = useLocation();
+
+  // Find the makerspace this manager is assigned to
+  const managedMakerspace = allMakerspaces.find(ms =>
+    user?.assignedMakerspaces?.includes(ms.id)
+  ) || currentMakerspace;
 
   const isActive = (path: string) => location.pathname.startsWith(path);
 
