@@ -107,6 +107,9 @@ const AddProjectModal: React.FC<AddProjectModalProps> = ({ isOpen, onClose, onPr
       tags: [],
       initial_milestones: [],
       initial_collaborators: [],
+      github_repo_url: '',
+      github_branch: 'main',
+      enable_github_integration: false,
     });
     setCurrentStep(1);
     setError(null);
