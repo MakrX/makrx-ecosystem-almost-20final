@@ -10,7 +10,12 @@ interface User {
   firstName?: string;
   lastName?: string;
   role: UserRole;
-  assignedMakerspaces?: string[]; // For roles that are assigned to specific makerspaces
+  assignedMakerspaces?: string[];
+  membershipTier?: string;
+  subscriptionStatus?: 'active' | 'inactive' | 'expired';
+  createdAt: string;
+  lastLogin?: string;
+  isActive: boolean;
 }
 
 interface AuthContextType {
