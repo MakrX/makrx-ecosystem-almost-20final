@@ -344,9 +344,9 @@ export default function EquipmentCard({
 
           <div className="flex items-center text-sm text-gray-600">
             <div className="flex items-center mr-4">
-              {renderStars(equipment.average_rating)}
-              <span className="ml-1">{equipment.average_rating.toFixed(1)}</span>
-              <span className="text-gray-400 ml-1">({equipment.total_ratings})</span>
+              {renderStars(equipment.average_rating || 0)}
+              <span className="ml-1">{(equipment.average_rating || 0).toFixed(1)}</span>
+              <span className="text-gray-400 ml-1">({equipment.total_ratings || 0})</span>
             </div>
           </div>
 
