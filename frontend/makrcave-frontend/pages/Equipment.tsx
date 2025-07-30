@@ -428,7 +428,7 @@ export default function Equipment() {
               </div>
               <div className="ml-4">
                 <p className="text-sm font-medium text-gray-600">Utilization Rate</p>
-                <p className="text-2xl font-bold text-gray-900">{stats.utilization_rate.toFixed(1)}%</p>
+                <p className="text-2xl font-bold text-gray-900">{(stats.utilization_rate || 0).toFixed(1)}%</p>
               </div>
             </div>
           </div>
