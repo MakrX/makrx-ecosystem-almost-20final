@@ -347,6 +347,12 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ project, viewMode, onUpdate }
                 <ExternalLink className="h-4 w-4 mr-2" />
                 Open in New Tab
               </DropdownMenuItem>
+              {project.enable_github_integration && project.github_repo_url && (
+                <DropdownMenuItem onClick={(e) => { e.stopPropagation(); window.open(project.github_repo_url, '_blank'); }}>
+                  <Github className="h-4 w-4 mr-2" />
+                  View on GitHub
+                </DropdownMenuItem>
+              )}
               {isOwner && (
                 <>
                   <DropdownMenuSeparator />
