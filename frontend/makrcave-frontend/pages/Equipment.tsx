@@ -873,7 +873,7 @@ export default function Equipment() {
                       </div>
                       <div>
                         <dt className="text-sm font-medium text-gray-500">Status</dt>
-                        <dd className="text-sm text-gray-900 capitalize">{selectedEquipment.status.replace('_', ' ')}</dd>
+                        <dd className="text-sm text-gray-900 capitalize">{(selectedEquipment.status || '').replace('_', ' ')}</dd>
                       </div>
                       {selectedEquipment.description && (
                         <div>
