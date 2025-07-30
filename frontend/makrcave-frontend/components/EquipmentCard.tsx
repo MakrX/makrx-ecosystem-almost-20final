@@ -130,7 +130,7 @@ export default function EquipmentCard({
     ));
   };
 
-  const formatCategoryName = (category: string) => {
+  const formatCategoryName = (category?: string) => {
     if (!category) return 'Unknown';
     return category.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
   };
