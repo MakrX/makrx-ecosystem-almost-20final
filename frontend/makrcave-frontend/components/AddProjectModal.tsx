@@ -56,6 +56,9 @@ interface ProjectData {
   makerspace_id?: string;
   initial_milestones: ProjectMilestone[];
   initial_collaborators: ProjectCollaborator[];
+  github_repo_url?: string;
+  github_branch?: string;
+  enable_github_integration: boolean;
 }
 
 const AddProjectModal: React.FC<AddProjectModalProps> = ({ isOpen, onClose, onProjectCreated }) => {
