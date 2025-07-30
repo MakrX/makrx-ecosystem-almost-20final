@@ -554,34 +554,36 @@ export default function AddEquipmentModal({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-lg max-w-4xl w-full max-h-[90vh] overflow-hidden">
+    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-2 sm:p-4">
+      <div className="bg-white rounded-lg max-w-4xl w-full max-h-[95vh] sm:max-h-[90vh] flex flex-col overflow-hidden">
         {/* Header */}
-        <div className="flex items-center justify-between p-6 border-b border-gray-200">
-          <div>
-            <h2 className="text-xl font-semibold text-gray-900">
+        <div className="flex items-center justify-between p-4 sm:p-6 border-b border-gray-200 flex-shrink-0">
+          <div className="min-w-0 flex-1 mr-4">
+            <h2 className="text-lg sm:text-xl font-semibold text-gray-900 truncate">
               {editEquipment ? 'Edit Equipment' : 'Add New Equipment'}
             </h2>
-            <p className="text-sm text-gray-600">
+            <p className="text-xs sm:text-sm text-gray-600 truncate">
               {editEquipment ? 'Update equipment information' : 'Add equipment to your makerspace'}
             </p>
           </div>
-          <button onClick={onClose} className="p-2 hover:bg-gray-100 rounded-lg">
+          <button onClick={onClose} className="p-2 hover:bg-gray-100 rounded-lg flex-shrink-0">
             <X className="w-5 h-5" />
           </button>
         </div>
 
-        <form onSubmit={handleSubmit} className="flex-1 overflow-y-auto">
-          <div className="p-6">
-            {renderStepIndicator()}
+        {/* Scrollable Content */}
+        <div className="flex-1 overflow-y-auto">
+          <form onSubmit={handleSubmit} className="h-full flex flex-col">
+            <div className="flex-1 p-4 sm:p-6">
+              {renderStepIndicator()}
 
-            {currentStep === 1 && renderStep1()}
-            {currentStep === 2 && renderStep2()}
-            {currentStep === 3 && renderStep3()}
-          </div>
+              {currentStep === 1 && renderStep1()}
+              {currentStep === 2 && renderStep2()}
+              {currentStep === 3 && renderStep3()}
+            </div>
 
-          {/* Footer */}
-          <div className="flex items-center justify-between p-6 border-t border-gray-200 bg-gray-50">
+            {/* Footer */}
+            <div className="flex items-center justify-between p-4 sm:p-6 border-t border-gray-200 bg-gray-50 flex-shrink-0">
             <div className="flex items-center space-x-2">
               <span className="text-sm text-gray-600">Step {currentStep} of 3</span>
             </div>
@@ -591,7 +593,7 @@ export default function AddEquipmentModal({
                 <button
                   type="button"
                   onClick={handlePrevious}
-                  className="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50"
+                  className="px-3 sm:px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 text-sm sm:text-base"
                 >
                   Previous
                 </button>
@@ -601,22 +603,24 @@ export default function AddEquipmentModal({
                 <button
                   type="button"
                   onClick={handleNext}
-                  className="px-4 py-2 bg-makrx-blue text-white rounded-lg hover:bg-makrx-blue/90"
+                  className="px-3 sm:px-4 py-2 bg-makrx-blue text-white rounded-lg hover:bg-makrx-blue/90 text-sm sm:text-base"
                 >
                   Next
                 </button>
               ) : (
                 <button
                   type="submit"
-                  className="inline-flex items-center px-4 py-2 bg-makrx-blue text-white rounded-lg hover:bg-makrx-blue/90"
+                  className="inline-flex items-center px-3 sm:px-4 py-2 bg-makrx-blue text-white rounded-lg hover:bg-makrx-blue/90 text-sm sm:text-base"
                 >
                   <Save className="w-4 h-4 mr-2" />
-                  {editEquipment ? 'Update Equipment' : 'Create Equipment'}
+                  <span className="hidden sm:inline">{editEquipment ? 'Update Equipment' : 'Create Equipment'}</span>
+                  <span className="sm:hidden">{editEquipment ? 'Update' : 'Create'}</span>
                 </button>
               )}
             </div>
           </div>
-        </form>
+          </form>
+        </div>
       </div>
     </div>
   );
