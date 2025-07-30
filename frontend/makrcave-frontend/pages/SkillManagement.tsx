@@ -79,6 +79,33 @@ const SkillManagement: React.FC = () => {
   const [userSkills, setUserSkills] = useState<UserSkill[]>([]);
   const [loading, setLoading] = useState(true);
 
+  // Modal states
+  const [certifyModalOpen, setCertifyModalOpen] = useState(false);
+  const [skillRequirementsModalOpen, setSkillRequirementsModalOpen] = useState(false);
+  const [revokeModalOpen, setRevokeModalOpen] = useState(false);
+  const [addSkillModalOpen, setAddSkillModalOpen] = useState(false);
+  const [skillDetailsModalOpen, setSkillDetailsModalOpen] = useState(false);
+
+  // Selected items for modals
+  const [selectedUserSkill, setSelectedUserSkill] = useState<UserSkill | null>(null);
+  const [selectedSkill, setSelectedSkill] = useState<Skill | null>(null);
+  const [selectedEquipmentId, setSelectedEquipmentId] = useState<string>('');
+
+  // Mock data for members and equipment
+  const mockMembers = [
+    { id: 'user-1', name: 'John Smith', email: 'john.smith@makrcave.local', role: 'maker' },
+    { id: 'user-2', name: 'Emily Davis', email: 'emily.davis@makrcave.local', role: 'maker' },
+    { id: 'user-3', name: 'Mike Johnson', email: 'mike.johnson@makrcave.local', role: 'maker' },
+    { id: 'user-4', name: 'Sarah Wilson', email: 'sarah.wilson@makrcave.local', role: 'service_provider' }
+  ];
+
+  const mockEquipment = [
+    { id: 'eq-1', name: 'Prusa i3 MK3S', category: '3D Printing' },
+    { id: 'eq-2', name: 'Epilog Helix', category: 'Laser Cutting' },
+    { id: 'eq-3', name: 'Tormach PCNC 440', category: 'CNC Machining' },
+    { id: 'eq-4', name: 'Ultimaker S3', category: '3D Printing' }
+  ];
+
   // Mock data for skills
   const mockSkills: Skill[] = [
     {
