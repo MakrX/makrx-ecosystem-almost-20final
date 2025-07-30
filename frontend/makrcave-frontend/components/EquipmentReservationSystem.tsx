@@ -445,7 +445,7 @@ const EquipmentReservationSystem: React.FC<EquipmentReservationSystemProps> = ({
                   <SelectValue placeholder="Select equipment" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">All Equipment</SelectItem>
+                  <SelectItem value="all">All Equipment</SelectItem>
                   {equipment.map(eq => (
                     <SelectItem key={eq.id} value={eq.id}>{eq.name}</SelectItem>
                   ))}
