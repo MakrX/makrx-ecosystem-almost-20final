@@ -105,31 +105,31 @@ export default function ManagerSidebar() {
   return (
     <div className="makrcave-sidebar bg-gradient-to-b from-blue-50 to-blue-100/50 border-r border-blue-200">
       {/* Logo & Title */}
-      <div className="p-6 border-b border-blue-200">
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 bg-gradient-to-br from-makrx-blue to-blue-700 rounded-lg flex items-center justify-center">
-            <Building2 className="w-6 h-6 text-white" />
+      <div className="p-4 sm:p-6 border-b border-blue-200 flex-shrink-0">
+        <div className="flex items-center gap-2 sm:gap-3">
+          <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-br from-makrx-blue to-blue-700 rounded-lg flex items-center justify-center">
+            <Building2 className="w-4 h-4 sm:w-6 sm:h-6 text-white" />
           </div>
-          <div>
-            <h2 className="font-bold text-lg text-makrx-blue">MakrCave</h2>
-            <p className="text-xs text-blue-600">Manager Portal</p>
+          <div className="min-w-0">
+            <h2 className="font-bold text-base sm:text-lg text-makrx-blue truncate">MakrCave</h2>
+            <p className="text-xs text-blue-600 truncate">Manager Portal</p>
           </div>
         </div>
       </div>
 
       {/* User Info */}
-      <div className="p-4 border-b border-blue-200">
+      <div className="p-3 sm:p-4 border-b border-blue-200 flex-shrink-0">
         <Link
           to="/portal/profile"
-          className="flex items-center gap-3 hover:bg-blue-100 rounded-lg p-2 -m-2 transition-colors group"
+          className="flex items-center gap-2 sm:gap-3 hover:bg-blue-100 rounded-lg p-2 -m-2 transition-colors group"
         >
-          <div className="w-8 h-8 bg-makrx-teal rounded-full flex items-center justify-center group-hover:bg-makrx-teal-dark transition-colors">
-            <span className="text-sm font-semibold text-white">
+          <div className="w-7 h-7 sm:w-8 sm:h-8 bg-makrx-teal rounded-full flex items-center justify-center group-hover:bg-makrx-teal-dark transition-colors flex-shrink-0">
+            <span className="text-xs sm:text-sm font-semibold text-white">
               {user?.firstName?.[0] || 'M'}
             </span>
           </div>
           <div className="flex-1 min-w-0">
-            <p className="text-sm font-medium truncate text-makrx-blue group-hover:text-blue-800">
+            <p className="text-xs sm:text-sm font-medium truncate text-makrx-blue group-hover:text-blue-800">
               {user?.firstName ? `${user.firstName} ${user.lastName}` : user?.username}
             </p>
             <p className="text-xs text-blue-600 truncate group-hover:text-blue-700">
@@ -140,7 +140,7 @@ export default function ManagerSidebar() {
       </div>
 
       {/* Navigation */}
-      <nav className="flex-1 p-4">
+      <nav className="flex-1 p-3 sm:p-4 overflow-y-auto">
         <div className="space-y-1">
           {navigation.map((item) => {
             const Icon = item.icon;
@@ -148,22 +148,22 @@ export default function ManagerSidebar() {
               <Link
                 key={item.name}
                 to={item.href}
-                className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
+                className={`flex items-center gap-2 sm:gap-3 px-2 sm:px-3 py-2 rounded-lg text-xs sm:text-sm font-medium transition-colors ${
                   item.active
                     ? 'bg-makrx-blue text-white'
                     : 'text-gray-700 hover:text-makrx-blue hover:bg-blue-50'
                 }`}
               >
-                <Icon className="w-4 h-4" />
-                {item.name}
+                <Icon className="w-4 h-4 flex-shrink-0" />
+                <span className="truncate">{item.name}</span>
               </Link>
             );
           })}
         </div>
 
         {/* Management Section */}
-        <div className="mt-8">
-          <h3 className="px-3 mb-2 text-xs font-semibold text-blue-600 uppercase tracking-wider">
+        <div className="mt-6 sm:mt-8">
+          <h3 className="px-2 sm:px-3 mb-2 text-xs font-semibold text-blue-600 uppercase tracking-wider">
             Management
           </h3>
           <div className="space-y-1">
@@ -173,14 +173,14 @@ export default function ManagerSidebar() {
                 <Link
                   key={item.name}
                   to={item.href}
-                  className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
+                  className={`flex items-center gap-2 sm:gap-3 px-2 sm:px-3 py-2 rounded-lg text-xs sm:text-sm font-medium transition-colors ${
                     item.active
                       ? 'bg-makrx-brown text-white'
                       : 'text-gray-700 hover:text-makrx-brown hover:bg-amber-50'
                   }`}
                 >
-                  <Icon className="w-4 h-4" />
-                  {item.name}
+                  <Icon className="w-4 h-4 flex-shrink-0" />
+                  <span className="truncate">{item.name}</span>
                 </Link>
               );
             })}
@@ -189,13 +189,13 @@ export default function ManagerSidebar() {
       </nav>
 
       {/* Logout */}
-      <div className="p-4 border-t border-blue-200">
+      <div className="p-3 sm:p-4 border-t border-blue-200 flex-shrink-0">
         <button
           onClick={logout}
-          className="flex items-center gap-3 w-full px-3 py-2 text-sm font-medium text-gray-700 hover:text-makrx-blue hover:bg-blue-50 rounded-lg transition-colors"
+          className="flex items-center gap-2 sm:gap-3 w-full px-2 sm:px-3 py-2 text-xs sm:text-sm font-medium text-gray-700 hover:text-makrx-blue hover:bg-blue-50 rounded-lg transition-colors"
         >
-          <LogOut className="w-4 h-4" />
-          Sign Out
+          <LogOut className="w-4 h-4 flex-shrink-0" />
+          <span className="truncate">Sign Out</span>
         </button>
       </div>
     </div>
