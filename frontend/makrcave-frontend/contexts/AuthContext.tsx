@@ -22,19 +22,22 @@ interface AuthContextType {
   user: User | null;
   isAuthenticated: boolean;
   isLoading: boolean;
-  login: (email: string, password: string) => Promise<void>;
-  logout: () => void;
+  login: (credentials: LoginCredentials) => Promise<void>;
+  logout: () => Promise<void>;
+  register: (data: any) => Promise<void>;
   getCurrentRole: () => UserRole;
   getRolePermissions: () => RolePermissions;
   hasPermission: (area: keyof RolePermissions, action: string, context?: any) => boolean;
   getUIAccess: () => typeof UI_ACCESS[UserRole];
-  getDemoUsers: () => User[];
+  refreshUser: () => Promise<void>;
   // Role check helpers
   isSuperAdmin: boolean;
   isAdmin: boolean;
   isMakerspaceAdmin: boolean;
   isServiceProvider: boolean;
   isMaker: boolean;
+  // For backward compatibility
+  isMakrcaveManager: boolean;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
