@@ -97,31 +97,31 @@ export default function SuperAdminSidebar() {
   return (
     <div className="makrcave-sidebar bg-gradient-to-b from-red-900/20 to-red-800/10 border-r border-red-200">
       {/* Logo & Title */}
-      <div className="p-6 border-b border-red-200">
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 bg-gradient-to-br from-red-600 to-red-700 rounded-lg flex items-center justify-center">
-            <Crown className="w-6 h-6 text-white" />
+      <div className="p-4 sm:p-6 border-b border-red-200 flex-shrink-0">
+        <div className="flex items-center gap-2 sm:gap-3">
+          <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-br from-red-600 to-red-700 rounded-lg flex items-center justify-center">
+            <Crown className="w-4 h-4 sm:w-6 sm:h-6 text-white" />
           </div>
-          <div>
-            <h2 className="font-bold text-lg text-red-700">Super Admin</h2>
-            <p className="text-xs text-red-600">System Control</p>
+          <div className="min-w-0">
+            <h2 className="font-bold text-base sm:text-lg text-red-700 truncate">Super Admin</h2>
+            <p className="text-xs text-red-600 truncate">System Control</p>
           </div>
         </div>
       </div>
 
       {/* User Info */}
-      <div className="p-4 border-b border-red-200">
+      <div className="p-3 sm:p-4 border-b border-red-200 flex-shrink-0">
         <Link
           to="/portal/profile"
-          className="flex items-center gap-3 hover:bg-red-100 rounded-lg p-2 -m-2 transition-colors group"
+          className="flex items-center gap-2 sm:gap-3 hover:bg-red-100 rounded-lg p-2 -m-2 transition-colors group"
         >
-          <div className="w-8 h-8 bg-red-100 rounded-full flex items-center justify-center group-hover:bg-red-200 transition-colors">
-            <span className="text-sm font-semibold text-red-700">
+          <div className="w-7 h-7 sm:w-8 sm:h-8 bg-red-100 rounded-full flex items-center justify-center group-hover:bg-red-200 transition-colors flex-shrink-0">
+            <span className="text-xs sm:text-sm font-semibold text-red-700">
               {user?.firstName?.[0] || 'S'}
             </span>
           </div>
           <div className="flex-1 min-w-0">
-            <p className="text-sm font-medium truncate text-red-700 group-hover:text-red-800">
+            <p className="text-xs sm:text-sm font-medium truncate text-red-700 group-hover:text-red-800">
               {user?.firstName ? `${user.firstName} ${user.lastName}` : user?.username}
             </p>
             <p className="text-xs text-red-600 truncate group-hover:text-red-700">
@@ -132,7 +132,7 @@ export default function SuperAdminSidebar() {
       </div>
 
       {/* Navigation */}
-      <nav className="flex-1 p-4">
+      <nav className="flex-1 p-3 sm:p-4 overflow-y-auto">
         <div className="space-y-1">
           {navigation.map((item) => {
             const Icon = item.icon;
@@ -140,14 +140,14 @@ export default function SuperAdminSidebar() {
               <Link
                 key={item.name}
                 to={item.href}
-                className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
+                className={`flex items-center gap-2 sm:gap-3 px-2 sm:px-3 py-2 rounded-lg text-xs sm:text-sm font-medium transition-colors ${
                   item.active
                     ? 'bg-red-100 text-red-800'
                     : 'text-gray-700 hover:text-red-700 hover:bg-red-50'
                 }`}
               >
-                <Icon className="w-4 h-4" />
-                {item.name}
+                <Icon className="w-4 h-4 flex-shrink-0" />
+                <span className="truncate">{item.name}</span>
               </Link>
             );
           })}
