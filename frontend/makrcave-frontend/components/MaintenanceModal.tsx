@@ -618,51 +618,52 @@ export default function MaintenanceModal({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-lg max-w-6xl w-full max-h-[90vh] overflow-hidden">
+    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-2 sm:p-4">
+      <div className="bg-white rounded-lg max-w-6xl w-full max-h-[95vh] sm:max-h-[90vh] flex flex-col overflow-hidden">
         {/* Header */}
-        <div className="flex items-center justify-between p-6 border-b border-gray-200">
-          <div>
-            <h2 className="text-xl font-semibold text-gray-900">
+        <div className="flex items-center justify-between p-4 sm:p-6 border-b border-gray-200 flex-shrink-0">
+          <div className="min-w-0 flex-1 mr-4">
+            <h2 className="text-lg sm:text-xl font-semibold text-gray-900 truncate">
               {editLog ? 'Edit Maintenance Log' : 'Maintenance Log'}
             </h2>
-            <p className="text-sm text-gray-600">
+            <p className="text-xs sm:text-sm text-gray-600 truncate">
               {equipment.name} ({equipment.equipment_id}) - {equipment.location}
             </p>
           </div>
-          <button onClick={onClose} className="p-2 hover:bg-gray-100 rounded-lg">
+          <button onClick={onClose} className="p-2 hover:bg-gray-100 rounded-lg flex-shrink-0">
             <X className="w-5 h-5" />
           </button>
         </div>
 
         {/* Tabs */}
-        <div className="flex border-b border-gray-200">
+        <div className="flex border-b border-gray-200 flex-shrink-0">
           <button
             onClick={() => setCurrentTab('form')}
-            className={`px-6 py-3 text-sm font-medium ${
+            className={`px-4 sm:px-6 py-3 text-xs sm:text-sm font-medium ${
               currentTab === 'form'
                 ? 'text-makrx-blue border-b-2 border-makrx-blue'
                 : 'text-gray-600 hover:text-gray-900'
             }`}
           >
-            <FileText className="w-4 h-4 inline mr-2" />
-            {editLog ? 'Edit Log' : 'New Log'}
+            <FileText className="w-4 h-4 inline mr-1 sm:mr-2" />
+            <span className="hidden sm:inline">{editLog ? 'Edit Log' : 'New Log'}</span>
+            <span className="sm:hidden">Form</span>
           </button>
           <button
             onClick={() => setCurrentTab('history')}
-            className={`px-6 py-3 text-sm font-medium ${
+            className={`px-4 sm:px-6 py-3 text-xs sm:text-sm font-medium ${
               currentTab === 'history'
                 ? 'text-makrx-blue border-b-2 border-makrx-blue'
                 : 'text-gray-600 hover:text-gray-900'
             }`}
           >
-            <List className="w-4 h-4 inline mr-2" />
+            <List className="w-4 h-4 inline mr-1 sm:mr-2" />
             History
           </button>
         </div>
 
         {/* Content */}
-        <div className="flex-1 overflow-y-auto p-6">
+        <div className="flex-1 overflow-y-auto p-4 sm:p-6">
           {currentTab === 'form' ? renderMaintenanceForm() : renderMaintenanceHistory()}
         </div>
       </div>
