@@ -166,7 +166,7 @@ async function apiCall<T>(
   options: RequestInit = {}
 ): Promise<ApiResponse<T>> {
   try {
-    const token = localStorage.getItem('authToken');
+    const token = localStorage.getItem('auth_token') || localStorage.getItem('authToken');
     const response = await fetch(`${API_BASE_URL}${endpoint}`, {
       headers: {
         'Content-Type': 'application/json',
