@@ -537,7 +537,8 @@ const SkillManagement: React.FC = () => {
                     <Badge variant={skill.status === 'active' ? 'default' : 'secondary'}>
                       {skill.status}
                     </Badge>
-                    <Button size="sm" variant="outline">
+                    <Button size="sm" variant="outline" onClick={() => handleViewSkillDetails(skill)}>
+                      <Eye className="h-4 w-4 mr-1" />
                       View Details
                     </Button>
                   </div>
