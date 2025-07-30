@@ -264,15 +264,16 @@ export default function EquipmentRating({
 
   const renderStars = (rating: number, size: 'sm' | 'lg' = 'sm', interactive = false, onClick?: (rating: number) => void) => {
     const starSize = size === 'lg' ? 'w-6 h-6' : 'w-4 h-4';
-    
+    const safeRating = rating || 0;
+
     return Array.from({ length: 5 }, (_, i) => (
       <button
         key={i}
         type={interactive ? 'button' : undefined}
         onClick={interactive ? () => onClick?.(i + 1) : undefined}
         className={`${starSize} ${interactive ? 'cursor-pointer hover:scale-110 transition-transform' : ''} ${
-          i < Math.floor(rating) 
-            ? 'text-yellow-400 fill-current' 
+          i < Math.floor(safeRating)
+            ? 'text-yellow-400 fill-current'
             : 'text-gray-300'
         }`}
         disabled={!interactive}
