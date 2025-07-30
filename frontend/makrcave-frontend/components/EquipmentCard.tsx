@@ -101,7 +101,7 @@ export default function EquipmentCard({
       case 'laser_cutter':
         return '🔥';
       case 'cnc_machine':
-        return '��️';
+        return '⚙️';
       case 'testing_tool':
         return '🔬';
       case 'soldering_station':
