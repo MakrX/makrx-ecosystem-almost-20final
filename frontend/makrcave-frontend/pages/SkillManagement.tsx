@@ -248,18 +248,33 @@ const SkillManagement: React.FC = () => {
   };
 
   const handleCertifyUser = (userSkillId: string) => {
-    toast({
-      title: "User Certified",
-      description: "User has been successfully certified for this skill",
-    });
+    const userSkill = userSkills.find(us => `${us.userId}-${us.skillId}` === userSkillId);
+    if (userSkill) {
+      setSelectedUserSkill(userSkill);
+      setCertifyModalOpen(true);
+    }
   };
 
   const handleRevokeSkill = (userSkillId: string) => {
-    toast({
-      title: "Certification Revoked",
-      description: "User certification has been revoked",
-      variant: "destructive",
-    });
+    const userSkill = userSkills.find(us => `${us.userId}-${us.skillId}` === userSkillId);
+    if (userSkill) {
+      setSelectedUserSkill(userSkill);
+      setRevokeModalOpen(true);
+    }
+  };
+
+  const handleViewSkillDetails = (skill: Skill) => {
+    setSelectedSkill(skill);
+    setSkillDetailsModalOpen(true);
+  };
+
+  const handleOpenCertifyModal = () => {
+    setSelectedUserSkill(null);
+    setCertifyModalOpen(true);
+  };
+
+  const handleOpenEquipmentRequirements = () => {
+    setSkillRequirementsModalOpen(true);
   };
 
   const filteredUserSkills = userSkills.filter(us => 
