@@ -456,11 +456,12 @@ const EquipmentReservationSystem: React.FC<EquipmentReservationSystemProps> = ({
         </CardHeader>
         <CardContent>
           <Tabs value={activeTab} onValueChange={setActiveTab}>
-            <TabsList className="grid w-full grid-cols-4">
+            <TabsList className="grid w-full grid-cols-5">
               <TabsTrigger value="calendar">Calendar View</TabsTrigger>
               <TabsTrigger value="list">Reservations List</TabsTrigger>
               <TabsTrigger value="analytics">Usage Analytics</TabsTrigger>
               <TabsTrigger value="settings">Equipment Settings</TabsTrigger>
+              <TabsTrigger value="pricing">Access & Pricing</TabsTrigger>
             </TabsList>
           <TabsContent value="calendar" className="space-y-4">
             <div className="flex items-center gap-4 mb-4">
