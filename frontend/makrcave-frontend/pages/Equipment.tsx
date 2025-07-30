@@ -496,7 +496,7 @@ export default function Equipment() {
                     <span className="text-sm font-medium capitalize">{status.replace('_', ' ')}</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <span className="text-sm text-gray-600">{count} ({percentage.toFixed(0)}%)</span>
+                    <span className="text-sm text-gray-600">{count} ({(percentage || 0).toFixed(0)}%)</span>
                     <div className="w-20 h-2 bg-gray-200 rounded-full">
                       <div
                         className={`h-2 rounded-full ${statusColors[status as keyof typeof statusColors]}`}
