@@ -503,6 +503,13 @@ const EquipmentReservationSystem: React.FC<EquipmentReservationSystemProps> = ({
                           <p className="text-sm text-gray-600">
                             {format(new Date(reservation.start_time), 'HH:mm')} - {format(new Date(reservation.end_time), 'HH:mm')}
                           </p>
+                          {accessPolicies.find(p => p.equipment_id === reservation.equipment_id) && (
+                            <p className="text-xs text-purple-600">
+                              {EquipmentBillingService.getPricingDisplay(
+                                accessPolicies.find(p => p.equipment_id === reservation.equipment_id)!
+                              )}
+                            </p>
+                          )}
                         </div>
                         <div>
                           <p className="text-sm font-medium">{reservation.user_name}</p>
