@@ -951,6 +951,20 @@ const AddProjectModal: React.FC<AddProjectModalProps> = ({ isOpen, onClose, onPr
                       <span className="font-medium">Team:</span> {projectData.initial_collaborators.length + 1} members
                     </div>
                   )}
+                  {projectData.enable_github_integration && projectData.github_repo_url && (
+                    <div>
+                      <span className="font-medium">GitHub:</span>
+                      <a
+                        href={projectData.github_repo_url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-blue-600 hover:text-blue-800 ml-1 inline-flex items-center"
+                      >
+                        {projectData.github_repo_url.replace('https://github.com/', '')}
+                        <ExternalLink className="h-3 w-3 ml-1" />
+                      </a>
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
