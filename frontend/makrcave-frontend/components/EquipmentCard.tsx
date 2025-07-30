@@ -315,7 +315,10 @@ export default function EquipmentCard({
             {showQuickActions && (
               <div className="absolute right-0 top-8 z-10 w-48 bg-white rounded-lg shadow-lg border border-gray-200 py-1">
                 <button
-                  onClick={() => onViewDetails?.(equipment)}
+                  onClick={() => {
+                    onViewDetails?.(equipment);
+                    setShowQuickActions(false);
+                  }}
                   className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 flex items-center"
                 >
                   <Eye className="w-4 h-4 mr-2" />
@@ -324,7 +327,10 @@ export default function EquipmentCard({
                 
                 {canEdit && (
                   <button
-                    onClick={() => onEdit?.(equipment)}
+                    onClick={() => {
+                      onEdit?.(equipment);
+                      setShowQuickActions(false);
+                    }}
                     className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 flex items-center"
                   >
                     <Edit className="w-4 h-4 mr-2" />
@@ -334,7 +340,10 @@ export default function EquipmentCard({
                 
                 {canMaintenance && (
                   <button
-                    onClick={() => onMaintenance?.(equipment)}
+                    onClick={() => {
+                      onMaintenance?.(equipment);
+                      setShowQuickActions(false);
+                    }}
                     className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 flex items-center"
                   >
                     <Wrench className="w-4 h-4 mr-2" />
