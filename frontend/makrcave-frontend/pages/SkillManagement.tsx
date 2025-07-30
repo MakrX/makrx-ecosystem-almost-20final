@@ -450,20 +450,33 @@ const SkillManagement: React.FC = () => {
                         <td className="py-3 px-4">
                           <div className="flex justify-end gap-2">
                             {userSkill.status === 'pending' && (
-                              <Button 
-                                size="sm" 
+                              <Button
+                                size="sm"
                                 onClick={() => handleCertifyUser(`${userSkill.userId}-${userSkill.skillId}`)}
                               >
+                                <CheckCircle className="h-4 w-4 mr-1" />
                                 Approve
                               </Button>
                             )}
                             {userSkill.status === 'certified' && (
-                              <Button 
-                                size="sm" 
+                              <Button
+                                size="sm"
                                 variant="outline"
                                 onClick={() => handleRevokeSkill(`${userSkill.userId}-${userSkill.skillId}`)}
+                                className="text-red-600 hover:text-red-700"
                               >
+                                <XCircle className="h-4 w-4 mr-1" />
                                 Revoke
+                              </Button>
+                            )}
+                            {userSkill.status === 'expired' && (
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                onClick={() => handleCertifyUser(`${userSkill.userId}-${userSkill.skillId}`)}
+                              >
+                                <Award className="h-4 w-4 mr-1" />
+                                Recertify
                               </Button>
                             )}
                           </div>
