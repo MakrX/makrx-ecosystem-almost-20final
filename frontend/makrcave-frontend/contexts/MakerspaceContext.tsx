@@ -101,6 +101,17 @@ interface Reservation {
   purpose?: string;
 }
 
+interface Makerspace {
+  id: string;
+  name: string;
+  description?: string;
+  location?: string;
+  managerId?: string;
+  managerName?: string;
+  isActive: boolean;
+  createdAt: string;
+}
+
 interface MakerspaceStats {
   totalMembers: number;
   activeProjects: number;
@@ -111,12 +122,15 @@ interface MakerspaceStats {
 }
 
 interface MakerspaceContextType {
+  currentMakerspace: Makerspace | null;
+  allMakerspaces: Makerspace[];
   stats: MakerspaceStats;
   equipment: Equipment[];
   inventory: InventoryItem[];
   projects: Project[];
   reservations: Reservation[];
   updateStats: () => void;
+  setCurrentMakerspace: (makerspace: Makerspace | null) => void;
   addInventoryItem: (item: Omit<InventoryItem, 'id'>) => Promise<void>;
   updateInventoryItem: (id: string, item: Partial<InventoryItem>) => Promise<void>;
   updateInventoryQuantity: (id: string, quantity: number) => void;
