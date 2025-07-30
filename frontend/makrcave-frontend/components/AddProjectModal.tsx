@@ -9,18 +9,21 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '.
 import { Calendar } from './ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from './ui/popover';
 import { Switch } from './ui/switch';
-import { 
-  CalendarIcon, 
-  X, 
-  Plus, 
-  ChevronLeft, 
-  ChevronRight, 
-  Globe, 
-  Lock, 
+import {
+  CalendarIcon,
+  X,
+  Plus,
+  ChevronLeft,
+  ChevronRight,
+  Globe,
+  Lock,
   Users,
   AlertCircle,
   CheckCircle,
-  Loader2
+  Loader2,
+  Github,
+  GitBranch,
+  ExternalLink
 } from 'lucide-react';
 import { format } from 'date-fns';
 import { useAuth } from '../contexts/AuthContext';
