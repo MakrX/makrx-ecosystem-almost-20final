@@ -10,7 +10,7 @@ interface Equipment {
   id: string;
   equipment_id: string;
   name: string;
-  category: string;
+  category?: string;
   sub_category?: string;
   status: 'available' | 'in_use' | 'under_maintenance' | 'offline';
   location: string;
