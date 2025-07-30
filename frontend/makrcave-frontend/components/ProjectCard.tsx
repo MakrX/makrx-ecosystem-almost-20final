@@ -44,6 +44,9 @@ interface Project {
   files_count: number;
   milestones_count: number;
   completed_milestones_count: number;
+  github_repo_url?: string;
+  github_branch?: string;
+  enable_github_integration?: boolean;
 }
 
 interface ProjectCardProps {
