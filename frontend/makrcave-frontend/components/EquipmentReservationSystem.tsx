@@ -686,102 +686,17 @@ const EquipmentReservationSystem: React.FC<EquipmentReservationSystemProps> = ({
         </CardContent>
       </Card>
 
-      {/* Create Reservation Modal */}
-      {showCreateModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <Card className="w-full max-w-2xl max-h-[90vh] overflow-y-auto m-4">
-            <CardHeader>
-              <CardTitle className="flex items-center justify-between">
-                Create New Reservation
-                <Button variant="ghost" onClick={() => setShowCreateModal(false)}>
-                  <XCircle className="h-4 w-4" />
-                </Button>
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div>
-                <Label>Equipment *</Label>
-                <Select value={formData.equipment_id} onValueChange={(value) => setFormData({...formData, equipment_id: value})}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select equipment" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {equipment.filter(e => e.status === 'available').map(eq => (
-                      <SelectItem key={eq.id} value={eq.id}>{eq.name}</SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-
-              <div>
-                <Label>Date *</Label>
-                <Popover>
-                  <PopoverTrigger asChild>
-                    <Button variant="outline" className="w-full justify-start text-left">
-                      <CalendarIcon className="mr-2 h-4 w-4" />
-                      {format(formData.date, "PPP")}
-                    </Button>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-auto p-0">
-                    <Calendar
-                      mode="single"
-                      selected={formData.date}
-                      onSelect={(date) => date && setFormData({...formData, date})}
-                      initialFocus
-                    />
-                  </PopoverContent>
-                </Popover>
-              </div>
-
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <Label>Start Time *</Label>
-                  <Input 
-                    type="time" 
-                    value={formData.start_time}
-                    onChange={(e) => setFormData({...formData, start_time: e.target.value})}
-                  />
-                </div>
-                <div>
-                  <Label>End Time *</Label>
-                  <Input 
-                    type="time" 
-                    value={formData.end_time}
-                    onChange={(e) => setFormData({...formData, end_time: e.target.value})}
-                  />
-                </div>
-              </div>
-
-              <div>
-                <Label>Purpose *</Label>
-                <Input 
-                  value={formData.purpose}
-                  onChange={(e) => setFormData({...formData, purpose: e.target.value})}
-                  placeholder="Brief description of what you're working on"
-                />
-              </div>
-
-              <div>
-                <Label>Notes (Optional)</Label>
-                <Textarea 
-                  value={formData.notes}
-                  onChange={(e) => setFormData({...formData, notes: e.target.value})}
-                  placeholder="Additional notes, materials being used, special requirements..."
-                />
-              </div>
-
-              <div className="flex justify-end gap-2">
-                <Button variant="outline" onClick={() => setShowCreateModal(false)}>
-                  Cancel
-                </Button>
-                <Button onClick={handleCreateReservation}>
-                  Create Reservation
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-      )}
+      {/* Create Reservation Modal with Billing */}
+      <ReservationWithBilling
+        isOpen={showCreateModal}
+        onClose={() => setShowCreateModal(false)}
+        onReservationCreated={() => {
+          setShowCreateModal(false);
+          // Refresh reservations
+          setReservations([...mockReservations]);
+        }}
+        policies={accessPolicies}
+      />
     </div>
   );
 };
