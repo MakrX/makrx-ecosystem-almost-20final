@@ -696,12 +696,15 @@ export function MakerspaceProvider({ children }: { children: ReactNode }) {
 
   return (
     <MakerspaceContext.Provider value={{
+      currentMakerspace,
+      allMakerspaces,
       stats,
       equipment,
       inventory,
       projects,
       reservations,
       updateStats,
+      setCurrentMakerspace,
       addInventoryItem,
       updateInventoryItem,
       updateInventoryQuantity,
