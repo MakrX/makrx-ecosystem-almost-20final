@@ -3,23 +3,24 @@ import { Card, CardHeader, CardTitle, CardContent } from './ui/card';
 import { Button } from './ui/button';
 import { Badge } from './ui/badge';
 import { Progress } from './ui/progress';
-import { 
-  Calendar, 
-  Users, 
-  Package, 
-  FileText, 
-  Star, 
-  MoreHorizontal, 
-  Eye, 
-  Edit, 
-  Trash, 
+import {
+  Calendar,
+  Users,
+  Package,
+  FileText,
+  Star,
+  MoreHorizontal,
+  Eye,
+  Edit,
+  Trash,
   Copy,
   ExternalLink,
   Clock,
   CheckCircle,
   AlertCircle,
   PauseCircle,
-  XCircle
+  XCircle,
+  Github
 } from 'lucide-react';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator } from './ui/dropdown-menu';
 import { useAuth } from '../contexts/AuthContext';
