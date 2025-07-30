@@ -88,11 +88,11 @@
 @layer components {
   /* MakrCave specific components */
   .makrcave-sidebar {
-    @apply bg-card border-r border-border h-screen w-64 fixed left-0 top-0 z-40;
+    @apply bg-card border-r border-border h-screen w-64 fixed left-0 top-0 z-40 flex flex-col overflow-hidden;
   }
 
   .makrcave-main {
-    @apply ml-64 min-h-screen bg-background;
+    @apply ml-64 min-h-screen bg-background transition-all duration-300;
   }
 
   .makrcave-header {
@@ -105,6 +105,12 @@
 
   .makrcave-btn-primary {
     @apply bg-makrx-blue text-white px-4 py-2.5 rounded-lg font-medium hover:bg-makrx-blue/90 transition-colors inline-flex items-center justify-center gap-2 text-sm;
+  }
+
+  @media (max-width: 640px) {
+    .makrcave-btn-primary, .makrcave-btn-secondary, .makrcave-btn-outline {
+      @apply px-3 py-2 text-xs;
+    }
   }
 
   .makrcave-btn-secondary {
@@ -147,7 +153,7 @@
 /* Responsive adjustments */
 @media (max-width: 1024px) {
   .makrcave-sidebar {
-    @apply transform -translate-x-full transition-transform;
+    @apply w-64 transform -translate-x-full transition-transform duration-300 ease-in-out shadow-xl;
   }
 
   .makrcave-sidebar.open {
@@ -156,5 +162,61 @@
 
   .makrcave-main {
     @apply ml-0;
+  }
+
+  /* Overlay for mobile sidebar */
+  .makrcave-sidebar-overlay {
+    @apply fixed inset-0 bg-black bg-opacity-50 z-30 lg:hidden;
+  }
+}
+
+@media (max-width: 768px) {
+  .makrcave-sidebar {
+    @apply w-full max-w-xs;
+  }
+
+  .makrcave-header {
+    @apply px-4 py-3;
+  }
+
+  .makrcave-main main {
+    @apply p-4;
+  }
+}
+
+@media (max-width: 640px) {
+  .makrcave-header {
+    @apply px-3 py-2;
+  }
+
+  .makrcave-main main {
+    @apply p-3;
+  }
+
+  .makrcave-card {
+    @apply p-4;
+  }
+}
+
+/* Mobile-first responsive utilities */
+@media (max-width: 480px) {
+  .makrcave-main main {
+    @apply p-2;
+  }
+
+  .makrcave-card {
+    @apply p-3;
+  }
+
+  h1 {
+    @apply text-xl;
+  }
+
+  h2 {
+    @apply text-lg;
+  }
+
+  h3 {
+    @apply text-base;
   }
 }
