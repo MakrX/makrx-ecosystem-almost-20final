@@ -17,10 +17,19 @@ import {
   User,
   Shield,
   Star,
-  Wrench
+  Wrench,
+  Eye,
+  XCircle
 } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { useToast } from '../hooks/use-toast';
+
+// Import all the new modals
+import CertifyMemberModal from '../components/modals/CertifyMemberModal';
+import SkillRequirementsModal from '../components/modals/SkillRequirementsModal';
+import RevokeSkillModal from '../components/modals/RevokeSkillModal';
+import AddSkillModal from '../components/modals/AddSkillModal';
+import SkillDetailsModal from '../components/modals/SkillDetailsModal';
 
 interface Skill {
   id: string;
