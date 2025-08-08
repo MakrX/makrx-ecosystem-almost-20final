@@ -72,7 +72,14 @@ const App = () => (
                       <Route path="profile" element={<Profile />} />
                       <Route path="skills" element={<SkillManagement />} />
                       <Route path="notifications" element={<NotificationsCenter />} />
-                      <Route path="system-health" element={<SystemHealth />} />
+                      <Route path="system-health" element={
+                        <ProtectedRoute
+                          adminFeature="healthMonitoring"
+                          allowedRoles={['super_admin', 'admin']}
+                        >
+                          <SystemHealth />
+                        </ProtectedRoute>
+                      } />
                       <Route path="makerspaces" element={<AdminMakerspaces />} />
                       <Route path="admin">
                         <Route path="users" element={<AdminUsers />} />
