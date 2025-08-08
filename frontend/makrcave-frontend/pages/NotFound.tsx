@@ -120,17 +120,20 @@ const ReviveLabGame = ({ onGameComplete }: { onGameComplete: () => void }) => {
 
   const handleReviveClick = useCallback(() => {
     if (isCompleted) return;
-    
+
+    playClickSound();
     setClicks(prev => prev + 1);
-    
+
     const newProgress = Math.min(progress + (Math.random() * 15 + 5), 100);
     setProgress(newProgress);
-    
+
     if (newProgress >= 100 && gameStage < tasks.length - 1) {
       setGameStage(prev => prev + 1);
       setProgress(0);
+      playSuccessSound();
     } else if (newProgress >= 100 && gameStage === tasks.length - 1) {
       setIsCompleted(true);
+      playSuccessSound();
       setTimeout(() => {
         onGameComplete();
       }, 2000);
