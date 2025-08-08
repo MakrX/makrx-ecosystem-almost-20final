@@ -123,7 +123,7 @@ export default function SuperAdminSidebar() {
           </div>
           <div className="flex-1 min-w-0">
             <p className="text-xs sm:text-sm font-medium truncate text-red-700 group-hover:text-red-800">
-              {user?.firstName ? `${user.firstName} ${user.lastName}` : user?.username}
+              {formatUserDisplayNameCompact(user)}
             </p>
             <p className="text-xs text-red-600 truncate group-hover:text-red-700">
               System Administrator
