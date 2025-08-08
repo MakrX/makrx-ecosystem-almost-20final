@@ -57,6 +57,20 @@ html {
   animation: flicker 0.15s ease-in-out infinite;
 }
 
+/* Radial gradient for map oceans */
+.bg-gradient-radial {
+  background: radial-gradient(circle, var(--tw-gradient-stops));
+}
+
+/* Enhanced map marker glow effects */
+.map-marker-glow {
+  box-shadow: 0 0 20px rgba(34, 197, 94, 0.6), 0 0 40px rgba(34, 197, 94, 0.4);
+}
+
+.map-marker-featured {
+  box-shadow: 0 0 25px rgba(251, 191, 36, 0.8), 0 0 50px rgba(251, 191, 36, 0.5);
+}
+
 @layer base {
   :root {
     /* Light Theme - Soft, Eye-friendly */
