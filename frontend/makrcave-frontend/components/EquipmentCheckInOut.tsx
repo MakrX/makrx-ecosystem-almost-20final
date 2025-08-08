@@ -200,7 +200,7 @@ const EquipmentCheckInOut: React.FC<EquipmentCheckInOutProps> = ({ className = '
       equipment_id: equipmentId,
       equipment_name: `Equipment ${equipmentId}`, // Would fetch from equipment list
       user_id: user?.id || 'current-user',
-      user_name: user?.firstName && user?.lastName ? `${user.firstName} ${user.lastName}` : user?.username || 'Current User',
+      user_name: formatUserDisplayName(user),
       check_in_time: now.toISOString(),
       planned_start: now.toISOString(),
       planned_end: new Date(now.getTime() + 2 * 60 * 60 * 1000).toISOString(), // 2 hours from now
