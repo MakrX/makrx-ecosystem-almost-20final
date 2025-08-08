@@ -558,7 +558,7 @@ const MakrVerse = () => {
                 <span>{makrCaves.reduce((sum, cave) => sum + cave.onlineMembers, 0)} Makers</span>
               </div>
               <div className="flex items-center">
-                <Tool className="h-4 w-4 mr-1 text-yellow-400" />
+                <Wrench className="h-4 w-4 mr-1 text-yellow-400" />
                 <span>{makrCaves.reduce((sum, cave) => sum + cave.machinesRunning, 0)} Machines</span>
               </div>
             </div>
