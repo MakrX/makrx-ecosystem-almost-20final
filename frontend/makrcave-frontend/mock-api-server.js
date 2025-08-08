@@ -4,6 +4,204 @@ const app = express();
 
 app.use(cors());
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+// Mock Users Database
+const mockUsers = {
+  'superadmin@makrcave.com': {
+    id: 'user-super-admin',
+    email: 'superadmin@makrcave.com',
+    username: 'superadmin',
+    firstName: 'Super',
+    lastName: 'Admin',
+    role: 'super_admin',
+    isActive: true,
+    createdAt: '2024-01-01T00:00:00Z',
+    assignedMakerspaces: ['ms-1', 'ms-2', 'ms-3']
+  },
+  'admin@makrcave.com': {
+    id: 'user-admin',
+    email: 'admin@makrcave.com',
+    username: 'admin',
+    firstName: 'System',
+    lastName: 'Administrator',
+    role: 'admin',
+    isActive: true,
+    createdAt: '2024-01-01T00:00:00Z',
+    assignedMakerspaces: ['ms-1', 'ms-2']
+  },
+  'manager@makrcave.com': {
+    id: 'user-manager',
+    email: 'manager@makrcave.com',
+    username: 'manager',
+    firstName: 'Makerspace',
+    lastName: 'Manager',
+    role: 'makerspace_admin',
+    isActive: true,
+    createdAt: '2024-01-01T00:00:00Z',
+    assignedMakerspaces: ['ms-1']
+  },
+  'provider@makrcave.com': {
+    id: 'user-provider',
+    email: 'provider@makrcave.com',
+    username: 'provider',
+    firstName: 'Service',
+    lastName: 'Provider',
+    role: 'service_provider',
+    isActive: true,
+    createdAt: '2024-01-01T00:00:00Z',
+    assignedMakerspaces: []
+  },
+  'maker@makrcave.com': {
+    id: 'user-maker',
+    email: 'maker@makrcave.com',
+    username: 'maker',
+    firstName: 'Regular',
+    lastName: 'Maker',
+    role: 'maker',
+    isActive: true,
+    createdAt: '2024-01-01T00:00:00Z',
+    assignedMakerspaces: ['ms-1']
+  }
+};
+
+// Mock passwords (for testing only)
+const mockPasswords = {
+  'superadmin@makrcave.com': 'SuperAdmin2024!',
+  'admin@makrcave.com': 'Admin2024!',
+  'manager@makrcave.com': 'Manager2024!',
+  'provider@makrcave.com': 'Provider2024!',
+  'maker@makrcave.com': 'Maker2024!'
+};
+
+// Authentication endpoints
+app.post('/api/auth/login', (req, res) => {
+  const { username, password } = req.body;
+
+  console.log('Mock API: Login attempt for:', username);
+
+  // Check if user exists
+  const user = mockUsers[username];
+  if (!user) {
+    return res.status(401).json({
+      detail: 'Invalid credentials'
+    });
+  }
+
+  // Check password
+  if (mockPasswords[username] !== password) {
+    return res.status(401).json({
+      detail: 'Invalid credentials'
+    });
+  }
+
+  // Generate mock tokens
+  const accessToken = `mock-access-token-${Date.now()}`;
+  const refreshToken = `mock-refresh-token-${Date.now()}`;
+
+  res.json({
+    access_token: accessToken,
+    refresh_token: refreshToken,
+    token_type: 'bearer',
+    expires_in: 1800,
+    user: user
+  });
+});
+
+app.post('/api/auth/register', (req, res) => {
+  const { email, username, password, firstName, lastName } = req.body;
+
+  // Check if user already exists
+  if (mockUsers[email]) {
+    return res.status(400).json({
+      detail: 'User already exists'
+    });
+  }
+
+  // Create new user
+  const newUser = {
+    id: `user-${Date.now()}`,
+    email,
+    username,
+    firstName: firstName || '',
+    lastName: lastName || '',
+    role: 'maker', // Default role
+    isActive: true,
+    createdAt: new Date().toISOString(),
+    assignedMakerspaces: []
+  };
+
+  // Store user and password
+  mockUsers[email] = newUser;
+  mockPasswords[email] = password;
+
+  // Generate mock tokens
+  const accessToken = `mock-access-token-${Date.now()}`;
+  const refreshToken = `mock-refresh-token-${Date.now()}`;
+
+  res.status(201).json({
+    access_token: accessToken,
+    refresh_token: refreshToken,
+    token_type: 'bearer',
+    expires_in: 1800,
+    user: newUser
+  });
+});
+
+app.post('/api/auth/logout', (req, res) => {
+  res.json({ message: 'Logged out successfully' });
+});
+
+app.post('/api/auth/refresh', (req, res) => {
+  const { refresh_token } = req.body;
+
+  if (!refresh_token || !refresh_token.startsWith('mock-refresh-token')) {
+    return res.status(401).json({
+      detail: 'Invalid refresh token'
+    });
+  }
+
+  // Generate new access token
+  const accessToken = `mock-access-token-${Date.now()}`;
+
+  res.json({
+    access_token: accessToken,
+    token_type: 'bearer',
+    expires_in: 1800
+  });
+});
+
+app.post('/api/auth/password-reset/request', (req, res) => {
+  const { email } = req.body;
+
+  // Always return success for demo (in real app, only if user exists)
+  res.json({
+    message: 'Password reset instructions sent to your email'
+  });
+});
+
+app.post('/api/auth/password-reset/confirm', (req, res) => {
+  const { token, new_password } = req.body;
+
+  // Mock password reset confirmation
+  res.json({
+    message: 'Password reset successfully'
+  });
+});
+
+app.get('/api/users/me', (req, res) => {
+  const authHeader = req.headers.authorization;
+
+  if (!authHeader || !authHeader.startsWith('Bearer mock-access-token')) {
+    return res.status(401).json({
+      detail: 'Invalid or missing token'
+    });
+  }
+
+  // Return first user for simplicity (in real app, decode token to get user)
+  const firstUser = Object.values(mockUsers)[0];
+  res.json(firstUser);
+});
 
 // Mock Analytics Data
 const mockAnalyticsOverview = {
