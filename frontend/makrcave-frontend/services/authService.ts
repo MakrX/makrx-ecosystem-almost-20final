@@ -87,7 +87,14 @@ class AuthService {
   // Authenticates user with email/password and stores JWT tokens
   // Returns user data and tokens on success
   async login(credentials: LoginCredentials): Promise<LoginResponse> {
+    const startTime = Date.now();
+
     try {
+      loggingService.info('auth', 'AuthService.login', 'Login attempt started', {
+        username: credentials.username,
+        timestamp: new Date().toISOString()
+      });
+
       const response = await fetch(`${API_BASE_URL}/auth/login`, {
         method: 'POST',
         headers: {
@@ -99,22 +106,55 @@ class AuthService {
         }),
       });
 
+      const responseTime = Date.now() - startTime;
+      loggingService.logAPICall('/auth/login', 'POST', response.status, responseTime);
+
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}));
-        throw new Error(errorData.detail || `Login failed: ${response.status} ${response.statusText}`);
+        const errorMessage = errorData.detail || `Login failed: ${response.status} ${response.statusText}`;
+
+        loggingService.logAuthEvent('login', false, {
+          username: credentials.username,
+          statusCode: response.status,
+          errorMessage,
+          responseTime
+        });
+
+        throw new Error(errorMessage);
       }
 
       const data: LoginResponse = await response.json();
-      
+
       // Store tokens and user data
       this.setTokens(data.access_token, data.refresh_token);
       this.setUser(data.user);
-      
+
       // Set up token refresh
       this.scheduleTokenRefresh(data.expires_in);
-      
+
+      loggingService.logAuthEvent('login', true, {
+        userId: data.user.id,
+        username: data.user.username,
+        role: data.user.role,
+        responseTime,
+        tokenExpiry: data.expires_in
+      });
+
+      loggingService.info('auth', 'AuthService.login', 'Login successful', {
+        userId: data.user.id,
+        role: data.user.role,
+        responseTime
+      });
+
       return data;
     } catch (error) {
+      const responseTime = Date.now() - startTime;
+      loggingService.error('auth', 'AuthService.login', 'Login failed', {
+        username: credentials.username,
+        error: (error as Error).message,
+        responseTime
+      }, (error as Error).stack);
+
       console.error('Login error:', error);
       throw error;
     }
