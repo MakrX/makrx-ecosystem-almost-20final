@@ -220,6 +220,17 @@ const NotFound = () => {
     setShowMinigame(false);
   };
 
+  const runDiagnostic = () => {
+    setDiagnosticRunning(true);
+    playClickSound();
+
+    setTimeout(() => {
+      setDiagnosticRunning(false);
+      setDiagnosticComplete(true);
+      setHiddenButtonVisible(true);
+    }, 3000);
+  };
+
   if (labRevived) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-green-900 via-gray-900 to-blue-900 flex items-center justify-center p-6">
