@@ -169,20 +169,20 @@ const MakrVerseMap = ({ selectedCave, onCaveSelect }: { selectedCave: any, onCav
         </div>
       </div>
 
-      {/* Live Indicator */}
-      <div className="absolute top-4 left-4 z-20">
-        <div className="flex items-center bg-black/80 backdrop-blur-md rounded-full px-3 py-2">
-          <div className={`w-2 h-2 rounded-full mr-2 ${isLive ? 'bg-red-500 animate-pulse' : 'bg-gray-500'}`}></div>
+      {/* Responsive Live Indicator */}
+      <div className="absolute top-2 left-2 sm:top-4 sm:left-4 z-20">
+        <div className="flex items-center bg-black/80 backdrop-blur-md rounded-full px-2 sm:px-3 py-1 sm:py-2">
+          <div className={`w-2 h-2 rounded-full mr-1 sm:mr-2 ${isLive ? 'bg-red-500 animate-pulse' : 'bg-gray-500'}`}></div>
           <span className="text-white text-xs font-medium">
             {isLive ? 'LIVE' : 'OFFLINE'}
           </span>
-          <Button 
-            size="sm" 
-            variant="ghost" 
-            className="ml-2 h-6 w-6 p-0"
+          <Button
+            size="sm"
+            variant="ghost"
+            className="ml-1 sm:ml-2 h-5 w-5 sm:h-6 sm:w-6 p-0"
             onClick={() => setIsLive(!isLive)}
           >
-            {isLive ? <Pause className="h-3 w-3" /> : <Play className="h-3 w-3" />}
+            {isLive ? <Pause className="h-2 w-2 sm:h-3 sm:w-3" /> : <Play className="h-2 w-2 sm:h-3 sm:w-3" />}
           </Button>
         </div>
       </div>
