@@ -700,20 +700,23 @@ const MakrVerse = () => {
             </div>
           </div>
 
-          {/* Real-time Stats Overlay */}
-          <div className="absolute top-4 left-1/2 transform -translate-x-1/2 bg-black/80 backdrop-blur-md rounded-lg px-4 py-2">
-            <div className="flex items-center space-x-6 text-white text-sm">
+          {/* Responsive Real-time Stats Overlay */}
+          <div className="absolute top-2 left-1/2 transform -translate-x-1/2 bg-black/80 backdrop-blur-md rounded-lg px-2 sm:px-4 py-1 sm:py-2 max-w-[90vw]">
+            <div className="flex items-center space-x-2 sm:space-x-4 lg:space-x-6 text-white text-xs sm:text-sm">
               <div className="flex items-center">
-                <div className="w-2 h-2 bg-green-400 rounded-full mr-2 animate-pulse"></div>
-                <span>{makrCaves.filter(c => c.status === 'active').length} Caves Online</span>
+                <div className="w-2 h-2 bg-green-400 rounded-full mr-1 sm:mr-2 animate-pulse"></div>
+                <span className="hidden sm:inline">{makrCaves.filter(c => c.status === 'active').length} Caves Online</span>
+                <span className="sm:hidden">{makrCaves.filter(c => c.status === 'active').length}</span>
               </div>
               <div className="flex items-center">
-                <Users className="h-4 w-4 mr-1 text-blue-400" />
-                <span>{makrCaves.reduce((sum, cave) => sum + cave.onlineMembers, 0)} Makers</span>
+                <Users className="h-3 w-3 sm:h-4 sm:w-4 mr-1 text-blue-400" />
+                <span className="hidden sm:inline">{makrCaves.reduce((sum, cave) => sum + cave.onlineMembers, 0)} Makers</span>
+                <span className="sm:hidden">{makrCaves.reduce((sum, cave) => sum + cave.onlineMembers, 0)}</span>
               </div>
               <div className="flex items-center">
-                <Wrench className="h-4 w-4 mr-1 text-yellow-400" />
-                <span>{makrCaves.reduce((sum, cave) => sum + cave.machinesRunning, 0)} Machines</span>
+                <Wrench className="h-3 w-3 sm:h-4 sm:w-4 mr-1 text-yellow-400" />
+                <span className="hidden sm:inline">{makrCaves.reduce((sum, cave) => sum + cave.machinesRunning, 0)} Machines</span>
+                <span className="sm:hidden">{makrCaves.reduce((sum, cave) => sum + cave.machinesRunning, 0)}</span>
               </div>
             </div>
           </div>
