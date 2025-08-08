@@ -323,6 +323,13 @@ const MakrVerse = () => {
             </div>
 
             <div className="flex items-center space-x-4">
+              {/* Navigation Breadcrumb */}
+              <div className="hidden md:flex items-center text-gray-400 text-sm">
+                <Link to="/" className="hover:text-white transition-colors">Home</Link>
+                <span className="mx-2">{'>'}</span>
+                <span className="text-white">MakrVerse</span>
+              </div>
+
               {/* Search */}
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
@@ -344,6 +351,14 @@ const MakrVerse = () => {
                 <Trophy className="h-4 w-4 mr-2" />
                 Badges
               </Button>
+
+              {/* Navigation Buttons */}
+              <Link to="/">
+                <Button variant="outline" size="sm" className="border-gray-600 text-gray-300 hover:bg-gray-800">
+                  <Home className="h-4 w-4 mr-1" />
+                  Home
+                </Button>
+              </Link>
 
               <Link to="/portal">
                 <Button className="bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white">
