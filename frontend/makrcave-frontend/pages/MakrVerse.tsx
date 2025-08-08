@@ -136,35 +136,35 @@ const MakrVerseMap = ({ selectedCave, onCaveSelect }: { selectedCave: any, onCav
 
   return (
     <div className="relative h-full bg-gradient-to-br from-blue-900 via-purple-900 to-indigo-900 rounded-lg overflow-hidden">
-      {/* Map Controls */}
-      <div className="absolute top-4 right-4 z-20 space-y-2">
-        <div className="flex flex-col bg-black/80 backdrop-blur-md rounded-lg p-2 space-y-2">
-          <Button 
-            size="sm" 
-            variant={mapStyle === 'satellite' ? 'default' : 'outline'} 
-            className="text-xs"
+      {/* Responsive Map Controls */}
+      <div className="absolute top-2 right-2 sm:top-4 sm:right-4 z-20 space-y-1 sm:space-y-2">
+        <div className="flex flex-col bg-black/80 backdrop-blur-md rounded-lg p-1 sm:p-2 space-y-1 sm:space-y-2">
+          <Button
+            size="sm"
+            variant={mapStyle === 'satellite' ? 'default' : 'outline'}
+            className="text-xs px-2 py-1"
             onClick={() => setMapStyle('satellite')}
           >
             <Globe className="h-3 w-3 mr-1" />
-            Satellite
+            <span className="hidden sm:inline">Satellite</span>
           </Button>
-          <Button 
-            size="sm" 
-            variant={mapStyle === 'network' ? 'default' : 'outline'} 
-            className="text-xs"
+          <Button
+            size="sm"
+            variant={mapStyle === 'network' ? 'default' : 'outline'}
+            className="text-xs px-2 py-1"
             onClick={() => setMapStyle('network')}
           >
             <Wifi className="h-3 w-3 mr-1" />
-            Network
+            <span className="hidden sm:inline">Network</span>
           </Button>
-          <Button 
-            size="sm" 
-            variant={connections ? 'default' : 'outline'} 
-            className="text-xs"
+          <Button
+            size="sm"
+            variant={connections ? 'default' : 'outline'}
+            className="text-xs px-2 py-1"
             onClick={() => setConnections(!connections)}
           >
             <Layers className="h-3 w-3 mr-1" />
-            Links
+            <span className="hidden sm:inline">Links</span>
           </Button>
         </div>
       </div>
