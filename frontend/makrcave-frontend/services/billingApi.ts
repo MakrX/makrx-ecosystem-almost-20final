@@ -300,8 +300,15 @@ async function apiCall<T>(
       return { data: fallbackData };
     }
 
-    // If no fallback data available, return a generic success with empty data
+    // If no fallback data available, return appropriate empty data based on endpoint
     console.warn('No fallback data available for endpoint:', endpoint);
+    if (endpoint.includes('analytics')) {
+      return { data: { revenue: { total: 0, monthly: 0, weekly: 0, daily: 0, growth_rate: 0, previous_period: 0 }, transactions: { total_count: 0, successful_count: 0, failed_count: 0, pending_count: 0, success_rate: 0, average_amount: 0 }, revenue_by_type: {}, revenue_by_month: [], top_customers: [], payment_methods: {} } as T };
+    }
+    if (endpoint.includes('credit-wallet')) {
+      return { data: { id: 'wallet_fallback', balance: 0, total_earned: 0, total_spent: 0, conversion_rate: 1.0, auto_recharge_enabled: false, auto_recharge_threshold: 0, auto_recharge_amount: 0 } as T };
+    }
+    // For other endpoints, return empty array
     return { data: [] as T };
   }
 }
