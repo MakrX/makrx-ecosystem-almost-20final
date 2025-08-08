@@ -278,6 +278,7 @@ export const ROLE_PERMISSIONS: Record<UserRole, RolePermissions> = {
       featureFlags: false,
       globalDashboard: false,
       makerspaceSettings: 'none',
+      healthMonitoring: false,
     },
   },
 
@@ -347,6 +348,7 @@ export const ROLE_PERMISSIONS: Record<UserRole, RolePermissions> = {
       featureFlags: false,
       globalDashboard: false,
       makerspaceSettings: 'none',
+      healthMonitoring: false,
     },
   },
 };
