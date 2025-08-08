@@ -203,6 +203,8 @@ const NotFound = () => {
   const [showMinigame, setShowMinigame] = useState(false);
   const [labRevived, setLabRevived] = useState(false);
   const [hiddenButtonVisible, setHiddenButtonVisible] = useState(false);
+  const [diagnosticRunning, setDiagnosticRunning] = useState(false);
+  const [diagnosticComplete, setDiagnosticComplete] = useState(false);
 
   // Show hidden button after some time or interaction
   useEffect(() => {
