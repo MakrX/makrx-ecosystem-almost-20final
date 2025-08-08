@@ -370,7 +370,14 @@ class AuthService {
 
   // Request password reset
   async requestPasswordReset(data: ResetPasswordData): Promise<{ message: string }> {
+    const startTime = Date.now();
+
     try {
+      loggingService.info('auth', 'AuthService.requestPasswordReset', 'Password reset request initiated', {
+        email: data.email,
+        timestamp: new Date().toISOString()
+      });
+
       const response = await fetch(`${API_BASE_URL}/auth/password-reset/request`, {
         method: 'POST',
         headers: {
@@ -379,13 +386,39 @@ class AuthService {
         body: JSON.stringify(data),
       });
 
+      const responseTime = Date.now() - startTime;
+      loggingService.logAPICall('/auth/password-reset/request', 'POST', response.status, responseTime);
+
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}));
-        throw new Error(errorData.detail || 'Password reset request failed');
+        const errorMessage = errorData.detail || 'Password reset request failed';
+
+        loggingService.logAuthEvent('password_reset_request', false, {
+          email: data.email,
+          statusCode: response.status,
+          errorMessage,
+          responseTime
+        });
+
+        throw new Error(errorMessage);
       }
 
-      return await response.json();
+      const result = await response.json();
+
+      loggingService.logAuthEvent('password_reset_request', true, {
+        email: data.email,
+        responseTime
+      });
+
+      return result;
     } catch (error) {
+      const responseTime = Date.now() - startTime;
+      loggingService.error('auth', 'AuthService.requestPasswordReset', 'Password reset request failed', {
+        email: data.email,
+        error: (error as Error).message,
+        responseTime
+      }, (error as Error).stack);
+
       console.error('Password reset request error:', error);
       throw error;
     }
@@ -393,7 +426,14 @@ class AuthService {
 
   // Reset password with token
   async resetPassword(token: string, newPassword: string): Promise<{ message: string }> {
+    const startTime = Date.now();
+
     try {
+      loggingService.info('auth', 'AuthService.resetPassword', 'Password reset confirmation initiated', {
+        hasToken: !!token,
+        timestamp: new Date().toISOString()
+      });
+
       const response = await fetch(`${API_BASE_URL}/auth/password-reset/confirm`, {
         method: 'POST',
         headers: {
@@ -405,13 +445,36 @@ class AuthService {
         }),
       });
 
+      const responseTime = Date.now() - startTime;
+      loggingService.logAPICall('/auth/password-reset/confirm', 'POST', response.status, responseTime);
+
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}));
-        throw new Error(errorData.detail || 'Password reset failed');
+        const errorMessage = errorData.detail || 'Password reset failed';
+
+        loggingService.logAuthEvent('password_reset_confirm', false, {
+          statusCode: response.status,
+          errorMessage,
+          responseTime
+        });
+
+        throw new Error(errorMessage);
       }
 
-      return await response.json();
+      const result = await response.json();
+
+      loggingService.logAuthEvent('password_reset_confirm', true, {
+        responseTime
+      });
+
+      return result;
     } catch (error) {
+      const responseTime = Date.now() - startTime;
+      loggingService.error('auth', 'AuthService.resetPassword', 'Password reset confirmation failed', {
+        error: (error as Error).message,
+        responseTime
+      }, (error as Error).stack);
+
       console.error('Password reset error:', error);
       throw error;
     }
