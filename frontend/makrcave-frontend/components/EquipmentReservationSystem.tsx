@@ -368,7 +368,7 @@ const EquipmentReservationSystem: React.FC<EquipmentReservationSystemProps> = ({
       equipment_id: formData.equipment_id,
       equipment_name: equipment.find(e => e.id === formData.equipment_id)?.name || 'Unknown Equipment',
       user_id: user?.id || 'current-user',
-      user_name: user?.firstName && user?.lastName ? `${user.firstName} ${user.lastName}` : user?.username || 'Current User',
+      user_name: formatUserDisplayName(user),
       start_time: startDateTime.toISOString(),
       end_time: endDateTime.toISOString(),
       status: policies.find(p => p.equipment_id === formData.equipment_id)?.auto_approve ? 'approved' : 'pending',
