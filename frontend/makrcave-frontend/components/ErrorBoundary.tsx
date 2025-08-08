@@ -384,6 +384,6 @@ export function ComponentErrorBoundary({
       }
     >
       {children}
-    </ComponentErrorBoundary>
+    </ErrorBoundary>
   );
 }
