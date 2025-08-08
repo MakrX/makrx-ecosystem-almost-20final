@@ -21,6 +21,7 @@ import {
 } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { format, differenceInMinutes } from 'date-fns';
+import { formatUserDisplayName } from '../lib/userUtils';
 
 interface CheckInSession {
   id: string;
