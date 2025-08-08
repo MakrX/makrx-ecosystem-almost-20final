@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { Button } from '../components/ui/button';
 import { Card, CardContent } from '../components/ui/card';
 import { Progress } from '../components/ui/progress';
-import { ArrowLeft, Zap, AlertTriangle, Settings, Monitor, Wrench } from 'lucide-react';
+import { ArrowLeft, Zap, AlertTriangle, Settings, Monitor, Wrench, Home, MapPin, RotateCcw } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 // Sound effect simulation through visual feedback
@@ -148,7 +148,7 @@ const ReviveLabGame = ({ onGameComplete }: { onGameComplete: () => void }) => {
     <Card className="bg-black/80 border-cyan-500/50 backdrop-blur-md">
       <CardContent className="p-6">
         <div className="text-center mb-6">
-          <h3 className="text-2xl font-bold text-cyan-400 mb-2">🔧 Lab Revival Protocol</h3>
+          <h3 className="text-2xl font-bold text-cyan-400 mb-2">�� Lab Revival Protocol</h3>
           <p className="text-gray-300 text-sm">Click the power button rapidly to revive the lab!</p>
         </div>
         
