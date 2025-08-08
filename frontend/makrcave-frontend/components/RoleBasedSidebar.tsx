@@ -162,7 +162,7 @@ function ServiceProviderSidebar() {
           </div>
           <div className="flex-1 min-w-0">
             <p className="text-xs sm:text-sm font-medium truncate text-yellow-700 group-hover:text-yellow-800">
-              {user?.firstName ? `${user.firstName} ${user.lastName}` : user?.username}
+              {formatUserDisplayNameCompact(user)}
             </p>
             <p className="text-xs text-yellow-600 truncate group-hover:text-yellow-700">
               Service Provider
