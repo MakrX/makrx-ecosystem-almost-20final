@@ -34,6 +34,7 @@ import ForgotPassword from "./pages/ForgotPassword";
 import SystemHealth from "./pages/SystemHealth";
 import ErrorLogs from "./pages/ErrorLogs";
 import ProtectedRoute from "./components/ProtectedRoute";
+import ErrorBoundary from "./components/ErrorBoundary";
 import { createRoot } from "react-dom/client";
 
 const App = () => (
