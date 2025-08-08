@@ -220,9 +220,25 @@ async function apiCall<T>(
   endpoint: string,
   options: RequestInit = {}
 ): Promise<ApiResponse<T>> {
+  const startTime = Date.now();
+  const method = options.method || 'GET';
+
+  loggingService.debug('api', 'ApiService.apiCall', `Starting ${method} ${endpoint}`, {
+    endpoint,
+    method,
+    hasBody: !!options.body
+  });
+
   try {
     const token = localStorage.getItem('auth_token') || localStorage.getItem('authToken');
-    
+
+    loggingService.debug('api', 'ApiService.apiCall', 'Making API call with authentication', {
+      endpoint,
+      method,
+      hasToken: !!token,
+      apiBaseUrl: API_BASE_URL
+    });
+
     const response = await fetch(`${API_BASE_URL}${endpoint}`, {
       headers: {
         'Content-Type': 'application/json',
@@ -232,14 +248,46 @@ async function apiCall<T>(
       ...options,
     });
 
+    const responseTime = Date.now() - startTime;
+    loggingService.logAPICall(endpoint, method, response.status, responseTime);
+
     if (!response.ok) {
       const errorData = await response.json().catch(() => ({}));
-      throw new Error(errorData.detail || `HTTP error! status: ${response.status}`);
+      const errorMessage = errorData.detail || `HTTP error! status: ${response.status}`;
+
+      loggingService.error('api', 'ApiService.apiCall', 'API call failed', {
+        endpoint,
+        method,
+        statusCode: response.status,
+        errorMessage,
+        responseTime,
+        errorDetails: errorData
+      });
+
+      throw new Error(errorMessage);
     }
 
     const data = await response.json();
+
+    loggingService.info('api', 'ApiService.apiCall', 'API call successful', {
+      endpoint,
+      method,
+      responseTime,
+      hasData: !!data,
+      dataSize: JSON.stringify(data).length
+    });
+
     return { data };
   } catch (error) {
+    const responseTime = Date.now() - startTime;
+
+    loggingService.error('api', 'ApiService.apiCall', 'API call error', {
+      endpoint,
+      method,
+      error: (error as Error).message,
+      responseTime
+    }, (error as Error).stack);
+
     console.error('API call failed:', error);
     return { error: error instanceof Error ? error.message : 'Unknown error occurred' };
   }
