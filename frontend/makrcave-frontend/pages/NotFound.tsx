@@ -256,7 +256,7 @@ const NotFound = () => {
                     <div><span className="text-red-400">FATAL:</span> <GlitchText>Equipment array disconnected</GlitchText></div>
                     <div><span className="text-blue-400">INFO:</span> Attempting auto-recovery...</div>
                     <div><span className="text-red-400">ERROR:</span> <GlitchText>Recovery protocol failed</GlitchText></div>
-                    <div className="text-red-500 animate-pulse">>>> MANUAL INTERVENTION REQUIRED <<<</div>
+                    <div className="text-red-500 animate-pulse">{'>>> MANUAL INTERVENTION REQUIRED <<<'}</div>
                   </div>
                 </CardContent>
               </Card>
