@@ -33,6 +33,7 @@ import Register from "./pages/Register";
 import ForgotPassword from "./pages/ForgotPassword";
 import SystemHealth from "./pages/SystemHealth";
 import ErrorLogs from "./pages/ErrorLogs";
+import LandingPage from "./pages/LandingPage";
 import ProtectedRoute from "./components/ProtectedRoute";
 import ErrorBoundary from "./components/ErrorBoundary";
 import { createRoot } from "react-dom/client";
