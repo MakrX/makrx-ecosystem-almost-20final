@@ -57,6 +57,7 @@ const LandingPage = () => {
             <div className="container mx-auto px-6 py-4">
               <nav className="flex flex-col space-y-4">
                 <a href="#explore" className="text-white/80 hover:text-white transition-colors" onClick={() => setIsMobileMenuOpen(false)}>Explore</a>
+                <Link to="/makrverse" className="text-white/80 hover:text-white transition-colors" onClick={() => setIsMobileMenuOpen(false)}>MakrVerse</Link>
                 <a href="#features" className="text-white/80 hover:text-white transition-colors" onClick={() => setIsMobileMenuOpen(false)}>Features</a>
                 <a href="#institutions" className="text-white/80 hover:text-white transition-colors" onClick={() => setIsMobileMenuOpen(false)}>Institutions</a>
                 <a href="#community" className="text-white/80 hover:text-white transition-colors" onClick={() => setIsMobileMenuOpen(false)}>Community</a>
