@@ -1029,27 +1029,68 @@ class AuthService {
   // Parse JWT token payload
   parseTokenPayload(token: string): TokenPayload {
     try {
-      const payload = token.split('.')[1];
-      if (!payload) {
-        throw new Error('Invalid token format: missing payload');
+      // Check if token exists and has basic structure
+      if (!token || typeof token !== 'string') {
+        throw new Error('Token is null, undefined, or not a string');
       }
 
-      const decoded = atob(payload);
-      const parsed = JSON.parse(decoded);
+      // Split token into parts
+      const parts = token.split('.');
+      if (parts.length !== 3) {
+        throw new Error(`Invalid token format: expected 3 parts, got ${parts.length}`);
+      }
+
+      const [header, payload, signature] = parts;
+
+      if (!payload) {
+        throw new Error('Invalid token format: missing payload section');
+      }
+
+      // Decode the payload
+      let decoded: string;
+      try {
+        decoded = atob(payload);
+      } catch (decodeError) {
+        throw new Error(`Failed to base64 decode payload: ${(decodeError as Error).message}`);
+      }
+
+      // Parse JSON
+      let parsed: any;
+      try {
+        parsed = JSON.parse(decoded);
+      } catch (parseError) {
+        throw new Error(`Failed to parse JSON payload: ${(parseError as Error).message}`);
+      }
+
+      // Validate required JWT fields
+      if (!parsed.sub) {
+        throw new Error('Token payload missing required "sub" field');
+      }
+
+      if (!parsed.exp) {
+        throw new Error('Token payload missing required "exp" field');
+      }
 
       loggingService.debug('auth', 'AuthService.parseTokenPayload', 'Token parsed successfully', {
         userId: parsed.sub,
         role: parsed.role,
-        expiry: new Date(parsed.exp * 1000).toISOString()
+        expiry: new Date(parsed.exp * 1000).toISOString(),
+        issuedAt: parsed.iat ? new Date(parsed.iat * 1000).toISOString() : 'unknown'
       });
 
-      return parsed;
+      return parsed as TokenPayload;
     } catch (error) {
-      loggingService.error('auth', 'AuthService.parseTokenPayload', 'Failed to parse token payload', {
-        error: (error as Error).message,
-        tokenLength: token?.length || 0
-      }, (error as Error).stack);
-      throw error;
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+      const errorDetails = {
+        error: errorMessage,
+        tokenLength: token?.length || 0,
+        tokenStart: token?.substring(0, 20) || 'N/A',
+        tokenParts: token ? token.split('.').length : 0
+      };
+
+      loggingService.error('auth', 'AuthService.parseTokenPayload', 'Failed to parse token payload', errorDetails, error instanceof Error ? error.stack : undefined);
+
+      throw new Error(`Token parsing failed: ${errorMessage}`);
     }
   }
 
