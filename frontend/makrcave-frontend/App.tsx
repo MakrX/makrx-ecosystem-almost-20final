@@ -28,6 +28,8 @@ import AdminMakerspace from "./pages/admin/Makerspace";
 import AdminMakerspaces from "./pages/admin/Makerspaces";
 import AdminFeatureFlags from "./pages/admin/FeatureFlags";
 import Login from "./pages/Login";
+import Register from "./pages/Register";
+import ForgotPassword from "./pages/ForgotPassword";
 import { createRoot } from "react-dom/client";
 
 const App = () => (
@@ -41,7 +43,10 @@ const App = () => (
                 <SkillProvider>
                   <BrowserRouter>
                 <Routes>
+                  {/* Authentication Routes */}
                   <Route path="/login" element={<Login />} />
+                  <Route path="/register" element={<Register />} />
+                  <Route path="/forgot-password" element={<ForgotPassword />} />
                   <Route path="/" element={<Layout />}>
                     <Route index element={<Navigate to="/portal/dashboard" replace />} />
                     <Route path="portal">
