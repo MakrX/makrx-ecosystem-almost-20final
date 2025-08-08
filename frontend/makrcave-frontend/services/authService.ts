@@ -86,6 +86,9 @@ class AuthService {
   // Returns user data and tokens on success
   async login(credentials: LoginCredentials): Promise<LoginResponse> {
     try {
+      console.log('Attempting login to:', `${API_BASE_URL}/auth/login`);
+      console.log('Credentials:', { username: credentials.username, password: '[HIDDEN]' });
+
       const response = await fetch(`${API_BASE_URL}/auth/login`, {
         method: 'POST',
         headers: {
@@ -97,9 +100,12 @@ class AuthService {
         }),
       });
 
+      console.log('Response status:', response.status, response.statusText);
+
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}));
-        throw new Error(errorData.detail || 'Login failed');
+        console.error('Login failed with error:', errorData);
+        throw new Error(errorData.detail || `Login failed: ${response.status} ${response.statusText}`);
       }
 
       const data: LoginResponse = await response.json();
