@@ -101,6 +101,9 @@ const App = () => (
                         <Route path="error-logs" element={<ErrorLogs />} />
                       </Route>
                     </Route>
+
+                    {/* Catch-all route for 404 */}
+                    <Route path="*" element={<NotFound />} />
                   </Routes>
                       </BrowserRouter>
                     </HealthProvider>
