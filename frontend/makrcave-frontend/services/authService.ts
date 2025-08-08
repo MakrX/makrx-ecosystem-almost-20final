@@ -1008,20 +1008,39 @@ class AuthService {
 
     try {
       const payload = this.parseTokenPayload(token);
-      const isValid = payload.exp > Date.now() / 1000;
+      const currentTime = Math.floor(Date.now() / 1000);
+      const isValid = payload.exp > currentTime;
 
       if (!isValid) {
+        const expiry = new Date(payload.exp * 1000);
+        const now = new Date();
+        const timeExpired = Math.floor((now.getTime() - expiry.getTime()) / 1000);
+
         loggingService.warn('auth', 'AuthService.isAuthenticated', 'Token expired', {
-          expiry: new Date(payload.exp * 1000).toISOString(),
-          now: new Date().toISOString()
+          expiry: expiry.toISOString(),
+          now: now.toISOString(),
+          expiredSecondsAgo: timeExpired,
+          userId: payload.sub
+        });
+      } else {
+        loggingService.debug('auth', 'AuthService.isAuthenticated', 'Token is valid', {
+          userId: payload.sub,
+          role: payload.role,
+          expiresIn: payload.exp - currentTime
         });
       }
 
       return isValid;
     } catch (error) {
-      loggingService.error('auth', 'AuthService.isAuthenticated', 'Failed to parse token', {
-        error: (error as Error).message
-      }, (error as Error).stack);
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+      loggingService.error('auth', 'AuthService.isAuthenticated', 'Failed to validate token', {
+        error: errorMessage,
+        tokenPresent: !!token,
+        tokenLength: token?.length || 0
+      }, error instanceof Error ? error.stack : undefined);
+
+      // Clear invalid token
+      this.clearAuthData();
       return false;
     }
   }
