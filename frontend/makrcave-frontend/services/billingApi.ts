@@ -274,6 +274,15 @@ async function apiCall<T>(
   endpoint: string,
   options: RequestInit = {}
 ): Promise<ApiResponse<T>> {
+  const startTime = Date.now();
+  const method = options.method || 'GET';
+
+  loggingService.debug('api', 'BillingApi.apiCall', `Starting ${method} ${endpoint}`, {
+    endpoint,
+    method,
+    hasBody: !!options.body
+  });
+
   // Check if we're in a cloud environment where API might not be available
   const isCloudEnvironment = window.location.hostname.includes('fly.dev') ||
                             window.location.hostname.includes('builder.codes') ||
@@ -281,7 +290,21 @@ async function apiCall<T>(
 
   // If in cloud environment or API base URL suggests no real backend, use mock data immediately
   if (isCloudEnvironment || API_BASE_URL === '/api') {
-    console.log('Using mock data for cloud environment, endpoint:', endpoint);
+    const responseTime = Date.now() - startTime;
+
+    loggingService.info('api', 'BillingApi.apiCall', 'Using mock data for cloud environment', {
+      endpoint,
+      method,
+      responseTime,
+      reason: 'cloud_environment_detected'
+    });
+
+    loggingService.logBillingEvent('api_fallback_to_mock', undefined, {
+      endpoint,
+      method,
+      environment: 'cloud'
+    });
+
     const fallbackData = getFallbackData<T>(endpoint);
     if (fallbackData !== null) {
       return { data: fallbackData };
@@ -300,6 +323,14 @@ async function apiCall<T>(
   // Try real API call for local development
   try {
     const token = localStorage.getItem('auth_token') || localStorage.getItem('authToken');
+
+    loggingService.debug('api', 'BillingApi.apiCall', 'Making real API call', {
+      endpoint,
+      method,
+      hasToken: !!token,
+      apiBaseUrl: API_BASE_URL
+    });
+
     const response = await fetch(`${API_BASE_URL}${endpoint}`, {
       headers: {
         'Content-Type': 'application/json',
@@ -309,15 +340,63 @@ async function apiCall<T>(
       ...options,
     });
 
+    const responseTime = Date.now() - startTime;
+    loggingService.logAPICall(endpoint, method, response.status, responseTime);
+
     if (!response.ok) {
       const errorData = await response.json().catch(() => ({}));
-      throw new Error(errorData.detail || `HTTP error! status: ${response.status}`);
+      const errorMessage = errorData.detail || `HTTP error! status: ${response.status}`;
+
+      loggingService.error('api', 'BillingApi.apiCall', 'API call failed', {
+        endpoint,
+        method,
+        statusCode: response.status,
+        errorMessage,
+        responseTime
+      });
+
+      loggingService.logBillingEvent('api_error', undefined, {
+        endpoint,
+        method,
+        statusCode: response.status,
+        errorMessage
+      });
+
+      throw new Error(errorMessage);
     }
 
     const data = await response.json();
+
+    loggingService.info('api', 'BillingApi.apiCall', 'API call successful', {
+      endpoint,
+      method,
+      responseTime,
+      hasData: !!data
+    });
+
+    loggingService.logBillingEvent('api_success', undefined, {
+      endpoint,
+      method,
+      responseTime
+    });
+
     return { data };
   } catch (error) {
-    console.warn('API call failed, using fallback data for endpoint:', endpoint);
+    const responseTime = Date.now() - startTime;
+
+    loggingService.warn('api', 'BillingApi.apiCall', 'API call failed, using fallback data', {
+      endpoint,
+      method,
+      error: (error as Error).message,
+      responseTime
+    });
+
+    loggingService.logBillingEvent('api_fallback_after_error', undefined, {
+      endpoint,
+      method,
+      error: (error as Error).message,
+      responseTime
+    });
 
     // Fallback to mock data
     const fallbackData = getFallbackData<T>(endpoint);
