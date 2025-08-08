@@ -584,21 +584,33 @@ class AuthService {
 
   // Clear all auth data
   clearAuthData(): void {
+    const user = this.getUser();
+
+    loggingService.debug('auth', 'AuthService.clearAuthData', 'Clearing authentication data', {
+      userId: user?.id,
+      username: user?.username,
+      hadRefreshTimer: !!this.refreshTimer
+    });
+
     localStorage.removeItem(TOKEN_KEY);
     localStorage.removeItem(REFRESH_TOKEN_KEY);
     localStorage.removeItem(USER_KEY);
-    
+
     // Clear backward compatibility tokens
     localStorage.removeItem('auth_token');
     localStorage.removeItem('authToken');
     localStorage.removeItem('makrcave_user');
     localStorage.removeItem('makrcave_access_token');
-    
+
     // Clear refresh timer
     if (this.refreshTimer) {
       clearTimeout(this.refreshTimer);
       this.refreshTimer = null;
     }
+
+    loggingService.info('auth', 'AuthService.clearAuthData', 'Authentication data cleared successfully', {
+      previousUserId: user?.id
+    });
   }
 
   // Check if user is authenticated
