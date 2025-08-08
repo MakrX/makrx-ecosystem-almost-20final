@@ -475,9 +475,9 @@ class AuthService {
       assignedMakerspaces: data.makerspaceId ? [data.makerspaceId] : []
     };
 
-    // Generate mock tokens
-    const accessToken = `mock-access-token-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
-    const refreshToken = `mock-refresh-token-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+    // Generate mock JWT tokens
+    const accessToken = this.generateMockJWT(newUser);
+    const refreshToken = this.generateMockRefreshToken();
 
     const loginResponse: LoginResponse = {
       access_token: accessToken,
