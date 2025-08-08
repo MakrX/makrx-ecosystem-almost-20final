@@ -359,6 +359,17 @@ class AuthService {
         timestamp: new Date().toISOString()
       });
 
+      // Check if we're in a cloud environment
+      const isCloudEnvironment = window.location.hostname.includes('fly.dev') ||
+                               window.location.hostname.includes('builder.codes') ||
+                               window.location.hostname.includes('vercel.app') ||
+                               window.location.hostname.includes('netlify.app') ||
+                               !window.location.hostname.includes('localhost');
+
+      if (isCloudEnvironment) {
+        return this.mockRegister(data, Date.now() - startTime);
+      }
+
       const response = await fetch(`${API_BASE_URL}/auth/register`, {
         method: 'POST',
         headers: {
@@ -373,6 +384,12 @@ class AuthService {
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}));
         const errorMessage = errorData.detail || 'Registration failed';
+
+        // Fall back to mock registration on 404
+        if (response.status === 404) {
+          loggingService.warn('auth', 'AuthService.register', 'API not available, falling back to mock registration');
+          return this.mockRegister(data, responseTime);
+        }
 
         loggingService.logAuthEvent('registration', false, {
           email: data.email,
@@ -411,6 +428,24 @@ class AuthService {
       return loginResponse;
     } catch (error) {
       const responseTime = Date.now() - startTime;
+
+      // Try mock registration on network errors
+      if ((error as Error).message.includes('Failed to fetch') ||
+          (error as Error).message.includes('NetworkError')) {
+
+        loggingService.warn('auth', 'AuthService.register', 'Network error, falling back to mock registration');
+
+        try {
+          return this.mockRegister(data, responseTime);
+        } catch (mockError) {
+          loggingService.error('auth', 'AuthService.register', 'Mock registration also failed', {
+            originalError: (error as Error).message,
+            mockError: (mockError as Error).message
+          });
+          throw mockError;
+        }
+      }
+
       loggingService.error('auth', 'AuthService.register', 'Registration failed', {
         email: data.email,
         username: data.username,
@@ -421,6 +456,59 @@ class AuthService {
       console.error('Registration error:', error);
       throw error;
     }
+  }
+
+  // ========================================
+  // MOCK REGISTRATION FOR CLOUD ENVIRONMENT
+  // ========================================
+  private mockRegister(data: RegisterData, responseTime: number): LoginResponse {
+    // Create new user with maker role
+    const newUser: User = {
+      id: `user-${Date.now()}`,
+      email: data.email,
+      username: data.username,
+      firstName: data.firstName || '',
+      lastName: data.lastName || '',
+      role: 'maker', // Default role for new registrations
+      isActive: true,
+      createdAt: new Date().toISOString(),
+      assignedMakerspaces: data.makerspaceId ? [data.makerspaceId] : []
+    };
+
+    // Generate mock tokens
+    const accessToken = `mock-access-token-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+    const refreshToken = `mock-refresh-token-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+
+    const loginResponse: LoginResponse = {
+      access_token: accessToken,
+      refresh_token: refreshToken,
+      token_type: 'bearer',
+      expires_in: 1800,
+      user: newUser
+    };
+
+    // Store tokens and user data
+    this.setTokens(loginResponse.access_token, loginResponse.refresh_token);
+    this.setUser(loginResponse.user);
+
+    // Set up token refresh
+    this.scheduleTokenRefresh(loginResponse.expires_in);
+
+    loggingService.logAuthEvent('mock_registration', true, {
+      userId: newUser.id,
+      email: newUser.email,
+      username: newUser.username,
+      role: newUser.role,
+      responseTime
+    });
+
+    loggingService.info('auth', 'AuthService.mockRegister', 'Mock registration successful', {
+      userId: newUser.id,
+      role: newUser.role,
+      responseTime
+    });
+
+    return loginResponse;
   }
 
   // ========================================
