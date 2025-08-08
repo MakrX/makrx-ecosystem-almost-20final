@@ -306,29 +306,50 @@ const MakrVerseMap = ({ selectedCave, onCaveSelect }: { selectedCave: any, onCav
             style={{ left: `${x}%`, top: `${y}%` }}
             onClick={() => onCaveSelect(cave)}
           >
-            {/* Cave Marker */}
+            {/* Enhanced Cave Marker with realistic map integration */}
             <div className={`relative transition-all duration-300 ${selectedCave?.id === cave.id ? 'scale-125' : 'group-hover:scale-110'}`}>
-              <div className={`w-6 h-6 rounded-full border-2 ${
-                cave.featured 
-                  ? 'bg-yellow-400 border-yellow-300 shadow-lg shadow-yellow-400/50' 
-                  : cave.status === 'active' 
-                    ? 'bg-green-400 border-green-300 shadow-lg shadow-green-400/50' 
-                    : 'bg-gray-400 border-gray-300'
-              } relative`}>
+              {/* Marker base with enhanced visibility */}
+              <div className={`w-8 h-8 rounded-full border-3 ${
+                cave.featured
+                  ? 'bg-yellow-400 border-yellow-200 map-marker-featured'
+                  : cave.status === 'active'
+                    ? 'bg-green-400 border-green-200 map-marker-glow'
+                    : 'bg-gray-400 border-gray-200'
+              } relative z-10 backdrop-blur-sm`}>
                 {cave.status === 'active' && (
-                  <div className="absolute inset-0 rounded-full bg-green-400 animate-ping opacity-20"></div>
+                  <div className="absolute inset-0 rounded-full bg-green-400 animate-ping opacity-30"></div>
                 )}
                 {cave.featured && (
-                  <Star className="h-3 w-3 text-yellow-900 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2" />
+                  <Star className="h-4 w-4 text-yellow-900 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2" />
+                )}
+                {!cave.featured && cave.status === 'active' && (
+                  <div className="w-2 h-2 bg-white rounded-full absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 animate-pulse"></div>
                 )}
               </div>
-              
-              {/* Activity Rings */}
+
+              {/* Location pin shadow for depth */}
+              <div className="absolute top-full left-1/2 transform -translate-x-1/2 w-1 h-3 bg-black/30 blur-sm"></div>
+
+              {/* Activity Rings with enhanced visibility */}
               {isLive && cave.status === 'active' && (
                 <>
-                  <div className="absolute inset-0 rounded-full border border-green-400 animate-ping opacity-40"></div>
-                  <div className="absolute inset-0 rounded-full border border-blue-400 animate-ping opacity-30 animation-delay-500"></div>
+                  <div className="absolute -inset-2 rounded-full border-2 border-green-400/60 animate-ping"></div>
+                  <div className="absolute -inset-4 rounded-full border border-blue-400/40 animate-ping animation-delay-500"></div>
+                  <div className="absolute -inset-6 rounded-full border border-cyan-400/20 animate-ping animation-delay-1000"></div>
                 </>
+              )}
+
+              {/* Data transmission visualization */}
+              {cave.status === 'active' && (
+                <div className="absolute -inset-8">
+                  {[...Array(3)].map((_, i) => (
+                    <div
+                      key={i}
+                      className={`absolute inset-0 border border-blue-400/20 rounded-full animate-ping`}
+                      style={{ animationDelay: `${i * 0.8}s`, animationDuration: '2.4s' }}
+                    ></div>
+                  ))}
+                </div>
               )}
               
               {/* Quick Info Tooltip */}
