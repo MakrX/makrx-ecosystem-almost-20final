@@ -8,6 +8,7 @@ import { NotificationProvider } from "./contexts/NotificationContext";
 import { MemberProvider } from "./contexts/MemberContext";
 import { BillingProvider } from "./contexts/BillingContext";
 import { SkillProvider } from "./contexts/SkillContext";
+import { HealthProvider } from "./contexts/HealthContext";
 import Layout from "./components/Layout";
 import Dashboard from "./pages/Dashboard";
 import Inventory from "./pages/Inventory";
@@ -30,6 +31,7 @@ import AdminFeatureFlags from "./pages/admin/FeatureFlags";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import ForgotPassword from "./pages/ForgotPassword";
+import SystemHealth from "./pages/SystemHealth";
 import { createRoot } from "react-dom/client";
 
 const App = () => (
@@ -41,7 +43,12 @@ const App = () => (
             <MemberProvider>
               <BillingProvider>
                 <SkillProvider>
-                  <BrowserRouter>
+                  <HealthProvider
+                    autoRefresh={true}
+                    refreshInterval={60000}
+                    enableNotifications={true}
+                  >
+                    <BrowserRouter>
                 <Routes>
                   {/* Authentication Routes */}
                   <Route path="/login" element={<Login />} />
@@ -64,6 +71,7 @@ const App = () => (
                       <Route path="profile" element={<Profile />} />
                       <Route path="skills" element={<SkillManagement />} />
                       <Route path="notifications" element={<NotificationsCenter />} />
+                      <Route path="system-health" element={<SystemHealth />} />
                       <Route path="makerspaces" element={<AdminMakerspaces />} />
                       <Route path="admin">
                         <Route path="users" element={<AdminUsers />} />
@@ -73,7 +81,8 @@ const App = () => (
                     </Route>
                   </Route>
                 </Routes>
-                  </BrowserRouter>
+                    </BrowserRouter>
+                  </HealthProvider>
                 </SkillProvider>
               </BillingProvider>
             </MemberProvider>
