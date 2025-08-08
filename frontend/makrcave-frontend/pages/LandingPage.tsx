@@ -28,7 +28,7 @@ const LandingPage = () => {
               <a href="#community" className="text-white/80 hover:text-white transition-colors">Community</a>
             </nav>
 
-            <div className="flex items-center space-x-4">
+            <div className="hidden md:flex items-center space-x-4">
               <Link to="/register" className="text-white/80 hover:text-white transition-colors">
                 Join the Movement
               </Link>
@@ -39,8 +39,40 @@ const LandingPage = () => {
                 </Button>
               </Link>
             </div>
+
+            {/* Mobile menu button */}
+            <button
+              className="md:hidden text-white p-2"
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            >
+              {isMobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+            </button>
           </div>
         </div>
+
+        {/* Mobile menu */}
+        {isMobileMenuOpen && (
+          <div className="md:hidden absolute top-full left-0 right-0 bg-black/90 backdrop-blur-md border-t border-white/10 z-40">
+            <div className="container mx-auto px-6 py-4">
+              <nav className="flex flex-col space-y-4">
+                <a href="#explore" className="text-white/80 hover:text-white transition-colors" onClick={() => setIsMobileMenuOpen(false)}>Explore</a>
+                <a href="#features" className="text-white/80 hover:text-white transition-colors" onClick={() => setIsMobileMenuOpen(false)}>Features</a>
+                <a href="#institutions" className="text-white/80 hover:text-white transition-colors" onClick={() => setIsMobileMenuOpen(false)}>Institutions</a>
+                <a href="#community" className="text-white/80 hover:text-white transition-colors" onClick={() => setIsMobileMenuOpen(false)}>Community</a>
+                <hr className="border-white/20" />
+                <Link to="/register" className="text-white/80 hover:text-white transition-colors" onClick={() => setIsMobileMenuOpen(false)}>
+                  Join the Movement
+                </Link>
+                <Link to="/login" onClick={() => setIsMobileMenuOpen(false)}>
+                  <Button className="bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white border-none w-full">
+                    Go to Portal
+                    <ArrowRight className="ml-2 h-4 w-4" />
+                  </Button>
+                </Link>
+              </nav>
+            </div>
+          </div>
+        )}
       </header>
 
       {/* Hero Section */}
