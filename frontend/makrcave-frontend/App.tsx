@@ -32,6 +32,7 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import ForgotPassword from "./pages/ForgotPassword";
 import SystemHealth from "./pages/SystemHealth";
+import ProtectedRoute from "./components/ProtectedRoute";
 import { createRoot } from "react-dom/client";
 
 const App = () => (
