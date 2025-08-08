@@ -1,6 +1,8 @@
 // Comprehensive API Service for MakrCave Frontend
 // Connects to FastAPI backend with proper JWT authentication
 
+import loggingService from './loggingService';
+
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '/api';
 
 interface ApiResponse<T> {
