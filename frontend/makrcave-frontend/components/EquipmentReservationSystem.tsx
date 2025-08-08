@@ -36,6 +36,7 @@ import {
 import { format, addHours, startOfDay, endOfDay, isWithinInterval } from 'date-fns';
 import { useAuth } from '../contexts/AuthContext';
 import { useMakerspace } from '../contexts/MakerspaceContext';
+import { formatUserDisplayName } from '../lib/userUtils';
 import { EquipmentAccessPolicy } from '../types/equipment-access';
 import { EquipmentBillingService } from '../services/billingService';
 import ReservationWithBilling from './ReservationWithBilling';
