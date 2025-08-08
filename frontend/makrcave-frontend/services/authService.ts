@@ -512,6 +512,37 @@ class AuthService {
   }
 
   // ========================================
+  // MOCK JWT TOKEN GENERATION
+  // ========================================
+  private generateMockJWT(user: User): string {
+    // Create a proper JWT-like structure
+    const header = {
+      alg: 'HS256',
+      typ: 'JWT'
+    };
+
+    const payload = {
+      sub: user.id,
+      email: user.email,
+      role: user.role,
+      makerspace_ids: user.assignedMakerspaces,
+      iat: Math.floor(Date.now() / 1000),
+      exp: Math.floor(Date.now() / 1000) + 1800 // 30 minutes
+    };
+
+    // Base64 encode header and payload
+    const encodedHeader = btoa(JSON.stringify(header));
+    const encodedPayload = btoa(JSON.stringify(payload));
+    const signature = `mock_signature_${Date.now()}`;
+
+    return `${encodedHeader}.${encodedPayload}.${signature}`;
+  }
+
+  private generateMockRefreshToken(): string {
+    return `mock-refresh-token-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+  }
+
+  // ========================================
   // LOGOUT METHOD
   // ========================================
   // Clears all authentication data and invalidates server-side token
