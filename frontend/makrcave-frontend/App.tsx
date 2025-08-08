@@ -59,11 +59,16 @@ const App = () => (
                     >
                       <BrowserRouter>
                   <Routes>
+                    {/* Public Landing Page */}
+                    <Route path="/" element={<LandingPage />} />
+
                     {/* Authentication Routes */}
                     <Route path="/login" element={<Login />} />
                     <Route path="/register" element={<Register />} />
                     <Route path="/forgot-password" element={<ForgotPassword />} />
-                    <Route path="/" element={<Layout />}>
+
+                    {/* Protected Portal Routes */}
+                    <Route path="/portal" element={<Layout />}>
                       <Route index element={<Navigate to="/portal/dashboard" replace />} />
                       <Route path="portal">
                         <Route path="dashboard" element={<Dashboard />} />
