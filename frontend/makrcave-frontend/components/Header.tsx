@@ -1,6 +1,7 @@
 import { Search, Menu, ExternalLink, User as UserIcon } from 'lucide-react';
 import { useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
+import { formatUserDisplayName } from '../lib/userUtils';
 import { FeatureGate } from './FeatureGate';
 import MakrXThemeToggle from './MakrXThemeToggle';
 import NotificationPanel from './NotificationPanel';
