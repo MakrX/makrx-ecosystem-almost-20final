@@ -9,6 +9,8 @@
 // - Password reset functionality
 // - Role-based permission checking
 
+import loggingService from './loggingService';
+
 // API Configuration - Change this URL to point to your backend
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '/api';
 // Local Storage Keys - Change these if you want different storage key names
