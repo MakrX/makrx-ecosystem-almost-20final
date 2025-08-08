@@ -283,23 +283,23 @@ const NotFound = () => {
         <div className="absolute bottom-1/3 left-1/2 w-3 h-3 bg-yellow-400 rounded-full animate-bounce opacity-30"></div>
       </div>
 
-      {/* Navigation Header */}
-      <div className="relative z-10 p-6">
+      {/* Responsive Navigation Header */}
+      <div className="relative z-10 p-3 sm:p-6">
         <div className="max-w-4xl mx-auto">
-          <div className="flex items-center justify-between mb-4">
-            <div className="text-gray-400 text-sm font-mono">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-0 mb-4">
+            <div className="text-gray-400 text-xs sm:text-sm font-mono">
               <span className="text-red-400">SYSTEM</span> {'>'} <span className="text-yellow-400">LAB_404</span> {'>'} <span className="text-white">ERROR_STATE</span>
             </div>
             <div className="flex items-center space-x-2">
               <Link to="/">
-                <Button variant="outline" size="sm" className="border-gray-600 text-gray-300 hover:bg-gray-800">
-                  <Home className="h-4 w-4 mr-1" />
+                <Button variant="outline" size="sm" className="border-gray-600 text-gray-300 hover:bg-gray-800 text-xs sm:text-sm">
+                  <Home className="h-3 w-3 sm:h-4 sm:w-4 mr-1" />
                   Home
                 </Button>
               </Link>
               <Link to="/portal">
-                <Button variant="outline" size="sm" className="border-blue-600 text-blue-300 hover:bg-blue-900/20">
-                  <Settings className="h-4 w-4 mr-1" />
+                <Button variant="outline" size="sm" className="border-blue-600 text-blue-300 hover:bg-blue-900/20 text-xs sm:text-sm">
+                  <Settings className="h-3 w-3 sm:h-4 sm:w-4 mr-1" />
                   Portal
                 </Button>
               </Link>
