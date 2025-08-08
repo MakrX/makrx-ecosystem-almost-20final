@@ -207,17 +207,17 @@ export const transactionApi = {
         if (value !== undefined) queryParams.append(key, value.toString());
       });
     }
-    return apiCall<Transaction[]>(`/api/billing/transactions?${queryParams}`);
+    return apiCall<Transaction[]>(`/billing/transactions?${queryParams}`);
   },
 
   // Get transaction by ID
   getTransaction: async (transactionId: string): Promise<ApiResponse<Transaction>> => {
-    return apiCall<Transaction>(`/api/billing/transactions/${transactionId}`);
+    return apiCall<Transaction>(`/billing/transactions/${transactionId}`);
   },
 
   // Create new transaction
   createTransaction: async (data: CreateTransactionRequest): Promise<ApiResponse<Transaction>> => {
-    return apiCall<Transaction>('/api/billing/transactions', {
+    return apiCall<Transaction>('/billing/transactions', {
       method: 'POST',
       body: JSON.stringify(data),
     });
@@ -225,14 +225,14 @@ export const transactionApi = {
 
   // Retry failed transaction
   retryTransaction: async (transactionId: string): Promise<ApiResponse<Transaction>> => {
-    return apiCall<Transaction>(`/api/billing/transactions/${transactionId}/retry`, {
+    return apiCall<Transaction>(`/billing/transactions/${transactionId}/retry`, {
       method: 'POST',
     });
   },
 
   // Download transaction receipt
   downloadReceipt: async (transactionId: string): Promise<ApiResponse<Blob>> => {
-    return apiCall<Blob>(`/api/billing/transactions/${transactionId}/receipt`);
+    return apiCall<Blob>(`/billing/transactions/${transactionId}/receipt`);
   },
 };
 
@@ -252,17 +252,17 @@ export const invoiceApi = {
         if (value !== undefined) queryParams.append(key, value.toString());
       });
     }
-    return apiCall<Invoice[]>(`/api/billing/invoices?${queryParams}`);
+    return apiCall<Invoice[]>(`/billing/invoices?${queryParams}`);
   },
 
   // Get invoice by ID
   getInvoice: async (invoiceId: string): Promise<ApiResponse<Invoice>> => {
-    return apiCall<Invoice>(`/api/billing/invoices/${invoiceId}`);
+    return apiCall<Invoice>(`/billing/invoices/${invoiceId}`);
   },
 
   // Create new invoice
   createInvoice: async (data: CreateInvoiceRequest): Promise<ApiResponse<Invoice>> => {
-    return apiCall<Invoice>('/api/billing/invoices', {
+    return apiCall<Invoice>('/billing/invoices', {
       method: 'POST',
       body: JSON.stringify(data),
     });
@@ -270,26 +270,26 @@ export const invoiceApi = {
 
   // Download invoice PDF
   downloadInvoice: async (invoiceId: string): Promise<ApiResponse<Blob>> => {
-    return apiCall<Blob>(`/api/billing/invoices/${invoiceId}/download`);
+    return apiCall<Blob>(`/billing/invoices/${invoiceId}/download`);
   },
 
   // Send invoice to customer
   sendInvoice: async (invoiceId: string): Promise<ApiResponse<{ message: string }>> => {
-    return apiCall<{ message: string }>(`/api/billing/invoices/${invoiceId}/send`, {
+    return apiCall<{ message: string }>(`/billing/invoices/${invoiceId}/send`, {
       method: 'POST',
     });
   },
 
   // Mark invoice as paid
   markAsPaid: async (invoiceId: string): Promise<ApiResponse<Invoice>> => {
-    return apiCall<Invoice>(`/api/billing/invoices/${invoiceId}/mark-paid`, {
+    return apiCall<Invoice>(`/billing/invoices/${invoiceId}/mark-paid`, {
       method: 'POST',
     });
   },
 
   // Cancel invoice
   cancelInvoice: async (invoiceId: string): Promise<ApiResponse<Invoice>> => {
-    return apiCall<Invoice>(`/api/billing/invoices/${invoiceId}/cancel`, {
+    return apiCall<Invoice>(`/billing/invoices/${invoiceId}/cancel`, {
       method: 'POST',
     });
   },
@@ -299,12 +299,12 @@ export const invoiceApi = {
 export const creditWalletApi = {
   // Get wallet information
   getWallet: async (): Promise<ApiResponse<CreditWallet>> => {
-    return apiCall<CreditWallet>('/api/billing/credit-wallet');
+    return apiCall<CreditWallet>('/billing/credit-wallet');
   },
 
   // Update wallet settings
   updateWallet: async (data: UpdateCreditWalletRequest): Promise<ApiResponse<CreditWallet>> => {
-    return apiCall<CreditWallet>('/api/billing/credit-wallet', {
+    return apiCall<CreditWallet>('/billing/credit-wallet', {
       method: 'PUT',
       body: JSON.stringify(data),
     });
@@ -322,12 +322,12 @@ export const creditWalletApi = {
         if (value !== undefined) queryParams.append(key, value.toString());
       });
     }
-    return apiCall<CreditTransaction[]>(`/api/billing/credit-wallet/transactions?${queryParams}`);
+    return apiCall<CreditTransaction[]>(`/billing/credit-wallet/transactions?${queryParams}`);
   },
 
   // Purchase credits
   purchaseCredits: async (amount: number, paymentMethodId?: string): Promise<ApiResponse<Transaction>> => {
-    return apiCall<Transaction>('/api/billing/credit-wallet/purchase', {
+    return apiCall<Transaction>('/billing/credit-wallet/purchase', {
       method: 'POST',
       body: JSON.stringify({ amount, payment_method_id: paymentMethodId }),
     });
@@ -335,7 +335,7 @@ export const creditWalletApi = {
 
   // Manual credit adjustment (admin only)
   adjustCredits: async (amount: number, reason: string): Promise<ApiResponse<CreditTransaction>> => {
-    return apiCall<CreditTransaction>('/api/billing/credit-wallet/adjust', {
+    return apiCall<CreditTransaction>('/billing/credit-wallet/adjust', {
       method: 'POST',
       body: JSON.stringify({ amount, reason }),
     });
@@ -346,12 +346,12 @@ export const creditWalletApi = {
 export const paymentMethodApi = {
   // Get all payment methods
   getPaymentMethods: async (): Promise<ApiResponse<PaymentMethod[]>> => {
-    return apiCall<PaymentMethod[]>('/api/billing/payment-methods');
+    return apiCall<PaymentMethod[]>('/billing/payment-methods');
   },
 
   // Add new payment method
   addPaymentMethod: async (data: AddPaymentMethodRequest): Promise<ApiResponse<PaymentMethod>> => {
-    return apiCall<PaymentMethod>('/api/billing/payment-methods', {
+    return apiCall<PaymentMethod>('/billing/payment-methods', {
       method: 'POST',
       body: JSON.stringify(data),
     });
@@ -359,21 +359,21 @@ export const paymentMethodApi = {
 
   // Set default payment method
   setDefaultPaymentMethod: async (paymentMethodId: string): Promise<ApiResponse<PaymentMethod>> => {
-    return apiCall<PaymentMethod>(`/api/billing/payment-methods/${paymentMethodId}/set-default`, {
+    return apiCall<PaymentMethod>(`/billing/payment-methods/${paymentMethodId}/set-default`, {
       method: 'POST',
     });
   },
 
   // Delete payment method
   deletePaymentMethod: async (paymentMethodId: string): Promise<ApiResponse<{ message: string }>> => {
-    return apiCall<{ message: string }>(`/api/billing/payment-methods/${paymentMethodId}`, {
+    return apiCall<{ message: string }>(`/billing/payment-methods/${paymentMethodId}`, {
       method: 'DELETE',
     });
   },
 
   // Verify payment method
   verifyPaymentMethod: async (paymentMethodId: string): Promise<ApiResponse<PaymentMethod>> => {
-    return apiCall<PaymentMethod>(`/api/billing/payment-methods/${paymentMethodId}/verify`, {
+    return apiCall<PaymentMethod>(`/billing/payment-methods/${paymentMethodId}/verify`, {
       method: 'POST',
     });
   },
@@ -384,7 +384,7 @@ export const analyticsApi = {
   // Get billing analytics
   getBillingAnalytics: async (timeRange?: string): Promise<ApiResponse<BillingAnalytics>> => {
     const params = timeRange ? `?time_range=${timeRange}` : '';
-    return apiCall<BillingAnalytics>(`/api/billing/analytics${params}`);
+    return apiCall<BillingAnalytics>(`/billing/analytics${params}`);
   },
 
   // Export analytics report
@@ -392,13 +392,13 @@ export const analyticsApi = {
     const params = new URLSearchParams();
     if (timeRange) params.append('time_range', timeRange);
     params.append('format', format);
-    return apiCall<Blob>(`/api/billing/analytics/export?${params}`);
+    return apiCall<Blob>(`/billing/analytics/export?${params}`);
   },
 
   // Get revenue trends
   getRevenueTrends: async (timeRange?: string): Promise<ApiResponse<any>> => {
     const params = timeRange ? `?time_range=${timeRange}` : '';
-    return apiCall<any>(`/api/billing/analytics/revenue-trends${params}`);
+    return apiCall<any>(`/billing/analytics/revenue-trends${params}`);
   },
 };
 
@@ -422,7 +422,7 @@ export const checkoutApi = {
     client_secret?: string;
     redirect_url?: string;
   }>> => {
-    return apiCall('/api/billing/checkout/create-session', {
+    return apiCall('/billing/checkout/create-session', {
       method: 'POST',
       body: JSON.stringify(data),
     });
@@ -430,7 +430,7 @@ export const checkoutApi = {
 
   // Verify payment
   verifyPayment: async (sessionId: string, paymentId?: string): Promise<ApiResponse<Transaction>> => {
-    return apiCall<Transaction>('/api/billing/checkout/verify-payment', {
+    return apiCall<Transaction>('/billing/checkout/verify-payment', {
       method: 'POST',
       body: JSON.stringify({ session_id: sessionId, payment_id: paymentId }),
     });
@@ -438,7 +438,7 @@ export const checkoutApi = {
 
   // Handle webhook (for internal use)
   handleWebhook: async (webhookData: any): Promise<ApiResponse<{ message: string }>> => {
-    return apiCall<{ message: string }>('/api/billing/webhooks/payment', {
+    return apiCall<{ message: string }>('/billing/webhooks/payment', {
       method: 'POST',
       body: JSON.stringify(webhookData),
     });
@@ -449,7 +449,7 @@ export const checkoutApi = {
 export const refundApi = {
   // Request refund
   requestRefund: async (transactionId: string, amount?: number, reason?: string): Promise<ApiResponse<any>> => {
-    return apiCall('/api/billing/refunds', {
+    return apiCall('/billing/refunds', {
       method: 'POST',
       body: JSON.stringify({
         transaction_id: transactionId,
@@ -461,7 +461,7 @@ export const refundApi = {
 
   // Get refund status
   getRefundStatus: async (refundId: string): Promise<ApiResponse<any>> => {
-    return apiCall(`/api/billing/refunds/${refundId}`);
+    return apiCall(`/billing/refunds/${refundId}`);
   },
 
   // Get all refunds
@@ -476,7 +476,7 @@ export const refundApi = {
         if (value !== undefined) queryParams.append(key, value.toString());
       });
     }
-    return apiCall<any[]>(`/api/billing/refunds?${queryParams}`);
+    return apiCall<any[]>(`/billing/refunds?${queryParams}`);
   },
 };
 
