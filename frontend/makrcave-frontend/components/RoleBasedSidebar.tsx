@@ -76,7 +76,7 @@ function AdminSidebar() {
           </div>
           <div className="flex-1 min-w-0">
             <p className="text-xs sm:text-sm font-medium truncate text-blue-700 group-hover:text-blue-800">
-              {user?.firstName ? `${user.firstName} ${user.lastName}` : user?.username}
+              {formatUserDisplayNameCompact(user)}
             </p>
             <p className="text-xs text-blue-600 truncate group-hover:text-blue-700">
               Organization Administrator
