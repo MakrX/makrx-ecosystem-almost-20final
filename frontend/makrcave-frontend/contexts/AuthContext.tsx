@@ -1,3 +1,14 @@
+// ========================================
+// AUTHENTICATION CONTEXT
+// ========================================
+// Provides authentication state and methods throughout the React app
+// Handles:
+// - User state management
+// - Login/logout operations
+// - Role-based permissions
+// - Authentication initialization
+// - User session management
+
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { UserRole, RolePermissions } from '@makrx/types';
 import { getRolePermissions, hasPermission, UI_ACCESS } from '../config/rolePermissions';
@@ -43,21 +54,30 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const [user, setUser] = useState<User | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+  // ========================================
+  // STATE MANAGEMENT
+  // ========================================
+  const [user, setUser] = useState<User | null>(null);    // Current authenticated user
+  const [isLoading, setIsLoading] = useState(true);       // Loading state during auth initialization
 
   useEffect(() => {
     initializeAuth();
   }, []);
 
+  // ========================================
+  // AUTHENTICATION INITIALIZATION
+  // ========================================
+  // Runs on app startup to check for existing authentication
   const initializeAuth = async () => {
     try {
+      // Check if user has valid token and restore session
       if (authService.isAuthenticated()) {
         const currentUser = await authService.getCurrentUser();
         setUser(currentUser);
       }
     } catch (error) {
       console.error('Failed to initialize auth:', error);
+      // Clear invalid auth data
       authService.clearAuthData();
     } finally {
       setIsLoading(false);
@@ -119,14 +139,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return user ? UI_ACCESS[user.role] : UI_ACCESS.maker;
   };
 
-  // Role check helpers
-  const isSuperAdmin = user?.role === 'super_admin';
-  const isAdmin = user?.role === 'admin';
-  const isMakerspaceAdmin = user?.role === 'makerspace_admin';
-  const isServiceProvider = user?.role === 'service_provider';
-  const isMaker = user?.role === 'maker';
-  const isMakrcaveManager = isMakerspaceAdmin; // For backward compatibility
-  const isAuthenticated = !!user && authService.isAuthenticated();
+  // ========================================
+  // ROLE CHECK HELPERS
+  // ========================================
+  // Convenient boolean flags for role-based UI rendering
+  const isSuperAdmin = user?.role === 'super_admin';         // Highest privilege level
+  const isAdmin = user?.role === 'admin';                    // Administrative access
+  const isMakerspaceAdmin = user?.role === 'makerspace_admin'; // Makerspace management
+  const isServiceProvider = user?.role === 'service_provider'; // Service provider access
+  const isMaker = user?.role === 'maker';                     // Regular member access
+  const isMakrcaveManager = isMakerspaceAdmin;                // For backward compatibility
+  const isAuthenticated = !!user && authService.isAuthenticated(); // Combined auth check
 
   return (
     <AuthContext.Provider value={{
