@@ -474,9 +474,9 @@ const MakrVerse = () => {
         </div>
       </div>
 
-      <div className="flex h-screen pt-0">
-        {/* Sidebar */}
-        <div className="w-96 bg-black/30 backdrop-blur-md border-r border-white/10 overflow-y-auto">
+      <div className="flex flex-col lg:flex-row h-screen pt-0">
+        {/* Responsive Sidebar */}
+        <div className="w-full lg:w-96 h-[50vh] lg:h-full bg-black/30 backdrop-blur-md border-b lg:border-b-0 lg:border-r border-white/10 overflow-y-auto">
           <div className="p-6 space-y-6">
             {/* Global Stats */}
             <Card className="bg-white/10 backdrop-blur-md border-white/20">
