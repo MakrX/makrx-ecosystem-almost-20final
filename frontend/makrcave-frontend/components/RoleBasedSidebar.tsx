@@ -2,6 +2,7 @@ import { useAuth } from '../contexts/AuthContext';
 import SuperAdminSidebar from './SuperAdminSidebar';
 import ManagerSidebar from './ManagerSidebar';
 import MakerSidebar from './MakerSidebar';
+import { formatUserDisplayNameCompact } from '../lib/userUtils';
 
 // Admin Sidebar Component
 import { Link, useLocation } from 'react-router-dom';
