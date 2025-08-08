@@ -24,6 +24,9 @@ import {
   Settings
 } from 'lucide-react';
 import healthCheckService, { SystemHealthStatus, HealthCheckResult } from '../services/healthCheckService';
+import loggingService from '../services/loggingService';
+import { useAuth } from '../contexts/AuthContext';
+import { AdminOnly } from './ProtectedRoute';
 
 interface HealthStatusDashboardProps {
   autoRefresh?: boolean;
