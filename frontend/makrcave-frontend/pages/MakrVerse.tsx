@@ -510,21 +510,21 @@ const MakrVerse = () => {
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-3">
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-2 lg:grid-cols-2 gap-2 sm:gap-4">
                   <div className="text-center">
-                    <div className="text-2xl font-bold text-green-400">{makrCaves.length}</div>
+                    <div className="text-lg sm:text-2xl font-bold text-green-400">{makrCaves.length}</div>
                     <div className="text-xs text-gray-400">Active Caves</div>
                   </div>
                   <div className="text-center">
-                    <div className="text-2xl font-bold text-blue-400">{makrCaves.reduce((sum, cave) => sum + cave.onlineMembers, 0)}</div>
+                    <div className="text-lg sm:text-2xl font-bold text-blue-400">{makrCaves.reduce((sum, cave) => sum + cave.onlineMembers, 0)}</div>
                     <div className="text-xs text-gray-400">Makers Online</div>
                   </div>
                   <div className="text-center">
-                    <div className="text-2xl font-bold text-purple-400">{makrCaves.reduce((sum, cave) => sum + cave.activeProjects, 0)}</div>
+                    <div className="text-lg sm:text-2xl font-bold text-purple-400">{makrCaves.reduce((sum, cave) => sum + cave.activeProjects, 0)}</div>
                     <div className="text-xs text-gray-400">Active Projects</div>
                   </div>
                   <div className="text-center">
-                    <div className="text-2xl font-bold text-yellow-400">{makrCaves.reduce((sum, cave) => sum + cave.machinesRunning, 0)}</div>
+                    <div className="text-lg sm:text-2xl font-bold text-yellow-400">{makrCaves.reduce((sum, cave) => sum + cave.machinesRunning, 0)}</div>
                     <div className="text-xs text-gray-400">Machines Running</div>
                   </div>
                 </div>
