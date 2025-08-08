@@ -342,9 +342,9 @@ const NotFound = () => {
                       <>
                         <div className="border-t border-gray-700 my-2"></div>
                         <div className="text-cyan-400 animate-pulse">RUNNING DIAGNOSTIC SCAN...</div>
-                        <div className="text-gray-400">Scanning equipment status... <span className="animate-pulse">█��██████░░</span></div>
+                        <div className="text-gray-400">Scanning equipment status... <span className="animate-pulse">████████░░</span></div>
                         <div className="text-gray-400">Checking power levels... <span className="animate-pulse">██████████</span></div>
-                        <div className="text-gray-400">Analyzing error logs... <span className="animate-pulse">████░░░░░░</span></div>
+                        <div className="text-gray-400">Analyzing error logs... <span className="animate-pulse">████��░░░░░</span></div>
                       </>
                     )}
 
@@ -372,8 +372,8 @@ const NotFound = () => {
                 </CardContent>
               </Card>
 
-              {/* Broken Machines Grid */}
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+              {/* Responsive Broken Machines Grid */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 mb-6 sm:mb-8">
                 <BrokenMachine 
                   name="3D Printer Array" 
                   status="OFFLINE - Extruder jam detected"
