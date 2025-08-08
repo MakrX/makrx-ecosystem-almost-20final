@@ -616,21 +616,56 @@ class AuthService {
   // Check if user is authenticated
   isAuthenticated(): boolean {
     const token = this.getAccessToken();
-    if (!token) return false;
+    if (!token) {
+      loggingService.debug('auth', 'AuthService.isAuthenticated', 'No access token found');
+      return false;
+    }
 
     try {
       const payload = this.parseTokenPayload(token);
-      return payload.exp > Date.now() / 1000;
-    } catch {
+      const isValid = payload.exp > Date.now() / 1000;
+
+      if (!isValid) {
+        loggingService.warn('auth', 'AuthService.isAuthenticated', 'Token expired', {
+          expiry: new Date(payload.exp * 1000).toISOString(),
+          now: new Date().toISOString()
+        });
+      }
+
+      return isValid;
+    } catch (error) {
+      loggingService.error('auth', 'AuthService.isAuthenticated', 'Failed to parse token', {
+        error: (error as Error).message
+      }, (error as Error).stack);
       return false;
     }
   }
 
   // Parse JWT token payload
   parseTokenPayload(token: string): TokenPayload {
-    const payload = token.split('.')[1];
-    const decoded = atob(payload);
-    return JSON.parse(decoded);
+    try {
+      const payload = token.split('.')[1];
+      if (!payload) {
+        throw new Error('Invalid token format: missing payload');
+      }
+
+      const decoded = atob(payload);
+      const parsed = JSON.parse(decoded);
+
+      loggingService.debug('auth', 'AuthService.parseTokenPayload', 'Token parsed successfully', {
+        userId: parsed.sub,
+        role: parsed.role,
+        expiry: new Date(parsed.exp * 1000).toISOString()
+      });
+
+      return parsed;
+    } catch (error) {
+      loggingService.error('auth', 'AuthService.parseTokenPayload', 'Failed to parse token payload', {
+        error: (error as Error).message,
+        tokenLength: token?.length || 0
+      }, (error as Error).stack);
+      throw error;
+    }
   }
 
   // Get user role from token
