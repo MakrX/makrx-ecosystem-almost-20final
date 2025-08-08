@@ -3,15 +3,15 @@ import { Button } from '../components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card';
 import { Badge } from '../components/ui/badge';
 import { Progress } from '../components/ui/progress';
-import { 
-  MapPin, 
-  Zap, 
-  Users, 
-  Settings, 
-  Play, 
-  Pause, 
-  Volume2, 
-  Search, 
+import {
+  MapPin,
+  Zap,
+  Users,
+  Settings,
+  Play,
+  Pause,
+  Volume2,
+  Search,
   Filter,
   Globe,
   Layers,
@@ -23,7 +23,9 @@ import {
   Wrench,
   Calendar,
   Clock,
-  Activity
+  Activity,
+  Home,
+  ArrowLeft
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
