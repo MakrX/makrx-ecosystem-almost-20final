@@ -403,15 +403,43 @@ const NotFound = () => {
                 />
               </div>
 
-              {/* Hidden Revive Button */}
-              <div className="space-y-4">
-                <Link to="/">
-                  <Button className="bg-gradient-to-r from-gray-600 to-gray-700 hover:from-gray-500 hover:to-gray-600 text-white px-8 py-3">
-                    <ArrowLeft className="mr-2 h-5 w-5" />
-                    Return to Base
+              {/* Navigation Options */}
+              <div className="space-y-6">
+                {/* Primary Navigation */}
+                <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                  <Link to="/">
+                    <Button className="bg-gradient-to-r from-blue-600 to-purple-700 hover:from-blue-500 hover:to-purple-600 text-white px-8 py-3">
+                      <Home className="mr-2 h-5 w-5" />
+                      MakrCave Home
+                    </Button>
+                  </Link>
+                  <Link to="/portal">
+                    <Button className="bg-gradient-to-r from-gray-600 to-gray-700 hover:from-gray-500 hover:to-gray-600 text-white px-8 py-3">
+                      <ArrowLeft className="mr-2 h-5 w-5" />
+                      Back to Portal
+                    </Button>
+                  </Link>
+                </div>
+
+                {/* Alternative Options */}
+                <div className="flex flex-col sm:flex-row gap-3 justify-center">
+                  <Link to="/makrverse">
+                    <Button variant="outline" className="border-cyan-500/50 text-cyan-400 hover:bg-cyan-500/10">
+                      <MapPin className="mr-2 h-4 w-4" />
+                      Explore MakrVerse
+                    </Button>
+                  </Link>
+                  <Button
+                    variant="outline"
+                    className="border-yellow-500/50 text-yellow-400 hover:bg-yellow-500/10"
+                    onClick={() => window.history.back()}
+                  >
+                    <RotateCcw className="mr-2 h-4 w-4" />
+                    Go Back
                   </Button>
-                </Link>
-                
+                </div>
+
+                {/* Hidden Revive Button */}
                 {hiddenButtonVisible && (
                   <div className="mt-8">
                     <Button
