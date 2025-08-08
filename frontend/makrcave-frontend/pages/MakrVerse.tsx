@@ -20,7 +20,7 @@ import {
   Navigation,
   Eye,
   Wifi,
-  Tool,
+  Wrench,
   Calendar,
   Clock,
   Activity
