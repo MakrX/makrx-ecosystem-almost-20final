@@ -138,6 +138,7 @@ export const ROLE_PERMISSIONS: Record<UserRole, RolePermissions> = {
       featureFlags: false,
       globalDashboard: true,
       makerspaceSettings: 'none',
+      healthMonitoring: true,
     },
   },
 
