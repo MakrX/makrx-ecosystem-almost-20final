@@ -312,7 +312,38 @@ const NotFound = () => {
                     <div><span className="text-blue-400">INFO:</span> Attempting auto-recovery...</div>
                     <div><span className="text-red-400">ERROR:</span> <GlitchText>Recovery protocol failed</GlitchText></div>
                     <div className="text-red-500 animate-pulse">{'>>> MANUAL INTERVENTION REQUIRED <<<'}</div>
+
+                    {diagnosticRunning && (
+                      <>
+                        <div className="border-t border-gray-700 my-2"></div>
+                        <div className="text-cyan-400 animate-pulse">RUNNING DIAGNOSTIC SCAN...</div>
+                        <div className="text-gray-400">Scanning equipment status... <span className="animate-pulse">████████░░</span></div>
+                        <div className="text-gray-400">Checking power levels... <span className="animate-pulse">██████████</span></div>
+                        <div className="text-gray-400">Analyzing error logs... <span className="animate-pulse">████░░░░░░</span></div>
+                      </>
+                    )}
+
+                    {diagnosticComplete && (
+                      <>
+                        <div className="border-t border-green-700 my-2"></div>
+                        <div className="text-green-400">DIAGNOSTIC COMPLETE</div>
+                        <div className="text-yellow-400">SOLUTION:</div> <span className="text-cyan-400">Emergency revival protocol available</span>
+                        <div className="text-green-500 animate-pulse">{'>>> REVIVAL SYSTEM ACTIVATED <<<'}</div>
+                      </>
+                    )}
                   </div>
+
+                  {!diagnosticRunning && !diagnosticComplete && (
+                    <div className="mt-4 text-center">
+                      <Button
+                        onClick={runDiagnostic}
+                        variant="outline"
+                        className="border-cyan-500/50 text-cyan-400 hover:bg-cyan-500/10 text-sm"
+                      >
+                        🔍 Run System Diagnostic
+                      </Button>
+                    </div>
+                  )}
                 </CardContent>
               </Card>
 
