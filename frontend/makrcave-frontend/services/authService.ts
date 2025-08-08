@@ -1,7 +1,17 @@
+// ========================================
 // Authentication Service for MakrCave Frontend
-// Handles JWT tokens, login, logout, and token refresh
+// ========================================
+// This service handles all authentication operations including:
+// - User login/logout
+// - JWT token management
+// - Automatic token refresh
+// - User registration
+// - Password reset functionality
+// - Role-based permission checking
 
+// API Configuration - Change this URL to point to your backend
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '/api';
+// Local Storage Keys - Change these if you want different storage key names
 const TOKEN_KEY = 'makrcave_access_token';
 const REFRESH_TOKEN_KEY = 'makrcave_refresh_token';
 const USER_KEY = 'makrcave_user';
@@ -69,7 +79,11 @@ class AuthService {
     this.initializeTokenRefresh();
   }
 
-  // Login with username/password
+  // ========================================
+  // LOGIN METHOD
+  // ========================================
+  // Authenticates user with email/password and stores JWT tokens
+  // Returns user data and tokens on success
   async login(credentials: LoginCredentials): Promise<LoginResponse> {
     try {
       const response = await fetch(`${API_BASE_URL}/auth/login`, {
@@ -104,7 +118,11 @@ class AuthService {
     }
   }
 
-  // Register new user
+  // ========================================
+  // REGISTRATION METHOD
+  // ========================================
+  // Creates new user account (default role: 'maker')
+  // Automatically logs in user after successful registration
   async register(data: RegisterData): Promise<LoginResponse> {
     try {
       const response = await fetch(`${API_BASE_URL}/auth/register`, {
@@ -136,7 +154,10 @@ class AuthService {
     }
   }
 
-  // Logout
+  // ========================================
+  // LOGOUT METHOD
+  // ========================================
+  // Clears all authentication data and invalidates server-side token
   async logout(): Promise<void> {
     try {
       const token = this.getAccessToken();
@@ -410,7 +431,11 @@ class AuthService {
     return role === 'super_admin' || role === 'admin' || role === 'makerspace_admin';
   }
 
-  // Schedule token refresh
+  // ========================================
+  // TOKEN REFRESH SCHEDULING
+  // ========================================
+  // Automatically refreshes tokens 5 minutes before expiry
+  // Change the 300 seconds (5 minutes) value to adjust timing
   private scheduleTokenRefresh(expiresIn: number): void {
     // Clear existing timer
     if (this.refreshTimer) {
@@ -418,6 +443,7 @@ class AuthService {
     }
 
     // Refresh token 5 minutes before expiry
+    // CUSTOMIZATION: Change 300 to adjust refresh timing (in seconds)
     const refreshTime = (expiresIn - 300) * 1000;
     
     if (refreshTime > 0) {
