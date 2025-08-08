@@ -126,7 +126,7 @@ const LandingPage = () => {
             </p>
           </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8 max-w-6xl mx-auto">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 sm:gap-6 lg:gap-8 max-w-6xl mx-auto">
             {[
               { icon: '🔧', label: 'Tools', desc: 'Access professional equipment' },
               { icon: '🏭', label: 'Spaces', desc: 'Physical makerspaces worldwide' },
