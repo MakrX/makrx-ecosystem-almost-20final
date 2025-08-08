@@ -235,7 +235,7 @@ class AuthService {
       'admin@makrcave.com': {
         id: 'user-admin',
         email: 'admin@makrcave.com',
-        username: 'admin',
+        username: 'sysadmin',
         firstName: 'System',
         lastName: 'Administrator',
         role: 'admin',
@@ -246,7 +246,7 @@ class AuthService {
       'manager@makrcave.com': {
         id: 'user-manager',
         email: 'manager@makrcave.com',
-        username: 'manager',
+        username: 'spacemanager',
         firstName: 'Makerspace',
         lastName: 'Manager',
         role: 'makerspace_admin',
@@ -257,7 +257,7 @@ class AuthService {
       'provider@makrcave.com': {
         id: 'user-provider',
         email: 'provider@makrcave.com',
-        username: 'provider',
+        username: 'servicepro',
         firstName: 'Service',
         lastName: 'Provider',
         role: 'service_provider',
@@ -268,7 +268,7 @@ class AuthService {
       'maker@makrcave.com': {
         id: 'user-maker',
         email: 'maker@makrcave.com',
-        username: 'maker',
+        username: 'creativemakr',
         firstName: 'Regular',
         lastName: 'Maker',
         role: 'maker',
