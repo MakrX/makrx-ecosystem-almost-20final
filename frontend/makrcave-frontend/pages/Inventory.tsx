@@ -481,24 +481,6 @@ export default function Inventory() {
         </div>
       </div>
 
-      {/* Role-Based Access Information */}
-      <div className="makrcave-card bg-blue-50 dark:bg-blue-900/20 border-blue-200 dark:border-blue-800">
-        <div className="flex items-center gap-3">
-          <Shield className="w-5 h-5 text-blue-600" />
-          <div>
-            <h3 className="font-medium text-blue-800 dark:text-blue-200">
-              Access Level: {user?.role?.replace('_', ' ').toUpperCase()}
-            </h3>
-            <p className="text-sm text-blue-700 dark:text-blue-300">
-              {user?.role === 'super_admin' && 'Full access to all inventory across all makerspaces'}
-              {user?.role === 'makerspace_admin' && 'Manage inventory in your assigned makerspace'}
-              {user?.role === 'admin' && 'View-only access to all inventory'}
-              {user?.role === 'maker' && 'View inventory and link items to your projects'}
-              {user?.role === 'service_provider' && 'Manage your own inventory items and issue for jobs'}
-            </p>
-          </div>
-        </div>
-      </div>
 
       {/* Statistics Cards */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
