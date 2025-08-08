@@ -308,21 +308,30 @@ async function apiCall<T>(
 
 // Get fallback data based on endpoint
 function getFallbackData<T>(endpoint: string): T | null {
-  if (endpoint.includes('/billing/transactions')) {
+  console.log('Getting fallback data for endpoint:', endpoint);
+
+  if (endpoint.includes('transactions')) {
+    console.log('Returning transaction fallback data');
     return mockData.transactions as T;
   }
-  if (endpoint.includes('/billing/invoices')) {
+  if (endpoint.includes('invoices')) {
+    console.log('Returning invoice fallback data');
     return mockData.invoices as T;
   }
-  if (endpoint.includes('/billing/credit-wallet')) {
+  if (endpoint.includes('credit-wallet')) {
+    console.log('Returning credit wallet fallback data');
     return mockData.creditWallet as T;
   }
-  if (endpoint.includes('/billing/payment-methods')) {
+  if (endpoint.includes('payment-methods')) {
+    console.log('Returning payment methods fallback data');
     return mockData.paymentMethods as T;
   }
-  if (endpoint.includes('/billing/analytics')) {
+  if (endpoint.includes('analytics')) {
+    console.log('Returning analytics fallback data');
     return mockData.analytics as T;
   }
+
+  console.log('No specific fallback data found for:', endpoint);
   return null;
 }
 
