@@ -5,6 +5,29 @@ import { Progress } from '../components/ui/progress';
 import { ArrowLeft, Zap, AlertTriangle, Settings, Monitor, Wrench } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
+// Sound effect simulation through visual feedback
+const playClickSound = () => {
+  // Visual feedback for click (simulates sound)
+  const clickFeedback = document.createElement('div');
+  clickFeedback.className = 'fixed top-4 right-4 bg-cyan-500 text-white px-3 py-1 rounded-md text-sm z-50 animate-bounce';
+  clickFeedback.textContent = '🔊 *BEEP*';
+  document.body.appendChild(clickFeedback);
+  setTimeout(() => {
+    document.body.removeChild(clickFeedback);
+  }, 500);
+};
+
+const playSuccessSound = () => {
+  // Visual feedback for success
+  const successFeedback = document.createElement('div');
+  successFeedback.className = 'fixed top-4 right-4 bg-green-500 text-white px-3 py-1 rounded-md text-sm z-50 animate-pulse';
+  successFeedback.textContent = '🔊 *SUCCESS*';
+  document.body.appendChild(successFeedback);
+  setTimeout(() => {
+    document.body.removeChild(successFeedback);
+  }, 1000);
+};
+
 // Glitch text component
 const GlitchText = ({ children, className = '' }: { children: React.ReactNode; className?: string }) => {
   const [isGlitching, setIsGlitching] = useState(false);
@@ -21,7 +44,7 @@ const GlitchText = ({ children, className = '' }: { children: React.ReactNode; c
   }, []);
 
   return (
-    <span className={`${className} ${isGlitching ? 'animate-pulse text-red-400' : ''} transition-all duration-200`}>
+    <span className={`${className} ${isGlitching ? 'glitch-effect text-red-400 screen-flicker' : ''} transition-all duration-200`}>
       {children}
     </span>
   );
