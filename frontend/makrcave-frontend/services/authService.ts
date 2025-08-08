@@ -308,9 +308,9 @@ class AuthService {
       throw new Error('Invalid credentials');
     }
 
-    // Generate mock tokens
-    const accessToken = `mock-access-token-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
-    const refreshToken = `mock-refresh-token-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+    // Generate mock JWT tokens
+    const accessToken = this.generateMockJWT(user);
+    const refreshToken = this.generateMockRefreshToken();
 
     const loginResponse: LoginResponse = {
       access_token: accessToken,
