@@ -308,21 +308,21 @@ const NotFound = () => {
         </div>
       </div>
 
-      <div className="relative z-10 flex items-center justify-center min-h-screen p-6 -mt-20">
+      <div className="relative z-10 flex items-center justify-center min-h-screen p-3 sm:p-6 -mt-10 sm:-mt-20">
         <div className="max-w-4xl mx-auto text-center">
           {!showMinigame ? (
             <>
-              {/* Main 404 Content */}
-              <div className="mb-12">
-                <div className="text-9xl md:text-[12rem] font-bold text-red-500 mb-4 leading-none">
+              {/* Responsive Main 404 Content */}
+              <div className="mb-8 sm:mb-12">
+                <div className="text-6xl sm:text-8xl md:text-9xl lg:text-[12rem] font-bold text-red-500 mb-4 leading-none">
                   <GlitchText>4</GlitchText>
                   <GlitchText>0</GlitchText>
                   <GlitchText>4</GlitchText>
                 </div>
-                <h1 className="text-4xl md:text-6xl font-bold text-white mb-4">
+                <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-6xl font-bold text-white mb-4">
                   <GlitchText>MAKER NOT FOUND</GlitchText>
                 </h1>
-                <p className="text-xl text-gray-300 mb-8">
+                <p className="text-base sm:text-lg lg:text-xl text-gray-300 mb-6 sm:mb-8 px-4">
                   <GlitchText>Critical system failure detected in Lab Section 404</GlitchText>
                 </p>
               </div>
@@ -342,7 +342,7 @@ const NotFound = () => {
                       <>
                         <div className="border-t border-gray-700 my-2"></div>
                         <div className="text-cyan-400 animate-pulse">RUNNING DIAGNOSTIC SCAN...</div>
-                        <div className="text-gray-400">Scanning equipment status... <span className="animate-pulse">████████░░</span></div>
+                        <div className="text-gray-400">Scanning equipment status... <span className="animate-pulse">█��██████░░</span></div>
                         <div className="text-gray-400">Checking power levels... <span className="animate-pulse">██████████</span></div>
                         <div className="text-gray-400">Analyzing error logs... <span className="animate-pulse">████░░░░░░</span></div>
                       </>
