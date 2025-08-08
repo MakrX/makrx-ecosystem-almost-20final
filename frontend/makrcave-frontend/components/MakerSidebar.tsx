@@ -116,7 +116,7 @@ export default function MakerSidebar() {
           </div>
           <div className="flex-1 min-w-0">
             <p className="text-xs sm:text-sm font-medium truncate text-green-700 group-hover:text-green-800">
-              {user?.firstName ? `${user.firstName} ${user.lastName}` : user?.username}
+              {formatUserDisplayNameCompact(user)}
             </p>
             <p className="text-xs text-green-600 truncate group-hover:text-green-700">
               Creative Maker
