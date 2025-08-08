@@ -53,6 +53,7 @@ const GlitchText = ({ children, className = '' }: { children: React.ReactNode; c
 // Broken machine component
 const BrokenMachine = ({ name, status, sparks = false }: { name: string; status: string; sparks?: boolean }) => {
   const [isFlickering, setIsFlickering] = useState(false);
+  const [clicked, setClicked] = useState(false);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -65,22 +66,37 @@ const BrokenMachine = ({ name, status, sparks = false }: { name: string; status:
     return () => clearInterval(interval);
   }, []);
 
+  const handleMachineClick = () => {
+    setClicked(true);
+    playClickSound();
+    setTimeout(() => setClicked(false), 200);
+  };
+
   return (
-    <div className={`relative bg-gray-900 border border-red-500/30 rounded-lg p-4 ${isFlickering ? 'bg-red-900/20' : ''} transition-all duration-100`}>
+    <div
+      className={`relative bg-gray-900 border border-red-500/30 rounded-lg p-4 cursor-pointer hover:border-red-400/50 transform transition-all duration-100 ${
+        isFlickering ? 'bg-red-900/20 screen-flicker' : ''
+      } ${clicked ? 'scale-95 bg-red-800/30' : 'hover:scale-105'}`}
+      onClick={handleMachineClick}
+    >
       {sparks && (
         <div className="absolute -top-2 -right-2">
-          <div className="w-2 h-2 bg-yellow-400 rounded-full animate-ping"></div>
-          <div className="absolute top-0 right-0 w-1 h-1 bg-orange-500 rounded-full animate-pulse"></div>
+          <div className="w-2 h-2 bg-yellow-400 rounded-full sparks"></div>
+          <div className="absolute top-1 right-1 w-1 h-1 bg-orange-500 rounded-full animate-pulse"></div>
+          <div className="absolute -top-1 right-0 w-1 h-1 bg-red-500 rounded-full sparks animation-delay-500"></div>
         </div>
       )}
       <div className="flex items-center justify-between mb-2">
         <h3 className="text-white font-semibold text-sm">{name}</h3>
-        <AlertTriangle className="h-4 w-4 text-red-400" />
+        <AlertTriangle className={`h-4 w-4 text-red-400 ${isFlickering ? 'animate-bounce' : ''}`} />
       </div>
       <div className="text-red-400 text-xs font-mono">{status}</div>
       <div className="mt-2 bg-gray-800 h-2 rounded-full overflow-hidden">
         <div className="h-full bg-red-500 animate-pulse" style={{ width: '0%' }}></div>
       </div>
+      {clicked && (
+        <div className="absolute inset-0 bg-red-500/20 rounded-lg animate-ping"></div>
+      )}
     </div>
   );
 };
