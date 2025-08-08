@@ -667,13 +667,13 @@ const MakrVerse = () => {
           </div>
         </div>
 
-        {/* Main Map Area */}
-        <div className="flex-1 relative">
+        {/* Responsive Main Map Area */}
+        <div className="flex-1 relative h-[50vh] lg:h-full">
           {/* Mobile Back Button */}
-          <div className="absolute top-4 left-4 z-30 md:hidden">
+          <div className="absolute top-2 left-2 z-30 sm:top-4 sm:left-4 lg:hidden">
             <Link to="/">
-              <Button size="sm" className="bg-black/80 backdrop-blur-md text-white border border-white/20 hover:bg-black/90">
-                <ArrowLeft className="h-4 w-4 mr-1" />
+              <Button size="sm" className="bg-black/80 backdrop-blur-md text-white border border-white/20 hover:bg-black/90 text-xs sm:text-sm">
+                <ArrowLeft className="h-3 w-3 sm:h-4 sm:w-4 mr-1" />
                 Back
               </Button>
             </Link>
