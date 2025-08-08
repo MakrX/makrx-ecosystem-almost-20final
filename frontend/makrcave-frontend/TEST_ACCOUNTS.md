@@ -1,1 +1,131 @@
-# 🧪 MakrCave Test Accounts Guide\n\n## 📋 Overview\n\nThis document provides test accounts for different user roles in MakrCave. These accounts are pre-configured with appropriate permissions for testing various features.\n\n## 🔑 Test Account Credentials\n\n### Super Admin Account\n- **Email**: `superadmin@makrcave.com`\n- **Password**: `SuperAdmin2024!`\n- **Role**: `super_admin`\n- **Permissions**: Full system access\n- **Use Case**: Testing administrative features, user management, system settings\n\n### Admin Account\n- **Email**: `admin@makrcave.com`\n- **Password**: `Admin2024!`\n- **Role**: `admin`\n- **Permissions**: Multi-makerspace administrative access\n- **Use Case**: Testing admin dashboards, user management, analytics\n\n### Makerspace Manager Account\n- **Email**: `manager@makrcave.com`\n- **Password**: `Manager2024!`\n- **Role**: `makerspace_admin`\n- **Permissions**: Single makerspace management\n- **Use Case**: Testing equipment management, member oversight, local settings\n\n### Service Provider Account\n- **Email**: `provider@makrcave.com`\n- **Password**: `Provider2024!`\n- **Role**: `service_provider`\n- **Permissions**: Service-related access\n- **Use Case**: Testing service provider features, maintenance workflows\n\n### Regular Maker Account\n- **Email**: `maker@makrcave.com`\n- **Password**: `Maker2024!`\n- **Role**: `maker`\n- **Permissions**: Basic member access\n- **Use Case**: Testing member features, reservations, projects\n\n## 🎯 Testing Scenarios\n\n### Authentication Testing\n```\n1. Login with each account type\n2. Test password reset functionality\n3. Test registration process (creates new maker accounts)\n4. Verify role-based navigation and permissions\n```\n\n### Role Permission Testing\n```\nSuper Admin:\n✓ Can access all admin panels\n✓ Can manage users across all makerspaces\n✓ Can modify system settings\n✓ Can view all analytics and reports\n\nAdmin:\n✓ Can manage multiple makerspaces\n✓ Can access user management\n✓ Can view cross-makerspace analytics\n✓ Cannot modify core system settings\n\nMakerspace Admin:\n✓ Can manage assigned makerspace\n✓ Can manage equipment and inventory\n✓ Can oversee member activities\n✓ Cannot access other makerspaces\n\nService Provider:\n✓ Can access service-related features\n✓ Can manage maintenance tasks\n✓ Can view relevant equipment data\n✓ Limited administrative access\n\nMaker:\n✓ Can make equipment reservations\n✓ Can manage personal projects\n✓ Can view available resources\n✓ Cannot access administrative features\n```\n\n## 🛠️ Setup Instructions\n\n### Manual Account Creation\n\n1. **Through Registration Page**:\n   - Go to `/register`\n   - Create accounts with the emails above\n   - Note: New accounts default to \"maker\" role\n   - Admin users must manually assign other roles\n\n2. **Database Setup** (if you have backend access):\n   ```sql\n   -- Example SQL to create test users\n   INSERT INTO users (email, username, password_hash, role, first_name, last_name, is_active)\n   VALUES \n   ('superadmin@makrcave.com', 'superadmin', '$hashed_password', 'super_admin', 'Super', 'Admin', true),\n   ('admin@makrcave.com', 'admin', '$hashed_password', 'admin', 'System', 'Administrator', true),\n   ('manager@makrcave.com', 'manager', '$hashed_password', 'makerspace_admin', 'Makerspace', 'Manager', true),\n   ('provider@makrcave.com', 'provider', '$hashed_password', 'service_provider', 'Service', 'Provider', true),\n   ('maker@makrcave.com', 'maker', '$hashed_password', 'maker', 'Regular', 'Maker', true);\n   ```\n\n3. **Using Backend API** (if available):\n   ```bash\n   # Create test accounts via API\n   curl -X POST http://localhost:8000/api/auth/register \\\n     -H \"Content-Type: application/json\" \\\n     -d '{\n       \"email\": \"superadmin@makrcave.com\",\n       \"username\": \"superadmin\",\n       \"password\": \"SuperAdmin2024!\",\n       \"firstName\": \"Super\",\n       \"lastName\": \"Admin\"\n     }'\n   ```\n\n## 🔐 Security Notes\n\n### Password Policy\nAll test passwords follow this pattern:\n- Minimum 8 characters\n- Contains uppercase letter\n- Contains lowercase letter\n- Contains number\n- Contains special character (!)\n- Role name + year + exclamation\n\n### Important Security Reminders\n- **Never use these accounts in production**\n- **Change passwords if deploying to shared environments**\n- **Delete test accounts before production deployment**\n- **Use environment-specific test data**\n\n## 🧪 Testing Checklist\n\n### Authentication Flow\n- [ ] Login with each test account\n- [ ] Verify correct role assignment\n- [ ] Test logout functionality\n- [ ] Verify session persistence\n- [ ] Test invalid login attempts\n\n### UI/UX Testing\n- [ ] Verify role-appropriate navigation menus\n- [ ] Check permission-based feature visibility\n- [ ] Test responsive design on different devices\n- [ ] Verify error message displays\n- [ ] Check loading states\n\n### Functional Testing\n- [ ] Equipment reservation (all roles)\n- [ ] Project management (maker+)\n- [ ] User management (admin+)\n- [ ] Analytics access (admin+)\n- [ ] System settings (super_admin only)\n\n### Integration Testing\n- [ ] API endpoint access per role\n- [ ] Database permission enforcement\n- [ ] Cross-role data visibility\n- [ ] Real-time updates\n- [ ] Email notifications\n\n## 🚨 Troubleshooting\n\n### Common Issues\n\n**\"Account not found\"**\n- Verify account was created successfully\n- Check email spelling\n- Ensure backend is running\n\n**\"Invalid password\"**\n- Verify password exactly matches above\n- Check for copy/paste errors\n- Ensure caps lock is not on\n\n**\"Access denied\"**\n- Verify role assignment is correct\n- Check feature flags are enabled\n- Ensure proper permissions in backend\n\n**\"Session expired\"**\n- Normal behavior after 30 minutes\n- Login again to refresh session\n- Check token refresh mechanism\n\n### Debug Mode\n\nEnable debug logging:\n```javascript\n// In browser console\nlocalStorage.setItem('makrcave_debug', 'true');\n// Reload page to see detailed auth logs\n```\n\n## 📞 Support\n\nIf you encounter issues with test accounts:\n1. Check browser console for errors\n2. Verify backend server status\n3. Review authentication service logs\n4. Contact development team if issues persist\n\n---\n\n**Created**: December 2024  \n**Last Updated**: December 2024  \n**Maintainer**: MakrCave Development Team\n
+# 🧪 MakrCave Test Accounts Guide
+
+## 📋 Overview
+
+This document provides test accounts for different user roles in MakrCave. These accounts are pre-configured with appropriate permissions for testing various features. All users now display with @username format for better identification.
+
+## 🔑 Test Account Credentials
+
+### Super Admin Account
+- **Email**: `superadmin@makrcave.com`
+- **Username**: `@superadmin`
+- **Password**: `SuperAdmin2024!`
+- **Role**: `super_admin`
+- **Display Name**: `Super Admin @superadmin`
+- **Permissions**: Full system access
+- **Use Case**: Testing administrative features, user management, system settings
+
+### Admin Account
+- **Email**: `admin@makrcave.com`
+- **Username**: `@sysadmin`
+- **Password**: `Admin2024!`
+- **Role**: `admin`
+- **Display Name**: `System Administrator @sysadmin`
+- **Permissions**: Multi-makerspace administrative access
+- **Use Case**: Testing admin dashboards, user management, analytics
+
+### Makerspace Manager Account
+- **Email**: `manager@makrcave.com`
+- **Username**: `@spacemanager`
+- **Password**: `Manager2024!`
+- **Role**: `makerspace_admin`
+- **Display Name**: `Makerspace Manager @spacemanager`
+- **Permissions**: Single makerspace management
+- **Use Case**: Testing equipment management, member oversight, local settings
+
+### Service Provider Account
+- **Email**: `provider@makrcave.com`
+- **Username**: `@servicepro`
+- **Password**: `Provider2024!`
+- **Role**: `service_provider`
+- **Display Name**: `Service Provider @servicepro`
+- **Permissions**: Service-related access
+- **Use Case**: Testing service provider features, maintenance workflows
+
+### Regular Maker Account
+- **Email**: `maker@makrcave.com`
+- **Username**: `@creativemakr`
+- **Password**: `Maker2024!`
+- **Role**: `maker`
+- **Display Name**: `Regular Maker @creativemakr`
+- **Permissions**: Basic member access
+- **Use Case**: Testing member features, reservations, projects
+
+## 🎯 Testing Scenarios
+
+### Authentication Testing
+```
+1. Login with each account type
+2. Test password reset functionality
+3. Test registration process (creates new maker accounts)
+4. Verify role-based navigation and permissions
+5. Check @username display in navigation and user interfaces
+```
+
+### Username Display Testing
+```
+✓ Check sidebar user display shows "Name @username"
+✓ Verify header shows full "FirstName LastName @username"
+✓ Test compact displays show "FirstName @username"
+✓ Confirm equipment reservations show full user display
+✓ Validate member lists include @username format
+```
+
+### Role Permission Testing
+```
+Super Admin (@superadmin):
+✓ Can access all admin panels
+✓ Can manage users across all makerspaces
+✓ Can modify system settings
+✓ Can view all analytics and reports
+✓ Can access health monitoring and error logs
+
+Admin (@sysadmin):
+✓ Can manage multiple makerspaces
+✓ Can access user management
+✓ Can view analytics and reports
+✓ Can access health monitoring
+✓ Limited system configuration access
+
+Makerspace Admin (@spacemanager):
+✓ Can manage assigned makerspace inventory
+✓ Can oversee member activities
+✓ Can schedule equipment maintenance
+✓ Can access makerspace-specific analytics
+
+Service Provider (@servicepro):
+✓ Can manage service-related tasks
+✓ Can access maintenance workflows
+✓ Can view assigned equipment status
+✓ Limited to service provider functions
+
+Maker (@creativemakr):
+✓ Can create and manage personal projects
+✓ Can make equipment reservations
+✓ Can view inventory availability
+✓ Can access personal analytics and billing
+```
+
+## 🔧 Development Notes
+
+### Username Implementation
+- All user displays now include @username format
+- Compact displays show "FirstName @username"
+- Full displays show "FirstName LastName @username"
+- Fallback to just "@username" if no first/last name
+- Username extracted from email if not explicitly set
+
+### Testing Username Display
+- Login with any test account
+- Check sidebar shows "@username" format
+- Navigate to different pages to verify consistent display
+- Test equipment reservations and member lists
+- Verify proper fallback behavior for users without names
+
+## 🚨 Security Notes
+
+- These are test accounts for development/demo purposes only
+- All passwords follow strong security patterns
+- Do not use these credentials in production environments
+- Usernames are visible in UI for better user identification
+- @username format helps distinguish users with similar names
