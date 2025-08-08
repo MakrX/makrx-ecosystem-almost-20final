@@ -34,11 +34,12 @@ interface HealthStatusDashboardProps {
   compact?: boolean;
 }
 
-export default function HealthStatusDashboard({ 
-  autoRefresh = true, 
+export default function HealthStatusDashboard({
+  autoRefresh = true,
   refreshInterval = 30000,
-  compact = false 
+  compact = false
 }: HealthStatusDashboardProps) {
+  const { user } = useAuth();
   const [healthStatus, setHealthStatus] = useState<SystemHealthStatus | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [lastRefreshTime, setLastRefreshTime] = useState<Date | null>(null);
@@ -46,9 +47,17 @@ export default function HealthStatusDashboard({
   // ========================================
   // HEALTH CHECK MANAGEMENT
   // ========================================
-  
+
   const runHealthChecks = async () => {
     setIsLoading(true);
+
+    loggingService.info('health', 'HealthStatusDashboard.runHealthChecks', 'Running health checks', {
+      userId: user?.id,
+      userRole: user?.role,
+      compact,
+      autoRefresh
+    });
+
     try {
       const status = await healthCheckService.runAllChecks();
       setHealthStatus(status);
