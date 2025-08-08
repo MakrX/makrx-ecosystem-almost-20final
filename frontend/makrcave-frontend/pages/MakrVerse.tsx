@@ -187,19 +187,72 @@ const MakrVerseMap = ({ selectedCave, onCaveSelect }: { selectedCave: any, onCav
         </div>
       </div>
 
-      {/* Map Background */}
+      {/* Real World Map Background */}
       <div className="absolute inset-0">
         {mapStyle === 'satellite' ? (
-          <div className="w-full h-full bg-gradient-to-br from-blue-900 via-green-900 to-brown-900 relative">
-            {/* Simulated continents */}
-            <div className="absolute top-1/4 left-1/3 w-32 h-24 bg-green-700/30 rounded-full blur-sm"></div>
-            <div className="absolute top-1/3 right-1/4 w-28 h-20 bg-green-600/30 rounded-lg blur-sm"></div>
-            <div className="absolute bottom-1/3 left-1/4 w-24 h-16 bg-green-700/30 rounded-full blur-sm"></div>
+          <div className="w-full h-full relative overflow-hidden">
+            {/* Realistic world map with satellite styling */}
+            <div className="absolute inset-0 bg-gradient-to-br from-blue-900 via-blue-700 to-blue-900">
+              {/* Ocean texture */}
+              <div className="absolute inset-0 opacity-60">
+                <div className="w-full h-full bg-gradient-radial from-blue-600/30 via-blue-800/50 to-blue-900/70"></div>
+              </div>
+            </div>
+
+            {/* Realistic continents with proper geographical positioning */}
+            {/* North America */}
+            <div className="absolute top-[20%] left-[15%] w-[25%] h-[35%] bg-green-700/40 rounded-[40%] blur-[2px] transform rotate-12"></div>
+            <div className="absolute top-[25%] left-[18%] w-[20%] h-[25%] bg-green-600/50 rounded-[35%] blur-[1px] transform rotate-8"></div>
+
+            {/* South America */}
+            <div className="absolute top-[45%] left-[22%] w-[12%] h-[30%] bg-green-700/40 rounded-[50%] blur-[2px] transform rotate-[-15deg]"></div>
+
+            {/* Europe */}
+            <div className="absolute top-[25%] left-[45%] w-[15%] h-[20%] bg-green-600/40 rounded-[30%] blur-[2px] transform rotate-5"></div>
+
+            {/* Africa */}
+            <div className="absolute top-[35%] left-[48%] w-[12%] h-[25%] bg-green-700/40 rounded-[40%] blur-[2px] transform rotate-3"></div>
+
+            {/* Asia */}
+            <div className="absolute top-[20%] left-[55%] w-[30%] h-[40%] bg-green-600/40 rounded-[45%] blur-[2px] transform rotate-8"></div>
+
+            {/* Australia */}
+            <div className="absolute top-[65%] left-[75%] w-[10%] h-[12%] bg-green-700/40 rounded-[40%] blur-[2px] transform rotate-15"></div>
+
+            {/* Mountain ranges and terrain details */}
+            <div className="absolute top-[30%] left-[60%] w-[20%] h-[8%] bg-brown-600/30 rounded-full blur-[3px] transform rotate-45"></div>
+            <div className="absolute top-[35%] left-[20%] w-[15%] h-[6%] bg-brown-500/30 rounded-full blur-[3px] transform rotate-75"></div>
           </div>
         ) : (
-          <div className="w-full h-full bg-gradient-to-br from-gray-900 via-blue-900 to-purple-900 relative">
+          <div className="w-full h-full relative overflow-hidden bg-gradient-to-br from-gray-900 via-slate-800 to-gray-900">
+            {/* Network view with realistic geography outline */}
+            <div className="absolute inset-0 opacity-20">
+              {/* Subtle continent outlines */}
+              <svg className="w-full h-full" viewBox="0 0 100 100">
+                {/* Simplified world outline paths */}
+                <path
+                  d="M15,25 Q25,20 35,25 Q40,30 35,40 Q30,45 25,40 Q20,35 15,25"
+                  fill="none"
+                  stroke="rgba(156, 163, 175, 0.3)"
+                  strokeWidth="0.5"
+                />
+                <path
+                  d="M45,25 Q55,22 65,28 Q70,35 65,42 Q60,45 55,42 Q50,38 45,25"
+                  fill="none"
+                  stroke="rgba(156, 163, 175, 0.3)"
+                  strokeWidth="0.5"
+                />
+                <path
+                  d="M22,45 Q28,42 32,48 Q35,55 30,65 Q25,70 22,65 Q20,55 22,45"
+                  fill="none"
+                  stroke="rgba(156, 163, 175, 0.3)"
+                  strokeWidth="0.5"
+                />
+              </svg>
+            </div>
+
             {/* Network visualization */}
-            <div className="absolute inset-0 opacity-30">
+            <div className="absolute inset-0 opacity-40">
               <svg className="w-full h-full">
                 {connections && makrCaves.map((cave, idx) => (
                   makrCaves.slice(idx + 1).map((otherCave, otherIdx) => (
@@ -209,14 +262,33 @@ const MakrVerseMap = ({ selectedCave, onCaveSelect }: { selectedCave: any, onCav
                       y1={`${((90 - cave.location.lat) / 180) * 100}%`}
                       x2={`${((otherCave.location.lng + 180) / 360) * 100}%`}
                       y2={`${((90 - otherCave.location.lat) / 180) * 100}%`}
-                      stroke="rgba(59, 130, 246, 0.3)"
+                      stroke="rgba(59, 130, 246, 0.4)"
                       strokeWidth="1"
                       className="animate-pulse"
+                      strokeDasharray="2,2"
                     />
                   ))
                 ))
                 }
               </svg>
+            </div>
+
+            {/* Data flow visualization */}
+            <div className="absolute inset-0">
+              {makrCaves.map((cave, idx) => {
+                const x = ((cave.location.lng + 180) / 360) * 100;
+                const y = ((90 - cave.location.lat) / 180) * 100;
+                return (
+                  <div
+                    key={`pulse-${cave.id}`}
+                    className="absolute"
+                    style={{ left: `${x}%`, top: `${y}%` }}
+                  >
+                    <div className="w-16 h-16 border border-cyan-400/20 rounded-full animate-ping"></div>
+                    <div className="absolute top-2 left-2 w-12 h-12 border border-blue-400/30 rounded-full animate-ping animation-delay-1000"></div>
+                  </div>
+                );
+              })}
             </div>
           </div>
         )}
