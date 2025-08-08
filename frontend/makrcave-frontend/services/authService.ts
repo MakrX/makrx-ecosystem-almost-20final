@@ -245,28 +245,65 @@ class AuthService {
   // ========================================
   // Clears all authentication data and invalidates server-side token
   async logout(): Promise<void> {
+    const startTime = Date.now();
+    const user = this.getUser();
+
     try {
+      loggingService.info('auth', 'AuthService.logout', 'Logout initiated', {
+        userId: user?.id,
+        username: user?.username,
+        timestamp: new Date().toISOString()
+      });
+
       const token = this.getAccessToken();
       if (token) {
         // Call logout endpoint to invalidate token on server
-        await fetch(`${API_BASE_URL}/auth/logout`, {
+        const response = await fetch(`${API_BASE_URL}/auth/logout`, {
           method: 'POST',
           headers: {
             'Authorization': `Bearer ${token}`,
           },
-        }).catch(() => {
-          // Ignore errors on logout API call
+        }).catch((error) => {
+          loggingService.warn('auth', 'AuthService.logout', 'Server-side logout failed, proceeding with local cleanup', {
+            error: error.message,
+            userId: user?.id
+          });
+          return null;
         });
+
+        if (response) {
+          const responseTime = Date.now() - startTime;
+          loggingService.logAPICall('/auth/logout', 'POST', response.status, responseTime);
+        }
       }
     } finally {
       // Always clear local data
       this.clearAuthData();
+
+      loggingService.logAuthEvent('logout', true, {
+        userId: user?.id,
+        username: user?.username,
+        responseTime: Date.now() - startTime
+      });
+
+      loggingService.info('auth', 'AuthService.logout', 'Logout completed', {
+        userId: user?.id,
+        responseTime: Date.now() - startTime
+      });
     }
   }
 
   // Refresh access token
   async refreshToken(): Promise<string | null> {
+    const startTime = Date.now();
+    const user = this.getUser();
+
     try {
+      loggingService.debug('auth', 'AuthService.refreshToken', 'Token refresh initiated', {
+        userId: user?.id,
+        timestamp: new Date().toISOString()
+      });
+
       const refreshToken = this.getRefreshToken();
       if (!refreshToken) {
         throw new Error('No refresh token available');
@@ -280,22 +317,51 @@ class AuthService {
         body: JSON.stringify({ refresh_token: refreshToken }),
       });
 
+      const responseTime = Date.now() - startTime;
+      loggingService.logAPICall('/auth/refresh', 'POST', response.status, responseTime);
+
       if (!response.ok) {
         // Refresh token is invalid, logout user
         this.clearAuthData();
+
+        loggingService.logAuthEvent('token_refresh', false, {
+          userId: user?.id,
+          statusCode: response.status,
+          responseTime
+        });
+
         throw new Error('Token refresh failed');
       }
 
       const data = await response.json();
-      
+
       // Store new tokens
       this.setTokens(data.access_token, data.refresh_token || refreshToken);
-      
+
       // Schedule next refresh
       this.scheduleTokenRefresh(data.expires_in);
-      
+
+      loggingService.logAuthEvent('token_refresh', true, {
+        userId: user?.id,
+        responseTime,
+        newTokenExpiry: data.expires_in
+      });
+
+      loggingService.debug('auth', 'AuthService.refreshToken', 'Token refresh successful', {
+        userId: user?.id,
+        responseTime
+      });
+
       return data.access_token;
     } catch (error) {
+      const responseTime = Date.now() - startTime;
+
+      loggingService.error('auth', 'AuthService.refreshToken', 'Token refresh failed', {
+        userId: user?.id,
+        error: (error as Error).message,
+        responseTime
+      }, (error as Error).stack);
+
       console.error('Token refresh error:', error);
       this.clearAuthData();
       return null;
