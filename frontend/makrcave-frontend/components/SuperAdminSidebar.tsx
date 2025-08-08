@@ -1,5 +1,6 @@
 import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
+import { formatUserDisplayNameCompact } from '../lib/userUtils';
 import {
   LayoutDashboard,
   Building2,
