@@ -646,6 +646,16 @@ const MakrVerse = () => {
 
         {/* Main Map Area */}
         <div className="flex-1 relative">
+          {/* Mobile Back Button */}
+          <div className="absolute top-4 left-4 z-30 md:hidden">
+            <Link to="/">
+              <Button size="sm" className="bg-black/80 backdrop-blur-md text-white border border-white/20 hover:bg-black/90">
+                <ArrowLeft className="h-4 w-4 mr-1" />
+                Back
+              </Button>
+            </Link>
+          </div>
+
           <MakrVerseMap selectedCave={selectedCave} onCaveSelect={setSelectedCave} />
 
           {/* Map Legend */}
