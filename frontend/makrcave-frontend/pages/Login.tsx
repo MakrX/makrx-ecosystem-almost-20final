@@ -1,3 +1,14 @@
+// ========================================
+// LOGIN PAGE COMPONENT
+// ========================================
+// Main login interface for MakrCave authentication
+// Features:
+// - Email/password login form
+// - Password visibility toggle
+// - Error handling and loading states
+// - Responsive design with glassmorphism styling
+// - Theme toggle support
+
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
@@ -5,26 +16,39 @@ import { Building2, Eye, EyeOff, Lock, Mail, User, Crown, Shield, Wrench, Settin
 import MakrXThemeToggle from '../components/MakrXThemeToggle';
 
 export default function Login() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [showPassword, setShowPassword] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState('');
-  const { login } = useAuth();
-  const navigate = useNavigate();
+  // ========================================
+  // STATE MANAGEMENT
+  // ========================================
+  const [email, setEmail] = useState('');           // User's email input
+  const [password, setPassword] = useState('');     // User's password input
+  const [showPassword, setShowPassword] = useState(false); // Toggle password visibility
+  const [isLoading, setIsLoading] = useState(false); // Loading state during login
+  const [error, setError] = useState('');           // Error message display
 
+  // Context and navigation hooks
+  const { login } = useAuth();                      // Authentication context
+  const navigate = useNavigate();                   // React Router navigation
+
+  // ========================================
+  // LOGIN HANDLER
+  // ========================================
+  // Processes the login form submission
+  // Redirects to dashboard on success
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsLoading(true);
-    setError('');
+    setIsLoading(true);  // Show loading state
+    setError('');        // Clear previous errors
 
     try {
+      // Attempt authentication with email/password
       await login({ username: email, password });
+      // Redirect to main dashboard on successful login
       navigate('/portal/dashboard');
     } catch (error) {
+      // Display error message to user
       setError(error instanceof Error ? error.message : 'Login failed');
     } finally {
-      setIsLoading(false);
+      setIsLoading(false); // Hide loading state
     }
   };
 
@@ -49,11 +73,13 @@ export default function Login() {
           {/* Header */}
           <div className="text-center mb-8">
             <div className="flex justify-center mb-4">
+              {/* CUSTOMIZATION: Change the logo icon and colors here */}
               <div className="w-16 h-16 bg-makrx-teal rounded-2xl flex items-center justify-center">
               <Building2 className="w-8 h-8 text-white" />
             </div>
           </div>
           <h1 className="text-2xl font-bold text-white mb-2">
+            {/* CUSTOMIZATION: Change the application name here */}
             Welcome to <span className="text-makrx-teal">MakrCave</span>
           </h1>
             <p className="text-white/80">Sign in to your makerspace portal</p>
