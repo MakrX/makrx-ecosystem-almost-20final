@@ -35,7 +35,7 @@ export default function Header() {
         {/* User Info */}
         <div className="flex items-center gap-2 px-3 py-1 text-xs border border-border rounded">
           <UserIcon className="w-3 h-3" />
-          <span className="font-medium">{user?.firstName} {user?.lastName}</span>
+          <span className="font-medium">{formatUserDisplayName(user)}</span>
           <span className="text-muted-foreground">•</span>
           <span className="capitalize text-muted-foreground">
             {user?.role.replace('_', ' ')}
