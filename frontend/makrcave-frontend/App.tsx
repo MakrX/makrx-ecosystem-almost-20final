@@ -38,70 +38,76 @@ import ErrorBoundary from "./components/ErrorBoundary";
 import { createRoot } from "react-dom/client";
 
 const App = () => (
-  <ThemeProvider>
-    <AuthProvider>
-      <NotificationProvider>
-        <FeatureFlagProvider>
-          <MakerspaceProvider>
-            <MemberProvider>
-              <BillingProvider>
-                <SkillProvider>
-                  <HealthProvider
-                    autoRefresh={true}
-                    refreshInterval={60000}
-                    enableNotifications={true}
-                  >
-                    <BrowserRouter>
-                <Routes>
-                  {/* Authentication Routes */}
-                  <Route path="/login" element={<Login />} />
-                  <Route path="/register" element={<Register />} />
-                  <Route path="/forgot-password" element={<ForgotPassword />} />
-                  <Route path="/" element={<Layout />}>
-                    <Route index element={<Navigate to="/portal/dashboard" replace />} />
-                    <Route path="portal">
-                      <Route path="dashboard" element={<Dashboard />} />
-                      <Route path="inventory" element={<Inventory />} />
-                      <Route path="equipment" element={<Equipment />} />
-                      <Route path="projects" element={<Projects />} />
-                      <Route path="projects/:projectId" element={<ProjectDetail />} />
-                      <Route path="reservations" element={<Reservations />} />
-                      <Route path="members" element={<Members />} />
-                      <Route path="billing" element={<Billing />} />
-                      <Route path="analytics" element={<Analytics />} />
-                      <Route path="maintenance" element={<Maintenance />} />
-                      <Route path="settings" element={<Settings />} />
-                      <Route path="profile" element={<Profile />} />
-                      <Route path="skills" element={<SkillManagement />} />
-                      <Route path="notifications" element={<NotificationsCenter />} />
-                      <Route path="system-health" element={
-                        <ProtectedRoute
-                          adminFeature="healthMonitoring"
-                          allowedRoles={['super_admin', 'admin']}
-                        >
-                          <SystemHealth />
-                        </ProtectedRoute>
-                      } />
-                      <Route path="makerspaces" element={<AdminMakerspaces />} />
-                      <Route path="admin">
-                        <Route path="users" element={<AdminUsers />} />
-                        <Route path="makerspace" element={<AdminMakerspace />} />
-                        <Route path="feature-flags" element={<AdminFeatureFlags />} />
-                        <Route path="error-logs" element={<ErrorLogs />} />
+  <ErrorBoundary
+    componentName="App Root"
+    showDetails={true}
+    maxRetries={1}
+  >
+    <ThemeProvider>
+      <AuthProvider>
+        <NotificationProvider>
+          <FeatureFlagProvider>
+            <MakerspaceProvider>
+              <MemberProvider>
+                <BillingProvider>
+                  <SkillProvider>
+                    <HealthProvider
+                      autoRefresh={true}
+                      refreshInterval={60000}
+                      enableNotifications={true}
+                    >
+                      <BrowserRouter>
+                  <Routes>
+                    {/* Authentication Routes */}
+                    <Route path="/login" element={<Login />} />
+                    <Route path="/register" element={<Register />} />
+                    <Route path="/forgot-password" element={<ForgotPassword />} />
+                    <Route path="/" element={<Layout />}>
+                      <Route index element={<Navigate to="/portal/dashboard" replace />} />
+                      <Route path="portal">
+                        <Route path="dashboard" element={<Dashboard />} />
+                        <Route path="inventory" element={<Inventory />} />
+                        <Route path="equipment" element={<Equipment />} />
+                        <Route path="projects" element={<Projects />} />
+                        <Route path="projects/:projectId" element={<ProjectDetail />} />
+                        <Route path="reservations" element={<Reservations />} />
+                        <Route path="members" element={<Members />} />
+                        <Route path="billing" element={<Billing />} />
+                        <Route path="analytics" element={<Analytics />} />
+                        <Route path="maintenance" element={<Maintenance />} />
+                        <Route path="settings" element={<Settings />} />
+                        <Route path="profile" element={<Profile />} />
+                        <Route path="skills" element={<SkillManagement />} />
+                        <Route path="notifications" element={<NotificationsCenter />} />
+                        <Route path="system-health" element={
+                          <ProtectedRoute
+                            adminFeature="healthMonitoring"
+                            allowedRoles={['super_admin', 'admin']}
+                          >
+                            <SystemHealth />
+                          </ProtectedRoute>
+                        } />
+                        <Route path="makerspaces" element={<AdminMakerspaces />} />
+                        <Route path="admin">
+                          <Route path="users" element={<AdminUsers />} />
+                          <Route path="makerspace" element={<AdminMakerspace />} />
+                          <Route path="feature-flags" element={<AdminFeatureFlags />} />
+                          <Route path="error-logs" element={<ErrorLogs />} />
+                        </Route>
                       </Route>
                     </Route>
-                  </Route>
-                </Routes>
-                    </BrowserRouter>
-                  </HealthProvider>
-                </SkillProvider>
-              </BillingProvider>
-            </MemberProvider>
-          </MakerspaceProvider>
-        </FeatureFlagProvider>
-      </NotificationProvider>
-    </AuthProvider>
-  </ThemeProvider>
+                  </Routes>
+                      </BrowserRouter>
+                    </HealthProvider>
+                  </SkillProvider>
+                </BillingProvider>
+              </MemberProvider>
+            </MakerspaceProvider>
+          </FeatureFlagProvider>
+        </NotificationProvider>
+      </AuthProvider>
+    </ThemeProvider>
+  </ErrorBoundary>
 );
 
 createRoot(document.getElementById("root")!).render(<App />);
