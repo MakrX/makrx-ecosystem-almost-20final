@@ -166,7 +166,16 @@ class AuthService {
   // Creates new user account (default role: 'maker')
   // Automatically logs in user after successful registration
   async register(data: RegisterData): Promise<LoginResponse> {
+    const startTime = Date.now();
+
     try {
+      loggingService.info('auth', 'AuthService.register', 'Registration attempt started', {
+        email: data.email,
+        username: data.username,
+        makerspaceId: data.makerspaceId,
+        timestamp: new Date().toISOString()
+      });
+
       const response = await fetch(`${API_BASE_URL}/auth/register`, {
         method: 'POST',
         headers: {
@@ -175,22 +184,57 @@ class AuthService {
         body: JSON.stringify(data),
       });
 
+      const responseTime = Date.now() - startTime;
+      loggingService.logAPICall('/auth/register', 'POST', response.status, responseTime);
+
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}));
-        throw new Error(errorData.detail || 'Registration failed');
+        const errorMessage = errorData.detail || 'Registration failed';
+
+        loggingService.logAuthEvent('registration', false, {
+          email: data.email,
+          username: data.username,
+          statusCode: response.status,
+          errorMessage,
+          responseTime
+        });
+
+        throw new Error(errorMessage);
       }
 
       const loginResponse: LoginResponse = await response.json();
-      
+
       // Store tokens and user data
       this.setTokens(loginResponse.access_token, loginResponse.refresh_token);
       this.setUser(loginResponse.user);
-      
+
       // Set up token refresh
       this.scheduleTokenRefresh(loginResponse.expires_in);
-      
+
+      loggingService.logAuthEvent('registration', true, {
+        userId: loginResponse.user.id,
+        email: loginResponse.user.email,
+        username: loginResponse.user.username,
+        role: loginResponse.user.role,
+        responseTime
+      });
+
+      loggingService.info('auth', 'AuthService.register', 'Registration and auto-login successful', {
+        userId: loginResponse.user.id,
+        role: loginResponse.user.role,
+        responseTime
+      });
+
       return loginResponse;
     } catch (error) {
+      const responseTime = Date.now() - startTime;
+      loggingService.error('auth', 'AuthService.register', 'Registration failed', {
+        email: data.email,
+        username: data.username,
+        error: (error as Error).message,
+        responseTime
+      }, (error as Error).stack);
+
       console.error('Registration error:', error);
       throw error;
     }
