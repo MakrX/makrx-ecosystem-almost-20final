@@ -10,7 +10,7 @@
 // - Theme toggle support
 
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { Building2, Eye, EyeOff, Lock, Mail, User, Crown, Shield, Wrench, Settings, UserCheck } from 'lucide-react';
 import MakrXThemeToggle from '../components/MakrXThemeToggle';
@@ -158,11 +158,37 @@ export default function Login() {
             </button>
           </form>
 
+          {/* Account Actions */}
+          <div className="mt-6 space-y-4">
+            {/* Forgot Password */}
+            <div className="text-center">
+              <Link
+                to="/forgot-password"
+                className="text-white/60 hover:text-makrx-teal text-sm font-medium"
+              >
+                Forgot your password?
+              </Link>
+            </div>
+
+            {/* Register Link */}
+            <div className="text-center">
+              <p className="text-white/60 text-sm">
+                Don't have an account?{' '}
+                <Link
+                  to="/register"
+                  className="text-makrx-teal hover:text-makrx-teal-light font-medium"
+                >
+                  Create Account
+                </Link>
+              </p>
+            </div>
+          </div>
+
           {/* Footer */}
           <div className="mt-8 text-center">
             <div className="pt-4 border-t border-white/10">
               <p className="text-xs text-white/40">
-                🔐 Integrated with MakrX SSO • Powered by Keycloak
+                🔐 Secure Authentication • Powered by MakrCave
               </p>
             </div>
           </div>
