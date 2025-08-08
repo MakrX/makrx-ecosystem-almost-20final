@@ -64,6 +64,9 @@ const App = () => (
                     {/* Public Landing Page */}
                     <Route path="/" element={<LandingPage />} />
 
+                    {/* Public MakrVerse Map */}
+                    <Route path="/makrverse" element={<MakrVerse />} />
+
                     {/* Authentication Routes */}
                     <Route path="/login" element={<Login />} />
                     <Route path="/register" element={<Register />} />
