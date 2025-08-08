@@ -73,13 +73,7 @@ export default function HeaderWithHealth({
   // ========================================
 
   const getUserDisplayName = () => {
-    if (user?.firstName && user?.lastName) {
-      return `${user.firstName} ${user.lastName}`;
-    }
-    if (user?.firstName) {
-      return user.firstName;
-    }
-    return user?.username || user?.email || 'User';
+    return formatUserDisplayNameCompact(user);
   };
 
   const getRoleBadgeColor = (role: string) => {
