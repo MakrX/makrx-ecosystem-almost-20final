@@ -563,6 +563,32 @@ const MakrVerse = () => {
               </div>
             </div>
           </div>
+
+          {/* Quick Jump Panel */}
+          <div className="absolute bottom-4 right-4 bg-black/80 backdrop-blur-md rounded-lg p-3 max-w-xs">
+            <div className="text-white text-sm font-semibold mb-2">Quick Jump</div>
+            <div className="space-y-1">
+              {makrCaves.filter(cave => cave.featured).map((cave) => (
+                <button
+                  key={cave.id}
+                  onClick={() => setSelectedCave(cave)}
+                  className={`w-full text-left px-2 py-1 rounded text-xs transition-colors ${
+                    selectedCave?.id === cave.id
+                      ? 'bg-yellow-500/30 text-yellow-300'
+                      : 'text-gray-300 hover:bg-white/10 hover:text-white'
+                  }`}
+                >
+                  <div className="flex items-center justify-between">
+                    <span className="truncate">{cave.name}</span>
+                    <div className="flex items-center ml-2">
+                      <Star className="h-3 w-3 text-yellow-400" />
+                      <span className="text-green-400 ml-1">{cave.onlineMembers}</span>
+                    </div>
+                  </div>
+                </button>
+              ))}
+            </div>
+          </div>
         </div>
       </div>
     </div>
