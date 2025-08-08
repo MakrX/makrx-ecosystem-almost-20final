@@ -352,12 +352,23 @@ const MakrVerseMap = ({ selectedCave, onCaveSelect }: { selectedCave: any, onCav
                 </div>
               )}
               
-              {/* Quick Info Tooltip */}
-              <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none">
-                <div className="bg-black/90 backdrop-blur-md text-white text-xs rounded-lg px-3 py-2 whitespace-nowrap">
-                  <div className="font-semibold">{cave.name}</div>
-                  <div className="text-gray-300">{cave.onlineMembers} makers online</div>
-                  <div className="text-green-400">{cave.machinesRunning} machines running</div>
+              {/* Enhanced Quick Info Tooltip */}
+              <div className="absolute bottom-12 left-1/2 transform -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none z-20">
+                <div className="bg-black/95 backdrop-blur-md text-white text-sm rounded-lg px-4 py-3 whitespace-nowrap border border-white/20 shadow-2xl">
+                  <div className="font-semibold text-white mb-1">{cave.name}</div>
+                  <div className="text-blue-300 text-xs">{cave.country}</div>
+                  <div className="text-gray-300 text-xs mt-1">{cave.onlineMembers} makers online</div>
+                  <div className="text-green-400 text-xs">{cave.machinesRunning} machines running</div>
+                  {cave.featured && (
+                    <div className="text-yellow-400 text-xs mt-1 flex items-center">
+                      <Star className="h-3 w-3 mr-1" />
+                      Featured Location
+                    </div>
+                  )}
+                </div>
+                {/* Tooltip arrow */}
+                <div className="absolute top-full left-1/2 transform -translate-x-1/2 -mt-1">
+                  <div className="w-3 h-3 bg-black/95 border-r border-b border-white/20 transform rotate-45"></div>
                 </div>
               </div>
             </div>
