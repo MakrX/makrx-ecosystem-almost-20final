@@ -410,65 +410,88 @@ const MakrVerse = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
-      {/* Header */}
+      {/* Responsive Header */}
       <div className="bg-black/20 backdrop-blur-md border-b border-white/10 sticky top-0 z-30">
-        <div className="container mx-auto px-6 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-4">
-              <Link to="/" className="flex items-center space-x-2 hover:opacity-80 transition-opacity">
-                <div className="w-8 h-8 bg-gradient-to-br from-blue-400 to-purple-600 rounded-lg flex items-center justify-center">
-                  <span className="text-white font-bold text-sm">M</span>
-                </div>
-                <span className="text-xl font-bold text-white">MakrVerse</span>
-              </Link>
-              <Badge className="bg-gradient-to-r from-purple-500 to-pink-500 text-white">
-                Live Map
-              </Badge>
+        <div className="container mx-auto px-4 sm:px-6 py-3 sm:py-4">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-0">
+            {/* Logo and Title Row */}
+            <div className="flex items-center justify-between w-full sm:w-auto">
+              <div className="flex items-center space-x-2 sm:space-x-4">
+                <Link to="/" className="flex items-center space-x-2 hover:opacity-80 transition-opacity">
+                  <div className="w-7 h-7 sm:w-8 sm:h-8 bg-gradient-to-br from-blue-400 to-purple-600 rounded-lg flex items-center justify-center">
+                    <span className="text-white font-bold text-xs sm:text-sm">M</span>
+                  </div>
+                  <span className="text-lg sm:text-xl font-bold text-white">MakrVerse</span>
+                </Link>
+                <Badge className="bg-gradient-to-r from-purple-500 to-pink-500 text-white text-xs">
+                  Live Map
+                </Badge>
+              </div>
+
+              {/* Mobile Navigation Buttons */}
+              <div className="flex items-center space-x-2 sm:hidden">
+                <Link to="/">
+                  <Button variant="outline" size="sm" className="border-gray-600 text-gray-300 hover:bg-gray-800 px-2">
+                    <Home className="h-4 w-4" />
+                  </Button>
+                </Link>
+                <Link to="/portal">
+                  <Button size="sm" className="bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white px-3">
+                    Portal
+                  </Button>
+                </Link>
+              </div>
             </div>
 
-            <div className="flex items-center space-x-4">
+            {/* Search and Controls Row */}
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-4 w-full sm:w-auto">
               {/* Navigation Breadcrumb */}
-              <div className="hidden md:flex items-center text-gray-400 text-sm">
+              <div className="hidden lg:flex items-center text-gray-400 text-sm">
                 <Link to="/" className="hover:text-white transition-colors">Home</Link>
                 <span className="mx-2">{'>'}</span>
                 <span className="text-white">MakrVerse</span>
               </div>
 
               {/* Search */}
-              <div className="relative">
+              <div className="relative flex-1 sm:flex-none">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
                 <input
                   type="text"
                   placeholder="Search MakrCaves..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="bg-black/50 border border-white/20 rounded-lg pl-10 pr-4 py-2 text-white placeholder-gray-400 focus:border-blue-400 focus:outline-none"
+                  className="w-full sm:w-auto bg-black/50 border border-white/20 rounded-lg pl-10 pr-4 py-2 text-white placeholder-gray-400 focus:border-blue-400 focus:outline-none text-sm"
                 />
               </div>
 
-              <Button
-                variant="outline"
-                size="sm"
-                className="border-purple-500/50 text-purple-300 hover:bg-purple-500/10"
-                onClick={() => setShowBadges(!showBadges)}
-              >
-                <Trophy className="h-4 w-4 mr-2" />
-                Badges
-              </Button>
-
-              {/* Navigation Buttons */}
-              <Link to="/">
-                <Button variant="outline" size="sm" className="border-gray-600 text-gray-300 hover:bg-gray-800">
-                  <Home className="h-4 w-4 mr-1" />
-                  Home
+              {/* Action Buttons */}
+              <div className="flex items-center justify-between sm:justify-start gap-2 sm:gap-4">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="border-purple-500/50 text-purple-300 hover:bg-purple-500/10 flex-1 sm:flex-none"
+                  onClick={() => setShowBadges(!showBadges)}
+                >
+                  <Trophy className="h-4 w-4 mr-1 sm:mr-2" />
+                  <span className="hidden sm:inline">Badges</span>
                 </Button>
-              </Link>
 
-              <Link to="/portal">
-                <Button className="bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white">
-                  Portal
-                </Button>
-              </Link>
+                {/* Desktop Navigation Buttons */}
+                <div className="hidden sm:flex items-center space-x-2">
+                  <Link to="/">
+                    <Button variant="outline" size="sm" className="border-gray-600 text-gray-300 hover:bg-gray-800">
+                      <Home className="h-4 w-4 mr-1" />
+                      Home
+                    </Button>
+                  </Link>
+
+                  <Link to="/portal">
+                    <Button className="bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white">
+                      Portal
+                    </Button>
+                  </Link>
+                </div>
+              </div>
             </div>
           </div>
         </div>
