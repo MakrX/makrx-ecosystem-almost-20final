@@ -298,6 +298,30 @@ class HealthCheckService {
     return this.checkAPIEndpoint('makerspaces-api', '/v1/makerspaces');
   }
 
+  // Mock API services check for cloud environments
+  private async checkMockAPIServices(): Promise<HealthCheckResult> {
+    const startTime = performance.now();
+
+    // Simulate a quick check for cloud environments
+    await new Promise(resolve => setTimeout(resolve, 50));
+
+    return {
+      service: 'api-services',
+      status: 'healthy',
+      responseTime: performance.now() - startTime,
+      timestamp: new Date().toISOString(),
+      details: 'API services simulated for demo environment',
+      metadata: {
+        mockService: true,
+        environment: 'cloud',
+        services: [
+          'billing-api', 'analytics-api', 'equipment-api',
+          'inventory-api', 'projects-api', 'maintenance-api', 'makerspaces-api'
+        ]
+      }
+    };
+  }
+
   // Generic API endpoint checker
   private async checkAPIEndpoint(serviceName: string, endpoint: string): Promise<HealthCheckResult> {
     const startTime = performance.now();
