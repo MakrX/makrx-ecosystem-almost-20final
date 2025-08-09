@@ -212,52 +212,52 @@ export default function HomePage() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div className="bg-white p-8 rounded-lg shadow-md text-center">
-              <div className="w-16 h-16 bg-blue-100 rounded-lg flex items-center justify-center mx-auto mb-6">
-                <Package className="h-8 w-8 text-blue-600" />
+            <div className="bg-card border border-border p-8 rounded-lg shadow-md text-center">
+              <div className="w-16 h-16 bg-blue-100 dark:bg-blue-900/20 rounded-lg flex items-center justify-center mx-auto mb-6">
+                <Package className="h-8 w-8 text-blue-600 dark:text-blue-400" />
               </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-4">Upload & Quote</h3>
-              <p className="text-gray-600 mb-6">
-                Get instant pricing for your 3D models. Simply upload your file and 
+              <h3 className="text-xl font-semibold text-card-foreground mb-4">Upload & Quote</h3>
+              <p className="text-muted-foreground mb-6">
+                Get instant pricing for your 3D models. Simply upload your file and
                 receive a quote within minutes.
               </p>
               <Link
                 href="/upload"
-                className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors"
+                className="bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 text-white px-6 py-2 rounded-lg transition-colors"
               >
                 Get Quote
               </Link>
             </div>
 
-            <div className="bg-white p-8 rounded-lg shadow-md text-center">
-              <div className="w-16 h-16 bg-green-100 rounded-lg flex items-center justify-center mx-auto mb-6">
-                <Clock className="h-8 w-8 text-green-600" />
+            <div className="bg-card border border-border p-8 rounded-lg shadow-md text-center">
+              <div className="w-16 h-16 bg-green-100 dark:bg-green-900/20 rounded-lg flex items-center justify-center mx-auto mb-6">
+                <Clock className="h-8 w-8 text-green-600 dark:text-green-400" />
               </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-4">Fast Turnaround</h3>
-              <p className="text-gray-600 mb-6">
-                Most prints completed within 24-48 hours. Rush orders available 
+              <h3 className="text-xl font-semibold text-card-foreground mb-4">Fast Turnaround</h3>
+              <p className="text-muted-foreground mb-6">
+                Most prints completed within 24-48 hours. Rush orders available
                 for urgent projects.
               </p>
               <Link
                 href="/3d-printing"
-                className="bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700 transition-colors"
+                className="bg-green-600 hover:bg-green-700 dark:bg-green-500 dark:hover:bg-green-600 text-white px-6 py-2 rounded-lg transition-colors"
               >
                 Learn More
               </Link>
             </div>
 
-            <div className="bg-white p-8 rounded-lg shadow-md text-center">
-              <div className="w-16 h-16 bg-purple-100 rounded-lg flex items-center justify-center mx-auto mb-6">
-                <Star className="h-8 w-8 text-purple-600" />
+            <div className="bg-card border border-border p-8 rounded-lg shadow-md text-center">
+              <div className="w-16 h-16 bg-purple-100 dark:bg-purple-900/20 rounded-lg flex items-center justify-center mx-auto mb-6">
+                <Star className="h-8 w-8 text-purple-600 dark:text-purple-400" />
               </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-4">Premium Quality</h3>
-              <p className="text-gray-600 mb-6">
-                Professional-grade printers and materials ensure exceptional 
+              <h3 className="text-xl font-semibold text-card-foreground mb-4">Premium Quality</h3>
+              <p className="text-muted-foreground mb-6">
+                Professional-grade printers and materials ensure exceptional
                 quality for every project.
               </p>
               <Link
                 href="/sample-projects"
-                className="bg-purple-600 text-white px-6 py-2 rounded-lg hover:bg-purple-700 transition-colors"
+                className="bg-purple-600 hover:bg-purple-700 dark:bg-purple-500 dark:hover:bg-purple-600 text-white px-6 py-2 rounded-lg transition-colors"
               >
                 View Samples
               </Link>
