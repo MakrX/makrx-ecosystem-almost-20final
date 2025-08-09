@@ -1,26 +1,34 @@
-'use client';
+"use client";
 
-import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
-import Image from 'next/image';
-import Link from 'next/link';
-import { 
-  Plus, Minus, Trash2, ArrowLeft, ShoppingBag, 
-  Truck, Tag, Gift, CreditCard, ShieldCheck 
-} from 'lucide-react';
-import { api, type Cart, type CartItem, formatPrice } from '@/lib/api';
-import { useAuth } from '@/contexts/AuthContext';
-import { useNotifications } from '@/contexts/NotificationContext';
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import Image from "next/image";
+import Link from "next/link";
+import {
+  Plus,
+  Minus,
+  Trash2,
+  ArrowLeft,
+  ShoppingBag,
+  Truck,
+  Tag,
+  Gift,
+  CreditCard,
+  ShieldCheck,
+} from "lucide-react";
+import { api, type Cart, type CartItem, formatPrice } from "@/lib/api";
+import { useAuth } from "@/contexts/AuthContext";
+import { useNotifications } from "@/contexts/NotificationContext";
 
 export default function CartPage() {
   const router = useRouter();
   const { isAuthenticated, login } = useAuth();
   const { addNotification } = useNotifications();
-  
+
   const [cart, setCart] = useState<Cart | null>(null);
   const [loading, setLoading] = useState(true);
   const [updating, setUpdating] = useState<{ [key: number]: boolean }>({});
-  const [couponCode, setCouponCode] = useState('');
+  const [couponCode, setCouponCode] = useState("");
   const [couponDiscount, setCouponDiscount] = useState(0);
   const [shippingCost, setShippingCost] = useState(5.99);
 
@@ -35,7 +43,7 @@ export default function CartPage() {
         const cartData = await api.getCart();
         setCart(cartData);
       } catch (error) {
-        console.error('Failed to load cart:', error);
+        console.error("Failed to load cart:", error);
       } finally {
         setLoading(false);
       }
@@ -47,63 +55,77 @@ export default function CartPage() {
   const updateCartItem = async (itemId: number, newQuantity: number) => {
     if (!cart) return;
 
-    setUpdating(prev => ({ ...prev, [itemId]: true }));
-    
+    setUpdating((prev) => ({ ...prev, [itemId]: true }));
+
     try {
       if (newQuantity === 0) {
         await api.removeFromCart(itemId);
-        const removedItem = cart.items.find(item => item.id === itemId);
-        setCart(prev => prev ? {
-          ...prev,
-          items: prev.items.filter(item => item.id !== itemId),
-          item_count: prev.item_count - 1,
-          subtotal: prev.subtotal - (prev.items.find(item => item.id === itemId)?.total_price || 0)
-        } : null);
+        const removedItem = cart.items.find((item) => item.id === itemId);
+        setCart((prev) =>
+          prev
+            ? {
+                ...prev,
+                items: prev.items.filter((item) => item.id !== itemId),
+                item_count: prev.item_count - 1,
+                subtotal:
+                  prev.subtotal -
+                  (prev.items.find((item) => item.id === itemId)?.total_price ||
+                    0),
+              }
+            : null,
+        );
         addNotification({
-          type: 'success',
-          title: 'Item Removed',
-          message: `${removedItem?.product.name} removed from cart`
+          type: "success",
+          title: "Item Removed",
+          message: `${removedItem?.product.name} removed from cart`,
         });
       } else {
         await api.updateCartItem(itemId, newQuantity);
         const updatedCart = await api.getCart();
         setCart(updatedCart);
         addNotification({
-          type: 'success',
-          title: 'Cart Updated',
-          message: 'Quantity updated successfully'
+          type: "success",
+          title: "Cart Updated",
+          message: "Quantity updated successfully",
         });
       }
     } catch (error) {
-      console.error('Failed to update cart item:', error);
+      console.error("Failed to update cart item:", error);
       addNotification({
-        type: 'error',
-        title: 'Update Failed',
-        message: 'Failed to update cart item. Please try again.'
+        type: "error",
+        title: "Update Failed",
+        message: "Failed to update cart item. Please try again.",
       });
     } finally {
-      setUpdating(prev => ({ ...prev, [itemId]: false }));
+      setUpdating((prev) => ({ ...prev, [itemId]: false }));
     }
   };
 
   const removeCartItem = async (itemId: number) => {
     if (!cart) return;
-    
-    setUpdating(prev => ({ ...prev, [itemId]: true }));
-    
+
+    setUpdating((prev) => ({ ...prev, [itemId]: true }));
+
     try {
       await api.removeFromCart(itemId);
-      setCart(prev => prev ? {
-        ...prev,
-        items: prev.items.filter(item => item.id !== itemId),
-        item_count: prev.item_count - 1,
-        subtotal: prev.subtotal - (prev.items.find(item => item.id === itemId)?.total_price || 0)
-      } : null);
+      setCart((prev) =>
+        prev
+          ? {
+              ...prev,
+              items: prev.items.filter((item) => item.id !== itemId),
+              item_count: prev.item_count - 1,
+              subtotal:
+                prev.subtotal -
+                (prev.items.find((item) => item.id === itemId)?.total_price ||
+                  0),
+            }
+          : null,
+      );
     } catch (error) {
-      console.error('Failed to remove cart item:', error);
-      alert('Failed to remove cart item');
+      console.error("Failed to remove cart item:", error);
+      alert("Failed to remove cart item");
     } finally {
-      setUpdating(prev => ({ ...prev, [itemId]: false }));
+      setUpdating((prev) => ({ ...prev, [itemId]: false }));
     }
   };
 
@@ -115,10 +137,10 @@ export default function CartPage() {
       // For now, we'll simulate a 10% discount
       const discount = cart.subtotal * 0.1;
       setCouponDiscount(discount);
-      alert('Coupon applied successfully!');
+      alert("Coupon applied successfully!");
     } catch (error) {
-      console.error('Failed to apply coupon:', error);
-      alert('Invalid coupon code');
+      console.error("Failed to apply coupon:", error);
+      alert("Invalid coupon code");
     }
   };
 
@@ -127,8 +149,8 @@ export default function CartPage() {
       login();
       return;
     }
-    
-    router.push('/checkout');
+
+    router.push("/checkout");
   };
 
   if (loading) {
@@ -146,9 +168,12 @@ export default function CartPage() {
           <div className="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
             <div className="text-center">
               <ShoppingBag className="mx-auto h-12 w-12 text-gray-400" />
-              <h2 className="mt-4 text-2xl font-bold text-gray-900">Sign In to View Cart</h2>
+              <h2 className="mt-4 text-2xl font-bold text-gray-900">
+                Sign In to View Cart
+              </h2>
               <p className="mt-2 text-gray-600">
-                Please sign in to see your shopping cart and continue with your purchase.
+                Please sign in to see your shopping cart and continue with your
+                purchase.
               </p>
               <button
                 onClick={login}
@@ -175,7 +200,9 @@ export default function CartPage() {
         <div className="max-w-4xl mx-auto px-4 py-16 sm:px-6 lg:px-8">
           <div className="text-center">
             <ShoppingBag className="mx-auto h-24 w-24 text-gray-400" />
-            <h2 className="mt-6 text-3xl font-bold text-gray-900">Your cart is empty</h2>
+            <h2 className="mt-6 text-3xl font-bold text-gray-900">
+              Your cart is empty
+            </h2>
             <p className="mt-4 text-lg text-gray-600">
               Looks like you haven't added any items to your cart yet.
             </p>
@@ -211,7 +238,9 @@ export default function CartPage() {
             Continue Shopping
           </Link>
           <h1 className="text-3xl font-bold text-gray-900">Shopping Cart</h1>
-          <p className="text-gray-600 mt-2">{cart.item_count} items in your cart</p>
+          <p className="text-gray-600 mt-2">
+            {cart.item_count} items in your cart
+          </p>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -219,9 +248,11 @@ export default function CartPage() {
           <div className="lg:col-span-2">
             <div className="bg-white shadow rounded-lg overflow-hidden">
               <div className="px-6 py-4 border-b border-gray-200">
-                <h2 className="text-lg font-semibold text-gray-900">Cart Items</h2>
+                <h2 className="text-lg font-semibold text-gray-900">
+                  Cart Items
+                </h2>
               </div>
-              
+
               <div className="divide-y divide-gray-200">
                 {cart.items.map((item) => (
                   <div key={item.id} className="p-6">
@@ -247,14 +278,16 @@ export default function CartPage() {
                       <div className="ml-6 flex-1">
                         <div className="flex items-start justify-between">
                           <div>
-                            <Link 
+                            <Link
                               href={`/product/${item.product?.slug}`}
                               className="text-lg font-medium text-gray-900 hover:text-blue-600"
                             >
                               {item.product?.name}
                             </Link>
                             {item.product?.brand && (
-                              <p className="text-sm text-gray-600 mt-1">{item.product.brand}</p>
+                              <p className="text-sm text-gray-600 mt-1">
+                                {item.product.brand}
+                              </p>
                             )}
                             {item.product?.short_description && (
                               <p className="text-sm text-gray-600 mt-1 line-clamp-2">
@@ -275,22 +308,28 @@ export default function CartPage() {
                         <div className="mt-4 flex items-center justify-between">
                           <div className="flex items-center">
                             <button
-                              onClick={() => updateCartItem(item.id, item.quantity - 1)}
+                              onClick={() =>
+                                updateCartItem(item.id, item.quantity - 1)
+                              }
                               disabled={item.quantity <= 1 || updating[item.id]}
                               className="p-1 rounded-md border border-gray-300 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
                             >
                               <Minus className="h-4 w-4" />
                             </button>
-                            <span className="mx-4 text-gray-900 font-medium">{item.quantity}</span>
+                            <span className="mx-4 text-gray-900 font-medium">
+                              {item.quantity}
+                            </span>
                             <button
-                              onClick={() => updateCartItem(item.id, item.quantity + 1)}
+                              onClick={() =>
+                                updateCartItem(item.id, item.quantity + 1)
+                              }
                               disabled={updating[item.id]}
                               className="p-1 rounded-md border border-gray-300 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
                             >
                               <Plus className="h-4 w-4" />
                             </button>
                           </div>
-                          
+
                           <div className="text-right">
                             <p className="text-lg font-semibold text-gray-900">
                               {formatPrice(item.total_price, cart.currency)}
@@ -311,8 +350,10 @@ export default function CartPage() {
           {/* Order Summary */}
           <div className="lg:col-span-1">
             <div className="bg-white shadow rounded-lg p-6 sticky top-4">
-              <h2 className="text-lg font-semibold text-gray-900 mb-4">Order Summary</h2>
-              
+              <h2 className="text-lg font-semibold text-gray-900 mb-4">
+                Order Summary
+              </h2>
+
               {/* Coupon Code */}
               <div className="mb-6">
                 <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -339,19 +380,23 @@ export default function CartPage() {
               <div className="space-y-3 mb-6">
                 <div className="flex justify-between">
                   <span className="text-gray-600">Subtotal</span>
-                  <span className="font-medium">{formatPrice(subtotal, cart.currency)}</span>
+                  <span className="font-medium">
+                    {formatPrice(subtotal, cart.currency)}
+                  </span>
                 </div>
-                
+
                 {couponDiscount > 0 && (
                   <div className="flex justify-between text-green-600">
                     <span className="flex items-center">
                       <Tag className="h-4 w-4 mr-1" />
                       Coupon Discount
                     </span>
-                    <span className="font-medium">-{formatPrice(couponDiscount, cart.currency)}</span>
+                    <span className="font-medium">
+                      -{formatPrice(couponDiscount, cart.currency)}
+                    </span>
                   </div>
                 )}
-                
+
                 <div className="flex justify-between">
                   <span className="text-gray-600 flex items-center">
                     <Truck className="h-4 w-4 mr-1" />
@@ -365,21 +410,30 @@ export default function CartPage() {
                     )}
                   </span>
                 </div>
-                
+
                 {!qualifiesForFreeShipping && (
                   <div className="text-sm text-blue-600">
-                    Add {formatPrice(freeShippingThreshold - subtotal, cart.currency)} more for free shipping
+                    Add{" "}
+                    {formatPrice(
+                      freeShippingThreshold - subtotal,
+                      cart.currency,
+                    )}{" "}
+                    more for free shipping
                   </div>
                 )}
-                
+
                 <div className="flex justify-between">
                   <span className="text-gray-600">Tax</span>
-                  <span className="font-medium">{formatPrice(tax, cart.currency)}</span>
+                  <span className="font-medium">
+                    {formatPrice(tax, cart.currency)}
+                  </span>
                 </div>
-                
+
                 <div className="border-t border-gray-200 pt-3">
                   <div className="flex justify-between">
-                    <span className="text-lg font-semibold text-gray-900">Total</span>
+                    <span className="text-lg font-semibold text-gray-900">
+                      Total
+                    </span>
                     <span className="text-lg font-semibold text-gray-900">
                       {formatPrice(total, cart.currency)}
                     </span>
@@ -395,7 +449,7 @@ export default function CartPage() {
                 <CreditCard className="h-5 w-5 mr-2" />
                 Proceed to Checkout
               </button>
-              
+
               {/* Security Badge */}
               <div className="mt-4 flex items-center justify-center text-sm text-gray-600">
                 <ShieldCheck className="h-4 w-4 mr-1" />
@@ -434,7 +488,7 @@ export default function CartPage() {
                 <p className="text-sm text-gray-600">On orders over $75</p>
               </div>
             </div>
-            
+
             <div className="flex items-center justify-center space-x-3">
               <ShieldCheck className="h-8 w-8 text-blue-600" />
               <div>
@@ -442,7 +496,7 @@ export default function CartPage() {
                 <p className="text-sm text-gray-600">SSL encrypted checkout</p>
               </div>
             </div>
-            
+
             <div className="flex items-center justify-center space-x-3">
               <Gift className="h-8 w-8 text-purple-600" />
               <div>

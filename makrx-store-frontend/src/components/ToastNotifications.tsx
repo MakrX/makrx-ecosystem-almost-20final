@@ -1,54 +1,53 @@
-'use client'
+"use client";
 
-import React from 'react'
-import { 
-  CheckCircle, 
-  AlertCircle, 
-  AlertTriangle, 
-  Info, 
-  X 
-} from 'lucide-react'
-import { useNotifications, type Notification } from '@/contexts/NotificationContext'
+import React from "react";
+import { CheckCircle, AlertCircle, AlertTriangle, Info, X } from "lucide-react";
+import {
+  useNotifications,
+  type Notification,
+} from "@/contexts/NotificationContext";
 
 export default function ToastNotifications() {
-  const { notifications, removeNotification } = useNotifications()
+  const { notifications, removeNotification } = useNotifications();
 
   // Only show recent notifications (last 5 minutes) that haven't been read
-  const recentNotifications = notifications.filter(notification => {
-    const fiveMinutesAgo = new Date(Date.now() - 5 * 60 * 1000)
-    return notification.timestamp > fiveMinutesAgo && !notification.read
-  }).slice(0, 3) // Limit to 3 toasts
+  const recentNotifications = notifications
+    .filter((notification) => {
+      const fiveMinutesAgo = new Date(Date.now() - 5 * 60 * 1000);
+      return notification.timestamp > fiveMinutesAgo && !notification.read;
+    })
+    .slice(0, 3); // Limit to 3 toasts
 
-  const getIcon = (type: Notification['type']) => {
+  const getIcon = (type: Notification["type"]) => {
     switch (type) {
-      case 'success':
-        return <CheckCircle className="h-5 w-5 text-green-600" />
-      case 'error':
-        return <AlertCircle className="h-5 w-5 text-red-600" />
-      case 'warning':
-        return <AlertTriangle className="h-5 w-5 text-yellow-600" />
-      case 'info':
+      case "success":
+        return <CheckCircle className="h-5 w-5 text-green-600" />;
+      case "error":
+        return <AlertCircle className="h-5 w-5 text-red-600" />;
+      case "warning":
+        return <AlertTriangle className="h-5 w-5 text-yellow-600" />;
+      case "info":
       default:
-        return <Info className="h-5 w-5 text-blue-600" />
+        return <Info className="h-5 w-5 text-blue-600" />;
     }
-  }
+  };
 
-  const getBackgroundColor = (type: Notification['type']) => {
+  const getBackgroundColor = (type: Notification["type"]) => {
     switch (type) {
-      case 'success':
-        return 'bg-green-50 border-green-200'
-      case 'error':
-        return 'bg-red-50 border-red-200'
-      case 'warning':
-        return 'bg-yellow-50 border-yellow-200'
-      case 'info':
+      case "success":
+        return "bg-green-50 border-green-200";
+      case "error":
+        return "bg-red-50 border-red-200";
+      case "warning":
+        return "bg-yellow-50 border-yellow-200";
+      case "info":
       default:
-        return 'bg-blue-50 border-blue-200'
+        return "bg-blue-50 border-blue-200";
     }
-  }
+  };
 
   if (recentNotifications.length === 0) {
-    return null
+    return null;
   }
 
   return (
@@ -62,13 +61,11 @@ export default function ToastNotifications() {
             animate-in slide-in-from-right-full
           `}
           style={{
-            animationDelay: `${index * 100}ms`
+            animationDelay: `${index * 100}ms`,
           }}
         >
           <div className="flex items-start space-x-3">
-            <div className="flex-shrink-0">
-              {getIcon(notification.type)}
-            </div>
+            <div className="flex-shrink-0">{getIcon(notification.type)}</div>
             <div className="flex-1 min-w-0">
               <h4 className="text-sm font-semibold text-gray-900">
                 {notification.title}
@@ -95,5 +92,5 @@ export default function ToastNotifications() {
         </div>
       ))}
     </div>
-  )
+  );
 }

@@ -1,7 +1,13 @@
-'use client';
+"use client";
 
-import React, { createContext, useContext, useEffect, useState, ReactNode } from 'react';
-import { User, auth, addAuthListener, removeAuthListener } from '@/lib/auth';
+import React, {
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+  ReactNode,
+} from "react";
+import { User, auth, addAuthListener, removeAuthListener } from "@/lib/auth";
 
 interface AuthContextType {
   user: User | null;
@@ -31,7 +37,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
         const currentUser = auth.getCurrentUser();
         setUser(currentUser);
       } catch (error) {
-        console.error('Failed to initialize auth:', error);
+        console.error("Failed to initialize auth:", error);
       } finally {
         setIsLoading(false);
       }
@@ -89,7 +95,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
 export function useAuth(): AuthContextType {
   const context = useContext(AuthContext);
   if (context === undefined) {
-    throw new Error('useAuth must be used within an AuthProvider');
+    throw new Error("useAuth must be used within an AuthProvider");
   }
   return context;
 }
@@ -97,7 +103,7 @@ export function useAuth(): AuthContextType {
 // Higher-order component for protected routes
 export function withAuth<P extends object>(
   Component: React.ComponentType<P>,
-  requiredRoles?: string[]
+  requiredRoles?: string[],
 ) {
   return function AuthenticatedComponent(props: P) {
     const { isAuthenticated, isLoading, hasAnyRole, login } = useAuth();

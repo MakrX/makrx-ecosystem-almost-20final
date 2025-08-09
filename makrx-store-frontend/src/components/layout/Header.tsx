@@ -1,14 +1,23 @@
-'use client';
+"use client";
 
-import { useState, useEffect } from 'react';
-import Link from 'next/link';
-import { useRouter } from 'next/navigation';
-import { Search, ShoppingCart, Menu, X, User, LogOut, Package, Settings } from 'lucide-react';
-import { useAuth } from '@/contexts/AuthContext';
-import { api, type Category, type Product } from '@/lib/api';
-import SmartSearch from '@/components/SmartSearch';
-import NotificationDropdown from '@/components/NotificationDropdown';
-import { ThemeToggle, ThemeToggleCompact } from '@/components/ThemeToggle';
+import { useState, useEffect } from "react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import {
+  Search,
+  ShoppingCart,
+  Menu,
+  X,
+  User,
+  LogOut,
+  Package,
+  Settings,
+} from "lucide-react";
+import { useAuth } from "@/contexts/AuthContext";
+import { api, type Category, type Product } from "@/lib/api";
+import SmartSearch from "@/components/SmartSearch";
+import NotificationDropdown from "@/components/NotificationDropdown";
+import { ThemeToggle, ThemeToggleCompact } from "@/components/ThemeToggle";
 
 export function Header() {
   const { user, isAuthenticated, login, logout } = useAuth();
@@ -25,7 +34,7 @@ export function Header() {
         const categoriesData = await api.getCategories();
         setCategories(categoriesData);
       } catch (error) {
-        console.error('Failed to load categories:', error);
+        console.error("Failed to load categories:", error);
       }
     };
 
@@ -35,7 +44,7 @@ export function Header() {
           const cart = await api.getCart();
           setCartItemCount(cart.item_count);
         } catch (error) {
-          console.error('Failed to load cart:', error);
+          console.error("Failed to load cart:", error);
         }
       }
     };
@@ -57,25 +66,25 @@ export function Header() {
 
   const handleUserMenuClick = (action: string) => {
     switch (action) {
-      case 'account':
-        router.push('/account');
+      case "account":
+        router.push("/account");
         break;
-      case 'orders':
-        router.push('/account/orders');
+      case "orders":
+        router.push("/account/orders");
         break;
-      case 'settings':
-        router.push('/account/settings');
+      case "settings":
+        router.push("/account/settings");
         break;
-      case 'logout':
+      case "logout":
         logout();
         break;
     }
   };
 
   // Group categories by parent
-  const rootCategories = categories.filter(cat => !cat.parent_id);
-  const getSubcategories = (parentId: number) => 
-    categories.filter(cat => cat.parent_id === parentId);
+  const rootCategories = categories.filter((cat) => !cat.parent_id);
+  const getSubcategories = (parentId: number) =>
+    categories.filter((cat) => cat.parent_id === parentId);
 
   return (
     <header className="bg-background border-b border-border sticky top-0 z-50 backdrop-blur-sm bg-background/90">
@@ -85,14 +94,19 @@ export function Header() {
           {/* Logo */}
           <div className="flex items-center">
             <Link href="/" className="flex items-center space-x-2">
-              <div className="text-2xl font-bold text-blue-600 dark:text-blue-400">MakrX</div>
+              <div className="text-2xl font-bold text-blue-600 dark:text-blue-400">
+                MakrX
+              </div>
               <span className="text-muted-foreground">Store</span>
             </Link>
           </div>
 
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center space-x-8">
-            <Link href="/catalog" className="text-foreground hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
+            <Link
+              href="/catalog"
+              className="text-foreground hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+            >
               Catalog
             </Link>
 
@@ -100,8 +114,18 @@ export function Header() {
             <div className="relative group">
               <button className="text-foreground hover:text-blue-600 dark:hover:text-blue-400 transition-colors flex items-center">
                 Categories
-                <svg className="ml-1 h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                <svg
+                  className="ml-1 h-4 w-4"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M19 9l-7 7-7-7"
+                  />
                 </svg>
               </button>
 
@@ -115,8 +139,12 @@ export function Header() {
                       onMouseLeave={() => setHoveredCategory(null)}
                       onClick={() => handleCategoryClick(category)}
                     >
-                      <div className="font-medium text-popover-foreground">{category.name}</div>
-                      <div className="text-sm text-muted-foreground mt-1">{category.description}</div>
+                      <div className="font-medium text-popover-foreground">
+                        {category.name}
+                      </div>
+                      <div className="text-sm text-muted-foreground mt-1">
+                        {category.description}
+                      </div>
 
                       {/* Subcategories */}
                       {hoveredCategory === category.id && (
@@ -145,30 +173,64 @@ export function Header() {
             <div className="relative group">
               <button className="text-foreground hover:text-blue-600 dark:hover:text-blue-400 transition-colors flex items-center">
                 Services
-                <svg className="ml-1 h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                <svg
+                  className="ml-1 h-4 w-4"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M19 9l-7 7-7-7"
+                  />
                 </svg>
               </button>
 
               <div className="absolute left-0 mt-2 w-64 bg-popover border border-border shadow-lg rounded-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
                 <div className="p-4 space-y-2">
-                  <Link href="/3d-printing" className="block p-2 hover:bg-accent hover:text-accent-foreground rounded-md">
-                    <div className="font-medium text-popover-foreground">3D Printing</div>
-                    <div className="text-sm text-muted-foreground">Professional printing services</div>
+                  <Link
+                    href="/3d-printing"
+                    className="block p-2 hover:bg-accent hover:text-accent-foreground rounded-md"
+                  >
+                    <div className="font-medium text-popover-foreground">
+                      3D Printing
+                    </div>
+                    <div className="text-sm text-muted-foreground">
+                      Professional printing services
+                    </div>
                   </Link>
-                  <Link href="/upload" className="block p-2 hover:bg-accent hover:text-accent-foreground rounded-md">
-                    <div className="font-medium text-popover-foreground">Upload & Quote</div>
-                    <div className="text-sm text-muted-foreground">Get instant pricing</div>
+                  <Link
+                    href="/upload"
+                    className="block p-2 hover:bg-accent hover:text-accent-foreground rounded-md"
+                  >
+                    <div className="font-medium text-popover-foreground">
+                      Upload & Quote
+                    </div>
+                    <div className="text-sm text-muted-foreground">
+                      Get instant pricing
+                    </div>
                   </Link>
-                  <Link href="/sample-projects" className="block p-2 hover:bg-accent hover:text-accent-foreground rounded-md">
-                    <div className="font-medium text-popover-foreground">Sample Projects</div>
-                    <div className="text-sm text-muted-foreground">Explore our gallery</div>
+                  <Link
+                    href="/sample-projects"
+                    className="block p-2 hover:bg-accent hover:text-accent-foreground rounded-md"
+                  >
+                    <div className="font-medium text-popover-foreground">
+                      Sample Projects
+                    </div>
+                    <div className="text-sm text-muted-foreground">
+                      Explore our gallery
+                    </div>
                   </Link>
                 </div>
               </div>
             </div>
 
-            <Link href="/about" className="text-foreground hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
+            <Link
+              href="/about"
+              className="text-foreground hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+            >
               About
             </Link>
           </nav>
@@ -184,11 +246,14 @@ export function Header() {
             <ThemeToggle />
 
             {/* Cart */}
-            <Link href="/cart" className="relative p-2 text-foreground hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
+            <Link
+              href="/cart"
+              className="relative p-2 text-foreground hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+            >
               <ShoppingCart className="h-6 w-6" />
               {cartItemCount > 0 && (
                 <span className="absolute -top-1 -right-1 bg-blue-600 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
-                  {cartItemCount > 9 ? '9+' : cartItemCount}
+                  {cartItemCount > 9 ? "9+" : cartItemCount}
                 </span>
               )}
             </Link>
@@ -201,35 +266,37 @@ export function Header() {
               <div className="relative group">
                 <button className="flex items-center space-x-2 p-2 text-foreground hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
                   <User className="h-6 w-6" />
-                  <span className="hidden md:block text-sm">{user?.name || user?.email}</span>
+                  <span className="hidden md:block text-sm">
+                    {user?.name || user?.email}
+                  </span>
                 </button>
 
                 <div className="absolute right-0 mt-2 w-48 bg-popover border border-border shadow-lg rounded-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
                   <div className="py-2">
                     <button
-                      onClick={() => handleUserMenuClick('account')}
+                      onClick={() => handleUserMenuClick("account")}
                       className="w-full text-left px-4 py-2 text-sm text-popover-foreground hover:bg-accent hover:text-accent-foreground flex items-center"
                     >
                       <User className="h-4 w-4 mr-2" />
                       My Account
                     </button>
                     <button
-                      onClick={() => handleUserMenuClick('orders')}
+                      onClick={() => handleUserMenuClick("orders")}
                       className="w-full text-left px-4 py-2 text-sm text-popover-foreground hover:bg-accent hover:text-accent-foreground flex items-center"
                     >
                       <Package className="h-4 w-4 mr-2" />
                       My Orders
                     </button>
                     <button
-                      onClick={() => handleUserMenuClick('settings')}
+                      onClick={() => handleUserMenuClick("settings")}
                       className="w-full text-left px-4 py-2 text-sm text-popover-foreground hover:bg-accent hover:text-accent-foreground flex items-center"
                     >
                       <Settings className="h-4 w-4 mr-2" />
                       Settings
                     </button>
-                    {user?.roles.includes('admin') && (
+                    {user?.roles.includes("admin") && (
                       <button
-                        onClick={() => router.push('/admin')}
+                        onClick={() => router.push("/admin")}
                         className="w-full text-left px-4 py-2 text-sm text-popover-foreground hover:bg-accent hover:text-accent-foreground flex items-center"
                       >
                         <Settings className="h-4 w-4 mr-2" />
@@ -240,7 +307,7 @@ export function Header() {
                     <ThemeToggleCompact />
                     <hr className="my-1 border-border" />
                     <button
-                      onClick={() => handleUserMenuClick('logout')}
+                      onClick={() => handleUserMenuClick("logout")}
                       className="w-full text-left px-4 py-2 text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 flex items-center"
                     >
                       <LogOut className="h-4 w-4 mr-2" />
@@ -263,7 +330,11 @@ export function Header() {
               className="md:hidden p-2 text-foreground hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
               onClick={() => setIsMenuOpen(!isMenuOpen)}
             >
-              {isMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+              {isMenuOpen ? (
+                <X className="h-6 w-6" />
+              ) : (
+                <Menu className="h-6 w-6" />
+              )}
             </button>
           </div>
         </div>
@@ -346,7 +417,7 @@ export function Header() {
                 <div className="font-medium text-foreground mb-2">Account</div>
                 <button
                   onClick={() => {
-                    handleUserMenuClick('account');
+                    handleUserMenuClick("account");
                     setIsMenuOpen(false);
                   }}
                   className="block w-full text-left py-1 pl-4 text-muted-foreground hover:text-blue-600 dark:hover:text-blue-400"
@@ -355,7 +426,7 @@ export function Header() {
                 </button>
                 <button
                   onClick={() => {
-                    handleUserMenuClick('orders');
+                    handleUserMenuClick("orders");
                     setIsMenuOpen(false);
                   }}
                   className="block w-full text-left py-1 pl-4 text-muted-foreground hover:text-blue-600 dark:hover:text-blue-400"
@@ -364,7 +435,7 @@ export function Header() {
                 </button>
                 <button
                   onClick={() => {
-                    handleUserMenuClick('logout');
+                    handleUserMenuClick("logout");
                     setIsMenuOpen(false);
                   }}
                   className="block w-full text-left py-1 pl-4 text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300"

@@ -1,8 +1,22 @@
-'use client';
+"use client";
 
-import { useState, useMemo } from 'react';
-import Link from 'next/link';
-import { Search, Filter, Download, Eye, Truck, Check, X, Clock, Package, ArrowUpDown, Calendar, User, CreditCard } from 'lucide-react';
+import { useState, useMemo } from "react";
+import Link from "next/link";
+import {
+  Search,
+  Filter,
+  Download,
+  Eye,
+  Truck,
+  Check,
+  X,
+  Clock,
+  Package,
+  ArrowUpDown,
+  Calendar,
+  User,
+  CreditCard,
+} from "lucide-react";
 
 interface Order {
   id: string;
@@ -10,126 +24,128 @@ interface Order {
   customerEmail: string;
   orderNumber: string;
   date: string;
-  status: 'pending' | 'processing' | 'shipped' | 'delivered' | 'cancelled';
-  type: 'product' | 'service';
+  status: "pending" | "processing" | "shipped" | "delivered" | "cancelled";
+  type: "product" | "service";
   total: number;
   items: number;
-  priority: 'low' | 'normal' | 'high' | 'urgent';
-  paymentStatus: 'paid' | 'pending' | 'failed' | 'refunded';
+  priority: "low" | "normal" | "high" | "urgent";
+  paymentStatus: "paid" | "pending" | "failed" | "refunded";
   shippingMethod: string;
   estimatedDelivery?: string;
 }
 
 const mockOrders: Order[] = [
   {
-    id: '1',
-    customerName: 'Sarah Johnson',
-    customerEmail: 'sarah.j@email.com',
-    orderNumber: 'MX-2024-001',
-    date: '2024-01-15',
-    status: 'processing',
-    type: 'product',
+    id: "1",
+    customerName: "Sarah Johnson",
+    customerEmail: "sarah.j@email.com",
+    orderNumber: "MX-2024-001",
+    date: "2024-01-15",
+    status: "processing",
+    type: "product",
     total: 159.99,
     items: 3,
-    priority: 'normal',
-    paymentStatus: 'paid',
-    shippingMethod: 'Standard',
-    estimatedDelivery: '2024-01-20'
+    priority: "normal",
+    paymentStatus: "paid",
+    shippingMethod: "Standard",
+    estimatedDelivery: "2024-01-20",
   },
   {
-    id: '2',
-    customerName: 'Mike Chen',
-    customerEmail: 'mike.chen@email.com',
-    orderNumber: 'MX-2024-002',
-    date: '2024-01-14',
-    status: 'shipped',
-    type: 'service',
-    total: 89.50,
+    id: "2",
+    customerName: "Mike Chen",
+    customerEmail: "mike.chen@email.com",
+    orderNumber: "MX-2024-002",
+    date: "2024-01-14",
+    status: "shipped",
+    type: "service",
+    total: 89.5,
     items: 1,
-    priority: 'high',
-    paymentStatus: 'paid',
-    shippingMethod: 'Express',
-    estimatedDelivery: '2024-01-18'
+    priority: "high",
+    paymentStatus: "paid",
+    shippingMethod: "Express",
+    estimatedDelivery: "2024-01-18",
   },
   {
-    id: '3',
-    customerName: 'Emily Rodriguez',
-    customerEmail: 'emily.r@email.com',
-    orderNumber: 'MX-2024-003',
-    date: '2024-01-13',
-    status: 'delivered',
-    type: 'product',
+    id: "3",
+    customerName: "Emily Rodriguez",
+    customerEmail: "emily.r@email.com",
+    orderNumber: "MX-2024-003",
+    date: "2024-01-13",
+    status: "delivered",
+    type: "product",
     total: 234.75,
     items: 5,
-    priority: 'normal',
-    paymentStatus: 'paid',
-    shippingMethod: 'Standard',
-    estimatedDelivery: '2024-01-19'
+    priority: "normal",
+    paymentStatus: "paid",
+    shippingMethod: "Standard",
+    estimatedDelivery: "2024-01-19",
   },
   {
-    id: '4',
-    customerName: 'David Wilson',
-    customerEmail: 'david.w@email.com',
-    orderNumber: 'MX-2024-004',
-    date: '2024-01-12',
-    status: 'pending',
-    type: 'service',
-    total: 45.00,
+    id: "4",
+    customerName: "David Wilson",
+    customerEmail: "david.w@email.com",
+    orderNumber: "MX-2024-004",
+    date: "2024-01-12",
+    status: "pending",
+    type: "service",
+    total: 45.0,
     items: 1,
-    priority: 'urgent',
-    paymentStatus: 'pending',
-    shippingMethod: 'Digital',
-    estimatedDelivery: '2024-01-16'
+    priority: "urgent",
+    paymentStatus: "pending",
+    shippingMethod: "Digital",
+    estimatedDelivery: "2024-01-16",
   },
   {
-    id: '5',
-    customerName: 'Lisa Thompson',
-    customerEmail: 'lisa.t@email.com',
-    orderNumber: 'MX-2024-005',
-    date: '2024-01-11',
-    status: 'cancelled',
-    type: 'product',
+    id: "5",
+    customerName: "Lisa Thompson",
+    customerEmail: "lisa.t@email.com",
+    orderNumber: "MX-2024-005",
+    date: "2024-01-11",
+    status: "cancelled",
+    type: "product",
     total: 178.25,
     items: 2,
-    priority: 'low',
-    paymentStatus: 'refunded',
-    shippingMethod: 'Express',
-    estimatedDelivery: undefined
-  }
+    priority: "low",
+    paymentStatus: "refunded",
+    shippingMethod: "Express",
+    estimatedDelivery: undefined,
+  },
 ];
 
 export default function AdminOrders() {
-  const [searchTerm, setSearchTerm] = useState('');
-  const [statusFilter, setStatusFilter] = useState('all');
-  const [typeFilter, setTypeFilter] = useState('all');
-  const [priorityFilter, setPriorityFilter] = useState('all');
-  const [sortBy, setSortBy] = useState('date');
-  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
+  const [searchTerm, setSearchTerm] = useState("");
+  const [statusFilter, setStatusFilter] = useState("all");
+  const [typeFilter, setTypeFilter] = useState("all");
+  const [priorityFilter, setPriorityFilter] = useState("all");
+  const [sortBy, setSortBy] = useState("date");
+  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
   const [selectedOrders, setSelectedOrders] = useState<string[]>([]);
 
   const filteredAndSortedOrders = useMemo(() => {
-    let filtered = mockOrders.filter(order => {
-      const matchesSearch = 
+    let filtered = mockOrders.filter((order) => {
+      const matchesSearch =
         order.customerName.toLowerCase().includes(searchTerm.toLowerCase()) ||
         order.customerEmail.toLowerCase().includes(searchTerm.toLowerCase()) ||
         order.orderNumber.toLowerCase().includes(searchTerm.toLowerCase());
-      const matchesStatus = statusFilter === 'all' || order.status === statusFilter;
-      const matchesType = typeFilter === 'all' || order.type === typeFilter;
-      const matchesPriority = priorityFilter === 'all' || order.priority === priorityFilter;
-      
+      const matchesStatus =
+        statusFilter === "all" || order.status === statusFilter;
+      const matchesType = typeFilter === "all" || order.type === typeFilter;
+      const matchesPriority =
+        priorityFilter === "all" || order.priority === priorityFilter;
+
       return matchesSearch && matchesStatus && matchesType && matchesPriority;
     });
 
     return filtered.sort((a, b) => {
       let aValue: any = a[sortBy as keyof Order];
       let bValue: any = b[sortBy as keyof Order];
-      
-      if (sortBy === 'date') {
+
+      if (sortBy === "date") {
         aValue = new Date(aValue).getTime();
         bValue = new Date(bValue).getTime();
       }
-      
-      if (sortOrder === 'asc') {
+
+      if (sortOrder === "asc") {
         return aValue > bValue ? 1 : -1;
       } else {
         return aValue < bValue ? 1 : -1;
@@ -137,66 +153,84 @@ export default function AdminOrders() {
     });
   }, [searchTerm, statusFilter, typeFilter, priorityFilter, sortBy, sortOrder]);
 
-  const getStatusIcon = (status: Order['status']) => {
+  const getStatusIcon = (status: Order["status"]) => {
     switch (status) {
-      case 'pending': return <Clock className="w-4 h-4" />;
-      case 'processing': return <Package className="w-4 h-4" />;
-      case 'shipped': return <Truck className="w-4 h-4" />;
-      case 'delivered': return <Check className="w-4 h-4" />;
-      case 'cancelled': return <X className="w-4 h-4" />;
+      case "pending":
+        return <Clock className="w-4 h-4" />;
+      case "processing":
+        return <Package className="w-4 h-4" />;
+      case "shipped":
+        return <Truck className="w-4 h-4" />;
+      case "delivered":
+        return <Check className="w-4 h-4" />;
+      case "cancelled":
+        return <X className="w-4 h-4" />;
     }
   };
 
-  const getStatusColor = (status: Order['status']) => {
+  const getStatusColor = (status: Order["status"]) => {
     switch (status) {
-      case 'pending': return 'bg-yellow-100 text-yellow-800';
-      case 'processing': return 'bg-blue-100 text-blue-800';
-      case 'shipped': return 'bg-purple-100 text-purple-800';
-      case 'delivered': return 'bg-green-100 text-green-800';
-      case 'cancelled': return 'bg-red-100 text-red-800';
+      case "pending":
+        return "bg-yellow-100 text-yellow-800";
+      case "processing":
+        return "bg-blue-100 text-blue-800";
+      case "shipped":
+        return "bg-purple-100 text-purple-800";
+      case "delivered":
+        return "bg-green-100 text-green-800";
+      case "cancelled":
+        return "bg-red-100 text-red-800";
     }
   };
 
-  const getPriorityColor = (priority: Order['priority']) => {
+  const getPriorityColor = (priority: Order["priority"]) => {
     switch (priority) {
-      case 'low': return 'bg-gray-100 text-gray-800';
-      case 'normal': return 'bg-blue-100 text-blue-800';
-      case 'high': return 'bg-orange-100 text-orange-800';
-      case 'urgent': return 'bg-red-100 text-red-800';
+      case "low":
+        return "bg-gray-100 text-gray-800";
+      case "normal":
+        return "bg-blue-100 text-blue-800";
+      case "high":
+        return "bg-orange-100 text-orange-800";
+      case "urgent":
+        return "bg-red-100 text-red-800";
     }
   };
 
-  const getPaymentStatusColor = (status: Order['paymentStatus']) => {
+  const getPaymentStatusColor = (status: Order["paymentStatus"]) => {
     switch (status) {
-      case 'paid': return 'bg-green-100 text-green-800';
-      case 'pending': return 'bg-yellow-100 text-yellow-800';
-      case 'failed': return 'bg-red-100 text-red-800';
-      case 'refunded': return 'bg-gray-100 text-gray-800';
+      case "paid":
+        return "bg-green-100 text-green-800";
+      case "pending":
+        return "bg-yellow-100 text-yellow-800";
+      case "failed":
+        return "bg-red-100 text-red-800";
+      case "refunded":
+        return "bg-gray-100 text-gray-800";
     }
   };
 
   const handleSelectOrder = (orderId: string) => {
-    setSelectedOrders(prev => 
-      prev.includes(orderId) 
-        ? prev.filter(id => id !== orderId)
-        : [...prev, orderId]
+    setSelectedOrders((prev) =>
+      prev.includes(orderId)
+        ? prev.filter((id) => id !== orderId)
+        : [...prev, orderId],
     );
   };
 
   const handleSelectAll = () => {
     setSelectedOrders(
-      selectedOrders.length === filteredAndSortedOrders.length 
-        ? [] 
-        : filteredAndSortedOrders.map(order => order.id)
+      selectedOrders.length === filteredAndSortedOrders.length
+        ? []
+        : filteredAndSortedOrders.map((order) => order.id),
     );
   };
 
   const handleSort = (field: string) => {
     if (sortBy === field) {
-      setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
+      setSortOrder(sortOrder === "asc" ? "desc" : "asc");
     } else {
       setSortBy(field);
-      setSortOrder('desc');
+      setSortOrder("desc");
     }
   };
 
@@ -207,15 +241,19 @@ export default function AdminOrders() {
         <div className="mb-8">
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-3xl font-bold text-gray-900">Order Management</h1>
-              <p className="text-gray-600 mt-2">Manage and track all customer orders</p>
+              <h1 className="text-3xl font-bold text-gray-900">
+                Order Management
+              </h1>
+              <p className="text-gray-600 mt-2">
+                Manage and track all customer orders
+              </p>
             </div>
             <div className="flex items-center space-x-3">
               <button className="inline-flex items-center px-4 py-2 border border-gray-300 text-gray-700 bg-white rounded-lg hover:bg-gray-50">
                 <Download className="w-4 h-4 mr-2" />
                 Export
               </button>
-              <Link 
+              <Link
                 href="/admin"
                 className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
               >
@@ -234,7 +272,9 @@ export default function AdminOrders() {
               </div>
               <div className="ml-4">
                 <p className="text-sm text-gray-600">Total Orders</p>
-                <p className="text-2xl font-bold text-gray-900">{mockOrders.length}</p>
+                <p className="text-2xl font-bold text-gray-900">
+                  {mockOrders.length}
+                </p>
               </div>
             </div>
           </div>
@@ -246,7 +286,7 @@ export default function AdminOrders() {
               <div className="ml-4">
                 <p className="text-sm text-gray-600">Completed</p>
                 <p className="text-2xl font-bold text-gray-900">
-                  {mockOrders.filter(o => o.status === 'delivered').length}
+                  {mockOrders.filter((o) => o.status === "delivered").length}
                 </p>
               </div>
             </div>
@@ -259,7 +299,12 @@ export default function AdminOrders() {
               <div className="ml-4">
                 <p className="text-sm text-gray-600">Pending</p>
                 <p className="text-2xl font-bold text-gray-900">
-                  {mockOrders.filter(o => o.status === 'pending' || o.status === 'processing').length}
+                  {
+                    mockOrders.filter(
+                      (o) =>
+                        o.status === "pending" || o.status === "processing",
+                    ).length
+                  }
                 </p>
               </div>
             </div>
@@ -272,7 +317,14 @@ export default function AdminOrders() {
               <div className="ml-4">
                 <p className="text-sm text-gray-600">Revenue</p>
                 <p className="text-2xl font-bold text-gray-900">
-                  ${mockOrders.reduce((sum, o) => o.paymentStatus === 'paid' ? sum + o.total : sum, 0).toFixed(2)}
+                  $
+                  {mockOrders
+                    .reduce(
+                      (sum, o) =>
+                        o.paymentStatus === "paid" ? sum + o.total : sum,
+                      0,
+                    )
+                    .toFixed(2)}
                 </p>
               </div>
             </div>
@@ -367,32 +419,36 @@ export default function AdminOrders() {
                   <th className="px-6 py-3 text-left">
                     <input
                       type="checkbox"
-                      checked={selectedOrders.length === filteredAndSortedOrders.length && filteredAndSortedOrders.length > 0}
+                      checked={
+                        selectedOrders.length ===
+                          filteredAndSortedOrders.length &&
+                        filteredAndSortedOrders.length > 0
+                      }
                       onChange={handleSelectAll}
                       className="rounded border-gray-300"
                     />
                   </th>
-                  <th 
+                  <th
                     className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
-                    onClick={() => handleSort('orderNumber')}
+                    onClick={() => handleSort("orderNumber")}
                   >
                     <div className="flex items-center">
                       Order
                       <ArrowUpDown className="w-3 h-3 ml-1" />
                     </div>
                   </th>
-                  <th 
+                  <th
                     className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
-                    onClick={() => handleSort('customerName')}
+                    onClick={() => handleSort("customerName")}
                   >
                     <div className="flex items-center">
                       Customer
                       <ArrowUpDown className="w-3 h-3 ml-1" />
                     </div>
                   </th>
-                  <th 
+                  <th
                     className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
-                    onClick={() => handleSort('date')}
+                    onClick={() => handleSort("date")}
                   >
                     <div className="flex items-center">
                       Date
@@ -408,9 +464,9 @@ export default function AdminOrders() {
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Priority
                   </th>
-                  <th 
+                  <th
                     className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
-                    onClick={() => handleSort('total')}
+                    onClick={() => handleSort("total")}
                   >
                     <div className="flex items-center">
                       Total
@@ -438,14 +494,22 @@ export default function AdminOrders() {
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div>
-                        <div className="text-sm font-medium text-gray-900">{order.orderNumber}</div>
-                        <div className="text-sm text-gray-500">{order.items} items</div>
+                        <div className="text-sm font-medium text-gray-900">
+                          {order.orderNumber}
+                        </div>
+                        <div className="text-sm text-gray-500">
+                          {order.items} items
+                        </div>
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div>
-                        <div className="text-sm font-medium text-gray-900">{order.customerName}</div>
-                        <div className="text-sm text-gray-500">{order.customerEmail}</div>
+                        <div className="text-sm font-medium text-gray-900">
+                          {order.customerName}
+                        </div>
+                        <div className="text-sm text-gray-500">
+                          {order.customerEmail}
+                        </div>
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
@@ -454,29 +518,42 @@ export default function AdminOrders() {
                       </div>
                       {order.estimatedDelivery && (
                         <div className="text-sm text-gray-500">
-                          Est: {new Date(order.estimatedDelivery).toLocaleDateString()}
+                          Est:{" "}
+                          {new Date(
+                            order.estimatedDelivery,
+                          ).toLocaleDateString()}
                         </div>
                       )}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getStatusColor(order.status)}`}>
+                      <span
+                        className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getStatusColor(order.status)}`}
+                      >
                         {getStatusIcon(order.status)}
                         <span className="ml-1 capitalize">{order.status}</span>
                       </span>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <span className="text-sm text-gray-900 capitalize">{order.type}</span>
+                      <span className="text-sm text-gray-900 capitalize">
+                        {order.type}
+                      </span>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <span className={`inline-flex px-2 py-1 text-xs font-medium rounded-full capitalize ${getPriorityColor(order.priority)}`}>
+                      <span
+                        className={`inline-flex px-2 py-1 text-xs font-medium rounded-full capitalize ${getPriorityColor(order.priority)}`}
+                      >
                         {order.priority}
                       </span>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm font-medium text-gray-900">${order.total}</div>
+                      <div className="text-sm font-medium text-gray-900">
+                        ${order.total}
+                      </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <span className={`inline-flex px-2 py-1 text-xs font-medium rounded-full capitalize ${getPaymentStatusColor(order.paymentStatus)}`}>
+                      <span
+                        className={`inline-flex px-2 py-1 text-xs font-medium rounded-full capitalize ${getPaymentStatusColor(order.paymentStatus)}`}
+                      >
                         {order.paymentStatus}
                       </span>
                     </td>
@@ -502,8 +579,12 @@ export default function AdminOrders() {
           {filteredAndSortedOrders.length === 0 && (
             <div className="text-center py-12">
               <Package className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-              <h3 className="text-lg font-medium text-gray-900 mb-2">No orders found</h3>
-              <p className="text-gray-500">Try adjusting your search or filter criteria.</p>
+              <h3 className="text-lg font-medium text-gray-900 mb-2">
+                No orders found
+              </h3>
+              <p className="text-gray-500">
+                Try adjusting your search or filter criteria.
+              </p>
             </div>
           )}
         </div>
@@ -512,7 +593,8 @@ export default function AdminOrders() {
         {filteredAndSortedOrders.length > 0 && (
           <div className="flex items-center justify-between mt-6">
             <div className="text-sm text-gray-700">
-              Showing {filteredAndSortedOrders.length} of {mockOrders.length} orders
+              Showing {filteredAndSortedOrders.length} of {mockOrders.length}{" "}
+              orders
             </div>
             <div className="flex items-center space-x-2">
               <button className="px-3 py-2 text-sm border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50">

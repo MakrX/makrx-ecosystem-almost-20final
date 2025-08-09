@@ -1,12 +1,12 @@
-import type { Config } from 'tailwindcss'
+import type { Config } from "tailwindcss";
 
 const config: Config = {
-  darkMode: ['class'],
+  darkMode: ["class"],
   content: [
-    './pages/**/*.{js,ts,jsx,tsx,mdx}',
-    './components/**/*.{js,ts,jsx,tsx,mdx}',
-    './app/**/*.{js,ts,jsx,tsx,mdx}',
-    './src/**/*.{js,ts,jsx,tsx,mdx}',
+    "./pages/**/*.{js,ts,jsx,tsx,mdx}",
+    "./components/**/*.{js,ts,jsx,tsx,mdx}",
+    "./app/**/*.{js,ts,jsx,tsx,mdx}",
+    "./src/**/*.{js,ts,jsx,tsx,mdx}",
   ],
   theme: {
     extend: {
@@ -45,21 +45,21 @@ const config: Config = {
           foreground: "hsl(var(--card-foreground))",
         },
         // MakrX Store specific colors with improved contrast
-        'store-primary': '#4f46e5',
-        'store-primary-dark': '#3730a3',
-        'store-secondary': '#7c3aed',
-        'store-secondary-dark': '#5b21b6',
-        'store-accent': '#0891b2',
-        'store-accent-dark': '#0e7490',
-        'store-success': '#059669',
-        'store-success-dark': '#047857',
-        'store-warning': '#d97706',
-        'store-warning-dark': '#b45309',
-        'store-error': '#dc2626',
-        'store-error-dark': '#b91c1c',
-        'store-text': '#111827',
-        'store-text-light': '#374151',
-        'store-text-muted': '#6b7280',
+        "store-primary": "#4f46e5",
+        "store-primary-dark": "#3730a3",
+        "store-secondary": "#7c3aed",
+        "store-secondary-dark": "#5b21b6",
+        "store-accent": "#0891b2",
+        "store-accent-dark": "#0e7490",
+        "store-success": "#059669",
+        "store-success-dark": "#047857",
+        "store-warning": "#d97706",
+        "store-warning-dark": "#b45309",
+        "store-error": "#dc2626",
+        "store-error-dark": "#b91c1c",
+        "store-text": "#111827",
+        "store-text-light": "#374151",
+        "store-text-muted": "#6b7280",
       },
       borderRadius: {
         lg: "var(--radius)",
@@ -97,9 +97,6 @@ const config: Config = {
       },
     },
   },
-  plugins: [
-    require('@tailwindcss/forms'),
-    require('@tailwindcss/typography'),
-  ],
-}
-export default config
+  plugins: [require("@tailwindcss/forms"), require("@tailwindcss/typography")],
+};
+export default config;

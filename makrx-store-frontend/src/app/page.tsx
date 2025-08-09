@@ -1,11 +1,11 @@
-'use client';
+"use client";
 
-import { useState, useEffect } from 'react';
-import Link from 'next/link';
-import Image from 'next/image';
-import { ArrowRight, Star, Users, Package, Truck, Clock } from 'lucide-react';
-import { api, type Product, type Category, formatPrice } from '@/lib/api';
-import { DarkModeDemo } from '@/components/DarkModeDemo';
+import { useState, useEffect } from "react";
+import Link from "next/link";
+import Image from "next/image";
+import { ArrowRight, Star, Users, Package, Truck, Clock } from "lucide-react";
+import { api, type Product, type Category, formatPrice } from "@/lib/api";
+import { DarkModeDemo } from "@/components/DarkModeDemo";
 
 export default function HomePage() {
   const [featuredProducts, setFeaturedProducts] = useState<Product[]>([]);
@@ -17,13 +17,13 @@ export default function HomePage() {
       try {
         const [productsData, categoriesData] = await Promise.all([
           api.getFeaturedProducts(8),
-          api.getCategories()
+          api.getCategories(),
         ]);
-        
+
         setFeaturedProducts(Array.isArray(productsData) ? productsData : []);
         setCategories(Array.isArray(categoriesData) ? categoriesData : []);
       } catch (error) {
-        console.error('Failed to load homepage data:', error);
+        console.error("Failed to load homepage data:", error);
       } finally {
         setLoading(false);
       }
@@ -60,7 +60,7 @@ export default function HomePage() {
               <span className="block text-blue-200">Materials & Services</span>
             </h1>
             <p className="text-xl md:text-2xl mb-8 max-w-3xl mx-auto text-blue-100">
-              From high-quality filaments to professional printing services, 
+              From high-quality filaments to professional printing services,
               we're your one-stop shop for all 3D printing needs
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
@@ -85,9 +85,12 @@ export default function HomePage() {
       <section className="py-16 bg-muted/30">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-foreground mb-4">Shop by Category</h2>
+            <h2 className="text-3xl font-bold text-foreground mb-4">
+              Shop by Category
+            </h2>
             <p className="text-lg text-muted-foreground">
-              Explore our comprehensive range of 3D printing materials and equipment
+              Explore our comprehensive range of 3D printing materials and
+              equipment
             </p>
           </div>
 
@@ -109,12 +112,16 @@ export default function HomePage() {
                     />
                   </div>
                 )}
-                <h3 className="font-semibold text-card-foreground mb-2">{category.name}</h3>
-                <p className="text-sm text-muted-foreground">{category.description}</p>
+                <h3 className="font-semibold text-card-foreground mb-2">
+                  {category.name}
+                </h3>
+                <p className="text-sm text-muted-foreground">
+                  {category.description}
+                </p>
               </div>
             ))}
           </div>
-          
+
           <div className="text-center mt-8">
             <Link
               href="/catalog"
@@ -131,7 +138,9 @@ export default function HomePage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center mb-12">
             <div>
-              <h2 className="text-3xl font-bold text-foreground mb-4">Featured Products</h2>
+              <h2 className="text-3xl font-bold text-foreground mb-4">
+                Featured Products
+              </h2>
               <p className="text-lg text-muted-foreground">
                 Our most popular and highly-rated products
               </p>
@@ -186,12 +195,16 @@ export default function HomePage() {
                     </div>
                     <div className="flex items-center">
                       <Star className="h-4 w-4 text-yellow-400 fill-current" />
-                      <span className="text-sm text-muted-foreground ml-1">4.8</span>
+                      <span className="text-sm text-muted-foreground ml-1">
+                        4.8
+                      </span>
                     </div>
                   </div>
                   {!product.in_stock && (
                     <div className="mt-2">
-                      <span className="text-xs text-red-600 font-medium">Out of Stock</span>
+                      <span className="text-xs text-red-600 font-medium">
+                        Out of Stock
+                      </span>
                     </div>
                   )}
                 </div>
@@ -205,7 +218,9 @@ export default function HomePage() {
       <section className="py-16 bg-muted/30">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-foreground mb-4">Professional 3D Printing Services</h2>
+            <h2 className="text-3xl font-bold text-foreground mb-4">
+              Professional 3D Printing Services
+            </h2>
             <p className="text-lg text-muted-foreground">
               From prototypes to production, we bring your ideas to life
             </p>
@@ -216,10 +231,12 @@ export default function HomePage() {
               <div className="w-16 h-16 bg-blue-100 dark:bg-blue-900/20 rounded-lg flex items-center justify-center mx-auto mb-6">
                 <Package className="h-8 w-8 text-blue-600 dark:text-blue-400" />
               </div>
-              <h3 className="text-xl font-semibold text-card-foreground mb-4">Upload & Quote</h3>
+              <h3 className="text-xl font-semibold text-card-foreground mb-4">
+                Upload & Quote
+              </h3>
               <p className="text-muted-foreground mb-6">
-                Get instant pricing for your 3D models. Simply upload your file and
-                receive a quote within minutes.
+                Get instant pricing for your 3D models. Simply upload your file
+                and receive a quote within minutes.
               </p>
               <Link
                 href="/upload"
@@ -233,7 +250,9 @@ export default function HomePage() {
               <div className="w-16 h-16 bg-green-100 dark:bg-green-900/20 rounded-lg flex items-center justify-center mx-auto mb-6">
                 <Clock className="h-8 w-8 text-green-600 dark:text-green-400" />
               </div>
-              <h3 className="text-xl font-semibold text-card-foreground mb-4">Fast Turnaround</h3>
+              <h3 className="text-xl font-semibold text-card-foreground mb-4">
+                Fast Turnaround
+              </h3>
               <p className="text-muted-foreground mb-6">
                 Most prints completed within 24-48 hours. Rush orders available
                 for urgent projects.
@@ -250,7 +269,9 @@ export default function HomePage() {
               <div className="w-16 h-16 bg-purple-100 dark:bg-purple-900/20 rounded-lg flex items-center justify-center mx-auto mb-6">
                 <Star className="h-8 w-8 text-purple-600 dark:text-purple-400" />
               </div>
-              <h3 className="text-xl font-semibold text-card-foreground mb-4">Premium Quality</h3>
+              <h3 className="text-xl font-semibold text-card-foreground mb-4">
+                Premium Quality
+              </h3>
               <p className="text-muted-foreground mb-6">
                 Professional-grade printers and materials ensure exceptional
                 quality for every project.
@@ -272,19 +293,27 @@ export default function HomePage() {
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
             <div>
               <div className="text-4xl font-bold mb-2">10k+</div>
-              <div className="text-blue-200 dark:text-blue-300">Happy Customers</div>
+              <div className="text-blue-200 dark:text-blue-300">
+                Happy Customers
+              </div>
             </div>
             <div>
               <div className="text-4xl font-bold mb-2">50k+</div>
-              <div className="text-blue-200 dark:text-blue-300">Prints Delivered</div>
+              <div className="text-blue-200 dark:text-blue-300">
+                Prints Delivered
+              </div>
             </div>
             <div>
               <div className="text-4xl font-bold mb-2">24hr</div>
-              <div className="text-blue-200 dark:text-blue-300">Average Turnaround</div>
+              <div className="text-blue-200 dark:text-blue-300">
+                Average Turnaround
+              </div>
             </div>
             <div>
               <div className="text-4xl font-bold mb-2">99%</div>
-              <div className="text-blue-200 dark:text-blue-300">Customer Satisfaction</div>
+              <div className="text-blue-200 dark:text-blue-300">
+                Customer Satisfaction
+              </div>
             </div>
           </div>
         </div>
@@ -297,8 +326,8 @@ export default function HomePage() {
             🌙 NEW: Dark Mode Support!
           </h2>
           <p className="text-lg text-muted-foreground mb-8">
-            Experience our enhanced interface with light, dark, and system theme options.
-            Try the theme toggle in the header or use the demo below!
+            Experience our enhanced interface with light, dark, and system theme
+            options. Try the theme toggle in the header or use the demo below!
           </p>
           <DarkModeDemo />
         </div>
@@ -311,8 +340,8 @@ export default function HomePage() {
             Ready to Start Your Next Project?
           </h2>
           <p className="text-lg text-muted-foreground mb-8">
-            Whether you need materials for your own printer or professional printing services,
-            we're here to help bring your ideas to life.
+            Whether you need materials for your own printer or professional
+            printing services, we're here to help bring your ideas to life.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link

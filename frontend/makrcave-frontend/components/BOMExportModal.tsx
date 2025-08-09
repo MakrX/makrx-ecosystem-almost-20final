@@ -1,79 +1,79 @@
-'use client'
+"use client";
 
-import React, { useState, useEffect } from 'react'
-import { 
-  Dialog, 
-  DialogContent, 
-  DialogHeader, 
+import React, { useState, useEffect } from "react";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
   DialogTitle,
   DialogDescription,
-  DialogFooter 
-} from '@/components/ui/dialog'
-import { Button } from '@/components/ui/button'
-import { Checkbox } from '@/components/ui/checkbox'
-import { Alert, AlertDescription } from '@/components/ui/alert'
-import { Badge } from '@/components/ui/badge'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { ScrollArea } from '@/components/ui/scroll-area'
-import { 
-  ShoppingCart, 
-  Package, 
-  AlertTriangle, 
-  CheckCircle, 
-  XCircle, 
+  DialogFooter,
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Badge } from "@/components/ui/badge";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import {
+  ShoppingCart,
+  Package,
+  AlertTriangle,
+  CheckCircle,
+  XCircle,
   ExternalLink,
   Loader2,
   Info,
-  Download
-} from 'lucide-react'
-import { useToast } from '@/hooks/use-toast'
-import { apiService } from '@/services/apiService'
+  Download,
+} from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
+import { apiService } from "@/services/apiService";
 
 interface BOMItem {
-  id: string
-  part_name: string
-  part_code?: string
-  quantity_needed: number
-  source: string
-  description?: string
-  unit_cost?: number
-  supplier?: string
+  id: string;
+  part_name: string;
+  part_code?: string;
+  quantity_needed: number;
+  source: string;
+  description?: string;
+  unit_cost?: number;
+  supplier?: string;
 }
 
 interface ExportPreviewItem {
-  id: string
-  part_name: string
-  part_code?: string
-  quantity_needed: number
-  source: string
-  exportable: boolean
-  reason?: string
-  mapped_sku?: string
+  id: string;
+  part_name: string;
+  part_code?: string;
+  quantity_needed: number;
+  source: string;
+  exportable: boolean;
+  reason?: string;
+  mapped_sku?: string;
 }
 
 interface ExportResult {
-  success: boolean
-  message: string
-  exported_items: number
-  skipped_items: number
-  cart_url?: string
+  success: boolean;
+  message: string;
+  exported_items: number;
+  skipped_items: number;
+  cart_url?: string;
   details: Array<{
-    bom_item_id: string
-    part_name: string
-    sku?: string
-    quantity: number
-    status: string
-    reason?: string
-  }>
+    bom_item_id: string;
+    part_name: string;
+    sku?: string;
+    quantity: number;
+    status: string;
+    reason?: string;
+  }>;
 }
 
 interface BOMExportModalProps {
-  isOpen: boolean
-  onClose: () => void
-  projectId: string
-  projectName: string
-  bomItems: BOMItem[]
-  userEmail: string
+  isOpen: boolean;
+  onClose: () => void;
+  projectId: string;
+  projectName: string;
+  bomItems: BOMItem[];
+  userEmail: string;
 }
 
 export default function BOMExportModal({
@@ -82,157 +82,164 @@ export default function BOMExportModal({
   projectId,
   projectName,
   bomItems,
-  userEmail
+  userEmail,
 }: BOMExportModalProps) {
-  const [selectedItems, setSelectedItems] = useState<Set<string>>(new Set())
-  const [exportPreview, setExportPreview] = useState<ExportPreviewItem[]>([])
-  const [exportResult, setExportResult] = useState<ExportResult | null>(null)
-  const [isLoadingPreview, setIsLoadingPreview] = useState(false)
-  const [isExporting, setIsExporting] = useState(false)
-  const [activeTab, setActiveTab] = useState<'preview' | 'results'>('preview')
-  const { toast } = useToast()
+  const [selectedItems, setSelectedItems] = useState<Set<string>>(new Set());
+  const [exportPreview, setExportPreview] = useState<ExportPreviewItem[]>([]);
+  const [exportResult, setExportResult] = useState<ExportResult | null>(null);
+  const [isLoadingPreview, setIsLoadingPreview] = useState(false);
+  const [isExporting, setIsExporting] = useState(false);
+  const [activeTab, setActiveTab] = useState<"preview" | "results">("preview");
+  const { toast } = useToast();
 
   // Load export preview when modal opens
   useEffect(() => {
     if (isOpen && projectId) {
-      loadExportPreview()
-      setSelectedItems(new Set())
-      setExportResult(null)
-      setActiveTab('preview')
+      loadExportPreview();
+      setSelectedItems(new Set());
+      setExportResult(null);
+      setActiveTab("preview");
     }
-  }, [isOpen, projectId])
+  }, [isOpen, projectId]);
 
   const loadExportPreview = async () => {
-    setIsLoadingPreview(true)
+    setIsLoadingPreview(true);
     try {
-      const response = await apiService.get(`/api/v1/projects/${projectId}/bom/export/preview`)
-      setExportPreview(response.items || [])
-      
+      const response = await apiService.get(
+        `/api/v1/projects/${projectId}/bom/export/preview`,
+      );
+      setExportPreview(response.items || []);
+
       // Auto-select exportable items
       const exportableIds = response.items
         .filter((item: ExportPreviewItem) => item.exportable)
-        .map((item: ExportPreviewItem) => item.id)
-      setSelectedItems(new Set(exportableIds))
-      
+        .map((item: ExportPreviewItem) => item.id);
+      setSelectedItems(new Set(exportableIds));
     } catch (error) {
-      console.error('Failed to load export preview:', error)
+      console.error("Failed to load export preview:", error);
       toast({
         title: "Preview Error",
         description: "Failed to load export preview. Please try again.",
-        variant: "destructive"
-      })
+        variant: "destructive",
+      });
     } finally {
-      setIsLoadingPreview(false)
+      setIsLoadingPreview(false);
     }
-  }
+  };
 
   const handleItemSelect = (itemId: string, checked: boolean) => {
-    const newSelected = new Set(selectedItems)
+    const newSelected = new Set(selectedItems);
     if (checked) {
-      newSelected.add(itemId)
+      newSelected.add(itemId);
     } else {
-      newSelected.delete(itemId)
+      newSelected.delete(itemId);
     }
-    setSelectedItems(newSelected)
-  }
+    setSelectedItems(newSelected);
+  };
 
   const handleSelectAll = (exportableOnly = false) => {
     if (exportableOnly) {
       const exportableIds = exportPreview
-        .filter(item => item.exportable)
-        .map(item => item.id)
-      setSelectedItems(new Set(exportableIds))
+        .filter((item) => item.exportable)
+        .map((item) => item.id);
+      setSelectedItems(new Set(exportableIds));
     } else {
-      const allIds = exportPreview.map(item => item.id)
-      setSelectedItems(new Set(allIds))
+      const allIds = exportPreview.map((item) => item.id);
+      setSelectedItems(new Set(allIds));
     }
-  }
+  };
 
   const handleDeselectAll = () => {
-    setSelectedItems(new Set())
-  }
+    setSelectedItems(new Set());
+  };
 
   const handleExport = async () => {
     if (selectedItems.size === 0) {
       toast({
         title: "No Items Selected",
         description: "Please select at least one item to export.",
-        variant: "destructive"
-      })
-      return
+        variant: "destructive",
+      });
+      return;
     }
 
-    setIsExporting(true)
+    setIsExporting(true);
     try {
       const exportRequest = {
         project_id: projectId,
         selected_items: Array.from(selectedItems),
-        target_portal: 'store',
-        user_email: userEmail
-      }
+        target_portal: "store",
+        user_email: userEmail,
+      };
 
       const response = await apiService.post(
         `/api/v1/projects/${projectId}/bom/export`,
-        exportRequest
-      )
+        exportRequest,
+      );
 
-      setExportResult(response)
-      setActiveTab('results')
+      setExportResult(response);
+      setActiveTab("results");
 
       if (response.success) {
         toast({
           title: "Export Successful",
           description: `${response.exported_items} items added to your Store cart`,
-          variant: "default"
-        })
+          variant: "default",
+        });
       } else {
         toast({
           title: "Export Completed with Issues",
           description: response.message,
-          variant: "destructive"
-        })
+          variant: "destructive",
+        });
       }
-
     } catch (error: any) {
-      console.error('Export failed:', error)
+      console.error("Export failed:", error);
       toast({
         title: "Export Failed",
-        description: error.response?.data?.detail || "Failed to export BOM to cart",
-        variant: "destructive"
-      })
+        description:
+          error.response?.data?.detail || "Failed to export BOM to cart",
+        variant: "destructive",
+      });
     } finally {
-      setIsExporting(false)
+      setIsExporting(false);
     }
-  }
+  };
 
-  const exportableCount = exportPreview.filter(item => item.exportable).length
+  const exportableCount = exportPreview.filter(
+    (item) => item.exportable,
+  ).length;
   const selectedExportableCount = exportPreview.filter(
-    item => item.exportable && selectedItems.has(item.id)
-  ).length
+    (item) => item.exportable && selectedItems.has(item.id),
+  ).length;
 
   const getStatusIcon = (status: string, exportable: boolean) => {
-    if (status === 'exported' || status === 'mapped_and_exported') {
-      return <CheckCircle className="h-4 w-4 text-green-600" />
-    } else if (status === 'failed' || status.includes('error')) {
-      return <XCircle className="h-4 w-4 text-red-600" />
+    if (status === "exported" || status === "mapped_and_exported") {
+      return <CheckCircle className="h-4 w-4 text-green-600" />;
+    } else if (status === "failed" || status.includes("error")) {
+      return <XCircle className="h-4 w-4 text-red-600" />;
     } else if (exportable) {
-      return <CheckCircle className="h-4 w-4 text-green-600" />
+      return <CheckCircle className="h-4 w-4 text-green-600" />;
     } else {
-      return <XCircle className="h-4 w-4 text-red-600" />
+      return <XCircle className="h-4 w-4 text-red-600" />;
     }
-  }
+  };
 
-  const getStatusBadge = (status: string, exportable: boolean, reason?: string) => {
-    if (status === 'exported' || status === 'mapped_and_exported') {
-      return <Badge variant="success">Exported</Badge>
-    } else if (status === 'failed') {
-      return <Badge variant="destructive">Failed</Badge>
+  const getStatusBadge = (
+    status: string,
+    exportable: boolean,
+    reason?: string,
+  ) => {
+    if (status === "exported" || status === "mapped_and_exported") {
+      return <Badge variant="success">Exported</Badge>;
+    } else if (status === "failed") {
+      return <Badge variant="destructive">Failed</Badge>;
     } else if (exportable) {
-      return <Badge variant="success">Ready</Badge>
+      return <Badge variant="success">Ready</Badge>;
     } else {
-      return <Badge variant="secondary">Cannot Export</Badge>
+      return <Badge variant="secondary">Cannot Export</Badge>;
     }
-  }
+  };
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -243,17 +250,27 @@ export default function BOMExportModal({
             Export BOM to Store Cart
           </DialogTitle>
           <DialogDescription>
-            Export Bill of Materials from "{projectName}" to your MakrX Store shopping cart
+            Export Bill of Materials from "{projectName}" to your MakrX Store
+            shopping cart
           </DialogDescription>
         </DialogHeader>
 
-        <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value as 'preview' | 'results')}>
+        <Tabs
+          value={activeTab}
+          onValueChange={(value) =>
+            setActiveTab(value as "preview" | "results")
+          }
+        >
           <TabsList className="grid w-full grid-cols-2">
             <TabsTrigger value="preview" className="flex items-center gap-2">
               <Package className="h-4 w-4" />
               Preview & Select
             </TabsTrigger>
-            <TabsTrigger value="results" disabled={!exportResult} className="flex items-center gap-2">
+            <TabsTrigger
+              value="results"
+              disabled={!exportResult}
+              className="flex items-center gap-2"
+            >
               <CheckCircle className="h-4 w-4" />
               Export Results
             </TabsTrigger>
@@ -271,21 +288,32 @@ export default function BOMExportModal({
                 <Alert>
                   <Info className="h-4 w-4" />
                   <AlertDescription>
-                    <strong>{exportableCount}</strong> of <strong>{exportPreview.length}</strong> BOM items can be exported to the Store.
-                    Items must have valid SKUs or part codes that match Store products.
+                    <strong>{exportableCount}</strong> of{" "}
+                    <strong>{exportPreview.length}</strong> BOM items can be
+                    exported to the Store. Items must have valid SKUs or part
+                    codes that match Store products.
                   </AlertDescription>
                 </Alert>
 
                 {/* Selection Controls */}
                 <div className="flex items-center gap-2 pb-2 border-b">
                   <span className="text-sm font-medium">
-                    {selectedExportableCount} of {exportableCount} exportable items selected
+                    {selectedExportableCount} of {exportableCount} exportable
+                    items selected
                   </span>
                   <div className="flex gap-2 ml-auto">
-                    <Button variant="outline" size="sm" onClick={() => handleSelectAll(true)}>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => handleSelectAll(true)}
+                    >
                       Select All Exportable
                     </Button>
-                    <Button variant="outline" size="sm" onClick={handleDeselectAll}>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={handleDeselectAll}
+                    >
                       Deselect All
                     </Button>
                   </div>
@@ -298,27 +326,38 @@ export default function BOMExportModal({
                       <div
                         key={item.id}
                         className={`p-3 border rounded-lg ${
-                          item.exportable ? 'bg-green-50 border-green-200' : 'bg-gray-50 border-gray-200'
+                          item.exportable
+                            ? "bg-green-50 border-green-200"
+                            : "bg-gray-50 border-gray-200"
                         }`}
                       >
                         <div className="flex items-start gap-3">
                           <Checkbox
                             checked={selectedItems.has(item.id)}
-                            onCheckedChange={(checked) => handleItemSelect(item.id, checked as boolean)}
+                            onCheckedChange={(checked) =>
+                              handleItemSelect(item.id, checked as boolean)
+                            }
                             disabled={!item.exportable}
                             className="mt-1"
                           />
-                          
+
                           <div className="flex-1 min-w-0">
                             <div className="flex items-center gap-2 mb-1">
-                              {getStatusIcon(item.exportable ? 'ready' : 'not_exportable', item.exportable)}
-                              <h4 className="font-medium text-sm">{item.part_name}</h4>
-                              {getStatusBadge('', item.exportable, item.reason)}
+                              {getStatusIcon(
+                                item.exportable ? "ready" : "not_exportable",
+                                item.exportable,
+                              )}
+                              <h4 className="font-medium text-sm">
+                                {item.part_name}
+                              </h4>
+                              {getStatusBadge("", item.exportable, item.reason)}
                             </div>
-                            
+
                             <div className="grid grid-cols-2 gap-4 text-sm text-gray-600">
                               <div>
-                                <span className="font-medium">SKU/Part Code:</span>{' '}
+                                <span className="font-medium">
+                                  SKU/Part Code:
+                                </span>{" "}
                                 {item.mapped_sku ? (
                                   <span className="text-green-600 font-medium">
                                     {item.mapped_sku} (mapped)
@@ -326,19 +365,27 @@ export default function BOMExportModal({
                                 ) : item.part_code ? (
                                   item.part_code
                                 ) : (
-                                  <span className="text-gray-400">Not specified</span>
+                                  <span className="text-gray-400">
+                                    Not specified
+                                  </span>
                                 )}
                               </div>
                               <div>
-                                <span className="font-medium">Quantity:</span> {item.quantity_needed}
+                                <span className="font-medium">Quantity:</span>{" "}
+                                {item.quantity_needed}
                               </div>
                               <div>
-                                <span className="font-medium">Source:</span> {item.source}
+                                <span className="font-medium">Source:</span>{" "}
+                                {item.source}
                               </div>
                               {!item.exportable && item.reason && (
                                 <div className="col-span-2">
-                                  <span className="font-medium text-red-600">Reason:</span>{' '}
-                                  <span className="text-red-600">{item.reason}</span>
+                                  <span className="font-medium text-red-600">
+                                    Reason:
+                                  </span>{" "}
+                                  <span className="text-red-600">
+                                    {item.reason}
+                                  </span>
                                 </div>
                               )}
                             </div>
@@ -356,7 +403,13 @@ export default function BOMExportModal({
             {exportResult && (
               <>
                 {/* Results Summary */}
-                <Alert className={exportResult.success ? "border-green-200 bg-green-50" : "border-orange-200 bg-orange-50"}>
+                <Alert
+                  className={
+                    exportResult.success
+                      ? "border-green-200 bg-green-50"
+                      : "border-orange-200 bg-orange-50"
+                  }
+                >
                   {exportResult.success ? (
                     <CheckCircle className="h-4 w-4 text-green-600" />
                   ) : (
@@ -367,7 +420,11 @@ export default function BOMExportModal({
                     <div className="mt-2 grid grid-cols-3 gap-4 text-sm">
                       <div>✅ Exported: {exportResult.exported_items}</div>
                       <div>⏭️ Skipped: {exportResult.skipped_items}</div>
-                      <div>📦 Total Items: {exportResult.exported_items + exportResult.skipped_items}</div>
+                      <div>
+                        📦 Total Items:{" "}
+                        {exportResult.exported_items +
+                          exportResult.skipped_items}
+                      </div>
                     </div>
                   </AlertDescription>
                 </Alert>
@@ -376,9 +433,15 @@ export default function BOMExportModal({
                 {exportResult.cart_url && exportResult.exported_items > 0 && (
                   <div className="flex items-center gap-2 p-3 bg-blue-50 border border-blue-200 rounded-lg">
                     <ShoppingCart className="h-5 w-5 text-blue-600" />
-                    <span className="flex-1">Items have been added to your Store cart</span>
+                    <span className="flex-1">
+                      Items have been added to your Store cart
+                    </span>
                     <Button variant="outline" size="sm" asChild>
-                      <a href={exportResult.cart_url} target="_blank" rel="noopener noreferrer">
+                      <a
+                        href={exportResult.cart_url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
                         View Cart <ExternalLink className="h-4 w-4 ml-1" />
                       </a>
                     </Button>
@@ -392,34 +455,46 @@ export default function BOMExportModal({
                       <div
                         key={index}
                         className={`p-3 border rounded-lg ${
-                          detail.status === 'exported' || detail.status === 'mapped_and_exported'
-                            ? 'bg-green-50 border-green-200'
-                            : detail.status === 'failed'
-                            ? 'bg-red-50 border-red-200'
-                            : 'bg-gray-50 border-gray-200'
+                          detail.status === "exported" ||
+                          detail.status === "mapped_and_exported"
+                            ? "bg-green-50 border-green-200"
+                            : detail.status === "failed"
+                              ? "bg-red-50 border-red-200"
+                              : "bg-gray-50 border-gray-200"
                         }`}
                       >
                         <div className="flex items-start gap-3">
-                          {getStatusIcon(detail.status, detail.status.includes('exported'))}
-                          
+                          {getStatusIcon(
+                            detail.status,
+                            detail.status.includes("exported"),
+                          )}
+
                           <div className="flex-1 min-w-0">
                             <div className="flex items-center gap-2 mb-1">
-                              <h4 className="font-medium text-sm">{detail.part_name}</h4>
-                              {getStatusBadge(detail.status, detail.status.includes('exported'))}
+                              <h4 className="font-medium text-sm">
+                                {detail.part_name}
+                              </h4>
+                              {getStatusBadge(
+                                detail.status,
+                                detail.status.includes("exported"),
+                              )}
                             </div>
-                            
+
                             <div className="grid grid-cols-2 gap-4 text-sm text-gray-600">
                               {detail.sku && (
                                 <div>
-                                  <span className="font-medium">SKU:</span> {detail.sku}
+                                  <span className="font-medium">SKU:</span>{" "}
+                                  {detail.sku}
                                 </div>
                               )}
                               <div>
-                                <span className="font-medium">Quantity:</span> {detail.quantity}
+                                <span className="font-medium">Quantity:</span>{" "}
+                                {detail.quantity}
                               </div>
                               {detail.reason && (
                                 <div className="col-span-2">
-                                  <span className="font-medium">Details:</span> {detail.reason}
+                                  <span className="font-medium">Details:</span>{" "}
+                                  {detail.reason}
                                 </div>
                               )}
                             </div>
@@ -439,8 +514,8 @@ export default function BOMExportModal({
             <Button variant="outline" onClick={onClose}>
               Close
             </Button>
-            
-            {activeTab === 'preview' && (
+
+            {activeTab === "preview" && (
               <Button
                 onClick={handleExport}
                 disabled={selectedItems.size === 0 || isExporting}
@@ -460,9 +535,13 @@ export default function BOMExportModal({
               </Button>
             )}
 
-            {activeTab === 'results' && exportResult?.cart_url && (
+            {activeTab === "results" && exportResult?.cart_url && (
               <Button asChild className="ml-auto">
-                <a href={exportResult.cart_url} target="_blank" rel="noopener noreferrer">
+                <a
+                  href={exportResult.cart_url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
                   <ExternalLink className="h-4 w-4 mr-2" />
                   Open Store Cart
                 </a>
@@ -472,5 +551,5 @@ export default function BOMExportModal({
         </DialogFooter>
       </DialogContent>
     </Dialog>
-  )
+  );
 }

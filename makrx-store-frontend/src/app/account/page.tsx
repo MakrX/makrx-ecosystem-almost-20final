@@ -1,10 +1,10 @@
-'use client'
+"use client";
 
-import React from 'react'
-import Link from 'next/link'
-import Layout from '@/components/layout/Layout'
-import { Button } from '@/components/ui/Button'
-import { 
+import React from "react";
+import Link from "next/link";
+import Layout from "@/components/layout/Layout";
+import { Button } from "@/components/ui/Button";
+import {
   User,
   Package,
   CreditCard,
@@ -21,119 +21,125 @@ import {
   RefreshCw,
   Bell,
   Gift,
-  Zap
-} from 'lucide-react'
-import { products } from '@/data/products'
+  Zap,
+} from "lucide-react";
+import { products } from "@/data/products";
 
 export default function AccountDashboard() {
   // Mock user data - in real app this would come from auth context
   const user = {
-    name: 'John Doe',
-    email: 'john@example.com',
-    memberSince: '2023-01-15',
-    profileImage: '/api/placeholder/100/100',
-    tier: 'Maker Pro',
-    points: 1250
-  }
+    name: "John Doe",
+    email: "john@example.com",
+    memberSince: "2023-01-15",
+    profileImage: "/api/placeholder/100/100",
+    tier: "Maker Pro",
+    points: 1250,
+  };
 
   // Mock recent orders
   const recentOrders = [
     {
-      id: 'ORD-001',
-      date: '2024-01-15',
-      status: 'delivered',
+      id: "ORD-001",
+      date: "2024-01-15",
+      status: "delivered",
       total: 299.99,
       items: 3,
-      trackingNumber: 'TRK123456789'
+      trackingNumber: "TRK123456789",
     },
     {
-      id: 'ORD-002', 
-      date: '2024-01-10',
-      status: 'shipped',
-      total: 89.50,
+      id: "ORD-002",
+      date: "2024-01-10",
+      status: "shipped",
+      total: 89.5,
       items: 2,
-      trackingNumber: 'TRK987654321'
+      trackingNumber: "TRK987654321",
     },
     {
-      id: 'ORD-003',
-      date: '2024-01-05',
-      status: 'processing',
-      total: 1299.00,
+      id: "ORD-003",
+      date: "2024-01-05",
+      status: "processing",
+      total: 1299.0,
       items: 1,
-      trackingNumber: null
-    }
-  ]
+      trackingNumber: null,
+    },
+  ];
 
   // Mock service orders (3D printing, etc.)
   const serviceOrders = [
     {
-      id: 'SRV-001',
-      type: '3D Printing',
-      fileName: 'custom-bracket.stl',
-      status: 'printing',
+      id: "SRV-001",
+      type: "3D Printing",
+      fileName: "custom-bracket.stl",
+      status: "printing",
       price: 45.99,
-      date: '2024-01-12',
-      estimatedCompletion: '2024-01-16'
+      date: "2024-01-12",
+      estimatedCompletion: "2024-01-16",
     },
     {
-      id: 'SRV-002',
-      type: 'CNC Machining',
-      fileName: 'aluminum-part.step',
-      status: 'completed',
-      price: 125.00,
-      date: '2024-01-08',
-      estimatedCompletion: '2024-01-14'
-    }
-  ]
+      id: "SRV-002",
+      type: "CNC Machining",
+      fileName: "aluminum-part.step",
+      status: "completed",
+      price: 125.0,
+      date: "2024-01-08",
+      estimatedCompletion: "2024-01-14",
+    },
+  ];
 
   // Mock wishlist items
   const wishlistItems = [
-    { id: '1', product: products[1] },
-    { id: '2', product: products[2] },
-    { id: '3', product: products[4] }
-  ]
+    { id: "1", product: products[1] },
+    { id: "2", product: products[2] },
+    { id: "3", product: products[4] },
+  ];
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'delivered': return 'text-green-800 bg-green-100'
-      case 'shipped': return 'text-blue-800 bg-blue-100'
-      case 'processing': return 'text-yellow-800 bg-yellow-100'
-      case 'printing': return 'text-purple-800 bg-purple-100'
-      case 'completed': return 'text-green-800 bg-green-100'
-      default: return 'text-gray-800 bg-gray-100'
+      case "delivered":
+        return "text-green-800 bg-green-100";
+      case "shipped":
+        return "text-blue-800 bg-blue-100";
+      case "processing":
+        return "text-yellow-800 bg-yellow-100";
+      case "printing":
+        return "text-purple-800 bg-purple-100";
+      case "completed":
+        return "text-green-800 bg-green-100";
+      default:
+        return "text-gray-800 bg-gray-100";
     }
-  }
+  };
 
   const stats = [
-    { 
-      title: 'Total Orders', 
-      value: '23', 
-      icon: Package, 
-      color: 'bg-blue-500',
-      subtext: 'This year'
+    {
+      title: "Total Orders",
+      value: "23",
+      icon: Package,
+      color: "bg-blue-500",
+      subtext: "This year",
     },
-    { 
-      title: 'Total Spent', 
-      value: '$2,847', 
-      icon: DollarSign, 
-      color: 'bg-green-500',
-      subtext: 'Lifetime'
+    {
+      title: "Total Spent",
+      value: "$2,847",
+      icon: DollarSign,
+      color: "bg-green-500",
+      subtext: "Lifetime",
     },
-    { 
-      title: 'Service Jobs', 
-      value: '8', 
-      icon: Zap, 
-      color: 'bg-purple-500',
-      subtext: '3D printing & CNC'
+    {
+      title: "Service Jobs",
+      value: "8",
+      icon: Zap,
+      color: "bg-purple-500",
+      subtext: "3D printing & CNC",
     },
-    { 
-      title: 'Maker Points', 
-      value: user.points.toLocaleString(), 
-      icon: Star, 
-      color: 'bg-yellow-500',
-      subtext: '$12.50 value'
-    }
-  ]
+    {
+      title: "Maker Points",
+      value: user.points.toLocaleString(),
+      icon: Star,
+      color: "bg-yellow-500",
+      subtext: "$12.50 value",
+    },
+  ];
 
   return (
     <Layout>
@@ -143,8 +149,12 @@ export default function AccountDashboard() {
           <div className="mb-8">
             <div className="flex items-center justify-between">
               <div>
-                <h1 className="text-3xl font-bold text-store-text">Account Dashboard</h1>
-                <p className="text-store-text-muted mt-1">Welcome back, {user.name.split(' ')[0]}!</p>
+                <h1 className="text-3xl font-bold text-store-text">
+                  Account Dashboard
+                </h1>
+                <p className="text-store-text-muted mt-1">
+                  Welcome back, {user.name.split(" ")[0]}!
+                </p>
               </div>
               <div className="flex items-center gap-4">
                 <Button variant="outline" size="sm">
@@ -165,8 +175,8 @@ export default function AccountDashboard() {
           <div className="bg-gradient-to-r from-store-primary to-store-secondary rounded-xl p-6 text-white mb-8">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-4">
-                <img 
-                  src={user.profileImage} 
+                <img
+                  src={user.profileImage}
                   alt={user.name}
                   className="w-16 h-16 rounded-full border-2 border-white/20"
                 />
@@ -184,9 +194,13 @@ export default function AccountDashboard() {
                 </div>
               </div>
               <div className="text-right">
-                <div className="text-3xl font-bold">{user.points.toLocaleString()}</div>
+                <div className="text-3xl font-bold">
+                  {user.points.toLocaleString()}
+                </div>
                 <div className="text-white/80">Maker Points</div>
-                <div className="text-sm text-white/60">≈ ${(user.points * 0.01).toFixed(2)} value</div>
+                <div className="text-sm text-white/60">
+                  ≈ ${(user.points * 0.01).toFixed(2)} value
+                </div>
               </div>
             </div>
           </div>
@@ -194,19 +208,28 @@ export default function AccountDashboard() {
           {/* Stats Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
             {stats.map((stat, index) => {
-              const Icon = stat.icon
+              const Icon = stat.icon;
               return (
-                <div key={index} className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                <div
+                  key={index}
+                  className="bg-white rounded-xl shadow-sm border border-gray-200 p-6"
+                >
                   <div className="flex items-center justify-between mb-4">
                     <div className={`${stat.color} p-3 rounded-lg`}>
                       <Icon className="h-6 w-6 text-white" />
                     </div>
                   </div>
-                  <div className="text-2xl font-bold text-store-text mb-1">{stat.value}</div>
-                  <div className="text-store-text font-medium mb-1">{stat.title}</div>
-                  <div className="text-sm text-store-text-muted">{stat.subtext}</div>
+                  <div className="text-2xl font-bold text-store-text mb-1">
+                    {stat.value}
+                  </div>
+                  <div className="text-store-text font-medium mb-1">
+                    {stat.title}
+                  </div>
+                  <div className="text-sm text-store-text-muted">
+                    {stat.subtext}
+                  </div>
                 </div>
-              )
+              );
             })}
           </div>
 
@@ -216,7 +239,9 @@ export default function AccountDashboard() {
               {/* Recent Orders */}
               <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
                 <div className="flex items-center justify-between mb-6">
-                  <h3 className="text-xl font-semibold text-store-text">Recent Orders</h3>
+                  <h3 className="text-xl font-semibold text-store-text">
+                    Recent Orders
+                  </h3>
                   <Link href="/account/orders">
                     <Button variant="outline" size="sm">
                       View All Orders
@@ -227,15 +252,21 @@ export default function AccountDashboard() {
 
                 <div className="space-y-4">
                   {recentOrders.map((order) => (
-                    <div key={order.id} className="flex items-center justify-between p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
+                    <div
+                      key={order.id}
+                      className="flex items-center justify-between p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
+                    >
                       <div className="flex items-center gap-4">
                         <div className="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center">
                           <Package className="h-6 w-6 text-gray-600" />
                         </div>
                         <div>
-                          <div className="font-medium text-store-text">Order {order.id}</div>
+                          <div className="font-medium text-store-text">
+                            Order {order.id}
+                          </div>
                           <div className="text-sm text-store-text-muted">
-                            {new Date(order.date).toLocaleDateString()} • {order.items} items
+                            {new Date(order.date).toLocaleDateString()} •{" "}
+                            {order.items} items
                           </div>
                           {order.trackingNumber && (
                             <div className="text-xs text-store-primary">
@@ -245,9 +276,14 @@ export default function AccountDashboard() {
                         </div>
                       </div>
                       <div className="text-right">
-                        <div className="font-semibold text-store-text">${order.total.toFixed(2)}</div>
-                        <span className={`inline-block px-2 py-1 text-xs font-medium rounded-full ${getStatusColor(order.status)}`}>
-                          {order.status.charAt(0).toUpperCase() + order.status.slice(1)}
+                        <div className="font-semibold text-store-text">
+                          ${order.total.toFixed(2)}
+                        </div>
+                        <span
+                          className={`inline-block px-2 py-1 text-xs font-medium rounded-full ${getStatusColor(order.status)}`}
+                        >
+                          {order.status.charAt(0).toUpperCase() +
+                            order.status.slice(1)}
                         </span>
                       </div>
                     </div>
@@ -258,7 +294,9 @@ export default function AccountDashboard() {
               {/* Service Orders */}
               <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
                 <div className="flex items-center justify-between mb-6">
-                  <h3 className="text-xl font-semibold text-store-text">Service Orders</h3>
+                  <h3 className="text-xl font-semibold text-store-text">
+                    Service Orders
+                  </h3>
                   <Link href="/orders">
                     <Button variant="outline" size="sm">
                       View All Services
@@ -269,23 +307,37 @@ export default function AccountDashboard() {
 
                 <div className="space-y-4">
                   {serviceOrders.map((service) => (
-                    <div key={service.id} className="flex items-center justify-between p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
+                    <div
+                      key={service.id}
+                      className="flex items-center justify-between p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
+                    >
                       <div className="flex items-center gap-4">
                         <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
                           <Zap className="h-6 w-6 text-purple-600" />
                         </div>
                         <div>
-                          <div className="font-medium text-store-text">{service.type}</div>
-                          <div className="text-sm text-store-text-muted">{service.fileName}</div>
+                          <div className="font-medium text-store-text">
+                            {service.type}
+                          </div>
+                          <div className="text-sm text-store-text-muted">
+                            {service.fileName}
+                          </div>
                           <div className="text-xs text-store-text-muted">
-                            {service.status === 'completed' ? 'Completed' : `Est. completion: ${new Date(service.estimatedCompletion).toLocaleDateString()}`}
+                            {service.status === "completed"
+                              ? "Completed"
+                              : `Est. completion: ${new Date(service.estimatedCompletion).toLocaleDateString()}`}
                           </div>
                         </div>
                       </div>
                       <div className="text-right">
-                        <div className="font-semibold text-store-text">${service.price.toFixed(2)}</div>
-                        <span className={`inline-block px-2 py-1 text-xs font-medium rounded-full ${getStatusColor(service.status)}`}>
-                          {service.status.charAt(0).toUpperCase() + service.status.slice(1)}
+                        <div className="font-semibold text-store-text">
+                          ${service.price.toFixed(2)}
+                        </div>
+                        <span
+                          className={`inline-block px-2 py-1 text-xs font-medium rounded-full ${getStatusColor(service.status)}`}
+                        >
+                          {service.status.charAt(0).toUpperCase() +
+                            service.status.slice(1)}
                         </span>
                       </div>
                     </div>
@@ -295,11 +347,18 @@ export default function AccountDashboard() {
                 <div className="mt-6 p-4 bg-purple-50 rounded-lg">
                   <div className="flex items-center justify-between">
                     <div>
-                      <h4 className="font-medium text-purple-900">Upload for 3D Printing</h4>
-                      <p className="text-sm text-purple-700">Get instant quotes for your STL files</p>
+                      <h4 className="font-medium text-purple-900">
+                        Upload for 3D Printing
+                      </h4>
+                      <p className="text-sm text-purple-700">
+                        Get instant quotes for your STL files
+                      </p>
                     </div>
                     <Link href="/3d-printing">
-                      <Button size="sm" className="bg-purple-600 hover:bg-purple-700">
+                      <Button
+                        size="sm"
+                        className="bg-purple-600 hover:bg-purple-700"
+                      >
                         Upload Now
                       </Button>
                     </Link>
@@ -312,7 +371,9 @@ export default function AccountDashboard() {
             <div className="space-y-6">
               {/* Quick Actions */}
               <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-                <h3 className="text-lg font-semibold text-store-text mb-4">Quick Actions</h3>
+                <h3 className="text-lg font-semibold text-store-text mb-4">
+                  Quick Actions
+                </h3>
                 <div className="space-y-3">
                   <Link href="/account/orders">
                     <Button variant="outline" className="w-full justify-start">
@@ -344,8 +405,13 @@ export default function AccountDashboard() {
               {/* Wishlist Preview */}
               <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
                 <div className="flex items-center justify-between mb-4">
-                  <h3 className="text-lg font-semibold text-store-text">Wishlist</h3>
-                  <Link href="/account/wishlist" className="text-store-primary hover:text-store-primary-dark text-sm font-medium">
+                  <h3 className="text-lg font-semibold text-store-text">
+                    Wishlist
+                  </h3>
+                  <Link
+                    href="/account/wishlist"
+                    className="text-store-primary hover:text-store-primary-dark text-sm font-medium"
+                  >
                     View All
                   </Link>
                 </div>
@@ -353,8 +419,8 @@ export default function AccountDashboard() {
                 <div className="space-y-3">
                   {wishlistItems.slice(0, 3).map((item) => (
                     <div key={item.id} className="flex items-center gap-3">
-                      <img 
-                        src={item.product.images[0]} 
+                      <img
+                        src={item.product.images[0]}
                         alt={item.product.name}
                         className="w-12 h-12 object-cover rounded-lg border border-gray-200"
                       />
@@ -376,14 +442,18 @@ export default function AccountDashboard() {
                 {wishlistItems.length === 0 && (
                   <div className="text-center py-6">
                     <Heart className="h-8 w-8 text-gray-300 mx-auto mb-2" />
-                    <p className="text-store-text-muted text-sm">Your wishlist is empty</p>
+                    <p className="text-store-text-muted text-sm">
+                      Your wishlist is empty
+                    </p>
                   </div>
                 )}
               </div>
 
               {/* Account Settings */}
               <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-                <h3 className="text-lg font-semibold text-store-text mb-4">Account Settings</h3>
+                <h3 className="text-lg font-semibold text-store-text mb-4">
+                  Account Settings
+                </h3>
                 <div className="space-y-3">
                   <Link href="/account/settings">
                     <Button variant="outline" className="w-full justify-start">
@@ -412,11 +482,17 @@ export default function AccountDashboard() {
                   <Star className="h-6 w-6 mr-2" />
                   <h3 className="text-lg font-semibold">Maker Points</h3>
                 </div>
-                <div className="text-2xl font-bold mb-2">{user.points.toLocaleString()}</div>
+                <div className="text-2xl font-bold mb-2">
+                  {user.points.toLocaleString()}
+                </div>
                 <p className="text-white/80 text-sm mb-4">
                   Earn points with every purchase and redeem for discounts!
                 </p>
-                <Button variant="outline" size="sm" className="border-white/30 text-white hover:bg-white/10">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="border-white/30 text-white hover:bg-white/10"
+                >
                   <Gift className="h-4 w-4 mr-2" />
                   Redeem Points
                 </Button>
@@ -426,5 +502,5 @@ export default function AccountDashboard() {
         </div>
       </div>
     </Layout>
-  )
+  );
 }

@@ -1,7 +1,16 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { Upload, Settings, Zap, Shield, CheckCircle, Clock, DollarSign, Truck } from 'lucide-react';
+import { useState } from "react";
+import {
+  Upload,
+  Settings,
+  Zap,
+  Shield,
+  CheckCircle,
+  Clock,
+  DollarSign,
+  Truck,
+} from "lucide-react";
 
 interface Material {
   name: string;
@@ -18,44 +27,93 @@ interface Finish {
 
 const materials: Material[] = [
   {
-    name: 'Aluminum 6061',
-    description: 'Lightweight, corrosion-resistant, excellent machinability',
+    name: "Aluminum 6061",
+    description: "Lightweight, corrosion-resistant, excellent machinability",
     priceMultiplier: 1.0,
-    properties: ['Lightweight', 'Corrosion resistant', 'Good strength', 'Easy to machine']
+    properties: [
+      "Lightweight",
+      "Corrosion resistant",
+      "Good strength",
+      "Easy to machine",
+    ],
   },
   {
-    name: 'Stainless Steel 304',
-    description: 'High strength, excellent corrosion resistance',
+    name: "Stainless Steel 304",
+    description: "High strength, excellent corrosion resistance",
     priceMultiplier: 1.8,
-    properties: ['High strength', 'Corrosion resistant', 'Food safe', 'Magnetic']
+    properties: [
+      "High strength",
+      "Corrosion resistant",
+      "Food safe",
+      "Magnetic",
+    ],
   },
   {
-    name: 'Brass',
-    description: 'Excellent machinability, antimicrobial properties',
+    name: "Brass",
+    description: "Excellent machinability, antimicrobial properties",
     priceMultiplier: 2.2,
-    properties: ['Antimicrobial', 'Decorative', 'Good conductivity', 'Easy to machine']
+    properties: [
+      "Antimicrobial",
+      "Decorative",
+      "Good conductivity",
+      "Easy to machine",
+    ],
   },
   {
-    name: 'Delrin (POM)',
-    description: 'Low friction plastic, high precision capabilities',
+    name: "Delrin (POM)",
+    description: "Low friction plastic, high precision capabilities",
     priceMultiplier: 1.3,
-    properties: ['Low friction', 'Chemical resistant', 'Precise dimensions', 'Food safe']
+    properties: [
+      "Low friction",
+      "Chemical resistant",
+      "Precise dimensions",
+      "Food safe",
+    ],
   },
   {
-    name: 'PEEK',
-    description: 'High-performance thermoplastic, chemical resistant',
+    name: "PEEK",
+    description: "High-performance thermoplastic, chemical resistant",
     priceMultiplier: 5.0,
-    properties: ['High temperature', 'Chemical resistant', 'Biocompatible', 'Low outgassing']
-  }
+    properties: [
+      "High temperature",
+      "Chemical resistant",
+      "Biocompatible",
+      "Low outgassing",
+    ],
+  },
 ];
 
 const finishes: Finish[] = [
-  { name: 'As Machined', description: 'Standard machined finish', additionalCost: 0 },
-  { name: 'Bead Blasted', description: 'Uniform matte finish', additionalCost: 15 },
-  { name: 'Anodized (Type II)', description: 'Corrosion protection for aluminum', additionalCost: 25 },
-  { name: 'Hard Anodized (Type III)', description: 'Wear-resistant coating', additionalCost: 45 },
-  { name: 'Powder Coating', description: 'Durable color finish', additionalCost: 30 },
-  { name: 'Polished', description: 'Mirror-like surface finish', additionalCost: 50 }
+  {
+    name: "As Machined",
+    description: "Standard machined finish",
+    additionalCost: 0,
+  },
+  {
+    name: "Bead Blasted",
+    description: "Uniform matte finish",
+    additionalCost: 15,
+  },
+  {
+    name: "Anodized (Type II)",
+    description: "Corrosion protection for aluminum",
+    additionalCost: 25,
+  },
+  {
+    name: "Hard Anodized (Type III)",
+    description: "Wear-resistant coating",
+    additionalCost: 45,
+  },
+  {
+    name: "Powder Coating",
+    description: "Durable color finish",
+    additionalCost: 30,
+  },
+  {
+    name: "Polished",
+    description: "Mirror-like surface finish",
+    additionalCost: 50,
+  },
 ];
 
 export default function CNCMachiningPage() {
@@ -65,14 +123,17 @@ export default function CNCMachiningPage() {
   const [dragActive, setDragActive] = useState(false);
 
   const basePrice = 85;
-  const estimatedPrice = Math.round(basePrice * selectedMaterial.priceMultiplier * quantity + selectedFinish.additionalCost);
+  const estimatedPrice = Math.round(
+    basePrice * selectedMaterial.priceMultiplier * quantity +
+      selectedFinish.additionalCost,
+  );
 
   const handleDrag = (e: React.DragEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    if (e.type === 'dragenter' || e.type === 'dragover') {
+    if (e.type === "dragenter" || e.type === "dragover") {
       setDragActive(true);
-    } else if (e.type === 'dragleave') {
+    } else if (e.type === "dragleave") {
       setDragActive(false);
     }
   };
@@ -81,9 +142,9 @@ export default function CNCMachiningPage() {
     e.preventDefault();
     e.stopPropagation();
     setDragActive(false);
-    
+
     const files = Array.from(e.dataTransfer.files);
-    console.log('Files dropped:', files);
+    console.log("Files dropped:", files);
   };
 
   return (
@@ -101,8 +162,9 @@ export default function CNCMachiningPage() {
               CNC Machining Services
             </h1>
             <p className="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
-              Precision CNC machining for prototypes and production parts. From aluminum to aerospace-grade materials, 
-              we deliver parts with tolerances as tight as ±0.005".
+              Precision CNC machining for prototypes and production parts. From
+              aluminum to aerospace-grade materials, we deliver parts with
+              tolerances as tight as ±0.005".
             </p>
           </div>
         </div>
@@ -120,8 +182,8 @@ export default function CNCMachiningPage() {
               <div
                 className={`border-2 border-dashed rounded-lg p-8 text-center transition-colors ${
                   dragActive
-                    ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20'
-                    : 'border-gray-300 dark:border-gray-600'
+                    ? "border-blue-500 bg-blue-50 dark:bg-blue-900/20"
+                    : "border-gray-300 dark:border-gray-600"
                 }`}
                 onDragEnter={handleDrag}
                 onDragLeave={handleDrag}
@@ -133,22 +195,29 @@ export default function CNCMachiningPage() {
                   Drop your CAD files here or click to browse
                 </p>
                 <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">
-                  Supported formats: STEP, IGES, STL, 3MF, Solidworks, Fusion 360
+                  Supported formats: STEP, IGES, STL, 3MF, Solidworks, Fusion
+                  360
                 </p>
                 <button className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors">
                   Choose Files
                 </button>
               </div>
-              
+
               <div className="mt-4 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
                 <h3 className="font-semibold text-blue-900 dark:text-blue-300 mb-2">
                   Design Guidelines for Best Results:
                 </h3>
                 <ul className="text-sm text-blue-700 dark:text-blue-400 space-y-1">
-                  <li>• Minimum wall thickness: 0.5mm for metals, 1mm for plastics</li>
-                  <li>• Avoid deep pockets with high aspect ratios (&gt;5:1)</li>
+                  <li>
+                    • Minimum wall thickness: 0.5mm for metals, 1mm for plastics
+                  </li>
+                  <li>
+                    • Avoid deep pockets with high aspect ratios (&gt;5:1)
+                  </li>
                   <li>• Include draft angles where possible (1-2°)</li>
-                  <li>• Standard hole diameters preferred for cost efficiency</li>
+                  <li>
+                    • Standard hole diameters preferred for cost efficiency
+                  </li>
                 </ul>
               </div>
             </div>
@@ -164,8 +233,8 @@ export default function CNCMachiningPage() {
                     key={material.name}
                     className={`border rounded-lg p-4 cursor-pointer transition-all ${
                       selectedMaterial.name === material.name
-                        ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20'
-                        : 'border-gray-200 dark:border-gray-600 hover:border-gray-300'
+                        ? "border-blue-500 bg-blue-50 dark:bg-blue-900/20"
+                        : "border-gray-200 dark:border-gray-600 hover:border-gray-300"
                     }`}
                     onClick={() => setSelectedMaterial(material)}
                   >
@@ -174,7 +243,9 @@ export default function CNCMachiningPage() {
                         {material.name}
                       </h3>
                       <span className="text-sm text-gray-500 dark:text-gray-400">
-                        {material.priceMultiplier === 1.0 ? 'Base price' : `${material.priceMultiplier}x`}
+                        {material.priceMultiplier === 1.0
+                          ? "Base price"
+                          : `${material.priceMultiplier}x`}
                       </span>
                     </div>
                     <p className="text-sm text-gray-600 dark:text-gray-300 mb-3">
@@ -206,8 +277,8 @@ export default function CNCMachiningPage() {
                     key={finish.name}
                     className={`border rounded-lg p-4 cursor-pointer transition-all ${
                       selectedFinish.name === finish.name
-                        ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20'
-                        : 'border-gray-200 dark:border-gray-600 hover:border-gray-300'
+                        ? "border-blue-500 bg-blue-50 dark:bg-blue-900/20"
+                        : "border-gray-200 dark:border-gray-600 hover:border-gray-300"
                     }`}
                     onClick={() => setSelectedFinish(finish)}
                   >
@@ -221,7 +292,9 @@ export default function CNCMachiningPage() {
                         </p>
                       </div>
                       <span className="text-sm font-medium text-gray-900 dark:text-white">
-                        {finish.additionalCost === 0 ? 'Included' : `+$${finish.additionalCost}`}
+                        {finish.additionalCost === 0
+                          ? "Included"
+                          : `+$${finish.additionalCost}`}
                       </span>
                     </div>
                   </div>
@@ -236,7 +309,7 @@ export default function CNCMachiningPage() {
               <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">
                 Instant Quote
               </h2>
-              
+
               <div className="space-y-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
@@ -254,19 +327,25 @@ export default function CNCMachiningPage() {
 
                 <div className="border-t dark:border-gray-600 pt-4 space-y-2">
                   <div className="flex justify-between">
-                    <span className="text-gray-600 dark:text-gray-300">Material:</span>
+                    <span className="text-gray-600 dark:text-gray-300">
+                      Material:
+                    </span>
                     <span className="font-medium text-gray-900 dark:text-white">
                       {selectedMaterial.name}
                     </span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-gray-600 dark:text-gray-300">Finish:</span>
+                    <span className="text-gray-600 dark:text-gray-300">
+                      Finish:
+                    </span>
                     <span className="font-medium text-gray-900 dark:text-white">
                       {selectedFinish.name}
                     </span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-gray-600 dark:text-gray-300">Quantity:</span>
+                    <span className="text-gray-600 dark:text-gray-300">
+                      Quantity:
+                    </span>
                     <span className="font-medium text-gray-900 dark:text-white">
                       {quantity} pcs
                     </span>
@@ -324,8 +403,8 @@ export default function CNCMachiningPage() {
                 Precision Tolerances
               </h3>
               <p className="text-gray-600 dark:text-gray-300">
-                Achieve tolerances as tight as ±0.005" with our state-of-the-art 5-axis CNC machines
-                and rigorous quality control processes.
+                Achieve tolerances as tight as ±0.005" with our state-of-the-art
+                5-axis CNC machines and rigorous quality control processes.
               </p>
             </div>
             <div className="text-center">
@@ -336,8 +415,9 @@ export default function CNCMachiningPage() {
                 Material Expertise
               </h3>
               <p className="text-gray-600 dark:text-gray-300">
-                From aluminum and steel to exotic alloys and high-performance plastics, 
-                we have the expertise to machine your material of choice.
+                From aluminum and steel to exotic alloys and high-performance
+                plastics, we have the expertise to machine your material of
+                choice.
               </p>
             </div>
             <div className="text-center">
@@ -348,8 +428,8 @@ export default function CNCMachiningPage() {
                 Advanced Equipment
               </h3>
               <p className="text-gray-600 dark:text-gray-300">
-                5-axis CNC centers, Swiss-style lathes, and automated inspection equipment 
-                ensure consistent quality and fast turnaround times.
+                5-axis CNC centers, Swiss-style lathes, and automated inspection
+                equipment ensure consistent quality and fast turnaround times.
               </p>
             </div>
           </div>

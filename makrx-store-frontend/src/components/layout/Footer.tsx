@@ -1,7 +1,7 @@
-'use client'
+"use client";
 
-import React from 'react'
-import Link from 'next/link'
+import React from "react";
+import Link from "next/link";
 import {
   Mail,
   Phone,
@@ -13,69 +13,69 @@ import {
   Printer,
   Package,
   Users,
-  Shield
-} from 'lucide-react'
+  Shield,
+} from "lucide-react";
 
 export default function Footer() {
   const footerLinks = {
     products: [
-      { name: '3D Printers', href: '/catalog/3d-printers' },
-      { name: 'Electronics', href: '/catalog/electronics' },
-      { name: 'Tools & Hardware', href: '/catalog/tools' },
-      { name: 'Materials', href: '/catalog/materials' },
-      { name: 'Kits & Bundles', href: '/catalog/kits' },
+      { name: "3D Printers", href: "/catalog/3d-printers" },
+      { name: "Electronics", href: "/catalog/electronics" },
+      { name: "Tools & Hardware", href: "/catalog/tools" },
+      { name: "Materials", href: "/catalog/materials" },
+      { name: "Kits & Bundles", href: "/catalog/kits" },
     ],
     services: [
-      { name: '3D Printing', href: '/3d-printing' },
-      { name: 'CNC Machining', href: '/services/cnc' },
-      { name: 'PCB Assembly', href: '/services/pcb' },
-      { name: 'Laser Cutting', href: '/services/laser' },
-      { name: 'Custom Manufacturing', href: '/services/custom' },
+      { name: "3D Printing", href: "/3d-printing" },
+      { name: "CNC Machining", href: "/services/cnc" },
+      { name: "PCB Assembly", href: "/services/pcb" },
+      { name: "Laser Cutting", href: "/services/laser" },
+      { name: "Custom Manufacturing", href: "/services/custom" },
     ],
     company: [
-      { name: 'About Us', href: '/about' },
-      { name: 'Careers', href: '/careers' },
-      { name: 'Press', href: '/press' },
-      { name: 'Blog', href: '/blog' },
-      { name: 'Contact', href: '/contact' },
+      { name: "About Us", href: "/about" },
+      { name: "Careers", href: "/careers" },
+      { name: "Press", href: "/press" },
+      { name: "Blog", href: "/blog" },
+      { name: "Contact", href: "/contact" },
     ],
     support: [
-      { name: 'Help Center', href: '/help' },
-      { name: 'Shipping Info', href: '/shipping' },
-      { name: 'Returns', href: '/returns' },
-      { name: 'Size Guide', href: '/size-guide' },
-      { name: 'Track Order', href: '/track' },
+      { name: "Help Center", href: "/help" },
+      { name: "Shipping Info", href: "/shipping" },
+      { name: "Returns", href: "/returns" },
+      { name: "Size Guide", href: "/size-guide" },
+      { name: "Track Order", href: "/track" },
     ],
     legal: [
-      { name: 'Privacy Policy', href: '/privacy' },
-      { name: 'Terms of Service', href: '/terms' },
-      { name: 'Cookie Policy', href: '/cookies' },
-      { name: 'GDPR', href: '/gdpr' },
-    ]
-  }
+      { name: "Privacy Policy", href: "/privacy" },
+      { name: "Terms of Service", href: "/terms" },
+      { name: "Cookie Policy", href: "/cookies" },
+      { name: "GDPR", href: "/gdpr" },
+    ],
+  };
 
   const features = [
     {
       icon: Printer,
-      title: 'Instant 3D Printing',
-      description: 'Upload STL, get quotes, print locally'
+      title: "Instant 3D Printing",
+      description: "Upload STL, get quotes, print locally",
     },
     {
       icon: Package,
-      title: 'Quality Products',
-      description: 'Curated tools for makers'
+      title: "Quality Products",
+      description: "Curated tools for makers",
     },
     {
       icon: Users,
-      title: 'Verified Providers',
-      description: 'Trusted service network'
+      title: "Verified Providers",
+      description: "Trusted service network",
     },
     {
       icon: Shield,
-      title: 'Secure Payments',
-      description: 'Safe & encrypted transactions'
-    }
-  ]
+      title: "Secure Payments",
+      description: "Safe & encrypted transactions",
+    },
+  ];
 
   return (
     <footer className="bg-gray-900 dark:bg-gray-950 text-white">
@@ -84,16 +84,20 @@ export default function Footer() {
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             {features.map((feature, index) => {
-              const Icon = feature.icon
+              const Icon = feature.icon;
               return (
                 <div key={index} className="text-center">
                   <div className="w-16 h-16 bg-gradient-to-br from-store-primary to-store-secondary rounded-xl flex items-center justify-center mx-auto mb-4">
                     <Icon className="h-8 w-8 text-white" />
                   </div>
-                  <h3 className="text-lg font-semibold mb-2">{feature.title}</h3>
-                  <p className="text-gray-400 dark:text-gray-500 text-sm">{feature.description}</p>
+                  <h3 className="text-lg font-semibold mb-2">
+                    {feature.title}
+                  </h3>
+                  <p className="text-gray-400 dark:text-gray-500 text-sm">
+                    {feature.description}
+                  </p>
                 </div>
-              )
+              );
             })}
           </div>
         </div>
@@ -110,17 +114,23 @@ export default function Footer() {
               </div>
               <div>
                 <span className="text-xl font-bold">MakrX</span>
-                <span className="text-xl font-bold text-store-primary">.Store</span>
+                <span className="text-xl font-bold text-store-primary">
+                  .Store
+                </span>
               </div>
             </div>
             <p className="text-gray-400 dark:text-gray-500 mb-6 leading-relaxed">
-              The future of making is here. Your one-stop shop for tools, components,
-              and manufacturing services built for makers, by makers.
+              The future of making is here. Your one-stop shop for tools,
+              components, and manufacturing services built for makers, by
+              makers.
             </p>
             <div className="space-y-2 text-sm text-gray-400 dark:text-gray-500">
               <div className="flex items-center">
                 <Mail className="h-4 w-4 mr-2" />
-                <a href="mailto:hello@makrx.store" className="hover:text-white transition-colors">
+                <a
+                  href="mailto:hello@makrx.store"
+                  className="hover:text-white transition-colors"
+                >
                   hello@makrx.store
                 </a>
               </div>
@@ -141,8 +151,8 @@ export default function Footer() {
             <ul className="space-y-2">
               {footerLinks.products.map((link, index) => (
                 <li key={index}>
-                  <Link 
-                    href={link.href} 
+                  <Link
+                    href={link.href}
                     className="text-gray-400 dark:text-gray-500 hover:text-white transition-colors text-sm"
                   >
                     {link.name}
@@ -158,8 +168,8 @@ export default function Footer() {
             <ul className="space-y-2">
               {footerLinks.services.map((link, index) => (
                 <li key={index}>
-                  <Link 
-                    href={link.href} 
+                  <Link
+                    href={link.href}
                     className="text-gray-400 dark:text-gray-500 hover:text-white transition-colors text-sm"
                   >
                     {link.name}
@@ -175,8 +185,8 @@ export default function Footer() {
             <ul className="space-y-2">
               {footerLinks.company.map((link, index) => (
                 <li key={index}>
-                  <Link 
-                    href={link.href} 
+                  <Link
+                    href={link.href}
                     className="text-gray-400 dark:text-gray-500 hover:text-white transition-colors text-sm"
                   >
                     {link.name}
@@ -192,8 +202,8 @@ export default function Footer() {
             <ul className="space-y-2">
               {footerLinks.support.map((link, index) => (
                 <li key={index}>
-                  <Link 
-                    href={link.href} 
+                  <Link
+                    href={link.href}
                     className="text-gray-400 dark:text-gray-500 hover:text-white transition-colors text-sm"
                   >
                     {link.name}
@@ -210,7 +220,8 @@ export default function Footer() {
             <div className="lg:flex-1">
               <h3 className="text-lg font-semibold mb-2">Stay Updated</h3>
               <p className="text-gray-400 dark:text-gray-500 text-sm">
-                Get the latest products, deals, and maker tips delivered to your inbox.
+                Get the latest products, deals, and maker tips delivered to your
+                inbox.
               </p>
             </div>
             <div className="mt-6 lg:mt-0 lg:ml-8">
@@ -287,5 +298,5 @@ export default function Footer() {
         </div>
       </div>
     </footer>
-  )
+  );
 }

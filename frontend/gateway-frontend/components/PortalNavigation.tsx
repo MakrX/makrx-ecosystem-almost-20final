@@ -1,104 +1,121 @@
-'use client'
+"use client";
 
-import React, { useState } from 'react'
-import { 
-  ExternalLink, 
-  Store, 
-  Wrench, 
-  Home, 
-  ArrowRight, 
-  Loader2, 
+import React, { useState } from "react";
+import {
+  ExternalLink,
+  Store,
+  Wrench,
+  Home,
+  ArrowRight,
+  Loader2,
   CheckCircle,
-  AlertCircle
-} from 'lucide-react'
-import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Badge } from '@/components/ui/badge'
-import { Alert, AlertDescription } from '@/components/ui/alert'
-import { useCrossPortalAuth } from '@/contexts/CrossPortalAuth'
-import { useAuth } from '@/contexts/AuthContext'
+  AlertCircle,
+} from "lucide-react";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { useCrossPortalAuth } from "@/contexts/CrossPortalAuth";
+import { useAuth } from "@/contexts/AuthContext";
 
 interface Portal {
-  id: string
-  name: string
-  description: string
-  icon: React.ComponentType<{ className?: string }>
-  url: string
-  features: string[]
-  status: 'active' | 'beta' | 'coming_soon'
+  id: string;
+  name: string;
+  description: string;
+  icon: React.ComponentType<{ className?: string }>;
+  url: string;
+  features: string[];
+  status: "active" | "beta" | "coming_soon";
 }
 
 const portals: Portal[] = [
   {
-    id: 'gateway',
-    name: 'MakrX Gateway',
-    description: 'Central hub for navigation and account management',
+    id: "gateway",
+    name: "MakrX Gateway",
+    description: "Central hub for navigation and account management",
     icon: Home,
-    url: '/',
-    features: ['Single Sign-On', 'Profile Management', 'Cross-Portal Navigation'],
-    status: 'active'
+    url: "/",
+    features: [
+      "Single Sign-On",
+      "Profile Management",
+      "Cross-Portal Navigation",
+    ],
+    status: "active",
   },
   {
-    id: 'makrcave',
-    name: 'MakrCave',
-    description: 'Makerspace management and project collaboration',
+    id: "makrcave",
+    name: "MakrCave",
+    description: "Makerspace management and project collaboration",
     icon: Wrench,
-    url: '/makrcave',
-    features: ['Equipment Booking', 'Inventory Management', 'Project Tracking', 'Member Management'],
-    status: 'active'
+    url: "/makrcave",
+    features: [
+      "Equipment Booking",
+      "Inventory Management",
+      "Project Tracking",
+      "Member Management",
+    ],
+    status: "active",
   },
   {
-    id: 'store',
-    name: 'MakrX Store',
-    description: 'E-commerce platform for makers and 3D printing services',
+    id: "store",
+    name: "MakrX Store",
+    description: "E-commerce platform for makers and 3D printing services",
     icon: Store,
-    url: '/store',
-    features: ['Product Catalog', '3D Printing Services', 'Order Management', 'File Upload & Quotes'],
-    status: 'active'
-  }
-]
+    url: "/store",
+    features: [
+      "Product Catalog",
+      "3D Printing Services",
+      "Order Management",
+      "File Upload & Quotes",
+    ],
+    status: "active",
+  },
+];
 
 export default function PortalNavigation() {
-  const { isAuthenticated } = useAuth()
-  const { 
-    navigateToPortal, 
-    isPortalAuthenticated, 
-    generatePortalToken 
-  } = useCrossPortalAuth()
-  
-  const [loadingPortal, setLoadingPortal] = useState<string | null>(null)
-  const [error, setError] = useState<string | null>(null)
+  const { isAuthenticated } = useAuth();
+  const { navigateToPortal, isPortalAuthenticated, generatePortalToken } =
+    useCrossPortalAuth();
+
+  const [loadingPortal, setLoadingPortal] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
   const handlePortalNavigation = async (portal: Portal) => {
     if (!isAuthenticated) {
-      setError('Please sign in to access portals')
-      return
+      setError("Please sign in to access portals");
+      return;
     }
 
-    setLoadingPortal(portal.id)
-    setError(null)
+    setLoadingPortal(portal.id);
+    setError(null);
 
     try {
-      await navigateToPortal(portal.id)
-      setLoadingPortal(null)
+      await navigateToPortal(portal.id);
+      setLoadingPortal(null);
     } catch (error) {
-      console.error(`Portal navigation failed:`, error)
-      setError(`Failed to navigate to ${portal.name}. Please try again.`)
-      setLoadingPortal(null)
+      console.error(`Portal navigation failed:`, error);
+      setError(`Failed to navigate to ${portal.name}. Please try again.`);
+      setLoadingPortal(null);
     }
-  }
+  };
 
   const getPortalStatusBadge = (portal: Portal) => {
-    const isAuth = isPortalAuthenticated(portal.id)
-    
-    if (portal.status === 'coming_soon') {
-      return <Badge variant="secondary">Coming Soon</Badge>
+    const isAuth = isPortalAuthenticated(portal.id);
+
+    if (portal.status === "coming_soon") {
+      return <Badge variant="secondary">Coming Soon</Badge>;
     }
-    
-    if (portal.status === 'beta') {
-      return <Badge variant="outline">Beta</Badge>
+
+    if (portal.status === "beta") {
+      return <Badge variant="outline">Beta</Badge>;
     }
-    
+
     if (isAuthenticated) {
       return isAuth ? (
         <Badge variant="default" className="bg-green-100 text-green-800">
@@ -106,14 +123,12 @@ export default function PortalNavigation() {
           Ready
         </Badge>
       ) : (
-        <Badge variant="outline">
-          Authentication Required
-        </Badge>
-      )
+        <Badge variant="outline">Authentication Required</Badge>
+      );
     }
-    
-    return <Badge variant="secondary">Sign In Required</Badge>
-  }
+
+    return <Badge variant="secondary">Sign In Required</Badge>;
+  };
 
   return (
     <div className="space-y-6">
@@ -121,7 +136,7 @@ export default function PortalNavigation() {
       <div className="text-center space-y-2">
         <h2 className="text-3xl font-bold">MakrX Portal Network</h2>
         <p className="text-muted-foreground max-w-2xl mx-auto">
-          Access all MakrX services with seamless single sign-on authentication. 
+          Access all MakrX services with seamless single sign-on authentication.
           Navigate between portals without re-entering your credentials.
         </p>
       </div>
@@ -139,7 +154,8 @@ export default function PortalNavigation() {
         <Alert>
           <AlertCircle className="h-4 w-4" />
           <AlertDescription>
-            <strong>Sign in required:</strong> Please sign in to access MakrX portals with SSO authentication.
+            <strong>Sign in required:</strong> Please sign in to access MakrX
+            portals with SSO authentication.
           </AlertDescription>
         </Alert>
       )}
@@ -147,15 +163,15 @@ export default function PortalNavigation() {
       {/* Portal Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {portals.map((portal) => {
-          const Icon = portal.icon
-          const isCurrentPortal = portal.id === 'gateway'
-          const isLoading = loadingPortal === portal.id
-          
+          const Icon = portal.icon;
+          const isCurrentPortal = portal.id === "gateway";
+          const isLoading = loadingPortal === portal.id;
+
           return (
-            <Card 
-              key={portal.id} 
+            <Card
+              key={portal.id}
               className={`relative transition-all hover:shadow-lg ${
-                isCurrentPortal ? 'ring-2 ring-blue-500 bg-blue-50' : ''
+                isCurrentPortal ? "ring-2 ring-blue-500 bg-blue-50" : ""
               }`}
             >
               <CardHeader>
@@ -167,7 +183,9 @@ export default function PortalNavigation() {
                     <div>
                       <CardTitle className="text-lg">{portal.name}</CardTitle>
                       {isCurrentPortal && (
-                        <Badge variant="outline" className="text-xs">Current Portal</Badge>
+                        <Badge variant="outline" className="text-xs">
+                          Current Portal
+                        </Badge>
                       )}
                     </div>
                   </div>
@@ -199,7 +217,7 @@ export default function PortalNavigation() {
                       <Home className="w-4 h-4 mr-2" />
                       Current Portal
                     </Button>
-                  ) : portal.status === 'coming_soon' ? (
+                  ) : portal.status === "coming_soon" ? (
                     <Button variant="outline" className="w-full" disabled>
                       Coming Soon
                     </Button>
@@ -218,7 +236,9 @@ export default function PortalNavigation() {
                       ) : (
                         <>
                           <ExternalLink className="w-4 h-4 mr-2" />
-                          {isAuthenticated ? `Open ${portal.name}` : 'Sign In Required'}
+                          {isAuthenticated
+                            ? `Open ${portal.name}`
+                            : "Sign In Required"}
                           <ArrowRight className="w-4 h-4 ml-2" />
                         </>
                       )}
@@ -227,7 +247,7 @@ export default function PortalNavigation() {
                 </div>
               </CardContent>
             </Card>
-          )
+          );
         })}
       </div>
 
@@ -240,7 +260,8 @@ export default function PortalNavigation() {
               Single Sign-On Active
             </CardTitle>
             <CardDescription className="text-blue-700">
-              You're authenticated across the MakrX ecosystem. Navigate seamlessly between portals without re-entering credentials.
+              You're authenticated across the MakrX ecosystem. Navigate
+              seamlessly between portals without re-entering credentials.
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -265,27 +286,27 @@ export default function PortalNavigation() {
       {/* Quick Access */}
       {isAuthenticated && (
         <div className="flex flex-wrap gap-3 justify-center">
-          <Button 
-            variant="outline" 
+          <Button
+            variant="outline"
             size="sm"
             onClick={() => handlePortalNavigation(portals[1])} // MakrCave
-            disabled={loadingPortal === 'makrcave'}
+            disabled={loadingPortal === "makrcave"}
           >
-            {loadingPortal === 'makrcave' ? (
+            {loadingPortal === "makrcave" ? (
               <Loader2 className="w-4 h-4 mr-2 animate-spin" />
             ) : (
               <Wrench className="w-4 h-4 mr-2" />
             )}
             Quick: MakrCave
           </Button>
-          
-          <Button 
-            variant="outline" 
+
+          <Button
+            variant="outline"
             size="sm"
             onClick={() => handlePortalNavigation(portals[2])} // Store
-            disabled={loadingPortal === 'store'}
+            disabled={loadingPortal === "store"}
           >
-            {loadingPortal === 'store' ? (
+            {loadingPortal === "store" ? (
               <Loader2 className="w-4 h-4 mr-2 animate-spin" />
             ) : (
               <Store className="w-4 h-4 mr-2" />
@@ -295,5 +316,5 @@ export default function PortalNavigation() {
         </div>
       )}
     </div>
-  )
+  );
 }

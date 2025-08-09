@@ -5,23 +5,27 @@ A comprehensive FastAPI backend for the MakrX Store e-commerce platform, providi
 ## Features
 
 ### 🛒 E-commerce Core
+
 - **Product Catalog**: Full product and category management with advanced search and filtering
 - **Shopping Cart**: Session-based and user-based cart management
 - **Order Management**: Complete order lifecycle from checkout to delivery
 - **Payment Processing**: Stripe and Razorpay integration with webhook support
 
 ### 🖨️ 3D Printing Services
+
 - **File Upload**: Secure S3/MinIO integration with presigned URLs
 - **Quote Engine**: Heuristic pricing based on volume, material, and quality
 - **Service Orders**: Job routing and provider management
 - **Progress Tracking**: Real-time status updates and milestone tracking
 
 ### 🔐 Authentication & Security
+
 - **Keycloak Integration**: JWT-based authentication with role-based access control
 - **API Security**: Rate limiting, CORS, and request validation
 - **Audit Logging**: Comprehensive activity tracking and security monitoring
 
 ### 📊 Admin & Analytics
+
 - **Admin Dashboard**: Product, order, and service management
 - **Analytics**: Revenue, product, and service performance metrics
 - **System Config**: Dynamic configuration management
@@ -91,29 +95,34 @@ makrx-store-backend/
 ### Installation
 
 1. **Clone the repository**
+
 ```bash
 git clone https://github.com/your-org/makrx-store-backend.git
 cd makrx-store-backend
 ```
 
 2. **Create virtual environment**
+
 ```bash
 python -m venv venv
 source venv/bin/activate  # On Windows: venv\Scripts\activate
 ```
 
 3. **Install dependencies**
+
 ```bash
 pip install -r requirements.txt
 ```
 
 4. **Configure environment**
+
 ```bash
 cp .env.example .env
 # Edit .env with your configuration
 ```
 
 5. **Set up database**
+
 ```bash
 # Run migrations
 alembic upgrade head
@@ -123,11 +132,13 @@ python -c "from app.core.db import create_tables; import asyncio; asyncio.run(cr
 ```
 
 6. **Start the server**
+
 ```bash
 uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
 ```
 
 The API will be available at:
+
 - **API**: http://localhost:8000
 - **Documentation**: http://localhost:8000/docs
 - **Health Check**: http://localhost:8000/health
@@ -165,22 +176,26 @@ Authorization: Bearer <jwt_token>
 ### Key Endpoints
 
 #### Catalog
+
 - `GET /catalog/products` - List products with filtering and search
 - `GET /catalog/products/{id}` - Get product details
 - `GET /catalog/categories` - List categories
 
 #### Cart & Orders
+
 - `GET /cart` - Get user's cart
 - `POST /cart/items` - Add item to cart
 - `POST /orders/checkout` - Process checkout
 - `GET /orders` - List user's orders
 
 #### 3D Printing Services
+
 - `POST /uploads/sign` - Get presigned upload URL
 - `POST /quotes` - Generate price quote
 - `POST /service-orders` - Create service order
 
 #### Admin (requires admin role)
+
 - `GET /admin/dashboard` - Admin dashboard data
 - `POST /admin/products` - Create/update products
 - `GET /admin/orders` - Manage all orders

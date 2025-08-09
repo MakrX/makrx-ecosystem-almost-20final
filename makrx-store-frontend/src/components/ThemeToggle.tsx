@@ -1,18 +1,18 @@
-'use client';
+"use client";
 
-import { Sun, Moon, Monitor } from 'lucide-react';
-import { useTheme } from '@/contexts/ThemeContext';
+import { Sun, Moon, Monitor } from "lucide-react";
+import { useTheme } from "@/contexts/ThemeContext";
 
 export function ThemeToggle() {
   const { theme, effectiveTheme, toggleTheme } = useTheme();
 
   const getIcon = () => {
     switch (theme) {
-      case 'light':
+      case "light":
         return <Sun className="h-5 w-5" />;
-      case 'dark':
+      case "dark":
         return <Moon className="h-5 w-5" />;
-      case 'system':
+      case "system":
         return <Monitor className="h-5 w-5" />;
       default:
         return <Sun className="h-5 w-5" />;
@@ -21,14 +21,14 @@ export function ThemeToggle() {
 
   const getTooltip = () => {
     switch (theme) {
-      case 'light':
-        return 'Switch to dark mode';
-      case 'dark':
-        return 'Switch to system preference';
-      case 'system':
-        return 'Switch to light mode';
+      case "light":
+        return "Switch to dark mode";
+      case "dark":
+        return "Switch to system preference";
+      case "system":
+        return "Switch to light mode";
       default:
-        return 'Toggle theme';
+        return "Toggle theme";
     }
   };
 
@@ -40,17 +40,16 @@ export function ThemeToggle() {
         hover:bg-gray-100 dark:hover:bg-gray-800
         focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2
         dark:focus:ring-offset-gray-900
-        ${effectiveTheme === 'dark' 
-          ? 'text-gray-300 hover:text-white' 
-          : 'text-gray-700 hover:text-gray-900'
+        ${
+          effectiveTheme === "dark"
+            ? "text-gray-300 hover:text-white"
+            : "text-gray-700 hover:text-gray-900"
         }
       `}
       title={getTooltip()}
       aria-label={getTooltip()}
     >
-      <div className="flex items-center justify-center">
-        {getIcon()}
-      </div>
+      <div className="flex items-center justify-center">{getIcon()}</div>
     </button>
   );
 }
@@ -61,11 +60,11 @@ export function ThemeToggleCompact() {
 
   const getIcon = () => {
     switch (theme) {
-      case 'light':
+      case "light":
         return <Sun className="h-4 w-4" />;
-      case 'dark':
+      case "dark":
         return <Moon className="h-4 w-4" />;
-      case 'system':
+      case "system":
         return <Monitor className="h-4 w-4" />;
       default:
         return <Sun className="h-4 w-4" />;
@@ -74,14 +73,14 @@ export function ThemeToggleCompact() {
 
   const getLabel = () => {
     switch (theme) {
-      case 'light':
-        return 'Light mode';
-      case 'dark':
-        return 'Dark mode';
-      case 'system':
-        return 'System';
+      case "light":
+        return "Light mode";
+      case "dark":
+        return "Dark mode";
+      case "system":
+        return "System";
       default:
-        return 'Theme';
+        return "Theme";
     }
   };
 

@@ -1,113 +1,116 @@
-'use client'
+"use client";
 
-import React, { useState, useEffect } from 'react'
-import Link from 'next/link'
-import { withAuth } from '@/contexts/AuthContext'
-import { useNotifications, requestNotificationPermission } from '@/contexts/NotificationContext'
-import { api } from '@/lib/api'
-import { 
-  Bell, 
-  BellOff, 
-  Settings, 
-  Check, 
+import React, { useState, useEffect } from "react";
+import Link from "next/link";
+import { withAuth } from "@/contexts/AuthContext";
+import {
+  useNotifications,
+  requestNotificationPermission,
+} from "@/contexts/NotificationContext";
+import { api } from "@/lib/api";
+import {
+  Bell,
+  BellOff,
+  Settings,
+  Check,
   X,
   ArrowLeft,
   ShoppingCart,
   Package,
   AlertTriangle,
-  Info
-} from 'lucide-react'
+  Info,
+} from "lucide-react";
 
 interface NotificationSettings {
-  email_notifications: boolean
-  push_notifications: boolean
-  order_updates: boolean
-  marketing_emails: boolean
-  security_alerts: boolean
-  processing_updates: boolean
+  email_notifications: boolean;
+  push_notifications: boolean;
+  order_updates: boolean;
+  marketing_emails: boolean;
+  security_alerts: boolean;
+  processing_updates: boolean;
 }
 
 function NotificationSettingsPage() {
-  const { notifications, markAllAsRead, clearAll } = useNotifications()
+  const { notifications, markAllAsRead, clearAll } = useNotifications();
   const [settings, setSettings] = useState<NotificationSettings>({
     email_notifications: true,
     push_notifications: false,
     order_updates: true,
     marketing_emails: false,
     security_alerts: true,
-    processing_updates: true
-  })
-  const [loading, setLoading] = useState(true)
-  const [saving, setSaving] = useState(false)
-  const [pushEnabled, setPushEnabled] = useState(false)
+    processing_updates: true,
+  });
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+  const [pushEnabled, setPushEnabled] = useState(false);
 
   useEffect(() => {
-    loadSettings()
-    checkPushPermission()
-  }, [])
+    loadSettings();
+    checkPushPermission();
+  }, []);
 
   const loadSettings = async () => {
     try {
-      const userSettings = await api.getNotificationSettings()
-      setSettings(userSettings)
+      const userSettings = await api.getNotificationSettings();
+      setSettings(userSettings);
     } catch (error) {
-      console.error('Failed to load notification settings:', error)
+      console.error("Failed to load notification settings:", error);
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   const checkPushPermission = () => {
-    if (typeof window !== 'undefined' && 'Notification' in window) {
-      setPushEnabled(Notification.permission === 'granted')
+    if (typeof window !== "undefined" && "Notification" in window) {
+      setPushEnabled(Notification.permission === "granted");
     }
-  }
+  };
 
   const saveSettings = async () => {
-    setSaving(true)
+    setSaving(true);
     try {
-      await api.updateNotificationSettings(settings)
-      alert('Settings saved successfully!')
+      await api.updateNotificationSettings(settings);
+      alert("Settings saved successfully!");
     } catch (error) {
-      console.error('Failed to save settings:', error)
-      alert('Failed to save settings')
+      console.error("Failed to save settings:", error);
+      alert("Failed to save settings");
     } finally {
-      setSaving(false)
+      setSaving(false);
     }
-  }
+  };
 
   const enablePushNotifications = async () => {
-    const granted = await requestNotificationPermission()
-    setPushEnabled(granted)
+    const granted = await requestNotificationPermission();
+    setPushEnabled(granted);
     if (granted) {
-      setSettings(prev => ({ ...prev, push_notifications: true }))
+      setSettings((prev) => ({ ...prev, push_notifications: true }));
     }
-  }
+  };
 
   const updateSetting = (key: keyof NotificationSettings, value: boolean) => {
-    setSettings(prev => ({ ...prev, [key]: value }))
-  }
+    setSettings((prev) => ({ ...prev, [key]: value }));
+  };
 
   const getNotificationIcon = (type: string) => {
     switch (type) {
-      case 'success':
-        return <Check className="h-5 w-5 text-green-600" />
-      case 'error':
-        return <X className="h-5 w-5 text-red-600" />
-      case 'warning':
-        return <AlertTriangle className="h-5 w-5 text-yellow-600" />
-      case 'info':
+      case "success":
+        return <Check className="h-5 w-5 text-green-600" />;
+      case "error":
+        return <X className="h-5 w-5 text-red-600" />;
+      case "warning":
+        return <AlertTriangle className="h-5 w-5 text-yellow-600" />;
+      case "info":
       default:
-        return <Info className="h-5 w-5 text-blue-600" />
+        return <Info className="h-5 w-5 text-blue-600" />;
     }
-  }
+  };
 
   if (loading) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
       </div>
-    )
+    );
   }
 
   return (
@@ -115,15 +118,19 @@ function NotificationSettingsPage() {
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="mb-8">
-          <Link 
-            href="/account" 
+          <Link
+            href="/account"
             className="inline-flex items-center text-sm text-gray-600 hover:text-gray-900 mb-4"
           >
             <ArrowLeft className="h-4 w-4 mr-1" />
             Back to Account
           </Link>
-          <h1 className="text-3xl font-bold text-gray-900">Notification Settings</h1>
-          <p className="text-gray-600 mt-2">Manage how you receive notifications from MakrX Store</p>
+          <h1 className="text-3xl font-bold text-gray-900">
+            Notification Settings
+          </h1>
+          <p className="text-gray-600 mt-2">
+            Manage how you receive notifications from MakrX Store
+          </p>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -131,26 +138,43 @@ function NotificationSettingsPage() {
           <div className="lg:col-span-2">
             <div className="bg-white rounded-lg shadow-sm border border-gray-200">
               <div className="p-6 border-b border-gray-200">
-                <h2 className="text-lg font-semibold text-gray-900">Notification Preferences</h2>
-                <p className="text-sm text-gray-600 mt-1">Choose how you want to be notified</p>
+                <h2 className="text-lg font-semibold text-gray-900">
+                  Notification Preferences
+                </h2>
+                <p className="text-sm text-gray-600 mt-1">
+                  Choose how you want to be notified
+                </p>
               </div>
 
               <div className="p-6 space-y-6">
                 {/* Email Notifications */}
                 <div className="flex items-center justify-between">
                   <div>
-                    <h3 className="text-sm font-medium text-gray-900">Email Notifications</h3>
-                    <p className="text-sm text-gray-600">Receive notifications via email</p>
+                    <h3 className="text-sm font-medium text-gray-900">
+                      Email Notifications
+                    </h3>
+                    <p className="text-sm text-gray-600">
+                      Receive notifications via email
+                    </p>
                   </div>
                   <button
-                    onClick={() => updateSetting('email_notifications', !settings.email_notifications)}
+                    onClick={() =>
+                      updateSetting(
+                        "email_notifications",
+                        !settings.email_notifications,
+                      )
+                    }
                     className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
-                      settings.email_notifications ? 'bg-blue-600' : 'bg-gray-200'
+                      settings.email_notifications
+                        ? "bg-blue-600"
+                        : "bg-gray-200"
                     }`}
                   >
                     <span
                       className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
-                        settings.email_notifications ? 'translate-x-6' : 'translate-x-1'
+                        settings.email_notifications
+                          ? "translate-x-6"
+                          : "translate-x-1"
                       }`}
                     />
                   </button>
@@ -159,8 +183,12 @@ function NotificationSettingsPage() {
                 {/* Push Notifications */}
                 <div className="flex items-center justify-between">
                   <div>
-                    <h3 className="text-sm font-medium text-gray-900">Push Notifications</h3>
-                    <p className="text-sm text-gray-600">Receive browser notifications</p>
+                    <h3 className="text-sm font-medium text-gray-900">
+                      Push Notifications
+                    </h3>
+                    <p className="text-sm text-gray-600">
+                      Receive browser notifications
+                    </p>
                     {!pushEnabled && (
                       <button
                         onClick={enablePushNotifications}
@@ -171,15 +199,25 @@ function NotificationSettingsPage() {
                     )}
                   </div>
                   <button
-                    onClick={() => pushEnabled && updateSetting('push_notifications', !settings.push_notifications)}
+                    onClick={() =>
+                      pushEnabled &&
+                      updateSetting(
+                        "push_notifications",
+                        !settings.push_notifications,
+                      )
+                    }
                     disabled={!pushEnabled}
                     className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
-                      settings.push_notifications && pushEnabled ? 'bg-blue-600' : 'bg-gray-200'
-                    } ${!pushEnabled ? 'opacity-50 cursor-not-allowed' : ''}`}
+                      settings.push_notifications && pushEnabled
+                        ? "bg-blue-600"
+                        : "bg-gray-200"
+                    } ${!pushEnabled ? "opacity-50 cursor-not-allowed" : ""}`}
                   >
                     <span
                       className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
-                        settings.push_notifications && pushEnabled ? 'translate-x-6' : 'translate-x-1'
+                        settings.push_notifications && pushEnabled
+                          ? "translate-x-6"
+                          : "translate-x-1"
                       }`}
                     />
                   </button>
@@ -187,26 +225,39 @@ function NotificationSettingsPage() {
 
                 {/* Specific Notification Types */}
                 <div className="border-t border-gray-200 pt-6">
-                  <h3 className="text-sm font-medium text-gray-900 mb-4">Notification Types</h3>
-                  
+                  <h3 className="text-sm font-medium text-gray-900 mb-4">
+                    Notification Types
+                  </h3>
+
                   <div className="space-y-4">
                     <div className="flex items-center justify-between">
                       <div className="flex items-center">
                         <Package className="h-4 w-4 text-gray-400 mr-2" />
                         <div>
-                          <span className="text-sm font-medium text-gray-900">Order Updates</span>
-                          <p className="text-xs text-gray-600">Status changes, shipping updates</p>
+                          <span className="text-sm font-medium text-gray-900">
+                            Order Updates
+                          </span>
+                          <p className="text-xs text-gray-600">
+                            Status changes, shipping updates
+                          </p>
                         </div>
                       </div>
                       <button
-                        onClick={() => updateSetting('order_updates', !settings.order_updates)}
+                        onClick={() =>
+                          updateSetting(
+                            "order_updates",
+                            !settings.order_updates,
+                          )
+                        }
                         className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
-                          settings.order_updates ? 'bg-blue-600' : 'bg-gray-200'
+                          settings.order_updates ? "bg-blue-600" : "bg-gray-200"
                         }`}
                       >
                         <span
                           className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
-                            settings.order_updates ? 'translate-x-6' : 'translate-x-1'
+                            settings.order_updates
+                              ? "translate-x-6"
+                              : "translate-x-1"
                           }`}
                         />
                       </button>
@@ -216,19 +267,32 @@ function NotificationSettingsPage() {
                       <div className="flex items-center">
                         <Settings className="h-4 w-4 text-gray-400 mr-2" />
                         <div>
-                          <span className="text-sm font-medium text-gray-900">Processing Updates</span>
-                          <p className="text-xs text-gray-600">3D printing progress, quote ready</p>
+                          <span className="text-sm font-medium text-gray-900">
+                            Processing Updates
+                          </span>
+                          <p className="text-xs text-gray-600">
+                            3D printing progress, quote ready
+                          </p>
                         </div>
                       </div>
                       <button
-                        onClick={() => updateSetting('processing_updates', !settings.processing_updates)}
+                        onClick={() =>
+                          updateSetting(
+                            "processing_updates",
+                            !settings.processing_updates,
+                          )
+                        }
                         className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
-                          settings.processing_updates ? 'bg-blue-600' : 'bg-gray-200'
+                          settings.processing_updates
+                            ? "bg-blue-600"
+                            : "bg-gray-200"
                         }`}
                       >
                         <span
                           className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
-                            settings.processing_updates ? 'translate-x-6' : 'translate-x-1'
+                            settings.processing_updates
+                              ? "translate-x-6"
+                              : "translate-x-1"
                           }`}
                         />
                       </button>
@@ -238,19 +302,32 @@ function NotificationSettingsPage() {
                       <div className="flex items-center">
                         <ShoppingCart className="h-4 w-4 text-gray-400 mr-2" />
                         <div>
-                          <span className="text-sm font-medium text-gray-900">Marketing Emails</span>
-                          <p className="text-xs text-gray-600">Promotions, new products</p>
+                          <span className="text-sm font-medium text-gray-900">
+                            Marketing Emails
+                          </span>
+                          <p className="text-xs text-gray-600">
+                            Promotions, new products
+                          </p>
                         </div>
                       </div>
                       <button
-                        onClick={() => updateSetting('marketing_emails', !settings.marketing_emails)}
+                        onClick={() =>
+                          updateSetting(
+                            "marketing_emails",
+                            !settings.marketing_emails,
+                          )
+                        }
                         className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
-                          settings.marketing_emails ? 'bg-blue-600' : 'bg-gray-200'
+                          settings.marketing_emails
+                            ? "bg-blue-600"
+                            : "bg-gray-200"
                         }`}
                       >
                         <span
                           className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
-                            settings.marketing_emails ? 'translate-x-6' : 'translate-x-1'
+                            settings.marketing_emails
+                              ? "translate-x-6"
+                              : "translate-x-1"
                           }`}
                         />
                       </button>
@@ -260,19 +337,32 @@ function NotificationSettingsPage() {
                       <div className="flex items-center">
                         <AlertTriangle className="h-4 w-4 text-gray-400 mr-2" />
                         <div>
-                          <span className="text-sm font-medium text-gray-900">Security Alerts</span>
-                          <p className="text-xs text-gray-600">Login attempts, account changes</p>
+                          <span className="text-sm font-medium text-gray-900">
+                            Security Alerts
+                          </span>
+                          <p className="text-xs text-gray-600">
+                            Login attempts, account changes
+                          </p>
                         </div>
                       </div>
                       <button
-                        onClick={() => updateSetting('security_alerts', !settings.security_alerts)}
+                        onClick={() =>
+                          updateSetting(
+                            "security_alerts",
+                            !settings.security_alerts,
+                          )
+                        }
                         className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
-                          settings.security_alerts ? 'bg-blue-600' : 'bg-gray-200'
+                          settings.security_alerts
+                            ? "bg-blue-600"
+                            : "bg-gray-200"
                         }`}
                       >
                         <span
                           className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
-                            settings.security_alerts ? 'translate-x-6' : 'translate-x-1'
+                            settings.security_alerts
+                              ? "translate-x-6"
+                              : "translate-x-1"
                           }`}
                         />
                       </button>
@@ -287,7 +377,7 @@ function NotificationSettingsPage() {
                     disabled={saving}
                     className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
                   >
-                    {saving ? 'Saving...' : 'Save Settings'}
+                    {saving ? "Saving..." : "Save Settings"}
                   </button>
                 </div>
               </div>
@@ -299,7 +389,9 @@ function NotificationSettingsPage() {
             <div className="bg-white rounded-lg shadow-sm border border-gray-200">
               <div className="p-4 border-b border-gray-200">
                 <div className="flex items-center justify-between">
-                  <h3 className="text-lg font-semibold text-gray-900">Recent Notifications</h3>
+                  <h3 className="text-lg font-semibold text-gray-900">
+                    Recent Notifications
+                  </h3>
                   <div className="flex space-x-2">
                     <button
                       onClick={markAllAsRead}
@@ -316,19 +408,21 @@ function NotificationSettingsPage() {
                   </div>
                 </div>
               </div>
-              
+
               <div className="max-h-96 overflow-y-auto">
                 {notifications.length === 0 ? (
                   <div className="p-8 text-center">
                     <Bell className="h-12 w-12 text-gray-300 mx-auto mb-4" />
-                    <p className="text-gray-500 text-sm">No notifications yet</p>
+                    <p className="text-gray-500 text-sm">
+                      No notifications yet
+                    </p>
                   </div>
                 ) : (
                   <div className="divide-y divide-gray-100">
                     {notifications.slice(0, 10).map((notification) => (
                       <div
                         key={notification.id}
-                        className={`p-4 ${!notification.read ? 'bg-blue-50' : ''}`}
+                        className={`p-4 ${!notification.read ? "bg-blue-50" : ""}`}
                       >
                         <div className="flex items-start space-x-3">
                           <div className="flex-shrink-0">
@@ -342,7 +436,7 @@ function NotificationSettingsPage() {
                               {notification.message}
                             </p>
                             <p className="text-xs text-gray-400 mt-2">
-                              {notification.timestamp.toLocaleDateString()} at{' '}
+                              {notification.timestamp.toLocaleDateString()} at{" "}
                               {notification.timestamp.toLocaleTimeString()}
                             </p>
                           </div>
@@ -360,7 +454,7 @@ function NotificationSettingsPage() {
         </div>
       </div>
     </div>
-  )
+  );
 }
 
-export default withAuth(NotificationSettingsPage)
+export default withAuth(NotificationSettingsPage);

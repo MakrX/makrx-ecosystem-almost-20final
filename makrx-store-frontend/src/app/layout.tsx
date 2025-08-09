@@ -1,54 +1,58 @@
-import type { Metadata } from 'next'
-import { Inter } from 'next/font/google'
-import './globals.css'
-import { AuthProvider } from '@/contexts/AuthContext'
-import { NotificationProvider } from '@/contexts/NotificationContext'
-import { ThemeProvider } from '@/contexts/ThemeContext'
-import { Header } from '@/components/layout/Header'
-import Footer from '@/components/layout/Footer'
-import ToastNotifications from '@/components/ToastNotifications'
+import type { Metadata } from "next";
+import { Inter } from "next/font/google";
+import "./globals.css";
+import { AuthProvider } from "@/contexts/AuthContext";
+import { NotificationProvider } from "@/contexts/NotificationContext";
+import { ThemeProvider } from "@/contexts/ThemeContext";
+import { Header } from "@/components/layout/Header";
+import Footer from "@/components/layout/Footer";
+import ToastNotifications from "@/components/ToastNotifications";
 
-const inter = Inter({ subsets: ['latin'] })
+const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: 'MakrX Store - 3D Printing Materials & Services',
-  description: 'Premium 3D printing materials, equipment, and professional printing services for makers and professionals.',
-  keywords: '3D printing, filament, PLA, ABS, PETG, 3D printer, maker, prototyping',
-  authors: [{ name: 'MakrX' }],
+  title: "MakrX Store - 3D Printing Materials & Services",
+  description:
+    "Premium 3D printing materials, equipment, and professional printing services for makers and professionals.",
+  keywords:
+    "3D printing, filament, PLA, ABS, PETG, 3D printer, maker, prototyping",
+  authors: [{ name: "MakrX" }],
   openGraph: {
-    title: 'MakrX Store - 3D Printing Materials & Services',
-    description: 'Premium 3D printing materials, equipment, and professional printing services',
-    url: 'https://makrx.store',
-    siteName: 'MakrX Store',
+    title: "MakrX Store - 3D Printing Materials & Services",
+    description:
+      "Premium 3D printing materials, equipment, and professional printing services",
+    url: "https://makrx.store",
+    siteName: "MakrX Store",
     images: [
       {
-        url: '/og-image.jpg',
+        url: "/og-image.jpg",
         width: 1200,
         height: 630,
-        alt: 'MakrX Store - 3D Printing Materials & Services',
+        alt: "MakrX Store - 3D Printing Materials & Services",
       },
     ],
-    locale: 'en_US',
-    type: 'website',
+    locale: "en_US",
+    type: "website",
   },
   twitter: {
-    card: 'summary_large_image',
-    title: 'MakrX Store - 3D Printing Materials & Services',
-    description: 'Premium 3D printing materials, equipment, and professional printing services',
-    images: ['/og-image.jpg'],
+    card: "summary_large_image",
+    title: "MakrX Store - 3D Printing Materials & Services",
+    description:
+      "Premium 3D printing materials, equipment, and professional printing services",
+    images: ["/og-image.jpg"],
   },
-  robots: 'index, follow',
-}
+  robots: "index, follow",
+};
 
 export const viewport = {
-  width: 'device-width',
+  width: "device-width",
   initialScale: 1,
-}
+};
 
 export default function RootLayout({
   children,
 }: {
-  children: React.ReactNode
+  children: React.ReactNode;
 }) {
   return (
     <html lang="en" suppressHydrationWarning>
@@ -58,9 +62,7 @@ export default function RootLayout({
             <NotificationProvider>
               <div className="min-h-screen flex flex-col bg-background text-foreground">
                 <Header />
-                <main className="flex-1">
-                  {children}
-                </main>
+                <main className="flex-1">{children}</main>
                 <Footer />
               </div>
               <ToastNotifications />
@@ -69,5 +71,5 @@ export default function RootLayout({
         </ThemeProvider>
       </body>
     </html>
-  )
+  );
 }
