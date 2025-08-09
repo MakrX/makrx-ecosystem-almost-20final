@@ -16,6 +16,7 @@ from routes.membership_plans import router as membership_plans_router
 from routes.announcements import router as announcements_router
 from routes.filament_tracking import router as filament_tracking_router
 from routes.enhanced_projects import router as enhanced_projects_router
+from routes.equipment_reservations import router as equipment_reservations_router
 
 # Create FastAPI application
 app = FastAPI(
