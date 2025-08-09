@@ -28,7 +28,19 @@ export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
+  const [activeDropdown, setActiveDropdown] = useState<string | null>(null)
   const router = useRouter()
+
+  // Organize categories for dropdown
+  const featuredCategories = categories.filter(cat => cat.featured)
+  const otherCategories = categories.filter(cat => !cat.featured)
+
+  const servicesMenu = [
+    { name: '3D Printing', href: '/3d-printing', icon: Printer, description: 'Upload STL files for instant quotes' },
+    { name: 'CNC Machining', href: '/services/cnc', icon: Wrench, description: 'Precision metal and wood machining' },
+    { name: 'PCB Assembly', href: '/services/pcb', icon: Cpu, description: 'Professional circuit board assembly' },
+    { name: 'Laser Cutting', href: '/services/laser', icon: Package, description: 'Precise laser cutting services' }
+  ]
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault()
