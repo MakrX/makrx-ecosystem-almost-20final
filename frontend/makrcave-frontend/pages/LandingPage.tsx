@@ -126,10 +126,10 @@ const LandingPage = () => {
               What is MakrCave?
             </h2>
             <p className="text-xl text-white/80 leading-relaxed mb-4">
-              The primary web application for managing everything that happens in a makerspace or fabrication service.
+              The comprehensive makerspace management platform within the MakrX ecosystem — connecting makers with the tools, resources, and community they need to bring ideas to life.
             </p>
             <p className="text-lg text-white/70 leading-relaxed">
-              A standardized but customizable platform to run any makerspace — small or large — with business operations, community management, and seamless ecosystem integration.
+              A complete solution for running any makerspace with integrated business operations, community building, service provider capabilities, and seamless connections to MakrX.org and MakrX.Store.
             </p>
           </div>
           
