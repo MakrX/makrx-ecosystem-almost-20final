@@ -678,24 +678,40 @@ class ApiClient {
   }
 
   private getMockFeaturedProducts(endpoint: string) {
-    // Extract limit from query params
-    const url = new URL(`http://localhost${endpoint}`)
-    const limit = parseInt(url.searchParams.get('limit') || '10')
+    try {
+      // Extract limit from query params
+      const url = new URL(`http://localhost${endpoint}`)
+      const limit = parseInt(url.searchParams.get('limit') || '10')
 
-    // Get featured products from mock data
-    const transformedProducts = this.transformMockProducts()
-    let featuredProducts = transformedProducts.filter(product =>
-      product.tags.includes('featured') || product.tags.includes('popular')
-    )
+      // Get featured products from mock data
+      const transformedProducts = this.transformMockProducts()
+      let featuredProducts = transformedProducts.filter(product =>
+        product.tags && (product.tags.includes('featured') || product.tags.includes('popular'))
+      )
 
-    // If no featured products found, use first few products
-    if (featuredProducts.length === 0) {
-      featuredProducts = transformedProducts.slice(0, limit)
-    } else {
-      featuredProducts = featuredProducts.slice(0, limit)
+      // If no featured products found, use first few products
+      if (featuredProducts.length === 0) {
+        featuredProducts = transformedProducts.slice(0, limit)
+      } else {
+        featuredProducts = featuredProducts.slice(0, limit)
+      }
+
+      // Ensure all products have valid IDs
+      featuredProducts = featuredProducts.map((product, index) => ({
+        ...product,
+        id: product.id || (index + 1),
+        slug: product.slug || `product-${index + 1}`,
+        name: product.name || `Product ${index + 1}`,
+        images: product.images || ['/api/placeholder/400/300'],
+        tags: product.tags || [],
+        currency: product.currency || 'USD'
+      }))
+
+      return featuredProducts
+    } catch (error) {
+      console.error('Error generating mock featured products:', error)
+      return []
     }
-
-    return featuredProducts
   }
 
   private transformMockProducts() {
