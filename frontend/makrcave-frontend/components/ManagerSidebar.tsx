@@ -49,6 +49,12 @@ export default function ManagerSidebar() {
       active: isActive('/portal/inventory')
     },
     {
+      name: 'Smart Inventory',
+      href: '/portal/smart-inventory',
+      icon: Package,
+      active: isActive('/portal/smart-inventory')
+    },
+    {
       name: 'Equipment',
       href: '/portal/equipment',
       icon: Wrench,
