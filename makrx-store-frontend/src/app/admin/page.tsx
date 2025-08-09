@@ -214,7 +214,7 @@ function AdminPortal() {
                     onChange={(e) => setSelectedCategory(e.target.value)}
                     className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white text-gray-900"
                   >
-                    {categories.map((category) => (
+                    {categoryOptions.map((category) => (
                       <option key={category.value} value={category.value}>
                         {category.label}
                       </option>
