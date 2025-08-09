@@ -28,7 +28,7 @@ import {
 } from 'lucide-react';
 import HealthStatusIndicator from './HealthStatusIndicator';
 import { useHealth, useHealthStatus } from '../contexts/HealthContext';
-import MakrXThemeToggle from './MakrXThemeToggle';
+import { ThemeToggle } from '../../../packages/ui/components/ThemeToggle';
 
 interface HeaderWithHealthProps {
   showHealthStatus?: boolean;
