@@ -92,9 +92,9 @@ export default function HomePage() {
           </div>
 
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-            {categories.slice(0, 8).map((category) => (
+            {categories.slice(0, 8).map((category, index) => (
               <div
-                key={category.id}
+                key={category.id || `category-${index}`}
                 onClick={() => handleCategoryClick(category)}
                 className="bg-card border border-border rounded-lg shadow-md hover:shadow-lg transition-shadow cursor-pointer p-6 text-center"
               >
