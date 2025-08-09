@@ -699,8 +699,8 @@ class ApiClient {
   }
 
   private transformMockProducts() {
-    return mockProducts.map(product => ({
-      id: parseInt(product.id),
+    return mockProducts.map((product, index) => ({
+      id: typeof product.id === 'string' ? parseInt(product.id.replace(/\D/g, '')) || (index + 1) : (index + 1),
       slug: product.id,
       name: product.name,
       description: product.description,
