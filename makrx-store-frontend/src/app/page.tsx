@@ -290,26 +290,40 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* Dark Mode Demo Section */}
+      <section className="py-16 bg-muted/50">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <h2 className="text-3xl font-bold text-foreground mb-4">
+            🌙 NEW: Dark Mode Support!
+          </h2>
+          <p className="text-lg text-muted-foreground mb-8">
+            Experience our enhanced interface with light, dark, and system theme options.
+            Try the theme toggle in the header or use the demo below!
+          </p>
+          <DarkModeDemo />
+        </div>
+      </section>
+
       {/* CTA Section */}
       <section className="py-16">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-3xl font-bold text-gray-900 mb-4">
+          <h2 className="text-3xl font-bold text-foreground mb-4">
             Ready to Start Your Next Project?
           </h2>
-          <p className="text-lg text-gray-600 mb-8">
-            Whether you need materials for your own printer or professional printing services, 
+          <p className="text-lg text-muted-foreground mb-8">
+            Whether you need materials for your own printer or professional printing services,
             we're here to help bring your ideas to life.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link
               href="/catalog"
-              className="bg-blue-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors"
+              className="bg-blue-600 dark:bg-blue-500 text-white px-8 py-3 rounded-lg font-semibold hover:bg-blue-700 dark:hover:bg-blue-600 transition-colors"
             >
               Shop Materials
             </Link>
             <Link
               href="/upload"
-              className="bg-transparent border-2 border-blue-600 text-blue-600 px-8 py-3 rounded-lg font-semibold hover:bg-blue-600 hover:text-white transition-colors"
+              className="bg-transparent border-2 border-blue-600 dark:border-blue-400 text-blue-600 dark:text-blue-400 px-8 py-3 rounded-lg font-semibold hover:bg-blue-600 dark:hover:bg-blue-500 hover:text-white transition-colors"
             >
               Upload File
             </Link>
