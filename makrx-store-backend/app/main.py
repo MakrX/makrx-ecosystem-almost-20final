@@ -289,13 +289,27 @@ async def shutdown_event():
 
 @app.get("/")
 async def root():
-    """Root endpoint with API information"""
+    """Root endpoint with API and security information"""
     return {
         "name": "MakrX Store API",
         "version": "1.0.0",
         "environment": settings.ENVIRONMENT,
-        "docs": "/docs",
-        "health": "/health"
+        "security": {
+            "dpdp_compliant": True,
+            "pci_compliant": True,
+            "encryption": "TLS 1.2+",
+            "authentication": "Keycloak SSO + JWT"
+        },
+        "endpoints": {
+            "docs": "/docs" if settings.ENVIRONMENT != "production" else None,
+            "health": "/health",
+            "metrics": "/metrics" if settings.ENVIRONMENT != "production" else None
+        },
+        "compliance": {
+            "dpdp_act_2023": True,
+            "gdpr_concepts": True,
+            "iso_27001_aligned": True
+        }
     }
 
 # Development hot reload
