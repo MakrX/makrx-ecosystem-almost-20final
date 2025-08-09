@@ -181,6 +181,7 @@ app.include_router(quotes.router, prefix="/quotes", tags=["Quotes"])
 app.include_router(admin.router, prefix="/admin", tags=["Admin"])
 app.include_router(webhooks.router, prefix="/webhooks", tags=["Webhooks"])
 app.include_router(bridge.router, prefix="/bridge", tags=["Bridge"])
+app.include_router(security_management.router, prefix="/security", tags=["Security Management"])
 
 @app.on_event("startup")
 async def startup_event():
