@@ -1,6 +1,7 @@
 """
 MakrX Store Backend - FastAPI Application
-Main application entry point with middleware and router setup
+Main application entry point with comprehensive security middleware and router setup
+Implements full security specification with DPDP Act compliance
 """
 
 from fastapi import FastAPI, Request, Response
@@ -10,10 +11,21 @@ from fastapi.responses import JSONResponse
 import time
 import uuid
 import logging
+import asyncio
 
 from app.core.config import settings
 from app.core.db import engine, create_tables
 from app.routes import auth, catalog, cart, orders, uploads, quotes, admin, webhooks, health, bridge
+
+# Import comprehensive security modules
+from app.middleware.api_security import setup_api_security
+from app.middleware.observability import ObservabilityMiddleware
+from app.core.enhanced_security_auth import enhanced_auth
+from app.core.file_security import file_validator, storage_manager
+from app.core.payment_security import webhook_verifier, payment_processor
+from app.core.data_protection import consent_manager, retention_manager, user_rights_manager
+from app.core.security_monitoring import security_logger, security_monitor, performance_monitor
+from app.core.operational_security import secrets_manager, mfa_manager, access_control
 
 # Configure logging
 logging.basicConfig(
