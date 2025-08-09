@@ -24,6 +24,7 @@ from routes.access_control import router as access_control_router
 from routes.enhanced_analytics import router as enhanced_analytics_router
 from routes.notifications import router as notifications_router
 from routes.collaboration import router as collaboration_router
+from routes.project_showcase import router as project_showcase_router
 
 # Create FastAPI application
 app = FastAPI(
