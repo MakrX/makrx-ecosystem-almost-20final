@@ -7,15 +7,16 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "./contexts/AuthContext";
+import { ThemeProvider } from "../../packages/ui/contexts/ThemeContext";
 import EnhancedHeader from "./components/EnhancedHeader";
-import EnhancedIndex from "./pages/EnhancedIndex";
+import HomePage from "./pages/HomePage";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import MakrCave from "./pages/MakrCave";
 import Store from "./pages/Store";
 import Learn from "./pages/Learn";
 import Profile from "./pages/Profile";
-import EnhancedProfile from "./pages/EnhancedProfile";
+import ProfilePage from "./pages/ProfilePage";
 import FeatureFlagsAdmin from "./pages/admin/FeatureFlags";
 import NotFound from "./pages/NotFound";
 
