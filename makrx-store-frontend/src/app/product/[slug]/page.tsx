@@ -22,6 +22,7 @@ import {
 } from "lucide-react";
 import { api, type Product, formatPrice } from "@/lib/api";
 import { useAuth } from "@/contexts/AuthContext";
+import ProductReviews from "@/components/ProductReviews";
 
 export default function ProductPage() {
   const params = useParams();
