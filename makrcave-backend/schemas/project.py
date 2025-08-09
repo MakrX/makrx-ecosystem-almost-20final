@@ -20,6 +20,16 @@ class ProjectBase(BaseModel):
     end_date: Optional[datetime] = None
     tags: Optional[List[str]] = []
 
+    # Enhanced public project fields
+    difficulty_level: str = Field("beginner", regex="^(beginner|intermediate|advanced|expert)$")
+    estimated_duration: Optional[str] = None
+    required_skills: Optional[List[str]] = []
+    learning_objectives: Optional[List[str]] = []
+    license_type: str = Field("cc-by-sa", regex="^(cc-by-sa|cc-by|cc-by-nc|mit|apache|proprietary)$")
+    required_equipment: Optional[List[str]] = []
+    space_requirements: Optional[str] = None
+    safety_considerations: Optional[str] = None
+
 # Initial milestone schema for project creation
 class InitialMilestone(BaseModel):
     title: str = Field(..., min_length=1, max_length=200)
