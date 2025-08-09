@@ -9,7 +9,7 @@ import {
   Heart,
   GitFork,
   ArrowRight,
-  Fire,
+  Flame,
   Clock,
   Star
 } from 'lucide-react';
