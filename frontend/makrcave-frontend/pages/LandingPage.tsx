@@ -346,33 +346,33 @@ const LandingPage = () => {
             {[
               {
                 icon: <Shield className="h-8 w-8" />,
-                title: 'Skill-Gated Access',
-                description: 'Equipment access based on verified skills and certifications'
+                title: 'Skill-Gated Machine Access',
+                description: 'Machines require specific skill badges with NFC/QR/fingerprint access control'
               },
               {
                 icon: <Zap className="h-8 w-8" />,
-                title: 'Smart Inventory',
-                description: 'Real-time tracking of tools, materials, and availability'
+                title: 'Smart Inventory Management',
+                description: 'Track filament rolls, auto-deduction, low stock alerts, quick MakrX.Store reorders'
               },
               {
                 icon: <Users className="h-8 w-8" />,
-                title: 'Community Learning',
-                description: 'Connect with mentors and learn from experienced makers'
+                title: 'Project & BOM Management',
+                description: 'Team collaboration with BOMs linked directly to MakrX.Store product codes'
               },
               {
                 icon: <Star className="h-8 w-8" />,
-                title: 'Quality Assurance',
-                description: 'Verified service providers and quality control systems'
+                title: 'Job Management System',
+                description: 'Service providers receive jobs, upload G-code, track materials automatically'
               },
               {
                 icon: <ArrowRight className="h-8 w-8" />,
-                title: 'Instant Quoting',
-                description: 'From STL to print quotes in seconds with MakrX.Store'
+                title: 'Equipment Reservations',
+                description: 'Book machines with cost rules: free for members, paid per hour, or subscription included'
               },
               {
                 icon: <MapPin className="h-8 w-8" />,
-                title: 'Global Network',
-                description: 'Access makerspaces and services worldwide'
+                title: 'Membership & Analytics',
+                description: 'Membership plans, usage reports, equipment utilization, revenue tracking'
               }
             ].map((feature, idx) => (
               <Card key={idx} className="bg-white/10 backdrop-blur-md border-white/20 hover:bg-white/15 transition-all duration-300">
