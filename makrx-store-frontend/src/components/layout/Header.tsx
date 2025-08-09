@@ -7,6 +7,7 @@ import { Search, ShoppingCart, Menu, X, User, LogOut, Package, Settings } from '
 import { useAuth } from '@/contexts/AuthContext';
 import { api, type Category, type Product } from '@/lib/api';
 import { SmartSearch } from '@/components/SmartSearch';
+import NotificationDropdown from '@/components/NotificationDropdown';
 
 export function Header() {
   const { user, isAuthenticated, login, logout } = useAuth();
