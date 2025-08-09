@@ -168,13 +168,13 @@ export default function EnhancedIndex() {
                       </div>
                     </div>
                     <p className="text-muted-foreground mb-6">
-                      Complete makerspace management: inventory tracking, workstation booking, 
-                      project collaboration, and member management all in one place.
+                      Comprehensive makerspace & service provider platform: inventory management, equipment booking,
+                      skill-gated access, service order processing, project collaboration, and community building.
                     </p>
                     <div className="flex flex-wrap gap-2">
-                      <span className="bg-makrx-blue/10 text-makrx-blue px-3 py-1 rounded-full text-sm">Inventory</span>
-                      <span className="bg-makrx-blue/10 text-makrx-blue px-3 py-1 rounded-full text-sm">Projects</span>
-                      <span className="bg-makrx-blue/10 text-makrx-blue px-3 py-1 rounded-full text-sm">Booking</span>
+                      <span className="bg-makrx-blue/10 text-makrx-blue px-3 py-1 rounded-full text-sm">Space Management</span>
+                      <span className="bg-makrx-blue/10 text-makrx-blue px-3 py-1 rounded-full text-sm">Service Orders</span>
+                      <span className="bg-makrx-blue/10 text-makrx-blue px-3 py-1 rounded-full text-sm">Community</span>
                     </div>
                   </div>
                 </Link>
