@@ -63,7 +63,7 @@ const mockMakerspaces: Makerspace[] = [
     status: 'open',
     capacity: 50,
     currentUsers: 23,
-    priceRange: '$25-35/day',
+    priceRange: '₹2,075-2,905/day',
     amenities: ['WiFi', 'Coffee', 'Parking', '24/7 Access', 'Security'],
     hours: {
       'Monday': '9:00 AM - 9:00 PM',
@@ -99,7 +99,7 @@ const mockMakerspaces: Makerspace[] = [
     status: 'busy',
     capacity: 75,
     currentUsers: 67,
-    priceRange: '$20-30/day',
+    priceRange: '₹1,660-2,490/day',
     amenities: ['WiFi', 'Snacks', 'Parking', 'Lockers'],
     hours: {
       'Monday': '8:00 AM - 10:00 PM',
@@ -134,7 +134,7 @@ const mockMakerspaces: Makerspace[] = [
     status: 'closed',
     capacity: 100,
     currentUsers: 0,
-    priceRange: '$35-45/day',
+    priceRange: '₹2,905-3,735/day',
     amenities: ['WiFi', 'Cafe', 'Parking', 'Event Space', 'Meeting Rooms'],
     hours: {
       'Monday': '7:00 AM - 11:00 PM',

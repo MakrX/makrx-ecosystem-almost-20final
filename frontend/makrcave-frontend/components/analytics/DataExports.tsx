@@ -156,11 +156,11 @@ const DataExports: React.FC = () => {
       case 'inventory':
         headers = ['Name', 'Category', 'Quantity', 'Min Threshold', 'Location', 'Status', 'Supplier', 'Price'];
         data = [
-          ['PLA Filament - White', 'Filament', '15.5', '5.0', 'Storage A1', 'Active', 'MakrX Store', '$25.99'],
-          ['ABS Filament - Black', 'Filament', '8.2', '5.0', 'Storage A1', 'Active', 'External', '$28.50'],
-          ['PETG Filament - Clear', 'Filament', '12.1', '3.0', 'Storage A2', 'Active', 'MakrX Store', '$32.00'],
-          ['Arduino Uno R3', 'Electronics', '25', '10', 'Electronics Cabinet', 'Active', 'External', '$23.00'],
-          ['Raspberry Pi 4', 'Electronics', '8', '5', 'Electronics Cabinet', 'Active', 'MakrX Store', '$75.00']
+          ['PLA Filament - White', 'Filament', '15.5', '5.0', 'Storage A1', 'Active', 'MakrX Store', '₹2,158'],
+          ['ABS Filament - Black', 'Filament', '8.2', '5.0', 'Storage A1', 'Active', 'External', '₹2,366'],
+          ['PETG Filament - Clear', 'Filament', '12.1', '3.0', 'Storage A2', 'Active', 'MakrX Store', '₹2,656'],
+          ['Arduino Uno R3', 'Electronics', '25', '10', 'Electronics Cabinet', 'Active', 'External', '₹1,909'],
+          ['Raspberry Pi 4', 'Electronics', '8', '5', 'Electronics Cabinet', 'Active', 'MakrX Store', '₹6,225']
         ];
         break;
       case 'equipment':
