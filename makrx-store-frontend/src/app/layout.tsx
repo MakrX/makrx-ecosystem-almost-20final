@@ -3,7 +3,7 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { NotificationProvider } from "@/contexts/NotificationContext";
-import { SharedThemeProvider as ThemeProvider } from "@/contexts/SharedThemeProvider";
+import { ThemeProvider } from "@/contexts/SharedThemeProvider";
 import { Header } from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import ToastNotifications from "@/components/ToastNotifications";
