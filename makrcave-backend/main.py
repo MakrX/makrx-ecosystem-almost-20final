@@ -18,6 +18,7 @@ from routes.filament_tracking import router as filament_tracking_router
 from routes.enhanced_projects import router as enhanced_projects_router
 from routes.equipment_reservations import router as equipment_reservations_router
 from routes.job_management import router as job_management_router
+from routes.machine_access import router as machine_access_router
 
 # Create FastAPI application
 app = FastAPI(
