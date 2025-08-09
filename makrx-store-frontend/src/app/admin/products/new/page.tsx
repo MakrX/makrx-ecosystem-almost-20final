@@ -169,7 +169,7 @@ export default function AddProductPage() {
     } catch (error) {
       console.error('Error adding product:', error)
     } finally {
-      setIsLoading(false)
+      setIsSubmitLoading(false)
     }
   }
 
