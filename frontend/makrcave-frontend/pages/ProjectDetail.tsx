@@ -37,6 +37,10 @@ import EquipmentReservations from '../components/EquipmentReservations';
 import ProjectTimeline from '../components/ProjectTimeline';
 import ProjectFiles from '../components/ProjectFiles';
 import ProjectActivity from '../components/ProjectActivity';
+import ProjectCollaborationHub from '../components/collaboration/ProjectCollaborationHub';
+import RealTimeEditingIndicators from '../components/collaboration/RealTimeEditingIndicators';
+import CollaborativeWhiteboard from '../components/collaboration/CollaborativeWhiteboard';
+import SharedDocumentEditor from '../components/collaboration/SharedDocumentEditor';
 import { formatDistanceToNow } from 'date-fns';
 
 interface Project {
@@ -140,6 +144,9 @@ const ProjectDetail: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState('overview');
+  const [showCollaborationHub, setShowCollaborationHub] = useState(false);
+  const [showWhiteboard, setShowWhiteboard] = useState(false);
+  const [showDocumentEditor, setShowDocumentEditor] = useState(false);
   
   const permissions = useProjectPermissions(project || undefined);
 
@@ -412,13 +419,15 @@ const ProjectDetail: React.FC = () => {
 
       {/* Project Content Tabs */}
       <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4">
-        <TabsList className="grid w-full grid-cols-6">
+        <TabsList className="grid w-full grid-cols-8">
           <TabsTrigger value="overview">Overview</TabsTrigger>
           <TabsTrigger value="team">Team</TabsTrigger>
           <TabsTrigger value="bom">BOM</TabsTrigger>
           <TabsTrigger value="equipment">Equipment</TabsTrigger>
           <TabsTrigger value="files">Files</TabsTrigger>
           <TabsTrigger value="activity">Activity</TabsTrigger>
+          <TabsTrigger value="whiteboard">Whiteboard</TabsTrigger>
+          <TabsTrigger value="documents">Documents</TabsTrigger>
         </TabsList>
 
         {/* Overview Tab */}
@@ -542,12 +551,86 @@ const ProjectDetail: React.FC = () => {
 
         {/* Activity Tab */}
         <TabsContent value="activity">
-          <ProjectActivity 
+          <ProjectActivity
             activities={project.activity_logs}
             showAll={true}
           />
         </TabsContent>
+
+        {/* Whiteboard Tab */}
+        <TabsContent value="whiteboard">
+          <div className="space-y-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <h3 className="text-lg font-semibold">Collaborative Whiteboard</h3>
+                <p className="text-sm text-gray-600">
+                  Brainstorm and sketch ideas together in real-time
+                </p>
+              </div>
+              <RealTimeEditingIndicators
+                projectId={project.project_id}
+                elementId="whiteboard"
+                showViewers={true}
+              />
+            </div>
+
+            <CollaborativeWhiteboard
+              projectId={project.project_id}
+              isReadOnly={!permissions.canEdit}
+            />
+          </div>
+        </TabsContent>
+
+        {/* Documents Tab */}
+        <TabsContent value="documents">
+          <div className="space-y-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <h3 className="text-lg font-semibold">Shared Documents</h3>
+                <p className="text-sm text-gray-600">
+                  Collaborate on project documentation in real-time
+                </p>
+              </div>
+              <div className="flex items-center space-x-2">
+                <RealTimeEditingIndicators
+                  projectId={project.project_id}
+                  elementId="documents"
+                  showViewers={true}
+                />
+                <Button onClick={() => setShowDocumentEditor(true)}>
+                  <Plus className="h-4 w-4 mr-2" />
+                  New Document
+                </Button>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <SharedDocumentEditor
+                projectId={project.project_id}
+                documentId="project-notes"
+                title="Project Notes"
+                initialContent="# Project Notes\n\nAdd your project notes here..."
+                isReadOnly={!permissions.canEdit}
+              />
+
+              <SharedDocumentEditor
+                projectId={project.project_id}
+                documentId="meeting-minutes"
+                title="Meeting Minutes"
+                initialContent="# Meeting Minutes\n\nRecord your team meetings here..."
+                isReadOnly={!permissions.canEdit}
+              />
+            </div>
+          </div>
+        </TabsContent>
       </Tabs>
+
+      {/* Real-time Collaboration Hub */}
+      <ProjectCollaborationHub
+        projectId={project.project_id}
+        isVisible={showCollaborationHub}
+        onToggle={() => setShowCollaborationHub(!showCollaborationHub)}
+      />
     </div>
   );
 };
