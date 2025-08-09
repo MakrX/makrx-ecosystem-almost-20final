@@ -117,84 +117,23 @@ function AdminPortal() {
     )
   }
 
-  // Mock data for demonstration
-  const products = [
-    {
-      id: 1,
-      name: "Prusa MK4 3D Printer",
-      category: "3d-printers",
-      price: 1099,
-      stock: 15,
-      status: "active",
-      image: "/api/placeholder/100/100"
-    },
-    {
-      id: 2,
-      name: "Arduino Mega 2560 Kit",
-      category: "electronics", 
-      price: 89,
-      stock: 45,
-      status: "active",
-      image: "/api/placeholder/100/100"
-    },
-    {
-      id: 3,
-      name: "CNC Router 3018 Pro",
-      category: "tools",
-      price: 299,
-      stock: 8,
-      status: "low-stock",
-      image: "/api/placeholder/100/100"
-    },
-    {
-      id: 4,
-      name: "Elegoo Mars 3 Pro",
-      category: "3d-printers",
-      price: 249,
-      stock: 0,
-      status: "out-of-stock",
-      image: "/api/placeholder/100/100"
-    }
-  ]
-
-  const categories = [
+  const categoryOptions = [
     { value: 'all', label: 'All Categories' },
-    { value: '3d-printers', label: '3D Printers' },
-    { value: 'electronics', label: 'Electronics' },
-    { value: 'tools', label: 'Tools' },
-    { value: 'components', label: 'Components' }
+    ...categories.map(cat => ({ value: cat.slug, label: cat.name }))
   ]
 
-  const stats = [
-    { title: 'Total Products', value: '1,247', icon: Package, color: 'bg-blue-500' },
-    { title: 'Total Revenue', value: '$89,432', icon: DollarSign, color: 'bg-green-500' },
-    { title: 'Active Orders', value: '156', icon: ShoppingCart, color: 'bg-orange-500' },
-    { title: 'Customers', value: '2,891', icon: Users, color: 'bg-purple-500' }
-  ]
-
-  const filteredProducts = products.filter(product => {
-    const matchesSearch = product.name.toLowerCase().includes(searchQuery.toLowerCase())
-    const matchesCategory = selectedCategory === 'all' || product.category === selectedCategory
-    return matchesSearch && matchesCategory
-  })
-
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case 'active': return 'text-green-800 bg-green-100'
-      case 'low-stock': return 'text-yellow-800 bg-yellow-100'
-      case 'out-of-stock': return 'text-red-800 bg-red-100'
-      default: return 'text-gray-800 bg-gray-100'
-    }
+  const getProductStatus = (product: Product) => {
+    if (!product.in_stock) return { status: 'out-of-stock', text: 'Out of Stock', color: 'text-red-800 bg-red-100' }
+    if (product.track_inventory && product.stock_qty <= 5) return { status: 'low-stock', text: 'Low Stock', color: 'text-yellow-800 bg-yellow-100' }
+    return { status: 'active', text: 'Active', color: 'text-green-800 bg-green-100' }
   }
 
-  const getStatusText = (status: string) => {
-    switch (status) {
-      case 'active': return 'Active'
-      case 'low-stock': return 'Low Stock'
-      case 'out-of-stock': return 'Out of Stock'
-      default: return 'Unknown'
-    }
-  }
+  const statsData = stats ? [
+    { title: 'Total Products', value: stats.total_products.toString(), icon: Package, color: 'bg-blue-500' },
+    { title: 'Total Revenue', value: formatPrice(stats.total_revenue, 'USD'), icon: DollarSign, color: 'bg-green-500' },
+    { title: 'Active Orders', value: stats.active_orders.toString(), icon: ShoppingCart, color: 'bg-orange-500' },
+    { title: 'Total Customers', value: stats.total_customers.toString(), icon: Users, color: 'bg-purple-500' }
+  ] : []
 
   return (
     <Layout>
