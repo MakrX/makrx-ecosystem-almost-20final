@@ -1,3 +1,3 @@
 "use client";
 
-export { ThemeProvider, useTheme } from "../../../../packages/ui/contexts/ThemeContext";
+export { ThemeProvider, useTheme } from "@makrx/ui/contexts/ThemeContext";
