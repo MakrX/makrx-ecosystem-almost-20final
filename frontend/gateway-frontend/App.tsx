@@ -16,6 +16,7 @@ import Store from "./pages/Store";
 import Learn from "./pages/Learn";
 import Profile from "./pages/Profile";
 import EnhancedProfile from "./pages/EnhancedProfile";
+import FeatureFlagsAdmin from "./pages/admin/FeatureFlags";
 import NotFound from "./pages/NotFound";
 
 // Import feature flag provider
