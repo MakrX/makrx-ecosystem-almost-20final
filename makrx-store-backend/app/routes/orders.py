@@ -43,6 +43,6 @@ async def checkout(
         "order_id": 1,
         "order_number": "MX-2024-001",
         "total": 99.99,
-        "currency": "USD",
+        "currency": "INR",
         "payment_intent": {}
     }

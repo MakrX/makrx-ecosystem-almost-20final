@@ -79,7 +79,7 @@ class Quote(Base):
     
     # Final pricing
     price = Column(Numeric(10, 2), nullable=False)
-    currency = Column(String(3), default="USD")
+    currency = Column(String(3), default="INR")
     
     # Quote validity
     expires_at = Column(DateTime(timezone=True), nullable=False)

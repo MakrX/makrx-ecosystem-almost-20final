@@ -44,7 +44,7 @@ class Product(Base):
     # Pricing
     price = Column(Numeric(10, 2), nullable=False)
     sale_price = Column(Numeric(10, 2), nullable=True)
-    currency = Column(String(3), default="USD")
+    currency = Column(String(3), default="INR")
     
     # Inventory
     stock_qty = Column(Integer, default=0)
@@ -96,7 +96,7 @@ class Cart(Base):
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4, index=True)
     user_id = Column(String(255), nullable=True, index=True)  # From JWT sub claim
     session_id = Column(String(255), nullable=True, index=True)  # For anonymous users
-    currency = Column(String(3), default="USD")
+    currency = Column(String(3), default="INR")
     expires_at = Column(DateTime(timezone=True))  # Auto-cleanup old carts
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), onupdate=func.now())
@@ -141,7 +141,7 @@ class Order(Base):
     # pending, processing, shipped, delivered, cancelled, refunded
     
     # Financial totals
-    currency = Column(String(3), default="USD")
+    currency = Column(String(3), default="INR")
     subtotal = Column(Numeric(10, 2), nullable=False)
     tax_amount = Column(Numeric(10, 2), default=0)
     shipping_amount = Column(Numeric(10, 2), default=0)

@@ -22,7 +22,7 @@ class Coupon(Base):
     # Discount configuration
     type = Column(String(20), nullable=False)  # percentage, fixed_amount, free_shipping
     value = Column(Numeric(10, 2), nullable=False)  # percentage (0-100) or amount
-    currency = Column(String(3), default="USD")
+    currency = Column(String(3), default="INR")
     
     # Usage constraints
     constraints = Column(JSONB, default={})  # Complex rules as JSON

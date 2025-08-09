@@ -243,7 +243,7 @@ async def get_or_create_user_cart(user_email: str, db: Session) -> Cart:
             id=uuid4(),
             user_email=user_email,
             status="active",
-            currency="USD",
+            currency="INR",
             created_at=datetime.utcnow(),
             updated_at=datetime.utcnow()
         )
