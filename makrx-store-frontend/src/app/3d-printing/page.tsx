@@ -4,13 +4,13 @@ import React, { useState, useCallback } from 'react'
 import { useDropzone } from 'react-dropzone'
 import Layout from '@/components/layout/Layout'
 import { Button } from '@/components/ui/Button'
-import { 
-  Upload, 
-  File, 
-  X, 
-  Printer3D, 
-  Clock, 
-  DollarSign, 
+import {
+  Upload,
+  File,
+  X,
+  Printer,
+  Clock,
+  DollarSign,
   Ruler,
   Package,
   Star,
