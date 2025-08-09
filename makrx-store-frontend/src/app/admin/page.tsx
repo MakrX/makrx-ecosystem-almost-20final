@@ -4,20 +4,22 @@ import React, { useState, useEffect } from 'react'
 import Link from 'next/link'
 import Layout from '@/components/layout/Layout'
 import { Button } from '@/components/ui/Button'
-import AdminAuth, { isAdminAuthenticated, logoutAdmin } from '@/components/AdminAuth'
-import { 
-  Package, 
-  Plus, 
-  Edit3, 
-  Trash2, 
-  Search, 
+import { withAuth } from '@/contexts/AuthContext'
+import { api, type Product, type AdminStats, formatPrice } from '@/lib/api'
+import {
+  Package,
+  Plus,
+  Edit3,
+  Trash2,
+  Search,
   Filter,
   DollarSign,
   TrendingUp,
   Users,
   ShoppingCart,
   Eye,
-  Settings
+  Settings,
+  AlertTriangle
 } from 'lucide-react'
 
 export default function AdminPortal() {
