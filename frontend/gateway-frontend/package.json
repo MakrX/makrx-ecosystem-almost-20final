@@ -16,7 +16,10 @@
     "react-router-dom": "^6.26.2",
     "@makrx/ui": "workspace:*",
     "@makrx/types": "workspace:*",
-    "@makrx/utils": "workspace:*"
+    "@makrx/utils": "workspace:*",
+    "@makrx/feature-flags": "workspace:*",
+    "@tanstack/react-query": "^5.0.0",
+    "lucide-react": "^0.400.0"
   },
   "devDependencies": {
     "@types/react": "^18.3.3",
