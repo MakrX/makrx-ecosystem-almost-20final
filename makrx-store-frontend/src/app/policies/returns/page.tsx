@@ -201,7 +201,7 @@ export default function ReturnsPolicy() {
                     <p className="text-gray-600">
                       We'll email you a prepaid return shipping label. For most
                       returns, shipping is free. For returns due to change of
-                      mind, a $5.99 shipping fee may apply.
+                      mind, a ₹497 shipping fee may apply.
                     </p>
                   </div>
                 </div>
