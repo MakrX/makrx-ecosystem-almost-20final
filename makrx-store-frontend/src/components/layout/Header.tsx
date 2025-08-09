@@ -143,26 +143,26 @@ export function Header() {
 
             {/* Services Dropdown */}
             <div className="relative group">
-              <button className="text-gray-700 hover:text-blue-600 transition-colors flex items-center">
+              <button className="text-foreground hover:text-blue-600 dark:hover:text-blue-400 transition-colors flex items-center">
                 Services
                 <svg className="ml-1 h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                 </svg>
               </button>
-              
-              <div className="absolute left-0 mt-2 w-64 bg-white shadow-lg rounded-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
+
+              <div className="absolute left-0 mt-2 w-64 bg-popover border border-border shadow-lg rounded-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
                 <div className="p-4 space-y-2">
-                  <Link href="/3d-printing" className="block p-2 hover:bg-gray-50 rounded-md">
-                    <div className="font-medium text-gray-900">3D Printing</div>
-                    <div className="text-sm text-gray-500">Professional printing services</div>
+                  <Link href="/3d-printing" className="block p-2 hover:bg-accent hover:text-accent-foreground rounded-md">
+                    <div className="font-medium text-popover-foreground">3D Printing</div>
+                    <div className="text-sm text-muted-foreground">Professional printing services</div>
                   </Link>
-                  <Link href="/upload" className="block p-2 hover:bg-gray-50 rounded-md">
-                    <div className="font-medium text-gray-900">Upload & Quote</div>
-                    <div className="text-sm text-gray-500">Get instant pricing</div>
+                  <Link href="/upload" className="block p-2 hover:bg-accent hover:text-accent-foreground rounded-md">
+                    <div className="font-medium text-popover-foreground">Upload & Quote</div>
+                    <div className="text-sm text-muted-foreground">Get instant pricing</div>
                   </Link>
-                  <Link href="/sample-projects" className="block p-2 hover:bg-gray-50 rounded-md">
-                    <div className="font-medium text-gray-900">Sample Projects</div>
-                    <div className="text-sm text-gray-500">Explore our gallery</div>
+                  <Link href="/sample-projects" className="block p-2 hover:bg-accent hover:text-accent-foreground rounded-md">
+                    <div className="font-medium text-popover-foreground">Sample Projects</div>
+                    <div className="text-sm text-muted-foreground">Explore our gallery</div>
                   </Link>
                 </div>
               </div>
