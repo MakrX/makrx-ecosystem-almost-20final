@@ -47,7 +47,7 @@ class CouponBase(BaseModel):
     description: Optional[str] = None
     type: CouponType
     value: Decimal = Field(..., gt=0)
-    currency: str = Field("USD", min_length=3, max_length=3)
+    currency: str = Field("INR", min_length=3, max_length=3)
     constraints: Dict[str, Any] = {}
     usage_limit: Optional[int] = Field(None, gt=0)
     usage_limit_per_user: Optional[int] = Field(None, gt=0)

@@ -90,7 +90,7 @@ class ServiceQuoteRequest(BaseModel):
 class ServiceQuoteResponse(BaseModel):
     quote_id: str
     total_price: float
-    currency: str = "USD"
+    currency: str = "INR"
     estimated_delivery: datetime
     breakdown: Dict[str, Any]
     file_analyses: List[FileAnalysis]
@@ -308,7 +308,7 @@ async def create_service_order(
             id=order_id,
             user_email=quote_data["request"]["user_email"],
             status="pending_payment",
-            currency="USD",
+            currency="INR",
             subtotal=quote_data["pricing"]["subtotal"],
             tax_amount=quote_data["pricing"]["tax"],
             shipping_amount=quote_data["pricing"]["shipping"],

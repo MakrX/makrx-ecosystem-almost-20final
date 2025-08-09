@@ -68,7 +68,7 @@ class ProductBase(BaseModel):
     category_id: int
     price: Decimal = Field(..., gt=0, decimal_places=2)
     sale_price: Optional[Decimal] = Field(None, gt=0, decimal_places=2)
-    currency: str = Field("USD", min_length=3, max_length=3)
+    currency: str = Field("INR", min_length=3, max_length=3)
     stock_qty: int = Field(0, ge=0)
     track_inventory: bool = True
     allow_backorder: bool = False
@@ -175,7 +175,7 @@ class CartItem(CartItemBase, TimestampMixin):
         orm_mode = True
 
 class CartBase(BaseModel):
-    currency: str = Field("USD", min_length=3, max_length=3)
+    currency: str = Field("INR", min_length=3, max_length=3)
 
 class Cart(CartBase, TimestampMixin):
     id: uuid.UUID
@@ -229,7 +229,7 @@ class OrderItem(OrderItemBase, TimestampMixin):
 
 class OrderBase(BaseModel):
     email: str = Field(..., regex=r'^[^@]+@[^@]+\.[^@]+$')
-    currency: str = Field("USD", min_length=3, max_length=3)
+    currency: str = Field("INR", min_length=3, max_length=3)
     addresses: Dict[str, Address]
     shipping_method: Optional[str] = None
     notes: Optional[str] = None

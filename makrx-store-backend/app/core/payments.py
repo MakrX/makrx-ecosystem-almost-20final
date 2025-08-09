@@ -33,7 +33,7 @@ class PaymentProcessor:
     @staticmethod
     async def create_stripe_payment_intent(
         amount: float,
-        currency: str = "usd",
+        currency: str = "inr",
         customer_email: Optional[str] = None,
         metadata: Optional[Dict[str, str]] = None
     ) -> Dict[str, Any]:

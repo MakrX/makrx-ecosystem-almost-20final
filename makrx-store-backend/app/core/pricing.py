@@ -111,7 +111,7 @@ class PricingEngine:
             
             return {
                 "price": float(total_cost),
-                "currency": "USD",
+                "currency": "INR",
                 "estimated_weight_g": estimated_weight_g,
                 "estimated_time_minutes": print_time_minutes,
                 "breakdown": breakdown,
@@ -248,7 +248,7 @@ class PricingEngine:
         
         return {
             "cost": round(shipping_cost, 2),
-            "currency": "USD",
+            "currency": "INR",
             "method": shipping_method,
             "chargeable_weight_kg": round(chargeable_weight, 2),
             "estimated_days": self._get_shipping_days(shipping_method)
