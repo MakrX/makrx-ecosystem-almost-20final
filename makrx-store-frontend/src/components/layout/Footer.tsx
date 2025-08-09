@@ -205,11 +205,11 @@ export default function Footer() {
         </div>
 
         {/* Newsletter Signup */}
-        <div className="mt-12 pt-8 border-t border-gray-800">
+        <div className="mt-12 pt-8 border-t border-gray-800 dark:border-gray-700">
           <div className="max-w-md mx-auto text-center lg:max-w-none lg:text-left lg:flex lg:items-center lg:justify-between">
             <div className="lg:flex-1">
               <h3 className="text-lg font-semibold mb-2">Stay Updated</h3>
-              <p className="text-gray-400 text-sm">
+              <p className="text-gray-400 dark:text-gray-500 text-sm">
                 Get the latest products, deals, and maker tips delivered to your inbox.
               </p>
             </div>
@@ -218,11 +218,11 @@ export default function Footer() {
                 <input
                   type="email"
                   placeholder="Enter your email"
-                  className="flex-1 px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-store-primary focus:border-transparent"
+                  className="flex-1 px-4 py-2 bg-gray-800 dark:bg-gray-900 border border-gray-700 dark:border-gray-600 rounded-lg text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-store-primary focus:border-transparent"
                 />
                 <button
                   type="submit"
-                  className="px-6 py-2 bg-gradient-to-r from-store-primary to-store-secondary rounded-lg font-medium hover:from-store-primary/90 hover:to-store-secondary/90 transition-all"
+                  className="px-6 py-2 bg-gradient-to-r from-store-primary to-store-secondary rounded-lg font-medium hover:from-store-primary/90 hover:to-store-secondary/90 transition-all text-white"
                 >
                   Subscribe
                 </button>
@@ -233,52 +233,52 @@ export default function Footer() {
       </div>
 
       {/* Bottom Section */}
-      <div className="border-t border-gray-800">
+      <div className="border-t border-gray-800 dark:border-gray-700">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-6">
           <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-            <div className="flex flex-wrap items-center gap-6 text-sm text-gray-400">
+            <div className="flex flex-wrap items-center gap-6 text-sm text-gray-400 dark:text-gray-500">
               <span>© 2024 MakrX.Store. All rights reserved.</span>
               {footerLinks.legal.map((link, index) => (
-                <Link 
+                <Link
                   key={index}
-                  href={link.href} 
+                  href={link.href}
                   className="hover:text-white transition-colors"
                 >
                   {link.name}
                 </Link>
               ))}
             </div>
-            
+
             <div className="flex items-center space-x-4">
-              <a 
-                href="https://github.com/makrx" 
-                target="_blank" 
+              <a
+                href="https://github.com/makrx"
+                target="_blank"
                 rel="noopener noreferrer"
-                className="text-gray-400 hover:text-white transition-colors"
+                className="text-gray-400 dark:text-gray-500 hover:text-white transition-colors"
               >
                 <Github className="h-5 w-5" />
               </a>
-              <a 
-                href="https://twitter.com/makrx" 
-                target="_blank" 
+              <a
+                href="https://twitter.com/makrx"
+                target="_blank"
                 rel="noopener noreferrer"
-                className="text-gray-400 hover:text-white transition-colors"
+                className="text-gray-400 dark:text-gray-500 hover:text-white transition-colors"
               >
                 <Twitter className="h-5 w-5" />
               </a>
-              <a 
-                href="https://linkedin.com/company/makrx" 
-                target="_blank" 
+              <a
+                href="https://linkedin.com/company/makrx"
+                target="_blank"
                 rel="noopener noreferrer"
-                className="text-gray-400 hover:text-white transition-colors"
+                className="text-gray-400 dark:text-gray-500 hover:text-white transition-colors"
               >
                 <Linkedin className="h-5 w-5" />
               </a>
-              <a 
-                href="https://instagram.com/makrx" 
-                target="_blank" 
+              <a
+                href="https://instagram.com/makrx"
+                target="_blank"
                 rel="noopener noreferrer"
-                className="text-gray-400 hover:text-white transition-colors"
+                className="text-gray-400 dark:text-gray-500 hover:text-white transition-colors"
               >
                 <Instagram className="h-5 w-5" />
               </a>
