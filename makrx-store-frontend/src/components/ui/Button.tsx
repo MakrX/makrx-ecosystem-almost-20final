@@ -8,16 +8,16 @@ const buttonVariants = cva(
   {
     variants: {
       variant: {
-        default: "bg-store-primary text-primary-foreground hover:bg-store-primary/90",
-        destructive: "bg-destructive text-destructive-foreground hover:bg-destructive/90",
-        outline: "border border-input bg-background hover:bg-accent hover:text-accent-foreground",
-        secondary: "bg-secondary text-secondary-foreground hover:bg-secondary/80",
-        ghost: "hover:bg-accent hover:text-accent-foreground",
-        link: "text-primary underline-offset-4 hover:underline",
-        gradient: "bg-gradient-to-r from-store-primary to-store-secondary text-white hover:from-store-primary/90 hover:to-store-secondary/90",
-        success: "bg-store-success text-white hover:bg-store-success/90",
-        warning: "bg-store-warning text-white hover:bg-store-warning/90",
-        error: "bg-store-error text-white hover:bg-store-error/90",
+        default: "bg-store-primary text-white font-medium hover:bg-store-primary-dark focus:ring-2 focus:ring-store-primary/50",
+        destructive: "bg-store-error text-white font-medium hover:bg-store-error-dark focus:ring-2 focus:ring-store-error/50",
+        outline: "border-2 border-store-primary text-store-primary bg-white font-medium hover:bg-store-primary hover:text-white focus:ring-2 focus:ring-store-primary/50",
+        secondary: "bg-gray-200 text-gray-900 font-medium hover:bg-gray-300 focus:ring-2 focus:ring-gray-400/50",
+        ghost: "text-gray-700 font-medium hover:bg-gray-100 hover:text-gray-900 focus:ring-2 focus:ring-gray-400/50",
+        link: "text-store-primary font-medium underline-offset-4 hover:underline focus:ring-2 focus:ring-store-primary/50",
+        gradient: "bg-gradient-to-r from-store-primary to-store-secondary text-white font-medium hover:from-store-primary-dark hover:to-store-secondary-dark focus:ring-2 focus:ring-store-primary/50",
+        success: "bg-store-success text-white font-medium hover:bg-store-success-dark focus:ring-2 focus:ring-store-success/50",
+        warning: "bg-store-warning text-white font-medium hover:bg-store-warning-dark focus:ring-2 focus:ring-store-warning/50",
+        error: "bg-store-error text-white font-medium hover:bg-store-error-dark focus:ring-2 focus:ring-store-error/50",
       },
       size: {
         default: "h-10 px-4 py-2",
