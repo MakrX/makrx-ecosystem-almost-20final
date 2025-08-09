@@ -37,11 +37,15 @@ class InitialMilestone(BaseModel):
     target_date: Optional[datetime] = None
     priority: str = Field("medium", regex="^(low|medium|high|critical)$")
 
-# Initial collaborator schema for project creation
+# Enhanced collaborator schema for project creation
 class InitialCollaborator(BaseModel):
     user_id: str = Field(..., min_length=1)
     email: Optional[str] = None
     role: CollaboratorRole = CollaboratorRole.VIEWER
+    invitation_message: Optional[str] = None
+    skills_contributed: Optional[List[str]] = []
+    responsibilities: Optional[List[str]] = []
+    is_external: bool = False
 
 class ProjectCreate(ProjectBase):
     project_id: str = Field(..., min_length=1, max_length=100)
@@ -69,6 +73,16 @@ class ProjectCollaboratorResponse(BaseModel):
     invited_by: str
     invited_at: datetime
     accepted_at: Optional[datetime] = None
+
+    # Enhanced collaboration fields
+    invitation_message: Optional[str] = None
+    email: Optional[str] = None
+    skills_contributed: Optional[List[str]] = []
+    responsibilities: Optional[List[str]] = []
+    is_external: bool = False
+    contribution_hours: Optional[float] = None
+    last_activity_at: Optional[datetime] = None
+    activity_score: int = 0
 
     class Config:
         from_attributes = True
@@ -241,6 +255,16 @@ class BOMItemCreate(BaseModel):
     usage_notes: Optional[str] = None
     alternatives: Optional[List[BOMAlternative]] = []
     is_critical: bool = False
+
+    # Enhanced MakrX Store integration
+    makrx_product_code: Optional[str] = None
+    makrx_store_url: Optional[str] = None
+    auto_reorder_enabled: bool = False
+    auto_reorder_quantity: Optional[int] = None
+    preferred_supplier: Optional[str] = None
+    category: Optional[str] = None
+    specifications: Optional[Dict[str, Any]] = None
+    compatibility_notes: Optional[str] = None
 
 class BOMItemUpdate(BaseModel):
     part_code: Optional[str] = None
