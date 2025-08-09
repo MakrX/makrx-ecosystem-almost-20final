@@ -56,12 +56,11 @@ export default function HomePage() {
         <div className="relative max-w-7xl mx-auto px-4 py-24 sm:px-6 lg:px-8">
           <div className="text-center">
             <h1 className="text-4xl md:text-6xl font-bold mb-6">
-              Premium 3D Printing
-              <span className="block text-blue-200">Materials & Services</span>
+              <span className="text-blue-200">MakrX</span> Marketplace
+              <span className="block text-white">Tools, Materials & Fabrication</span>
             </h1>
             <p className="text-xl md:text-2xl mb-8 max-w-3xl mx-auto text-blue-100">
-              From high-quality filaments to professional printing services,
-              we're your one-stop shop for all 3D printing needs
+              The e-commerce hub of the MakrX ecosystem: seamlessly integrated with MakrCave for instant BOM ordering, material procurement, and professional fabrication services.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link
@@ -86,11 +85,10 @@ export default function HomePage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
             <h2 className="text-3xl font-bold text-foreground mb-4">
-              Shop by Category
+              <span className="text-blue-600">Maker-First</span> Categories
             </h2>
             <p className="text-lg text-muted-foreground">
-              Explore our comprehensive range of 3D printing materials and
-              equipment
+              Tools, materials, and equipment optimized for the global maker community — with direct integration to MakrCave BOMs and project workflows
             </p>
           </div>
 
@@ -219,10 +217,10 @@ export default function HomePage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
             <h2 className="text-3xl font-bold text-foreground mb-4">
-              Professional 3D Printing Services
+              <span className="text-blue-600">Connected</span> Fabrication Services
             </h2>
             <p className="text-lg text-muted-foreground">
-              From prototypes to production, we bring your ideas to life
+              Professional manufacturing integrated with the MakrX ecosystem — orders flow directly to network makerspaces and service providers
             </p>
           </div>
 
@@ -232,11 +230,10 @@ export default function HomePage() {
                 <Package className="h-8 w-8 text-blue-600 dark:text-blue-400" />
               </div>
               <h3 className="text-xl font-semibold text-card-foreground mb-4">
-                Upload & Quote
+                Instant Fabrication Quotes
               </h3>
               <p className="text-muted-foreground mb-6">
-                Get instant pricing for your 3D models. Simply upload your file
-                and receive a quote within minutes.
+                Upload your files and get instant quotes from MakrX network fabricators. Orders integrate directly with MakrCave project management.
               </p>
               <Link
                 href="/upload"
@@ -251,11 +248,10 @@ export default function HomePage() {
                 <Clock className="h-8 w-8 text-green-600 dark:text-green-400" />
               </div>
               <h3 className="text-xl font-semibold text-card-foreground mb-4">
-                Fast Turnaround
+                Network-Powered Speed
               </h3>
               <p className="text-muted-foreground mb-6">
-                Most prints completed within 24-48 hours. Rush orders available
-                for urgent projects.
+                Leveraging our global MakrX makerspace network for rapid production. Jobs automatically routed to the best available facility.
               </p>
               <Link
                 href="/3d-printing"
@@ -270,11 +266,10 @@ export default function HomePage() {
                 <Star className="h-8 w-8 text-purple-600 dark:text-purple-400" />
               </div>
               <h3 className="text-xl font-semibold text-card-foreground mb-4">
-                Premium Quality
+                Ecosystem Quality Standards
               </h3>
               <p className="text-muted-foreground mb-6">
-                Professional-grade printers and materials ensure exceptional
-                quality for every project.
+                All MakrX network providers meet rigorous quality standards. Skill-verified operators and tracked material usage ensure consistent results.
               </p>
               <Link
                 href="/sample-projects"
@@ -294,25 +289,25 @@ export default function HomePage() {
             <div>
               <div className="text-4xl font-bold mb-2">10k+</div>
               <div className="text-blue-200 dark:text-blue-300">
-                Happy Customers
+                Makers Connected
               </div>
             </div>
             <div>
               <div className="text-4xl font-bold mb-2">50k+</div>
               <div className="text-blue-200 dark:text-blue-300">
-                Prints Delivered
+                Projects Fabricated
               </div>
             </div>
             <div>
-              <div className="text-4xl font-bold mb-2">24hr</div>
+              <div className="text-4xl font-bold mb-2">150+</div>
               <div className="text-blue-200 dark:text-blue-300">
-                Average Turnaround
+                Network Makerspaces
               </div>
             </div>
             <div>
               <div className="text-4xl font-bold mb-2">99%</div>
               <div className="text-blue-200 dark:text-blue-300">
-                Customer Satisfaction
+                Ecosystem Integration
               </div>
             </div>
           </div>
@@ -337,11 +332,10 @@ export default function HomePage() {
       <section className="py-16">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h2 className="text-3xl font-bold text-foreground mb-4">
-            Ready to Start Your Next Project?
+            Ready to Join the <span className="text-blue-600">MakrX</span> Ecosystem?
           </h2>
           <p className="text-lg text-muted-foreground mb-8">
-            Whether you need materials for your own printer or professional
-            printing services, we're here to help bring your ideas to life.
+            From materials and tools to professional fabrication — everything you need is connected through the unified MakrX platform. Start building with the global maker community.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link
