@@ -202,11 +202,11 @@ export default function HomePage() {
       </section>
 
       {/* Services Section */}
-      <section className="py-16 bg-gray-50">
+      <section className="py-16 bg-muted/30">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">Professional 3D Printing Services</h2>
-            <p className="text-lg text-gray-600">
+            <h2 className="text-3xl font-bold text-foreground mb-4">Professional 3D Printing Services</h2>
+            <p className="text-lg text-muted-foreground">
               From prototypes to production, we bring your ideas to life
             </p>
           </div>
