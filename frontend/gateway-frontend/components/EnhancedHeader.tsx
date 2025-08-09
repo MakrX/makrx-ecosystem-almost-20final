@@ -1,6 +1,7 @@
 import { Link, useLocation } from "react-router-dom";
 import { useState } from "react";
 import { useAuth } from "../contexts/AuthContext";
+import { ThemeToggle } from "../../../packages/ui/components/ThemeToggle";
 import {
   Bot,
   Menu,
@@ -9,8 +10,6 @@ import {
   ShoppingCart,
   GraduationCap,
   User,
-  Moon,
-  Sun,
   LogOut,
   Settings,
   Bell,
@@ -31,7 +30,6 @@ import { useBooleanFlag, useIsInternalUser } from "../../../packages/feature-fla
 
 export default function EnhancedHeader() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [isDarkMode, setIsDarkMode] = useState(false);
   const [showDropdown, setShowDropdown] = useState<string | null>(null);
   const location = useLocation();
   const { user, isAuthenticated, logout } = useAuth();
@@ -44,11 +42,6 @@ export default function EnhancedHeader() {
   const showStatus = useBooleanFlag('org.status.enabled', false);
   const showBilling = useBooleanFlag('org.billing.unified', false);
   const profileEditEnabled = useBooleanFlag('org.profile.edit', true);
-
-  const toggleTheme = () => {
-    setIsDarkMode(!isDarkMode);
-    document.documentElement.classList.toggle('dark');
-  };
 
   const isActive = (path: string) => location.pathname === path;
 
