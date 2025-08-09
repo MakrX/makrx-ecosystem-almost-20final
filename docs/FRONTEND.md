@@ -69,7 +69,7 @@ frontend/makrcave-frontend/
 │   ├── equipment/         # Equipment management
 │   ├── inventory/         # Inventory tracking
 │   ├── maintenance/       # Equipment maintenance
-│   ├── projects/          # Project management
+│   ├─��� projects/          # Project management
 │   └── ui/                # UI components
 ├── contexts/
 │   ├── AuthContext.tsx    # Authentication
@@ -228,7 +228,14 @@ function MyComponent() {
     <CardDescription>Real-time equipment monitoring</CardDescription>
   </CardHeader>
   <CardContent>
-    {/* Card content */}
+    <div className="flex items-center space-x-4">
+      <div className="w-3 h-3 bg-green-500 rounded-full"></div>
+      <span>3 of 5 machines available</span>
+    </div>
+    <div className="mt-4">
+      <div className="text-2xl font-bold">12</div>
+      <div className="text-sm text-muted-foreground">Active reservations</div>
+    </div>
   </CardContent>
   <CardFooter>
     <Button>View Details</Button>
