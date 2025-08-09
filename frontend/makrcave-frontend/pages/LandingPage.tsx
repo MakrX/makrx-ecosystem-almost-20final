@@ -135,10 +135,10 @@ const LandingPage = () => {
           
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 sm:gap-6 lg:gap-8 max-w-6xl mx-auto">
             {[
-              { icon: '📦', label: 'Inventory', desc: 'Track tools, materials & filaments' },
-              { icon: '🏗️', label: 'Projects', desc: 'Manage with BOMs & team collaboration' },
-              { icon: '📅', label: 'Reservations', desc: 'Skill-gated equipment booking' },
-              { icon: '⚙️', label: 'Jobs', desc: 'Service provider & fabrication management' }
+              { icon: '📦', label: 'Smart Inventory', desc: 'Auto-tracking with MakrX.Store integration' },
+              { icon: '🏗️', label: 'Project Hub', desc: 'BOMs, collaboration & ecosystem sync' },
+              { icon: '📅', label: 'Equipment Access', desc: 'Skill-gated booking & safety control' },
+              { icon: '⚙️', label: 'Service Orders', desc: 'Full fabrication job lifecycle management' }
             ].map((item, idx) => (
               <div key={idx} className="text-center">
                 <div className="text-5xl mb-4">{item.icon}</div>
