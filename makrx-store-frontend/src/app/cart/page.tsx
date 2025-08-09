@@ -15,6 +15,7 @@ import { useNotifications } from '@/contexts/NotificationContext';
 export default function CartPage() {
   const router = useRouter();
   const { isAuthenticated, login } = useAuth();
+  const { addNotification } = useNotifications();
   
   const [cart, setCart] = useState<Cart | null>(null);
   const [loading, setLoading] = useState(true);
