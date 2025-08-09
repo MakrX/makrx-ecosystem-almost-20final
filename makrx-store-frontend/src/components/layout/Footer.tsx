@@ -113,11 +113,11 @@ export default function Footer() {
                 <span className="text-xl font-bold text-store-primary">.Store</span>
               </div>
             </div>
-            <p className="text-gray-400 mb-6 leading-relaxed">
-              The future of making is here. Your one-stop shop for tools, components, 
+            <p className="text-gray-400 dark:text-gray-500 mb-6 leading-relaxed">
+              The future of making is here. Your one-stop shop for tools, components,
               and manufacturing services built for makers, by makers.
             </p>
-            <div className="space-y-2 text-sm text-gray-400">
+            <div className="space-y-2 text-sm text-gray-400 dark:text-gray-500">
               <div className="flex items-center">
                 <Mail className="h-4 w-4 mr-2" />
                 <a href="mailto:hello@makrx.store" className="hover:text-white transition-colors">
