@@ -93,10 +93,12 @@ const LandingPage = () => {
               Track tools, people, materials, and jobs in one place. Bridge the physical space with the digital ecosystem.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 sm:gap-6 justify-center max-w-lg sm:max-w-none mx-auto">
-              <Button size="lg" className="bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white border-none text-base sm:text-lg px-6 sm:px-8 py-3 sm:py-4">
-                <MapPin className="mr-2 h-4 w-4 sm:h-5 sm:w-5" />
-                Find a MakrCave
-              </Button>
+              <Link to="/find-makerspace">
+                <Button size="lg" className="bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white border-none text-base sm:text-lg px-6 sm:px-8 py-3 sm:py-4">
+                  <MapPin className="mr-2 h-4 w-4 sm:h-5 sm:w-5" />
+                  Find a MakrCave
+                </Button>
+              </Link>
               <Button size="lg" variant="outline" className="border-white/30 text-white hover:bg-white/10 text-base sm:text-lg px-6 sm:px-8 py-3 sm:py-4">
                 <Play className="mr-2 h-4 w-4 sm:h-5 sm:w-5" />
                 Watch Demo
