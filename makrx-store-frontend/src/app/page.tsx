@@ -149,9 +149,9 @@ export default function HomePage() {
               <div
                 key={product.id}
                 onClick={() => handleProductClick(product)}
-                className="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow cursor-pointer overflow-hidden"
+                className="bg-card border border-border rounded-lg shadow-md hover:shadow-lg transition-shadow cursor-pointer overflow-hidden"
               >
-                <div className="aspect-square bg-gray-100 relative">
+                <div className="aspect-square bg-muted relative">
                   {product.images[0] && (
                     <Image
                       src={product.images[0]}
