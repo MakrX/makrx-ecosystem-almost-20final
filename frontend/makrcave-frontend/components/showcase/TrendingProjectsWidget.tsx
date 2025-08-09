@@ -66,7 +66,7 @@ const TrendingProjectsWidget: React.FC<TrendingProjectsWidgetProps> = ({ project
         </CardHeader>
         <CardContent>
           <div className="text-center py-6 text-gray-500">
-            <Fire className="h-8 w-8 mx-auto mb-2 text-gray-300" />
+            <Flame className="h-8 w-8 mx-auto mb-2 text-gray-300" />
             <p className="text-sm">No trending projects yet</p>
           </div>
         </CardContent>
