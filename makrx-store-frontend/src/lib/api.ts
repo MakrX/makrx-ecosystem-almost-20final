@@ -642,6 +642,70 @@ class ApiClient {
       turnaround_times: Record<string, string>
     }>('/capabilities')
   }
+
+  // Mock data methods for fallback when backend is unavailable
+  private getMockProducts() {
+    // Transform mock data to match API response format
+    const transformedProducts = mockProducts.map(product => ({
+      id: parseInt(product.id),
+      slug: product.id,
+      name: product.name,
+      description: product.description,
+      short_description: product.shortDescription,
+      brand: product.brand,
+      category_id: 1,
+      category: { id: 1, name: product.category, slug: product.category },
+      price: product.originalPrice || product.price,
+      sale_price: product.originalPrice ? product.price : null,
+      effective_price: product.price,
+      currency: 'USD',
+      stock_qty: product.stockCount,
+      track_inventory: true,
+      in_stock: product.inStock,
+      allow_backorder: false,
+      attributes: {},
+      specifications: product.specifications,
+      compatibility: product.compatibility,
+      images: product.images,
+      videos: [],
+      meta_title: product.name,
+      meta_description: product.shortDescription,
+      tags: product.tags,
+      sku: product.sku,
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString()
+    }))
+
+    return {
+      products: transformedProducts,
+      total: transformedProducts.length,
+      page: 1,
+      per_page: 20,
+      pages: Math.ceil(transformedProducts.length / 20),
+      has_next: false,
+      has_prev: false
+    }
+  }
+
+  private getMockCategories() {
+    // Transform mock categories to match API response format
+    const transformedCategories = mockCategories.map((category, index) => ({
+      id: index + 1,
+      name: category.name,
+      slug: category.slug,
+      description: category.description,
+      image_url: category.image || '',
+      parent_id: null,
+      sort_order: index,
+      is_active: true,
+      meta_title: category.name,
+      meta_description: category.description,
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString()
+    }))
+
+    return transformedCategories
+  }
 }
 
 // Export singleton instance
