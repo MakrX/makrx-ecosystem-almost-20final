@@ -22,29 +22,44 @@ import { FeatureFlagProvider } from "../../packages/feature-flags/src/components
 
 const queryClient = new QueryClient();
 
-const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <AuthProvider>
-        <Toaster />
-        <Sonner />
-        <BrowserRouter>
-          <Header />
-          <Routes>
-            <Route path="/" element={<Index />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/register" element={<Register />} />
-            <Route path="/makrcave" element={<MakrCave />} />
-            <Route path="/store" element={<Store />} />
-            <Route path="/learn" element={<Learn />} />
-            <Route path="/profile" element={<Profile />} />
-            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </BrowserRouter>
-      </AuthProvider>
-    </TooltipProvider>
-  </QueryClientProvider>
-);
+const App = () => {
+  // Build feature flag context
+  const flagContext = {
+    userId: undefined, // Will be set by AuthProvider
+    sessionId: undefined,
+    roles: [],
+    environment: process.env.NODE_ENV as 'development' | 'staging' | 'production' || 'development',
+    userAgent: navigator.userAgent,
+    country: 'IN', // Default to India, can be detected
+    pincode: undefined
+  };
+
+  return (
+    <QueryClientProvider client={queryClient}>
+      <TooltipProvider>
+        <FeatureFlagProvider initialContext={flagContext}>
+          <AuthProvider>
+            <Toaster />
+            <Sonner />
+            <BrowserRouter>
+              <EnhancedHeader />
+              <Routes>
+                <Route path="/" element={<EnhancedIndex />} />
+                <Route path="/login" element={<Login />} />
+                <Route path="/register" element={<Register />} />
+                <Route path="/makrcave" element={<MakrCave />} />
+                <Route path="/store" element={<Store />} />
+                <Route path="/learn" element={<Learn />} />
+                <Route path="/profile" element={<Profile />} />
+                {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+            </BrowserRouter>
+          </AuthProvider>
+        </FeatureFlagProvider>
+      </TooltipProvider>
+    </QueryClientProvider>
+  );
+};
 
 createRoot(document.getElementById("root")!).render(<App />);
