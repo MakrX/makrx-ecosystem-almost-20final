@@ -209,17 +209,7 @@ export default function EnhancedHeader() {
             )}
 
             {/* Theme Toggle */}
-            <button
-              onClick={toggleTheme}
-              className="p-2 rounded-lg bg-white/10 hover:bg-white/20 transition-colors"
-              aria-label="Toggle theme"
-            >
-              {isDarkMode ? (
-                <Sun className="w-4 h-4 text-white" />
-              ) : (
-                <Moon className="w-4 h-4 text-white" />
-              )}
-            </button>
+            <ThemeToggle variant="icon-only" className="bg-white/10 hover:bg-white/20 border-white/20" />
 
             {/* Profile/Login */}
             {isAuthenticated ? (
