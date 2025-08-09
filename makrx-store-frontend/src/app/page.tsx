@@ -145,9 +145,9 @@ export default function HomePage() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {(featuredProducts || []).map((product) => (
+            {(featuredProducts || []).map((product, index) => (
               <div
-                key={product.id}
+                key={product.id || `product-${index}`}
                 onClick={() => handleProductClick(product)}
                 className="bg-card border border-border rounded-lg shadow-md hover:shadow-lg transition-shadow cursor-pointer overflow-hidden"
               >
