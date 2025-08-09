@@ -162,9 +162,36 @@ class HealthCheckService {
       return cached;
     }
 
-    const result = await checkFn();
-    this.cachedResults.set(name, result);
-    return result;
+    try {
+      const result = await checkFn();
+      this.cachedResults.set(name, result);
+      return result;
+    } catch (error) {
+      console.warn(`Single health check failed for ${name}:`, error);
+
+      // Handle AbortError specifically
+      if (error instanceof Error && error.name === 'AbortError') {
+        const result: HealthCheckResult = {
+          service: name,
+          status: 'degraded',
+          responseTime: 5000, // Timeout duration
+          timestamp: new Date().toISOString(),
+          details: 'Check timed out after 5 seconds',
+          error: 'Request timeout',
+          metadata: {
+            aborted: true,
+            timeout: true
+          }
+        };
+
+        // Cache the timeout result briefly to avoid immediate retry
+        this.cachedResults.set(name, result);
+        return result;
+      }
+
+      // Re-throw other errors to be handled by caller
+      throw error;
+    }
   }
 
   // ========================================
