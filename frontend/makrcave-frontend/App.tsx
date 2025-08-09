@@ -34,6 +34,8 @@ import ForgotPassword from "./pages/ForgotPassword";
 import SystemHealth from "./pages/SystemHealth";
 import ErrorLogs from "./pages/ErrorLogs";
 import LandingPage from "./pages/LandingPage";
+import FindMakerspace from "./pages/FindMakerspace";
+import Contact from "./pages/Contact";
 import NotFound from "./pages/NotFound";
 import MakrVerse from "./pages/MakrVerse";
 import ProtectedRoute from "./components/ProtectedRoute";
