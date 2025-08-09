@@ -96,9 +96,9 @@ export default function EnhancedIndex() {
 
             {/* Hero Description */}
             <p className="text-xl lg:text-2xl text-white/80 mb-12 max-w-3xl mx-auto text-balance">
-              {isAuthenticated 
+              {isAuthenticated
                 ? `Continue where you left off. Access your projects, orders, and makerspace communities.`
-                : `Unify everything a maker needs — from makerspace management to 3D printing, education, and community — in one open-source, customizable ecosystem.`
+                : `A unified, modular platform connecting makers, inventors, and creative communities with the tools, spaces, and resources they need to design, prototype, and manufacture anything — efficiently, collaboratively, and at scale.`
               }
             </p>
 
