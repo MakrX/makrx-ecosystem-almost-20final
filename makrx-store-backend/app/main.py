@@ -48,42 +48,82 @@ app = FastAPI(
     swagger_ui_parameters={"defaultModelsExpandDepth": -1} if settings.ENVIRONMENT != "production" else None
 )
 
-# Request ID middleware
+# Setup comprehensive security middleware
+setup_api_security(app)
+
+# Add observability middleware for request tracing and monitoring
+app.add_middleware(ObservabilityMiddleware)
+
+# Security-enhanced request processing
 @app.middleware("http")
-async def add_request_id(request: Request, call_next):
+async def security_request_middleware(request: Request, call_next):
+    """Enhanced request middleware with security monitoring"""
     request_id = str(uuid.uuid4())
     request.state.request_id = request_id
-    
+
+    # Extract client information for security context
+    ip_address = request.client.host if request.client else "unknown"
+    user_agent = request.headers.get("User-Agent", "Unknown")
+
     start_time = time.time()
-    response = await call_next(request)
-    process_time = time.time() - start_time
-    
-    response.headers["X-Request-ID"] = request_id
-    response.headers["X-Process-Time"] = str(process_time)
-    
-    logger.info(
-        f'{{"request_id": "{request_id}", "method": "{request.method}", '
-        f'"url": "{request.url}", "status_code": {response.status_code}, '
-        f'"process_time": {process_time:.4f}}}'
-    )
-    
-    return response
 
-# CORS middleware
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=settings.ALLOWED_ORIGINS,
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
+    try:
+        # Log request for security monitoring
+        await security_logger.log_security_event(
+            event_type="api_request",
+            action=f"{request.method} {request.url.path}",
+            success=True,
+            context={
+                "request_id": request_id,
+                "ip_address": ip_address,
+                "user_agent": user_agent,
+                "method": request.method,
+                "path": request.url.path
+            }
+        )
 
-# Trust only specific hosts in production
-if settings.ENVIRONMENT == "production":
-    app.add_middleware(
-        TrustedHostMiddleware,
-        allowed_hosts=settings.ALLOWED_HOSTS
-    )
+        response = await call_next(request)
+        process_time = (time.time() - start_time) * 1000  # Convert to milliseconds
+
+        # Record performance metrics
+        await performance_monitor.record_api_metric(
+            endpoint=request.url.path,
+            method=request.method,
+            duration_ms=process_time,
+            status_code=response.status_code
+        )
+
+        # Add security headers
+        response.headers["X-Request-ID"] = request_id
+        response.headers["X-Response-Time"] = f"{process_time:.2f}ms"
+
+        return response
+
+    except Exception as e:
+        process_time = (time.time() - start_time) * 1000
+
+        # Log security event for failed requests
+        await security_logger.log_security_event(
+            event_type="api_request",
+            action=f"{request.method} {request.url.path}",
+            success=False,
+            context={
+                "request_id": request_id,
+                "ip_address": ip_address,
+                "user_agent": user_agent,
+                "error": str(e)
+            }
+        )
+
+        # Record failed request metrics
+        await performance_monitor.record_api_metric(
+            endpoint=request.url.path,
+            method=request.method,
+            duration_ms=process_time,
+            status_code=500
+        )
+
+        raise
 
 # Global exception handler
 @app.exception_handler(Exception)
