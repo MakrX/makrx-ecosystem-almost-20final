@@ -378,14 +378,7 @@ const Makerspaces: React.FC = () => {
         </TabsContent>
 
         <TabsContent value="analytics" className="space-y-6">
-          <Card>
-            <CardHeader>
-              <CardTitle>Global Analytics</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-gray-600">Global analytics dashboard coming soon...</p>
-            </CardContent>
-          </Card>
+          <AdminAnalyticsDashboard />
         </TabsContent>
 
         <TabsContent value="settings" className="space-y-6">
