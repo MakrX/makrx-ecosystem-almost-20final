@@ -877,8 +877,8 @@ class ApiClient {
 export const api = new ApiClient();
 
 // Utility functions
-export const formatPrice = (price: number, currency = "USD") => {
-  return new Intl.NumberFormat("en-US", {
+export const formatPrice = (price: number, currency = "INR") => {
+  return new Intl.NumberFormat("en-IN", {
     style: "currency",
     currency,
   }).format(price);
