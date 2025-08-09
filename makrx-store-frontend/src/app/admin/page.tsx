@@ -147,18 +147,18 @@ function AdminPortal() {
                 <p className="text-gray-600 mt-1">Manage your MakrX.Store catalog and orders</p>
               </div>
               <div className="flex items-center space-x-4">
-                <Button variant="outline" size="sm">
-                  <Settings className="h-4 w-4 mr-2" />
-                  Settings
-                </Button>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={handleLogout}
-                  className="text-store-error border-store-error hover:bg-store-error hover:text-white"
-                >
-                  Logout
-                </Button>
+                <Link href="/admin/orders">
+                  <Button variant="outline" size="sm">
+                    <ShoppingCart className="h-4 w-4 mr-2" />
+                    Orders
+                  </Button>
+                </Link>
+                <Link href="/admin/services">
+                  <Button variant="outline" size="sm">
+                    <Settings className="h-4 w-4 mr-2" />
+                    Services
+                  </Button>
+                </Link>
                 <Link href="/admin/products/new">
                   <Button className="bg-blue-600 hover:bg-blue-700 text-white">
                     <Plus className="h-4 w-4 mr-2" />
