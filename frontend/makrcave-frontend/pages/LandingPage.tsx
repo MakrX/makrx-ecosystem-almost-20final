@@ -528,9 +528,9 @@ const LandingPage = () => {
         <div className="container mx-auto px-6">
           <div className="text-center mb-16">
             <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
-              Become a MakrCave
+              Join the <span className="text-blue-400">MakrX</span> Network
             </h2>
-            <p className="text-xl text-white/80">Join the global network of connected makerspaces</p>
+            <p className="text-xl text-white/80">Connect your makerspace to the global ecosystem</p>
           </div>
           
           <div className="max-w-4xl mx-auto">
