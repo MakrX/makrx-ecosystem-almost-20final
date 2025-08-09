@@ -520,6 +520,73 @@ export default function EnhancedIndex() {
           </div>
         </div>
       </section>
+
+      {/* Personalized Dashboard for authenticated users */}
+      {isAuthenticated && <PersonalizedDashboard user={user} />}
+
+      {/* Role-based Quick Actions */}
+      <section className="py-16">
+        <div className="container mx-auto px-6">
+          <RoleBasedQuickActions user={user} isAuthenticated={isAuthenticated} />
+        </div>
+      </section>
+
+      {/* Find Makerspace Section */}
+      <section className="py-16 bg-gray-50 dark:bg-gray-900/50">
+        <div className="container mx-auto px-6">
+          <FindMakerspaceSection />
+        </div>
+      </section>
+
+      {/* Featured Stories */}
+      <FeaturedStoriesSection />
+
+      {/* Footer */}
+      <footer className="py-16 bg-gray-900 dark:bg-black text-white">
+        <div className="container mx-auto px-6">
+          <div className="text-center mb-8">
+            <div className="flex items-center justify-center gap-2 mb-4">
+              <div className="w-8 h-8 bg-gradient-to-br from-makrx-blue to-makrx-yellow rounded-lg flex items-center justify-center">
+                <span className="text-white font-bold text-sm">M</span>
+              </div>
+              <span className="text-2xl font-bold">MakrX</span>
+            </div>
+            <p className="text-gray-300 mb-4">
+              A unified, modular platform connecting makers, inventors, and creative communities worldwide.
+            </p>
+            <p className="text-gray-500 text-sm">
+              MakrX is an initiative by Botness Technologies Pvt. Ltd.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
+            <div className="text-center">
+              <h4 className="font-semibold mb-3">MakrX.org</h4>
+              <p className="text-gray-400 text-sm">
+                Gateway hub for the global maker ecosystem
+              </p>
+            </div>
+            <div className="text-center">
+              <h4 className="font-semibold mb-3">MakrCave</h4>
+              <p className="text-gray-400 text-sm">
+                Comprehensive makerspace management platform
+              </p>
+            </div>
+            <div className="text-center">
+              <h4 className="font-semibold mb-3">MakrX.Store</h4>
+              <p className="text-gray-400 text-sm">
+                Maker-focused e-commerce and fabrication hub
+              </p>
+            </div>
+          </div>
+
+          <div className="border-t border-gray-800 pt-8 text-center">
+            <p className="text-gray-500 text-sm">
+              © 2024 MakrX by Botness Technologies Pvt. Ltd. All rights reserved.
+            </p>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 }
@@ -666,7 +733,7 @@ function PersonalizedDashboard({ user }: { user: any }) {
                 </div>
               </div>
               <Link to="/profile/projects" className="text-sm text-makrx-blue hover:underline">
-                View all projects →
+                View all projects ��
               </Link>
             </div>
 
