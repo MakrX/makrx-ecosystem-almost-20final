@@ -327,17 +327,51 @@ function AdminPortal() {
               </table>
             </div>
 
-            {filteredProducts.length === 0 && (
+            {products.length === 0 && !loading && (
               <div className="text-center py-12">
                 <Package className="h-12 w-12 text-gray-300 mx-auto mb-4" />
                 <h3 className="text-lg font-medium text-gray-900 mb-2">No products found</h3>
-                <p className="text-gray-500 mb-6">Try adjusting your search or filter criteria.</p>
+                <p className="text-gray-500 mb-6">
+                  {searchQuery || selectedCategory !== 'all'
+                    ? 'Try adjusting your search or filter criteria.'
+                    : 'Get started by adding your first product.'
+                  }
+                </p>
                 <Link href="/admin/products/new">
                   <Button className="bg-blue-600 hover:bg-blue-700 text-white">
                     <Plus className="h-4 w-4 mr-2" />
                     Add First Product
                   </Button>
                 </Link>
+              </div>
+            )}
+
+            {/* Pagination */}
+            {totalPages > 1 && (
+              <div className="px-6 py-4 border-t border-gray-200">
+                <div className="flex items-center justify-between">
+                  <div className="text-sm text-gray-700">
+                    Showing page {currentPage} of {totalPages}
+                  </div>
+                  <div className="flex space-x-2">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      disabled={currentPage === 1}
+                      onClick={() => setCurrentPage(currentPage - 1)}
+                    >
+                      Previous
+                    </Button>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      disabled={currentPage === totalPages}
+                      onClick={() => setCurrentPage(currentPage + 1)}
+                    >
+                      Next
+                    </Button>
+                  </div>
+                </div>
               </div>
             )}
           </div>
