@@ -3,7 +3,7 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider } from "./contexts/AuthContext";
 import { MakerspaceProvider } from "./contexts/MakerspaceContext";
 import { FeatureFlagProvider } from "./contexts/FeatureFlagContext";
-import { ThemeProvider } from "./contexts/ThemeContext";
+import { ThemeProvider } from "../../packages/ui/contexts/ThemeContext";
 import { NotificationProvider } from "./contexts/NotificationContext";
 import { MemberProvider } from "./contexts/MemberContext";
 import { BillingProvider } from "./contexts/BillingContext";
