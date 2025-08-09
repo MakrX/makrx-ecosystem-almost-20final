@@ -84,13 +84,13 @@ const LandingPage = () => {
         <div className="relative container mx-auto px-4 sm:px-6 py-16 sm:py-24 lg:py-32 text-center">
           <div className="max-w-4xl mx-auto">
             <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-8xl font-bold text-white mb-6 sm:mb-8 leading-tight">
-              A Universe for{' '}
+              Digital Management for{' '}
               <span className="bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
-                Makers
+                Makerspaces
               </span>
             </h1>
             <p className="text-lg sm:text-xl lg:text-2xl text-white/80 mb-8 sm:mb-12 leading-relaxed max-w-3xl mx-auto">
-              Tools. Spaces. Community. Power at your fingertips.
+              Track tools, people, materials, and jobs in one place. Bridge the physical space with the digital ecosystem.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 sm:gap-6 justify-center max-w-lg sm:max-w-none mx-auto">
               <Button size="lg" className="bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white border-none text-base sm:text-lg px-6 sm:px-8 py-3 sm:py-4">
