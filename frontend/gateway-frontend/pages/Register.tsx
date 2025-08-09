@@ -64,29 +64,23 @@ export default function Register() {
 
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!validateForm()) {
       return;
     }
-    
-    setIsLoading(true);
 
-    // Simulate API call for registration
-    setTimeout(() => {
-      // Simulate successful registration and auto-login
-      localStorage.setItem('makrx_user', JSON.stringify({
-        id: Date.now().toString(),
-        email: formData.email,
-        username: formData.email.split('@')[0],
+    try {
+      await register({
         firstName: formData.firstName,
         lastName: formData.lastName,
-        roles: ['maker']
-      }));
-      
-      localStorage.setItem('makrx_access_token', 'dummy_token_' + Date.now());
-      setIsLoading(false);
+        email: formData.email,
+        password: formData.password
+      });
       navigate('/');
-    }, 2000);
+    } catch (err) {
+      // Error is handled by AuthContext
+      console.error('Registration failed:', err);
+    }
   };
 
   const handleInputChange = (field: string, value: string) => {
