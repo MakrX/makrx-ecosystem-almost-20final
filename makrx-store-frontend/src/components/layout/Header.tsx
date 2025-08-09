@@ -189,6 +189,9 @@ export function Header() {
               )}
             </Link>
 
+            {/* Notifications */}
+            {isAuthenticated && <NotificationDropdown />}
+
             {/* User Menu */}
             {isAuthenticated ? (
               <div className="relative group">
