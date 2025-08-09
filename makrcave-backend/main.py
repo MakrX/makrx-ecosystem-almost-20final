@@ -79,6 +79,7 @@ app.include_router(access_control_router, prefix="/api/v1/access-control", tags=
 app.include_router(enhanced_analytics_router, prefix="/api/v1/enhanced-analytics", tags=["enhanced-analytics"])
 app.include_router(notifications_router, prefix="/api/v1/notifications", tags=["notifications"])
 app.include_router(collaboration_router, tags=["collaboration"])
+app.include_router(project_showcase_router, tags=["project-showcase"])
 
 # Root endpoint
 @app.get("/")
