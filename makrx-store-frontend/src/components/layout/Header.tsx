@@ -304,32 +304,78 @@ export default function Header() {
             </div>
 
             {/* Mobile Navigation */}
-            <div className="space-y-3">
-              <Link href="/catalog" className="block text-gray-700 hover:text-store-primary transition-colors font-medium">
-                Catalog
-              </Link>
-              <Link href="/3d-printing" className="block text-gray-700 hover:text-store-primary transition-colors font-medium">
-                3D Printing Hub
-              </Link>
-              <Link href="/services" className="block text-gray-700 hover:text-store-primary transition-colors font-medium">
-                Services
-              </Link>
-              <Link href="/makers" className="block text-gray-700 hover:text-store-primary transition-colors font-medium">
-                Makers
-              </Link>
-              <Link href="/enterprise" className="block text-gray-700 hover:text-store-primary transition-colors font-medium">
-                Enterprise
-              </Link>
+            <div className="space-y-4">
+              {/* Categories Section */}
+              <div className="pb-4 border-b border-gray-200">
+                <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-3">
+                  Shop Categories
+                </h3>
+                <div className="grid grid-cols-2 gap-2">
+                  {featuredCategories.map(category => (
+                    <Link
+                      key={category.id}
+                      href={`/catalog/${category.slug}`}
+                      className="flex items-center p-2 text-sm text-store-text hover:text-store-primary hover:bg-gray-50 rounded-lg transition-colors"
+                    >
+                      <Package className="h-4 w-4 mr-2" />
+                      {category.name}
+                    </Link>
+                  ))}
+                </div>
+                <Link
+                  href="/catalog"
+                  className="block w-full text-center bg-gray-100 text-store-text py-2 rounded-lg font-medium hover:bg-gray-200 transition-colors mt-3"
+                >
+                  Browse All Products
+                </Link>
+              </div>
+
+              {/* Services Section */}
+              <div className="pb-4 border-b border-gray-200">
+                <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-3">
+                  Services
+                </h3>
+                <div className="space-y-2">
+                  {servicesMenu.slice(0, 3).map(service => {
+                    const Icon = service.icon
+                    return (
+                      <Link
+                        key={service.name}
+                        href={service.href}
+                        className="flex items-center p-2 text-sm text-store-text hover:text-store-primary hover:bg-gray-50 rounded-lg transition-colors"
+                      >
+                        <Icon className="h-4 w-4 mr-2" />
+                        {service.name}
+                      </Link>
+                    )
+                  })}
+                </div>
+              </div>
+
+              {/* Main Navigation */}
+              <div className="space-y-2">
+                <Link href="/makers" className="block text-store-text hover:text-store-primary transition-colors font-semibold">
+                  Makers
+                </Link>
+                <Link href="/enterprise" className="block text-store-text hover:text-store-primary transition-colors font-semibold">
+                  Enterprise
+                </Link>
+              </div>
+
               <hr className="my-4" />
-              <Link href="/profile" className="block text-gray-700 hover:text-store-primary transition-colors font-medium">
-                Profile
-              </Link>
-              <Link href="/orders" className="block text-gray-700 hover:text-store-primary transition-colors font-medium">
-                My Orders
-              </Link>
-              <Button variant="gradient" size="sm" className="w-full mt-4">
-                Sign In
-              </Button>
+
+              {/* User Section */}
+              <div className="space-y-2">
+                <Link href="/profile" className="block text-store-text hover:text-store-primary transition-colors font-semibold">
+                  Profile
+                </Link>
+                <Link href="/orders" className="block text-store-text hover:text-store-primary transition-colors font-semibold">
+                  My Orders
+                </Link>
+                <Button variant="gradient" size="sm" className="w-full mt-4 font-semibold">
+                  Sign In
+                </Button>
+              </div>
             </div>
           </div>
         )}
