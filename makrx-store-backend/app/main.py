@@ -183,6 +183,14 @@ app.include_router(webhooks.router, prefix="/webhooks", tags=["Webhooks"])
 app.include_router(bridge.router, prefix="/bridge", tags=["Bridge"])
 app.include_router(security_management.router, prefix="/security", tags=["Security Management"])
 
+# Import and include new routers
+from app.routes import enhanced_catalog, quick_reorder, bom_import, feature_flags
+
+app.include_router(enhanced_catalog.router, prefix="/api/v1", tags=["Enhanced Catalog"])
+app.include_router(quick_reorder.router, prefix="/api/v1", tags=["Quick Reorder"])
+app.include_router(bom_import.router, prefix="/api/v1", tags=["BOM Import"])
+app.include_router(feature_flags.router, prefix="/api/v1", tags=["Feature Flags"])
+
 @app.on_event("startup")
 async def startup_event():
     """Initialize database, security components, and other startup tasks"""
