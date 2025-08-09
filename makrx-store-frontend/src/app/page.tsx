@@ -177,11 +177,11 @@ export default function HomePage() {
                   className="group bg-white rounded-xl p-6 shadow-md hover:shadow-xl transition-all duration-300 hover:-translate-y-1"
                 >
                   <div className="text-center">
-                    <div className="w-16 h-16 bg-gradient-to-br from-store-primary to-store-secondary rounded-xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
+                    <div className="w-16 h-16 bg-gradient-to-br from-store-primary to-store-secondary rounded-xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform shadow-lg">
                       <Icon className="h-8 w-8 text-white" />
                     </div>
-                    <h3 className="text-lg font-semibold text-gray-900 mb-2">{category.name}</h3>
-                    <p className="text-store-primary font-medium">{category.count} items</p>
+                    <h3 className="text-lg font-semibold text-store-text mb-2">{category.name}</h3>
+                    <p className="text-store-primary font-semibold">{category.count} items</p>
                   </div>
                 </Link>
               )
@@ -228,7 +228,7 @@ export default function HomePage() {
                   )}
                 </div>
                 <div className="p-4">
-                  <h3 className="font-semibold text-gray-900 mb-2 group-hover:text-store-primary transition-colors">
+                  <h3 className="font-semibold text-store-text mb-2 group-hover:text-store-primary transition-colors">
                     {product.name}
                   </h3>
                   <div className="flex items-center mb-2">
@@ -244,13 +244,13 @@ export default function HomePage() {
                   </div>
                   <div className="flex items-center justify-between">
                     <div className="flex items-center space-x-2">
-                      <span className="text-2xl font-bold text-gray-900">${product.price}</span>
+                      <span className="text-2xl font-bold text-store-text">${product.price}</span>
                       {product.originalPrice && (
                         <span className="text-lg text-gray-500 line-through">${product.originalPrice}</span>
                       )}
                     </div>
                   </div>
-                  <Button className="w-full mt-3" size="sm">
+                  <Button className="w-full mt-3 font-semibold" size="sm">
                     Add to Cart
                   </Button>
                 </div>
