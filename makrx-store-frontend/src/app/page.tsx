@@ -95,8 +95,8 @@ export default function HomePage() {
   return (
     <Layout>
       {/* Hero Section */}
-      <section className="relative overflow-hidden bg-gradient-to-br from-indigo-900 via-purple-900 to-pink-900">
-        <div className="absolute inset-0 bg-black/20"></div>
+      <section className="relative overflow-hidden bg-gradient-to-br from-gray-900 via-store-primary-dark to-store-secondary-dark">
+        <div className="absolute inset-0 bg-black/30"></div>
         <div className="relative container mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24">
           <div className="text-center max-w-4xl mx-auto">
             <h1 className="text-4xl sm:text-5xl lg:text-7xl font-bold text-white mb-6 leading-tight">
@@ -111,11 +111,11 @@ export default function HomePage() {
               Built for makers, by makers.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center max-w-lg mx-auto sm:max-w-none">
-              <Button size="xl" variant="gradient" className="text-lg">
+              <Button size="xl" variant="gradient" className="text-lg font-semibold">
                 <Search className="mr-2 h-5 w-5" />
                 Browse Catalog
               </Button>
-              <Button size="xl" variant="outline" className="text-lg border-white/30 text-white hover:bg-white/10">
+              <Button size="xl" variant="outline" className="text-lg font-semibold border-2 border-white text-white hover:bg-white hover:text-gray-900">
                 <Upload className="mr-2 h-5 w-5" />
                 Upload & Quote
               </Button>
@@ -134,7 +134,7 @@ export default function HomePage() {
       {/* Quick Upload Section */}
       <section className="py-16 bg-white">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="bg-gradient-to-r from-store-primary to-store-secondary rounded-2xl p-8 sm:p-12 text-white text-center">
+          <div className="bg-gradient-to-r from-store-primary to-store-secondary rounded-2xl p-8 sm:p-12 text-white text-center shadow-xl">
             <h2 className="text-3xl sm:text-4xl font-bold mb-4">
               Get Instant 3D Printing Quotes
             </h2>
@@ -142,11 +142,11 @@ export default function HomePage() {
               Upload your STL file and get real-time pricing from verified local providers
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button size="lg" variant="outline" className="border-white/30 text-white hover:bg-white/10">
+              <Button size="lg" variant="outline" className="border-2 border-white text-white font-semibold hover:bg-white hover:text-store-primary">
                 <Upload className="mr-2 h-5 w-5" />
                 Upload STL File
               </Button>
-              <Button size="lg" className="bg-white text-store-primary hover:bg-gray-100">
+              <Button size="lg" className="bg-white text-store-primary font-semibold hover:bg-gray-100 focus:ring-2 focus:ring-white/50">
                 View Sample Projects
                 <ArrowRight className="ml-2 h-5 w-5" />
               </Button>
