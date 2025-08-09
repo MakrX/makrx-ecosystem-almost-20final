@@ -1,9 +1,10 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import Link from 'next/link'
 import Layout from '@/components/layout/Layout'
 import { Button } from '@/components/ui/Button'
+import AdminAuth, { isAdminAuthenticated, logoutAdmin } from '@/components/AdminAuth'
 import { 
   Package, 
   Plus, 
