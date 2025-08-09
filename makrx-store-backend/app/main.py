@@ -262,8 +262,30 @@ async def schedule_secret_rotation_checks():
 
 @app.on_event("shutdown")
 async def shutdown_event():
-    """Cleanup tasks on shutdown"""
+    """Security-aware cleanup tasks on shutdown"""
     logger.info("Shutting down MakrX Store API...")
+
+    try:
+        # Log shutdown event
+        await security_logger.log_security_event(
+            event_type="system_shutdown",
+            action="api_shutdown",
+            success=True,
+            context={"reason": "normal_shutdown"}
+        )
+
+        # Clear sensitive data from memory
+        if hasattr(secrets_manager, 'local_secrets'):
+            secrets_manager.local_secrets.clear()
+        if hasattr(mfa_manager, 'user_secrets'):
+            mfa_manager.user_secrets.clear()
+
+        logger.info("Security cleanup completed")
+
+    except Exception as e:
+        logger.error(f"Shutdown cleanup failed: {e}")
+
+    logger.info("MakrX Store API shutdown complete")
 
 @app.get("/")
 async def root():
