@@ -79,10 +79,27 @@ class Project(Base):
     github_integration_enabled = Column(Boolean, default=False)  # Whether GitHub integration is active
     github_default_branch = Column(String(100), default="main")  # Default branch to track
 
-    # Metadata
+    # Enhanced metadata for public projects and discovery
     tags = Column(JSON, nullable=True, default=list)  # List of project tags
     is_featured = Column(Boolean, default=False)  # Admin can feature projects
     is_approved = Column(Boolean, default=True)  # Admin approval for public projects
+
+    # Public project features
+    difficulty_level = Column(String(20), default="beginner")  # beginner, intermediate, advanced, expert
+    estimated_duration = Column(String(50), nullable=True)  # "1-2 hours", "1 week", etc.
+    required_skills = Column(JSON, nullable=True, default=list)  # Skills needed for this project
+    learning_objectives = Column(JSON, nullable=True, default=list)  # What people will learn
+    license_type = Column(String(50), default="cc-by-sa")  # Creative Commons or other license
+
+    # Project metrics for public discovery
+    view_count = Column(Integer, default=0)  # Number of times viewed
+    fork_count = Column(Integer, default=0)  # Number of times forked/copied
+    like_count = Column(Integer, default=0)  # Number of likes/favorites
+
+    # Equipment and space requirements
+    required_equipment = Column(JSON, nullable=True, default=list)  # Equipment needed
+    space_requirements = Column(Text, nullable=True)  # Space/workspace requirements
+    safety_considerations = Column(Text, nullable=True)  # Safety notes and considerations
     
     # Timestamps
     created_at = Column(DateTime(timezone=True), server_default=func.now())
@@ -106,7 +123,19 @@ class ProjectCollaborator(Base):
     invited_by = Column(String(100), nullable=False)
     invited_at = Column(DateTime(timezone=True), server_default=func.now())
     accepted_at = Column(DateTime(timezone=True), nullable=True)
-    
+
+    # Enhanced collaboration features
+    invitation_message = Column(Text, nullable=True)  # Custom invitation message
+    email = Column(String(255), nullable=True)  # Email for external invitations
+    skills_contributed = Column(JSON, nullable=True, default=list)  # Skills this person contributes
+    responsibilities = Column(JSON, nullable=True, default=list)  # Specific responsibilities
+    is_external = Column(Boolean, default=False)  # External collaborator (not makerspace member)
+    contribution_hours = Column(Float, nullable=True)  # Estimated or actual hours contributed
+
+    # Activity tracking
+    last_activity_at = Column(DateTime(timezone=True), nullable=True)
+    activity_score = Column(Integer, default=0)  # Contribution score based on activity
+
     # Relationships
     project = relationship("Project", back_populates="collaborators")
 
@@ -115,7 +144,7 @@ class ProjectBOM(Base):
 
     id = Column(Integer, primary_key=True, autoincrement=True)
     project_id = Column(String(100), ForeignKey("projects.project_id"), nullable=False)
-    
+
     # Item details
     item_type = Column(String(50), nullable=False)  # "inventory" or "makrx_store"
     item_id = Column(String(100), nullable=False)  # Reference to inventory or store item
@@ -124,7 +153,14 @@ class ProjectBOM(Base):
     quantity = Column(Integer, nullable=False, default=1)
     unit_cost = Column(Float, nullable=True)
     total_cost = Column(Float, nullable=True)
-    
+
+    # Enhanced MakrX Store integration
+    makrx_product_code = Column(String(100), nullable=True)  # Direct MakrX Store product code
+    makrx_store_url = Column(String(500), nullable=True)  # Direct link to product in store
+    auto_reorder_enabled = Column(Boolean, default=False)  # Enable automatic reordering
+    auto_reorder_quantity = Column(Integer, nullable=True)  # Quantity to reorder automatically
+    preferred_supplier = Column(String(200), nullable=True)  # Preferred supplier for this item
+
     # Usage details
     usage_notes = Column(Text, nullable=True)
     alternatives = Column(JSON, nullable=True, default=list)  # List of alternative items
@@ -133,11 +169,16 @@ class ProjectBOM(Base):
     availability_status = Column(String(50), default="unknown")  # in-stock, low-stock, out-of-stock, unknown
     stock_level = Column(Integer, nullable=True)  # Current stock level
     reorder_point = Column(Integer, nullable=True)  # Reorder threshold
-    
+
+    # Enhanced tracking
+    category = Column(String(100), nullable=True)  # Component category (electronics, hardware, materials, etc.)
+    specifications = Column(JSON, nullable=True)  # Technical specifications
+    compatibility_notes = Column(Text, nullable=True)  # Compatibility with other components
+
     # Metadata
     added_by = Column(String(100), nullable=False)
     added_at = Column(DateTime(timezone=True), server_default=func.now())
-    
+
     # Relationships
     project = relationship("Project", back_populates="bom_items")
 
