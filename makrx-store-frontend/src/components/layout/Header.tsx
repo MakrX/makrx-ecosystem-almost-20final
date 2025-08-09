@@ -98,33 +98,33 @@ export function Header() {
 
             {/* Categories Dropdown */}
             <div className="relative group">
-              <button className="text-gray-700 hover:text-blue-600 transition-colors flex items-center">
+              <button className="text-foreground hover:text-blue-600 dark:hover:text-blue-400 transition-colors flex items-center">
                 Categories
                 <svg className="ml-1 h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                 </svg>
               </button>
-              
-              <div className="absolute left-0 mt-2 w-96 bg-white shadow-lg rounded-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
+
+              <div className="absolute left-0 mt-2 w-96 bg-popover border border-border shadow-lg rounded-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
                 <div className="grid grid-cols-2 gap-2 p-4">
                   {rootCategories.map((category) => (
                     <div
                       key={category.id}
-                      className="p-2 hover:bg-gray-50 rounded-md cursor-pointer"
+                      className="p-2 hover:bg-accent hover:text-accent-foreground rounded-md cursor-pointer"
                       onMouseEnter={() => setHoveredCategory(category.id)}
                       onMouseLeave={() => setHoveredCategory(null)}
                       onClick={() => handleCategoryClick(category)}
                     >
-                      <div className="font-medium text-gray-900">{category.name}</div>
-                      <div className="text-sm text-gray-500 mt-1">{category.description}</div>
-                      
+                      <div className="font-medium text-popover-foreground">{category.name}</div>
+                      <div className="text-sm text-muted-foreground mt-1">{category.description}</div>
+
                       {/* Subcategories */}
                       {hoveredCategory === category.id && (
                         <div className="mt-2 space-y-1">
                           {getSubcategories(category.id).map((subcat) => (
                             <div
                               key={subcat.id}
-                              className="text-sm text-blue-600 hover:text-blue-800 cursor-pointer pl-2"
+                              className="text-sm text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 cursor-pointer pl-2"
                               onClick={(e) => {
                                 e.stopPropagation();
                                 handleCategoryClick(subcat);
