@@ -338,51 +338,9 @@ function MakerspaceAdminDashboard() {
   );
 }
 
-// Service Provider Dashboard
-function ServiceProviderDashboard() {
-  const { user } = useAuth();
-  
-  return (
-    <div className="space-y-6">
-      <div className="bg-gradient-to-r from-slate-600 to-slate-700 rounded-lg p-6 text-white">
-        <div className="flex items-center gap-4">
-          <Settings className="w-12 h-12" />
-          <div>
-            <h1 className="text-2xl font-bold">Service Provider</h1>
-            <p className="text-slate-100">Hi, {user?.firstName}! Your account is currently restricted.</p>
-          </div>
-        </div>
-      </div>
-
-      <div className="makrcave-card">
-        <div className="text-center py-12">
-          <Settings className="w-16 h-16 mx-auto text-slate-600 mb-4" />
-          <h3 className="text-xl font-semibold mb-4">Account Under Development</h3>
-          <p className="text-muted-foreground mb-6">
-            Service provider features are currently being developed. Your future capabilities will include:
-          </p>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-md mx-auto">
-            <div className="bg-slate-50 p-4 rounded-lg">
-              <h4 className="font-medium text-slate-800 mb-2">Job Management</h4>
-              <p className="text-sm text-slate-700">Accept and manage external orders</p>
-            </div>
-            <div className="bg-slate-50 p-4 rounded-lg">
-              <h4 className="font-medium text-slate-800 mb-2">Stock Control</h4>
-              <p className="text-sm text-slate-700">Filament and material tracking</p>
-            </div>
-            <div className="bg-slate-50 p-4 rounded-lg">
-              <h4 className="font-medium text-slate-800 mb-2">Processing</h4>
-              <p className="text-sm text-slate-700">G-code slicing and preparation</p>
-            </div>
-            <div className="bg-slate-50 p-4 rounded-lg">
-              <h4 className="font-medium text-slate-800 mb-2">Earnings</h4>
-              <p className="text-sm text-slate-700">Revenue tracking and reports</p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
+// Service Provider Dashboard - Now Functional!
+function ServiceProviderDashboardWrapper() {
+  return <ServiceProviderDashboard />;
 }
 
 // Maker Dashboard
