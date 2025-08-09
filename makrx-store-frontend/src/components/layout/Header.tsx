@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/Button'
 import SmartSearch from '@/components/SmartSearch'
+import { categories } from '@/data/products'
 import {
   ShoppingCart,
   User,
@@ -16,7 +17,11 @@ import {
   Settings,
   LogOut,
   Heart,
-  Bell
+  Bell,
+  ChevronDown,
+  Cpu,
+  Wrench,
+  Box
 } from 'lucide-react'
 
 export default function Header() {
