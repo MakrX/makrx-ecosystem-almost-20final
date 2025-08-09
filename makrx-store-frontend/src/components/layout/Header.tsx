@@ -199,30 +199,30 @@ export function Header() {
             {/* User Menu */}
             {isAuthenticated ? (
               <div className="relative group">
-                <button className="flex items-center space-x-2 p-2 text-gray-700 hover:text-blue-600 transition-colors">
+                <button className="flex items-center space-x-2 p-2 text-foreground hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
                   <User className="h-6 w-6" />
                   <span className="hidden md:block text-sm">{user?.name || user?.email}</span>
                 </button>
-                
-                <div className="absolute right-0 mt-2 w-48 bg-white shadow-lg rounded-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
+
+                <div className="absolute right-0 mt-2 w-48 bg-popover border border-border shadow-lg rounded-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
                   <div className="py-2">
                     <button
                       onClick={() => handleUserMenuClick('account')}
-                      className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 flex items-center"
+                      className="w-full text-left px-4 py-2 text-sm text-popover-foreground hover:bg-accent hover:text-accent-foreground flex items-center"
                     >
                       <User className="h-4 w-4 mr-2" />
                       My Account
                     </button>
                     <button
                       onClick={() => handleUserMenuClick('orders')}
-                      className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 flex items-center"
+                      className="w-full text-left px-4 py-2 text-sm text-popover-foreground hover:bg-accent hover:text-accent-foreground flex items-center"
                     >
                       <Package className="h-4 w-4 mr-2" />
                       My Orders
                     </button>
                     <button
                       onClick={() => handleUserMenuClick('settings')}
-                      className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 flex items-center"
+                      className="w-full text-left px-4 py-2 text-sm text-popover-foreground hover:bg-accent hover:text-accent-foreground flex items-center"
                     >
                       <Settings className="h-4 w-4 mr-2" />
                       Settings
@@ -230,16 +230,18 @@ export function Header() {
                     {user?.roles.includes('admin') && (
                       <button
                         onClick={() => router.push('/admin')}
-                        className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 flex items-center"
+                        className="w-full text-left px-4 py-2 text-sm text-popover-foreground hover:bg-accent hover:text-accent-foreground flex items-center"
                       >
                         <Settings className="h-4 w-4 mr-2" />
                         Admin Panel
                       </button>
                     )}
-                    <hr className="my-1" />
+                    <hr className="my-1 border-border" />
+                    <ThemeToggleCompact />
+                    <hr className="my-1 border-border" />
                     <button
                       onClick={() => handleUserMenuClick('logout')}
-                      className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 flex items-center"
+                      className="w-full text-left px-4 py-2 text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 flex items-center"
                     >
                       <LogOut className="h-4 w-4 mr-2" />
                       Sign Out
@@ -250,7 +252,7 @@ export function Header() {
             ) : (
               <button
                 onClick={login}
-                className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
+                className="bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 text-white px-4 py-2 rounded-lg transition-colors"
               >
                 Sign In
               </button>
