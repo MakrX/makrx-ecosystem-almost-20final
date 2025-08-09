@@ -249,20 +249,18 @@ const LandingPage = () => {
           </div>
           
           <div className="max-w-4xl mx-auto">
-            <Card className="bg-white/10 backdrop-blur-md border-white/20">
+            <Card className="bg-white/95 backdrop-blur-md border-white/20">
               <CardContent className="p-8">
-                <div className="bg-gray-800 rounded-lg h-64 flex items-center justify-center mb-6">
-                  <div className="text-center text-white/60">
-                    <MapPin className="h-12 w-12 mx-auto mb-4" />
-                    <p>Interactive Map Coming Soon</p>
-                    <p className="text-sm">Explore locations, tools, and availability</p>
-                  </div>
+                <div className="mb-6">
+                  <InteractiveMap />
                 </div>
                 <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                  <Button className="bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white">
-                    See Full Map
-                  </Button>
-                  <Button variant="outline" className="border-white/30 text-white hover:bg-white/10">
+                  <Link to="/portal/map">
+                    <Button className="bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white">
+                      See Full Map
+                    </Button>
+                  </Link>
+                  <Button variant="outline" className="border-gray-300 text-gray-700 hover:bg-gray-50">
                     Start Your Own MakrCave
                   </Button>
                 </div>
