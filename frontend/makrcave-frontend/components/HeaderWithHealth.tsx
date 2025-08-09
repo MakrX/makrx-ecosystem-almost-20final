@@ -209,7 +209,7 @@ export default function HeaderWithHealth({
             </div>
 
             {/* Theme Toggle */}
-            <MakrXThemeToggle variant="ghost" />
+            <ThemeToggle variant="icon-only" />
 
             {/* Notifications */}
             {renderNotifications()}
