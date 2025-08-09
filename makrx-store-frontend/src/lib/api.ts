@@ -273,7 +273,7 @@ class ApiClient {
 
     try {
       const response = await fetch(url, config)
-      
+
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}))
         throw new Error(errorData.message || `HTTP ${response.status}: ${response.statusText}`)
@@ -282,7 +282,28 @@ class ApiClient {
       return await response.json()
     } catch (error) {
       console.error(`API request failed: ${endpoint}`, error)
+
+      // Fallback to mock data for development when backend is not available
+      if (error instanceof TypeError && error.message === 'Failed to fetch') {
+        console.warn(`Backend not available, using mock data for: ${endpoint}`)
+        return this.getMockData<T>(endpoint)
+      }
+
       throw error
+    }
+  }
+
+  private getMockData<T>(endpoint: string): T {
+    // Mock data responses for when backend is not available
+    const path = endpoint.split('?')[0] // Remove query params for matching
+
+    switch (path) {
+      case '/catalog/products':
+        return this.getMockProducts() as T
+      case '/catalog/categories':
+        return this.getMockCategories() as T
+      default:
+        throw new Error(`No mock data available for endpoint: ${endpoint}`)
     }
   }
 
