@@ -564,15 +564,12 @@ export default function ProductPage() {
               </div>
             )}
 
-            {activeTab === "reviews" && (
-              <div>
-                <div className="text-center py-12">
-                  <h3 className="text-lg font-medium text-gray-900 mb-2">
-                    Customer Reviews
-                  </h3>
-                  <p className="text-gray-600">Reviews feature coming soon!</p>
-                </div>
-              </div>
+            {activeTab === "reviews" && product && (
+              <ProductReviews
+                productId={product.id.toString()}
+                userId={isAuthenticated ? "current-user" : undefined}
+                isAuthenticated={isAuthenticated}
+              />
             )}
           </div>
         </div>
