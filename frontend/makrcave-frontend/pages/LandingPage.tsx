@@ -280,46 +280,34 @@ const LandingPage = () => {
             <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
               Who Is It For?
             </h2>
-            <p className="text-xl text-white/80">MakrCave serves every type of maker</p>
+            <p className="text-xl text-white/80">MakrCave serves four primary roles in the makerspace ecosystem</p>
           </div>
-          
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8 max-w-7xl mx-auto">
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 lg:gap-8 max-w-7xl mx-auto">
             {[
               {
-                emoji: '🧑‍🎓',
-                title: 'Students',
-                message: 'Learn by doing. Get certified. Build anything.',
-                features: ['Skill-based access', 'Learning paths', 'Certification tracking']
+                emoji: '👑',
+                title: 'Super Admins',
+                message: 'Control all makerspaces & global settings.',
+                features: ['Global makerspace management', 'System-wide analytics', 'Feature flag control']
+              },
+              {
+                emoji: '🏭',
+                title: 'Makerspace Admins',
+                message: 'Manage inventory, members, and operations.',
+                features: ['Member management', 'Inventory control', 'Equipment oversight']
+              },
+              {
+                emoji: '⚙️',
+                title: 'Service Providers',
+                message: 'Receive and process fabrication jobs.',
+                features: ['Job management', 'Material tracking', 'Quality control']
               },
               {
                 emoji: '👨‍🔧',
-                title: 'Tinkerers & Creators',
-                message: 'Book tools. Start projects. Make magic.',
-                features: ['Equipment booking', 'Project management', 'Community collaboration']
-              },
-              {
-                emoji: '🏫',
-                title: 'Institutions',
-                message: 'Set up smart, automated, monitored spaces.',
-                features: ['Usage tracking', 'Automated access', 'Safety monitoring']
-              },
-              {
-                emoji: '🛠️',
-                title: 'Makerspace Owners',
-                message: 'Monetize. Manage. Scale.',
-                features: ['Revenue optimization', 'Smart management', 'Network benefits']
-              },
-              {
-                emoji: '🧑‍🏫',
-                title: 'Mentors',
-                message: 'Share your wisdom. Earn by teaching.',
-                features: ['Skill verification', 'Teaching tools', 'Community impact']
-              },
-              {
-                emoji: '🔧',
-                title: 'Service Providers',
-                message: 'Connect with makers. Grow your business.',
-                features: ['Job marketplace', 'Skill matching', 'Quality assurance']
+                title: 'Makerspace Members',
+                message: 'Use equipment, work on projects, collaborate.',
+                features: ['Equipment reservations', 'Project management', 'BOM collaboration']
               }
             ].map((audience, idx) => (
               <Card key={idx} className="bg-white/10 backdrop-blur-md border-white/20 hover:bg-white/15 transition-all duration-300">
