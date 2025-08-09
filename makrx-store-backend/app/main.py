@@ -125,21 +125,48 @@ async def security_request_middleware(request: Request, call_next):
 
         raise
 
-# Global exception handler
+# Enhanced global exception handler with security logging
 @app.exception_handler(Exception)
-async def global_exception_handler(request: Request, exc: Exception):
-    request_id = getattr(request.state, "request_id", "unknown")
+async def security_exception_handler(request: Request, exc: Exception):
+    """Enhanced exception handler with security event logging"""
+    request_id = getattr(request.state, "request_id", str(uuid.uuid4()))
+    ip_address = request.client.host if request.client else "unknown"
+
+    # Log security event for unhandled exceptions
+    await security_logger.log_security_event(
+        event_type="application_error",
+        action="unhandled_exception",
+        success=False,
+        context={
+            "request_id": request_id,
+            "ip_address": ip_address,
+            "url": str(request.url),
+            "method": request.method,
+            "error_type": type(exc).__name__,
+            "error_message": str(exc)[:500]  # Truncate for security
+        }
+    )
+
     logger.error(
         f'{{"request_id": "{request_id}", "error": "{str(exc)}", '
         f'"error_type": "{type(exc).__name__}", "url": "{request.url}"}}'
     )
-    
+
+    # Don't expose internal error details in production
+    if settings.ENVIRONMENT == "production":
+        error_message = "An internal error occurred"
+        error_detail = None
+    else:
+        error_message = "An unexpected error occurred"
+        error_detail = str(exc)
+
     return JSONResponse(
         status_code=500,
         content={
-            "error": "Internal server error",
+            "error": error_message,
             "request_id": request_id,
-            "message": "An unexpected error occurred"
+            "detail": error_detail,
+            "timestamp": time.time()
         }
     )
 
