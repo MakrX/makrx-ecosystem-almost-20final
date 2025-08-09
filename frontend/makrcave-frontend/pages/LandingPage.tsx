@@ -23,11 +23,11 @@ const LandingPage = () => {
             </div>
             
             <nav className="hidden md:flex items-center space-x-8">
-              <a href="#explore" className="text-white/80 hover:text-white transition-colors">Explore</a>
+              <Link to="/find-makerspace" className="text-white/80 hover:text-white transition-colors">Find Makerspace</Link>
               <Link to="/makrverse" className="text-white/80 hover:text-white transition-colors">MakrVerse</Link>
               <a href="#features" className="text-white/80 hover:text-white transition-colors">Features</a>
               <a href="#institutions" className="text-white/80 hover:text-white transition-colors">Institutions</a>
-              <a href="#community" className="text-white/80 hover:text-white transition-colors">Community</a>
+              <Link to="/contact" className="text-white/80 hover:text-white transition-colors">Contact</Link>
             </nav>
 
             <div className="hidden md:flex items-center space-x-4">
