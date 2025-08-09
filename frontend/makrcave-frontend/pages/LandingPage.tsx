@@ -84,13 +84,14 @@ const LandingPage = () => {
         <div className="relative container mx-auto px-4 sm:px-6 py-16 sm:py-24 lg:py-32 text-center">
           <div className="max-w-4xl mx-auto">
             <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-8xl font-bold text-white mb-6 sm:mb-8 leading-tight">
-              Digital Management for{' '}
+              Complete{' '}
               <span className="bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
-                Makerspaces
-              </span>
+                Makerspace
+              </span>{' '}
+              Management
             </h1>
             <p className="text-lg sm:text-xl lg:text-2xl text-white/80 mb-8 sm:mb-12 leading-relaxed max-w-3xl mx-auto">
-              Track tools, people, materials, and jobs in one place. Bridge the physical space with the digital ecosystem.
+              The heart of the MakrX ecosystem: comprehensive management for inventory, equipment, skills, service orders, and community collaboration — all in one powerful platform.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 sm:gap-6 justify-center max-w-lg sm:max-w-none mx-auto">
               <Link to="/find-makerspace">
