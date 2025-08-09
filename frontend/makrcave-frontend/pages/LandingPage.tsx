@@ -122,8 +122,11 @@ const LandingPage = () => {
             <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
               What is MakrCave?
             </h2>
-            <p className="text-xl text-white/80 leading-relaxed">
-              MakrCave is a network of makerspaces, tools, and service providers — powered by a futuristic platform that lets you make anything, anywhere.
+            <p className="text-xl text-white/80 leading-relaxed mb-4">
+              The primary web application for managing everything that happens in a makerspace or fabrication service.
+            </p>
+            <p className="text-lg text-white/70 leading-relaxed">
+              A standardized but customizable platform to run any makerspace — small or large — with business operations, community management, and seamless ecosystem integration.
             </p>
           </div>
           
