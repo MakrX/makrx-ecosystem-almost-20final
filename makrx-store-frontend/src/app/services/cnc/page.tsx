@@ -146,7 +146,7 @@ export default function CNCMachiningPage() {
                 </h3>
                 <ul className="text-sm text-blue-700 dark:text-blue-400 space-y-1">
                   <li>• Minimum wall thickness: 0.5mm for metals, 1mm for plastics</li>
-                  <li>• Avoid deep pockets with high aspect ratios (>5:1)</li>
+                  <li>• Avoid deep pockets with high aspect ratios (&gt;5:1)</li>
                   <li>• Include draft angles where possible (1-2°)</li>
                   <li>• Standard hole diameters preferred for cost efficiency</li>
                 </ul>
