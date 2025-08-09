@@ -13,9 +13,9 @@ export default function Register() {
   });
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const navigate = useNavigate();
+  const { register, isLoading, error, clearError, isAuthenticated } = useAuth();
 
   const validateForm = () => {
     const newErrors: Record<string, string> = {};
