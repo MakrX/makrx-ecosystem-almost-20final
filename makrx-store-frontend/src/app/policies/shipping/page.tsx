@@ -44,8 +44,8 @@ export default function ShippingPolicy() {
                       <p className="text-gray-600">5-7 business days</p>
                     </div>
                     <div className="text-right">
-                      <p className="text-lg font-semibold text-gray-900">$5.99</p>
-                      <p className="text-sm text-green-600">Free over $75</p>
+                      <p className="text-lg font-semibold text-gray-900">₹497</p>
+                      <p className="text-sm text-green-600">Free over ₹6,225</p>
                     </div>
                   </div>
                   <p className="text-gray-600">
@@ -61,7 +61,7 @@ export default function ShippingPolicy() {
                       <p className="text-gray-600">2-3 business days</p>
                     </div>
                     <div className="text-right">
-                      <p className="text-lg font-semibold text-gray-900">$12.99</p>
+                      <p className="text-lg font-semibold text-gray-900">₹1,078</p>
                       <p className="text-sm text-gray-500">All orders</p>
                     </div>
                   </div>
@@ -78,7 +78,7 @@ export default function ShippingPolicy() {
                       <p className="text-gray-600">Next business day</p>
                     </div>
                     <div className="text-right">
-                      <p className="text-lg font-semibold text-gray-900">$24.99</p>
+                      <p className="text-lg font-semibold text-gray-900">₹2,074</p>
                       <p className="text-sm text-gray-500">Order by 2 PM</p>
                     </div>
                   </div>
