@@ -66,6 +66,10 @@ const App = () => (
                     {/* Public Landing Page */}
                     <Route path="/" element={<LandingPage />} />
 
+                    {/* Public Pages */}
+                    <Route path="/find-makerspace" element={<FindMakerspace />} />
+                    <Route path="/contact" element={<Contact />} />
+
                     {/* Public MakrVerse Map */}
                     <Route path="/makrverse" element={<MakrVerse />} />
 
