@@ -19,7 +19,8 @@ import {
   Bell,
   Sparkles,
   TrendingUp,
-  BookOpen
+  BookOpen,
+  Shield
 } from 'lucide-react';
 
 export default function ManagerSidebar() {
@@ -76,6 +77,12 @@ export default function ManagerSidebar() {
       href: '/portal/maintenance',
       icon: Settings,
       active: isActive('/portal/maintenance')
+    },
+    {
+      name: 'Advanced Maintenance',
+      href: '/portal/advanced-maintenance',
+      icon: Shield,
+      active: isActive('/portal/advanced-maintenance')
     },
     {
       name: 'Analytics & Reports',
