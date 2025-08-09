@@ -234,6 +234,14 @@ export default function Register() {
               {errors.confirmPassword && <p className="text-red-400 text-xs mt-1">{errors.confirmPassword}</p>}
             </div>
 
+            {/* Error Display */}
+            {error && (
+              <div className="bg-red-500/10 border border-red-500/20 rounded-lg p-3 flex items-center gap-2">
+                <AlertCircle className="w-4 h-4 text-red-400" />
+                <p className="text-sm text-red-400">{error.message}</p>
+              </div>
+            )}
+
             {/* Terms Agreement */}
             <div className="bg-white/5 border border-white/10 rounded-lg p-3">
               <p className="text-xs text-white/80">
