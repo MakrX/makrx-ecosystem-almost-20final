@@ -10,6 +10,7 @@ import {
 } from 'lucide-react';
 import { api, type Cart, type CartItem, formatPrice } from '@/lib/api';
 import { useAuth } from '@/contexts/AuthContext';
+import { useNotifications } from '@/contexts/NotificationContext';
 
 export default function CartPage() {
   const router = useRouter();
