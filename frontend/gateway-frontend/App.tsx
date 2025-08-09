@@ -40,27 +40,29 @@ const App = () => {
   return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
-        <FeatureFlagProvider initialContext={flagContext}>
-          <AuthProvider>
-            <Toaster />
-            <Sonner />
-            <BrowserRouter>
-              <EnhancedHeader />
-              <Routes>
-                <Route path="/" element={<EnhancedIndex />} />
-                <Route path="/login" element={<Login />} />
-                <Route path="/register" element={<Register />} />
-                <Route path="/makrcave" element={<MakrCave />} />
-                <Route path="/store" element={<Store />} />
-                <Route path="/learn" element={<Learn />} />
-                <Route path="/profile" element={<EnhancedProfile />} />
-                <Route path="/admin/feature-flags" element={<FeatureFlagsAdmin />} />
-                {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-                <Route path="*" element={<NotFound />} />
-              </Routes>
-            </BrowserRouter>
-          </AuthProvider>
-        </FeatureFlagProvider>
+        <ThemeProvider>
+          <FeatureFlagProvider initialContext={flagContext}>
+            <AuthProvider>
+              <Toaster />
+              <Sonner />
+              <BrowserRouter>
+                <EnhancedHeader />
+                <Routes>
+                  <Route path="/" element={<HomePage />} />
+                  <Route path="/login" element={<Login />} />
+                  <Route path="/register" element={<Register />} />
+                  <Route path="/makrcave" element={<MakrCave />} />
+                  <Route path="/store" element={<Store />} />
+                  <Route path="/learn" element={<Learn />} />
+                  <Route path="/profile" element={<ProfilePage />} />
+                  <Route path="/admin/feature-flags" element={<FeatureFlagsAdmin />} />
+                  {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+                  <Route path="*" element={<NotFound />} />
+                </Routes>
+              </BrowserRouter>
+            </AuthProvider>
+          </FeatureFlagProvider>
+        </ThemeProvider>
       </TooltipProvider>
     </QueryClientProvider>
   );
