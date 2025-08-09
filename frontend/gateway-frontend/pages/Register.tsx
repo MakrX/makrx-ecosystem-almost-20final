@@ -17,6 +17,20 @@ export default function Register() {
   const navigate = useNavigate();
   const { register, isLoading, error, clearError, isAuthenticated } = useAuth();
 
+  // Redirect if already authenticated
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate('/');
+    }
+  }, [isAuthenticated, navigate]);
+
+  // Clear error when user starts typing
+  useEffect(() => {
+    if (error) {
+      clearError();
+    }
+  }, [formData, clearError]);
+
   const validateForm = () => {
     const newErrors: Record<string, string> = {};
     
