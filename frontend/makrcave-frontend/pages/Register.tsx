@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { Building2, Eye, EyeOff, Lock, Mail, User, AlertCircle, CheckCircle } from 'lucide-react';
-import MakrXThemeToggle from '../components/MakrXThemeToggle';
+import { ThemeToggle } from '../../../packages/ui/components/ThemeToggle';
 import authService, { RegisterData } from '../services/authService';
 
 export default function Register() {
