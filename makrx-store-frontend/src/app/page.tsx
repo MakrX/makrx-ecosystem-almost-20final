@@ -82,24 +82,24 @@ export default function HomePage() {
       </section>
 
       {/* Categories Section */}
-      <section className="py-16 bg-gray-50">
+      <section className="py-16 bg-muted/30">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">Shop by Category</h2>
-            <p className="text-lg text-gray-600">
+            <h2 className="text-3xl font-bold text-foreground mb-4">Shop by Category</h2>
+            <p className="text-lg text-muted-foreground">
               Explore our comprehensive range of 3D printing materials and equipment
             </p>
           </div>
-          
+
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
             {categories.slice(0, 8).map((category) => (
               <div
                 key={category.id}
                 onClick={() => handleCategoryClick(category)}
-                className="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow cursor-pointer p-6 text-center"
+                className="bg-card border border-border rounded-lg shadow-md hover:shadow-lg transition-shadow cursor-pointer p-6 text-center"
               >
                 {category.image_url && (
-                  <div className="w-16 h-16 mx-auto mb-4 bg-gray-100 rounded-lg flex items-center justify-center">
+                  <div className="w-16 h-16 mx-auto mb-4 bg-muted rounded-lg flex items-center justify-center">
                     <Image
                       src={category.image_url}
                       alt={category.name}
@@ -109,8 +109,8 @@ export default function HomePage() {
                     />
                   </div>
                 )}
-                <h3 className="font-semibold text-gray-900 mb-2">{category.name}</h3>
-                <p className="text-sm text-gray-600">{category.description}</p>
+                <h3 className="font-semibold text-card-foreground mb-2">{category.name}</h3>
+                <p className="text-sm text-muted-foreground">{category.description}</p>
               </div>
             ))}
           </div>
