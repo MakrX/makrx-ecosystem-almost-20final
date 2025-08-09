@@ -559,7 +559,15 @@ function MobileNav() {
       {isOpen && (
         <div className="fixed inset-0 z-50 md:hidden">
           <div className="bg-background p-6">
-            {/* Mobile navigation items */}
+            <nav className="space-y-4">
+              <Link to="/dashboard" className="block py-2 text-lg">Dashboard</Link>
+              <Link to="/equipment" className="block py-2 text-lg">Equipment</Link>
+              <Link to="/projects" className="block py-2 text-lg">Projects</Link>
+              <Link to="/inventory" className="block py-2 text-lg">Inventory</Link>
+            </nav>
+            <div className="mt-8 pt-4 border-t">
+              <button onClick={logout} className="text-red-600">Sign Out</button>
+            </div>
           </div>
         </div>
       )}
