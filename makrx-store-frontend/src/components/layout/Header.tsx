@@ -1,385 +1,365 @@
-'use client'
+'use client';
 
-import React, { useState } from 'react'
-import Link from 'next/link'
-import { useRouter } from 'next/navigation'
-import { Button } from '@/components/ui/Button'
-import SmartSearch from '@/components/SmartSearch'
-import { categories } from '@/data/products'
-import {
-  ShoppingCart,
-  User,
-  Search,
-  Menu,
-  X,
-  Package,
-  Printer,
-  Settings,
-  LogOut,
-  Heart,
-  Bell,
-  ChevronDown,
-  Cpu,
-  Wrench,
-  Box
-} from 'lucide-react'
+import { useState, useEffect } from 'react';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { Search, ShoppingCart, Menu, X, User, LogOut, Package, Settings } from 'lucide-react';
+import { useAuth } from '@/contexts/AuthContext';
+import { api, type Category, type Product } from '@/lib/api';
+import { SmartSearch } from '@/components/SmartSearch';
 
-export default function Header() {
-  const [isMenuOpen, setIsMenuOpen] = useState(false)
-  const [isUserMenuOpen, setIsUserMenuOpen] = useState(false)
-  const [searchQuery, setSearchQuery] = useState('')
-  const [activeDropdown, setActiveDropdown] = useState<string | null>(null)
-  const router = useRouter()
+export function Header() {
+  const { user, isAuthenticated, login, logout } = useAuth();
+  const router = useRouter();
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [cartItemCount, setCartItemCount] = useState(0);
+  const [hoveredCategory, setHoveredCategory] = useState<number | null>(null);
 
-  // Organize categories for dropdown
-  const featuredCategories = categories.filter(cat => cat.featured)
-  const otherCategories = categories.filter(cat => !cat.featured)
+  // Load categories and cart count
+  useEffect(() => {
+    const loadCategories = async () => {
+      try {
+        const categoriesData = await api.getCategories();
+        setCategories(categoriesData);
+      } catch (error) {
+        console.error('Failed to load categories:', error);
+      }
+    };
 
-  const servicesMenu = [
-    { name: '3D Printing', href: '/3d-printing', icon: Printer, description: 'Upload STL files for instant quotes' },
-    { name: 'CNC Machining', href: '/services/cnc', icon: Wrench, description: 'Precision metal and wood machining' },
-    { name: 'PCB Assembly', href: '/services/pcb', icon: Cpu, description: 'Professional circuit board assembly' },
-    { name: 'Laser Cutting', href: '/services/laser', icon: Package, description: 'Precise laser cutting services' }
-  ]
+    const loadCartCount = async () => {
+      if (isAuthenticated) {
+        try {
+          const cart = await api.getCart();
+          setCartItemCount(cart.item_count);
+        } catch (error) {
+          console.error('Failed to load cart:', error);
+        }
+      }
+    };
 
-  const handleSearch = (e: React.FormEvent) => {
-    e.preventDefault()
-    if (searchQuery.trim()) {
-      router.push(`/search?q=${encodeURIComponent(searchQuery.trim())}`)
+    loadCategories();
+    loadCartCount();
+  }, [isAuthenticated]);
+
+  const handleSearch = async (query: string) => {
+    if (query.trim()) {
+      router.push(`/catalog?q=${encodeURIComponent(query.trim())}`);
     }
-  }
+  };
+
+  const handleCategoryClick = (category: Category) => {
+    router.push(`/catalog/category/${category.slug}`);
+    setIsMenuOpen(false);
+  };
+
+  const handleUserMenuClick = (action: string) => {
+    switch (action) {
+      case 'account':
+        router.push('/account');
+        break;
+      case 'orders':
+        router.push('/account/orders');
+        break;
+      case 'settings':
+        router.push('/account/settings');
+        break;
+      case 'logout':
+        logout();
+        break;
+    }
+  };
+
+  // Group categories by parent
+  const rootCategories = categories.filter(cat => !cat.parent_id);
+  const getSubcategories = (parentId: number) => 
+    categories.filter(cat => cat.parent_id === parentId);
 
   return (
-    <header className="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-gray-200 shadow-sm">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+    <header className="bg-white shadow-sm sticky top-0 z-50">
+      {/* Main header */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
-          <div className="flex items-center space-x-4">
-            <Link href="/" className="flex items-center space-x-2 hover:opacity-80 transition-opacity">
-              <div className="w-10 h-10 bg-gradient-to-br from-store-primary to-store-secondary rounded-xl flex items-center justify-center shadow-lg">
-                <span className="text-white font-bold text-lg">🛒</span>
-              </div>
-              <div className="hidden sm:block">
-                <span className="text-xl font-bold text-gray-900">MakrX</span>
-                <span className="text-xl font-bold text-store-primary">.Store</span>
-              </div>
+          <div className="flex items-center">
+            <Link href="/" className="flex items-center space-x-2">
+              <div className="text-2xl font-bold text-blue-600">MakrX</div>
+              <span className="text-gray-600">Store</span>
+            </Link>
+          </div>
+
+          {/* Desktop Navigation */}
+          <nav className="hidden md:flex items-center space-x-8">
+            <Link href="/catalog" className="text-gray-700 hover:text-blue-600 transition-colors">
+              Catalog
             </Link>
 
-            {/* Navigation - Desktop */}
-            <nav className="hidden lg:flex items-center space-x-8 ml-8">
-              {/* Catalog Dropdown */}
-              <div
-                className="relative"
-                onMouseEnter={() => setActiveDropdown('catalog')}
-                onMouseLeave={() => setActiveDropdown(null)}
-              >
-                <button className="text-store-text hover:text-store-primary transition-colors font-semibold flex items-center">
-                  Catalog
-                  <ChevronDown className="h-4 w-4 ml-1" />
-                </button>
-
-                {activeDropdown === 'catalog' && (
-                  <div className="absolute top-full left-0 mt-2 w-96 bg-white rounded-xl shadow-2xl border border-gray-200 z-50">
-                    <div className="p-6">
-                      <div className="mb-4">
-                        <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-3">
-                          Featured Categories
-                        </h3>
-                        <div className="grid grid-cols-2 gap-3">
-                          {featuredCategories.map(category => (
-                            <Link
-                              key={category.id}
-                              href={`/catalog/${category.slug}`}
-                              className="flex items-center p-3 rounded-lg hover:bg-gray-50 transition-colors group"
-                            >
-                              <div className="w-10 h-10 bg-gradient-to-br from-store-primary to-store-secondary rounded-lg flex items-center justify-center mr-3 group-hover:scale-105 transition-transform">
-                                <Package className="h-5 w-5 text-white" />
-                              </div>
-                              <div>
-                                <div className="font-medium text-store-text group-hover:text-store-primary">
-                                  {category.name}
-                                </div>
-                                <div className="text-xs text-gray-500">
-                                  {category.productCount} products
-                                </div>
-                              </div>
-                            </Link>
-                          ))}
-                        </div>
-                      </div>
-
-                      <div className="border-t border-gray-200 pt-4">
-                        <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-3">
-                          More Categories
-                        </h3>
-                        <div className="space-y-1">
-                          {otherCategories.map(category => (
-                            <Link
-                              key={category.id}
-                              href={`/catalog/${category.slug}`}
-                              className="block px-3 py-2 text-sm text-store-text hover:text-store-primary hover:bg-gray-50 rounded-lg transition-colors"
-                            >
-                              {category.name} ({category.productCount})
-                            </Link>
-                          ))}
-                        </div>
-                      </div>
-
-                      <div className="border-t border-gray-200 pt-4 mt-4">
-                        <Link
-                          href="/catalog"
-                          className="block w-full text-center bg-store-primary text-white py-2 rounded-lg font-medium hover:bg-store-primary-dark transition-colors"
-                        >
-                          Browse All Products
-                        </Link>
-                      </div>
-                    </div>
-                  </div>
-                )}
-              </div>
-
-              {/* Services Dropdown */}
-              <div
-                className="relative"
-                onMouseEnter={() => setActiveDropdown('services')}
-                onMouseLeave={() => setActiveDropdown(null)}
-              >
-                <button className="text-store-text hover:text-store-primary transition-colors font-semibold flex items-center">
-                  Services
-                  <ChevronDown className="h-4 w-4 ml-1" />
-                </button>
-
-                {activeDropdown === 'services' && (
-                  <div className="absolute top-full left-0 mt-2 w-80 bg-white rounded-xl shadow-2xl border border-gray-200 z-50">
-                    <div className="p-4">
-                      <div className="space-y-2">
-                        {servicesMenu.map(service => {
-                          const Icon = service.icon
-                          return (
-                            <Link
-                              key={service.name}
-                              href={service.href}
-                              className="flex items-start p-3 rounded-lg hover:bg-gray-50 transition-colors group"
-                            >
-                              <div className="w-10 h-10 bg-gradient-to-br from-store-primary to-store-secondary rounded-lg flex items-center justify-center mr-3 group-hover:scale-105 transition-transform">
-                                <Icon className="h-5 w-5 text-white" />
-                              </div>
-                              <div>
-                                <div className="font-medium text-store-text group-hover:text-store-primary">
-                                  {service.name}
-                                </div>
-                                <div className="text-xs text-gray-500 mt-1">
-                                  {service.description}
-                                </div>
-                              </div>
-                            </Link>
-                          )
-                        })}
-                      </div>
-
-                      <div className="border-t border-gray-200 pt-4 mt-4">
-                        <Link
-                          href="/services"
-                          className="block w-full text-center bg-store-primary text-white py-2 rounded-lg font-medium hover:bg-store-primary-dark transition-colors"
-                        >
-                          View All Services
-                        </Link>
-                      </div>
-                    </div>
-                  </div>
-                )}
-              </div>
-
-              {/* Direct Links */}
-              <Link href="/makers" className="text-store-text hover:text-store-primary transition-colors font-semibold">
-                Makers
-              </Link>
-              <Link href="/enterprise" className="text-store-text hover:text-store-primary transition-colors font-semibold">
-                Enterprise
-              </Link>
-            </nav>
-          </div>
-
-          {/* Search Bar - Desktop */}
-          <div className="hidden md:flex flex-1 max-w-lg mx-8">
-            <SmartSearch
-              placeholder="Search products, services, or makers... (⌘K)"
-              className="w-full"
-            />
-          </div>
-
-          {/* User Actions */}
-          <div className="flex items-center space-x-2 sm:space-x-4">
-            {/* Search Icon - Mobile */}
-            <Button variant="ghost" size="icon" className="md:hidden">
-              <Search className="h-5 w-5" />
-            </Button>
-
-            {/* Notifications */}
-            <Button variant="ghost" size="icon" className="relative">
-              <Bell className="h-5 w-5" />
-              <span className="absolute -top-1 -right-1 h-4 w-4 bg-store-error rounded-full text-xs text-white flex items-center justify-center">
-                3
-              </span>
-            </Button>
-
-            {/* Wishlist */}
-            <Button variant="ghost" size="icon" className="hidden sm:flex">
-              <Heart className="h-5 w-5" />
-            </Button>
-
-            {/* Cart */}
-            <Button variant="ghost" size="icon" className="relative">
-              <ShoppingCart className="h-5 w-5" />
-              <span className="absolute -top-1 -right-1 h-4 w-4 bg-store-primary rounded-full text-xs text-white flex items-center justify-center">
-                2
-              </span>
-            </Button>
-
-            {/* User Menu */}
-            <div className="relative">
-              <Button 
-                variant="ghost" 
-                size="icon"
-                onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
-                className="hidden sm:flex"
-              >
-                <User className="h-5 w-5" />
-              </Button>
-
-              {/* User Dropdown */}
-              {isUserMenuOpen && (
-                <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 py-1 z-50">
-                  <Link href="/profile" className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                    <User className="h-4 w-4 mr-2" />
-                    Profile
-                  </Link>
-                  <Link href="/orders" className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                    <Package className="h-4 w-4 mr-2" />
-                    Orders
-                  </Link>
-                  <Link href="/provider-dashboard" className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                    <Printer className="h-4 w-4 mr-2" />
-                    Provider Dashboard
-                  </Link>
-                  <Link href="/settings" className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                    <Settings className="h-4 w-4 mr-2" />
-                    Settings
-                  </Link>
-                  <hr className="my-1" />
-                  <button className="w-full flex items-center px-4 py-2 text-sm text-red-600 hover:bg-red-50">
-                    <LogOut className="h-4 w-4 mr-2" />
-                    Sign Out
-                  </button>
-                </div>
-              )}
-            </div>
-
-            {/* Sign In Button */}
-            <Button variant="outline" size="sm" className="hidden sm:flex">
-              Sign In
-            </Button>
-
-            {/* Mobile Menu Button */}
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="lg:hidden"
-            >
-              {isMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
-            </Button>
-          </div>
-        </div>
-
-        {/* Mobile Menu */}
-        {isMenuOpen && (
-          <div className="lg:hidden border-t border-gray-200 py-4">
-            {/* Mobile Search */}
-            <div className="mb-4 md:hidden">
-              <SmartSearch
-                placeholder="Search products..."
-                className="w-full"
-              />
-            </div>
-
-            {/* Mobile Navigation */}
-            <div className="space-y-4">
-              {/* Categories Section */}
-              <div className="pb-4 border-b border-gray-200">
-                <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-3">
-                  Shop Categories
-                </h3>
-                <div className="grid grid-cols-2 gap-2">
-                  {featuredCategories.map(category => (
-                    <Link
+            {/* Categories Dropdown */}
+            <div className="relative group">
+              <button className="text-gray-700 hover:text-blue-600 transition-colors flex items-center">
+                Categories
+                <svg className="ml-1 h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                </svg>
+              </button>
+              
+              <div className="absolute left-0 mt-2 w-96 bg-white shadow-lg rounded-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
+                <div className="grid grid-cols-2 gap-2 p-4">
+                  {rootCategories.map((category) => (
+                    <div
                       key={category.id}
-                      href={`/catalog/${category.slug}`}
-                      className="flex items-center p-2 text-sm text-store-text hover:text-store-primary hover:bg-gray-50 rounded-lg transition-colors"
+                      className="p-2 hover:bg-gray-50 rounded-md cursor-pointer"
+                      onMouseEnter={() => setHoveredCategory(category.id)}
+                      onMouseLeave={() => setHoveredCategory(null)}
+                      onClick={() => handleCategoryClick(category)}
                     >
-                      <Package className="h-4 w-4 mr-2" />
-                      {category.name}
-                    </Link>
+                      <div className="font-medium text-gray-900">{category.name}</div>
+                      <div className="text-sm text-gray-500 mt-1">{category.description}</div>
+                      
+                      {/* Subcategories */}
+                      {hoveredCategory === category.id && (
+                        <div className="mt-2 space-y-1">
+                          {getSubcategories(category.id).map((subcat) => (
+                            <div
+                              key={subcat.id}
+                              className="text-sm text-blue-600 hover:text-blue-800 cursor-pointer pl-2"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleCategoryClick(subcat);
+                              }}
+                            >
+                              {subcat.name}
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </div>
                   ))}
                 </div>
-                <Link
-                  href="/catalog"
-                  className="block w-full text-center bg-gray-100 text-store-text py-2 rounded-lg font-medium hover:bg-gray-200 transition-colors mt-3"
-                >
-                  Browse All Products
-                </Link>
-              </div>
-
-              {/* Services Section */}
-              <div className="pb-4 border-b border-gray-200">
-                <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-3">
-                  Services
-                </h3>
-                <div className="space-y-2">
-                  {servicesMenu.slice(0, 3).map(service => {
-                    const Icon = service.icon
-                    return (
-                      <Link
-                        key={service.name}
-                        href={service.href}
-                        className="flex items-center p-2 text-sm text-store-text hover:text-store-primary hover:bg-gray-50 rounded-lg transition-colors"
-                      >
-                        <Icon className="h-4 w-4 mr-2" />
-                        {service.name}
-                      </Link>
-                    )
-                  })}
-                </div>
-              </div>
-
-              {/* Main Navigation */}
-              <div className="space-y-2">
-                <Link href="/makers" className="block text-store-text hover:text-store-primary transition-colors font-semibold">
-                  Makers
-                </Link>
-                <Link href="/enterprise" className="block text-store-text hover:text-store-primary transition-colors font-semibold">
-                  Enterprise
-                </Link>
-              </div>
-
-              <hr className="my-4" />
-
-              {/* User Section */}
-              <div className="space-y-2">
-                <Link href="/profile" className="block text-store-text hover:text-store-primary transition-colors font-semibold">
-                  Profile
-                </Link>
-                <Link href="/orders" className="block text-store-text hover:text-store-primary transition-colors font-semibold">
-                  My Orders
-                </Link>
-                <Button variant="gradient" size="sm" className="w-full mt-4 font-semibold">
-                  Sign In
-                </Button>
               </div>
             </div>
+
+            {/* Services Dropdown */}
+            <div className="relative group">
+              <button className="text-gray-700 hover:text-blue-600 transition-colors flex items-center">
+                Services
+                <svg className="ml-1 h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                </svg>
+              </button>
+              
+              <div className="absolute left-0 mt-2 w-64 bg-white shadow-lg rounded-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
+                <div className="p-4 space-y-2">
+                  <Link href="/3d-printing" className="block p-2 hover:bg-gray-50 rounded-md">
+                    <div className="font-medium text-gray-900">3D Printing</div>
+                    <div className="text-sm text-gray-500">Professional printing services</div>
+                  </Link>
+                  <Link href="/upload" className="block p-2 hover:bg-gray-50 rounded-md">
+                    <div className="font-medium text-gray-900">Upload & Quote</div>
+                    <div className="text-sm text-gray-500">Get instant pricing</div>
+                  </Link>
+                  <Link href="/sample-projects" className="block p-2 hover:bg-gray-50 rounded-md">
+                    <div className="font-medium text-gray-900">Sample Projects</div>
+                    <div className="text-sm text-gray-500">Explore our gallery</div>
+                  </Link>
+                </div>
+              </div>
+            </div>
+
+            <Link href="/about" className="text-gray-700 hover:text-blue-600 transition-colors">
+              About
+            </Link>
+          </nav>
+
+          {/* Search, Cart, User Actions */}
+          <div className="flex items-center space-x-4">
+            {/* Smart Search */}
+            <div className="hidden md:block">
+              <SmartSearch onSearch={handleSearch} />
+            </div>
+
+            {/* Cart */}
+            <Link href="/cart" className="relative p-2 text-gray-700 hover:text-blue-600 transition-colors">
+              <ShoppingCart className="h-6 w-6" />
+              {cartItemCount > 0 && (
+                <span className="absolute -top-1 -right-1 bg-blue-600 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
+                  {cartItemCount > 9 ? '9+' : cartItemCount}
+                </span>
+              )}
+            </Link>
+
+            {/* User Menu */}
+            {isAuthenticated ? (
+              <div className="relative group">
+                <button className="flex items-center space-x-2 p-2 text-gray-700 hover:text-blue-600 transition-colors">
+                  <User className="h-6 w-6" />
+                  <span className="hidden md:block text-sm">{user?.name || user?.email}</span>
+                </button>
+                
+                <div className="absolute right-0 mt-2 w-48 bg-white shadow-lg rounded-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
+                  <div className="py-2">
+                    <button
+                      onClick={() => handleUserMenuClick('account')}
+                      className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 flex items-center"
+                    >
+                      <User className="h-4 w-4 mr-2" />
+                      My Account
+                    </button>
+                    <button
+                      onClick={() => handleUserMenuClick('orders')}
+                      className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 flex items-center"
+                    >
+                      <Package className="h-4 w-4 mr-2" />
+                      My Orders
+                    </button>
+                    <button
+                      onClick={() => handleUserMenuClick('settings')}
+                      className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 flex items-center"
+                    >
+                      <Settings className="h-4 w-4 mr-2" />
+                      Settings
+                    </button>
+                    {user?.roles.includes('admin') && (
+                      <button
+                        onClick={() => router.push('/admin')}
+                        className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 flex items-center"
+                      >
+                        <Settings className="h-4 w-4 mr-2" />
+                        Admin Panel
+                      </button>
+                    )}
+                    <hr className="my-1" />
+                    <button
+                      onClick={() => handleUserMenuClick('logout')}
+                      className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 flex items-center"
+                    >
+                      <LogOut className="h-4 w-4 mr-2" />
+                      Sign Out
+                    </button>
+                  </div>
+                </div>
+              </div>
+            ) : (
+              <button
+                onClick={login}
+                className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
+              >
+                Sign In
+              </button>
+            )}
+
+            {/* Mobile menu toggle */}
+            <button
+              className="md:hidden p-2 text-gray-700"
+              onClick={() => setIsMenuOpen(!isMenuOpen)}
+            >
+              {isMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+            </button>
           </div>
-        )}
+        </div>
       </div>
+
+      {/* Mobile menu */}
+      {isMenuOpen && (
+        <div className="md:hidden border-t border-gray-200">
+          <div className="px-4 py-2 space-y-1 bg-white">
+            {/* Mobile Search */}
+            <div className="py-2">
+              <SmartSearch onSearch={handleSearch} />
+            </div>
+
+            <Link
+              href="/catalog"
+              className="block py-2 text-gray-700 hover:text-blue-600"
+              onClick={() => setIsMenuOpen(false)}
+            >
+              Catalog
+            </Link>
+
+            {/* Mobile Categories */}
+            <div className="py-2">
+              <div className="font-medium text-gray-900 mb-2">Categories</div>
+              {rootCategories.map((category) => (
+                <button
+                  key={category.id}
+                  onClick={() => handleCategoryClick(category)}
+                  className="block w-full text-left py-1 pl-4 text-gray-600 hover:text-blue-600"
+                >
+                  {category.name}
+                </button>
+              ))}
+            </div>
+
+            {/* Mobile Services */}
+            <div className="py-2">
+              <div className="font-medium text-gray-900 mb-2">Services</div>
+              <Link
+                href="/3d-printing"
+                className="block py-1 pl-4 text-gray-600 hover:text-blue-600"
+                onClick={() => setIsMenuOpen(false)}
+              >
+                3D Printing
+              </Link>
+              <Link
+                href="/upload"
+                className="block py-1 pl-4 text-gray-600 hover:text-blue-600"
+                onClick={() => setIsMenuOpen(false)}
+              >
+                Upload & Quote
+              </Link>
+              <Link
+                href="/sample-projects"
+                className="block py-1 pl-4 text-gray-600 hover:text-blue-600"
+                onClick={() => setIsMenuOpen(false)}
+              >
+                Sample Projects
+              </Link>
+            </div>
+
+            <Link
+              href="/about"
+              className="block py-2 text-gray-700 hover:text-blue-600"
+              onClick={() => setIsMenuOpen(false)}
+            >
+              About
+            </Link>
+
+            {/* Mobile user menu */}
+            {isAuthenticated && (
+              <div className="py-2 border-t border-gray-200">
+                <div className="font-medium text-gray-900 mb-2">Account</div>
+                <button
+                  onClick={() => {
+                    handleUserMenuClick('account');
+                    setIsMenuOpen(false);
+                  }}
+                  className="block w-full text-left py-1 pl-4 text-gray-600 hover:text-blue-600"
+                >
+                  My Account
+                </button>
+                <button
+                  onClick={() => {
+                    handleUserMenuClick('orders');
+                    setIsMenuOpen(false);
+                  }}
+                  className="block w-full text-left py-1 pl-4 text-gray-600 hover:text-blue-600"
+                >
+                  My Orders
+                </button>
+                <button
+                  onClick={() => {
+                    handleUserMenuClick('logout');
+                    setIsMenuOpen(false);
+                  }}
+                  className="block w-full text-left py-1 pl-4 text-red-600 hover:text-red-700"
+                >
+                  Sign Out
+                </button>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
     </header>
-  )
+  );
 }
