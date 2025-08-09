@@ -763,7 +763,7 @@ class ApiClient {
         name: product.name || `Product ${index + 1}`,
         images: product.images || ["/api/placeholder/400/300"],
         tags: product.tags || [],
-        currency: product.currency || "USD",
+        currency: product.currency || "INR",
       }));
 
       return featuredProducts;
@@ -798,7 +798,7 @@ class ApiClient {
         price: product.originalPrice || product.price || 0,
         sale_price: product.originalPrice ? product.price : null,
         effective_price: product.price || 0,
-        currency: "USD",
+        currency: "INR",
         stock_qty: product.stockCount || 0,
         track_inventory: true,
         in_stock: product.inStock !== undefined ? product.inStock : true,
@@ -857,7 +857,7 @@ class ApiClient {
       shipping_cost: 0,
       tax_amount: 0,
       total: 0,
-      currency: "USD",
+      currency: "INR",
       created_at: new Date().toISOString(),
       updated_at: new Date().toISOString(),
     };
