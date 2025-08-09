@@ -165,18 +165,12 @@ export default function Header() {
         {isMenuOpen && (
           <div className="lg:hidden border-t border-gray-200 py-4">
             {/* Mobile Search */}
-            <form onSubmit={handleSearch} className="mb-4 md:hidden">
-              <div className="relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
-                <input
-                  type="text"
-                  placeholder="Search products..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-store-primary focus:border-transparent bg-white"
-                />
-              </div>
-            </form>
+            <div className="mb-4 md:hidden">
+              <SmartSearch
+                placeholder="Search products..."
+                className="w-full"
+              />
+            </div>
 
             {/* Mobile Navigation */}
             <div className="space-y-3">
