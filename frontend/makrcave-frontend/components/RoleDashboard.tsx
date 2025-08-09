@@ -450,7 +450,7 @@ export default function RoleDashboard() {
     case 'makerspace_admin':
       return <MakerspaceAdminDashboard />;
     case 'service_provider':
-      return <ServiceProviderDashboard />;
+      return <ServiceProviderDashboardWrapper />;
     case 'maker':
       return <MakerDashboard />;
     default:
