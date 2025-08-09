@@ -2,15 +2,15 @@
 
 import React from 'react'
 import Link from 'next/link'
-import { 
-  Mail, 
-  Phone, 
-  MapPin, 
-  Github, 
-  Twitter, 
-  Linkedin, 
+import {
+  Mail,
+  Phone,
+  MapPin,
+  Github,
+  Twitter,
+  Linkedin,
   Instagram,
-  Printer3D,
+  Printer,
   Package,
   Users,
   Shield
@@ -56,7 +56,7 @@ export default function Footer() {
 
   const features = [
     {
-      icon: Printer3D,
+      icon: Printer,
       title: 'Instant 3D Printing',
       description: 'Upload STL, get quotes, print locally'
     },
