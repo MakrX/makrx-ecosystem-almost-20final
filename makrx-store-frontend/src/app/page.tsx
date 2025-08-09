@@ -267,24 +267,24 @@ export default function HomePage() {
       </section>
 
       {/* Stats Section */}
-      <section className="py-16 bg-blue-600 text-white">
+      <section className="py-16 bg-blue-600 dark:bg-blue-700 text-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
             <div>
               <div className="text-4xl font-bold mb-2">10k+</div>
-              <div className="text-blue-200">Happy Customers</div>
+              <div className="text-blue-200 dark:text-blue-300">Happy Customers</div>
             </div>
             <div>
               <div className="text-4xl font-bold mb-2">50k+</div>
-              <div className="text-blue-200">Prints Delivered</div>
+              <div className="text-blue-200 dark:text-blue-300">Prints Delivered</div>
             </div>
             <div>
               <div className="text-4xl font-bold mb-2">24hr</div>
-              <div className="text-blue-200">Average Turnaround</div>
+              <div className="text-blue-200 dark:text-blue-300">Average Turnaround</div>
             </div>
             <div>
               <div className="text-4xl font-bold mb-2">99%</div>
-              <div className="text-blue-200">Customer Satisfaction</div>
+              <div className="text-blue-200 dark:text-blue-300">Customer Satisfaction</div>
             </div>
           </div>
         </div>
