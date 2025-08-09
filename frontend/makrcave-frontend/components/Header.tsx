@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { formatUserDisplayName } from '../lib/userUtils';
 import { FeatureGate } from './FeatureGate';
-import MakrXThemeToggle from './MakrXThemeToggle';
+import { ThemeToggle } from '../../../packages/ui/components/ThemeToggle';
 import NotificationPanel from './NotificationPanel';
 
 export default function Header() {
