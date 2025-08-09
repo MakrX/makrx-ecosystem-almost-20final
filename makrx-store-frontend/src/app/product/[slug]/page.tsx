@@ -27,7 +27,7 @@ import ProductReviews from "@/components/ProductReviews";
 export default function ProductPage() {
   const params = useParams();
   const router = useRouter();
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, user } = useAuth();
   const slug = params.slug as string;
 
   const [product, setProduct] = useState<Product | null>(null);
