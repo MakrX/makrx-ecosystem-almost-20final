@@ -20,7 +20,8 @@ import {
   Sparkles,
   TrendingUp,
   BookOpen,
-  Shield
+  Shield,
+  MessageSquare
 } from 'lucide-react';
 
 export default function ManagerSidebar() {
@@ -107,6 +108,12 @@ export default function ManagerSidebar() {
       href: '/portal/learning',
       icon: BookOpen,
       active: isActive('/portal/learning')
+    },
+    {
+      name: 'Community',
+      href: '/portal/community',
+      icon: MessageSquare,
+      active: isActive('/portal/community')
     },
     {
       name: 'Notifications Center',
