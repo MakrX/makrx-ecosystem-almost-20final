@@ -186,7 +186,7 @@ export default function ShippingPolicy() {
                   <h3 className="text-lg font-semibold text-gray-900 mb-2">Fragile Items</h3>
                   <p className="text-gray-600">
                     Detailed 3D prints and delicate materials receive extra protective packaging.
-                    Signature confirmation required for deliveries over $200.
+                    Signature confirmation required for deliveries over ₹16,600.
                   </p>
                 </div>
               </div>
