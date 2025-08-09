@@ -350,12 +350,12 @@ const LandingPage = () => {
               {
                 icon: '🛒',
                 title: 'MakrX.Store',
-                description: 'BOMs automatically link to product codes for instant ordering and quick reorders'
+                description: 'Integrated e-commerce: instant BOM ordering, quick reorders, and automated material procurement'
               },
               {
                 icon: '🌍',
                 title: 'MakrX.org',
-                description: 'Single sign-on login and profile sync across the entire ecosystem'
+                description: 'Unified ecosystem gateway: single sign-on, maker profiles, and global makerspace discovery'
               },
               {
                 icon: '🎓',
