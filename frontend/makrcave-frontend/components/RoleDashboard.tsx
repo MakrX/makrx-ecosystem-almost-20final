@@ -1,6 +1,7 @@
 import { useAuth } from '../contexts/AuthContext';
 import NotificationWidget from './NotificationWidget';
 import AnalyticsWidget from './AnalyticsWidget';
+import ServiceProviderDashboard from './ServiceProviderDashboard';
 import {
   Crown, Shield, Wrench, Settings, UserCheck,
   BarChart3, Users, Building2, Package,
