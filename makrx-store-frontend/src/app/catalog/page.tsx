@@ -190,6 +190,7 @@ export default function CatalogPage() {
                 variant="outline"
                 onClick={() => setShowFilters(!showFilters)}
                 className={`${showFilters ? 'bg-store-primary text-white' : ''} relative`}
+                data-filters-toggle
               >
                 <Filter className="h-4 w-4 mr-2" />
                 Filters
