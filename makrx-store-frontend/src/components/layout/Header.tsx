@@ -4,6 +4,7 @@ import React, { useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/Button'
+import SmartSearch from '@/components/SmartSearch'
 import {
   ShoppingCart,
   User,
