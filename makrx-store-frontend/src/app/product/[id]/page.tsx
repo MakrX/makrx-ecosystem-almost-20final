@@ -151,7 +151,7 @@ export default function ProductDetailPage() {
                 <div className="flex items-start justify-between mb-2">
                   <h1 className="text-3xl font-bold text-store-text">{product.name}</h1>
                   <div className="flex gap-2">
-                    <button className="p-2 text-gray-600 hover:text-red-500 transition-colors">
+                    <button className="p-2 text-gray-600 hover:text-red-500 transition-colors" data-wishlist>
                       <Heart className="h-5 w-5" />
                     </button>
                     <button className="p-2 text-gray-600 hover:text-store-primary transition-colors">
