@@ -13,7 +13,7 @@ import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { Building2, Eye, EyeOff, Lock, Mail, User, Crown, Shield, Wrench, Settings, UserCheck } from 'lucide-react';
-import MakrXThemeToggle from '../components/MakrXThemeToggle';
+import { ThemeToggle } from '../../../packages/ui/components/ThemeToggle';
 
 export default function Login() {
   // ========================================
