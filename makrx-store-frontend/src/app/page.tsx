@@ -142,11 +142,11 @@ export default function HomePage() {
               Upload your STL file and get real-time pricing from verified local providers
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button size="lg" variant="outline" className="border-2 border-white text-white font-semibold hover:bg-white hover:text-store-primary">
+              <Button size="lg" className="bg-white text-store-primary font-semibold hover:bg-gray-100 border-2 border-white">
                 <Upload className="mr-2 h-5 w-5" />
                 Upload STL File
               </Button>
-              <Button size="lg" className="bg-white text-store-primary font-semibold hover:bg-gray-100 focus:ring-2 focus:ring-white/50">
+              <Button size="lg" variant="outline" className="border-2 border-white text-white font-semibold hover:bg-white hover:text-store-primary">
                 View Sample Projects
                 <ArrowRight className="ml-2 h-5 w-5" />
               </Button>
