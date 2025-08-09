@@ -22,49 +22,99 @@ import {
   AlertTriangle
 } from 'lucide-react'
 
-export default function AdminPortal() {
+function AdminPortal() {
+  const [products, setProducts] = useState<Product[]>([])
+  const [stats, setStats] = useState<AdminStats | null>(null)
   const [searchQuery, setSearchQuery] = useState('')
   const [selectedCategory, setSelectedCategory] = useState('all')
-  const [isAuthenticated, setIsAuthenticated] = useState(false)
-  const [isLoading, setIsLoading] = useState(true)
+  const [categories, setCategories] = useState<Array<{id: string, name: string, slug: string}>>([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
+  const [currentPage, setCurrentPage] = useState(1)
+  const [totalPages, setTotalPages] = useState(1)
 
   useEffect(() => {
-    // Check authentication status on component mount
-    const checkAuth = () => {
-      const authenticated = isAdminAuthenticated()
-      setIsAuthenticated(authenticated)
-      setIsLoading(false)
+    loadAdminData()
+  }, [currentPage, searchQuery, selectedCategory])
+
+  const loadAdminData = async () => {
+    try {
+      setLoading(true)
+
+      // Load admin stats
+      const adminStats = await api.getAdminStats()
+      setStats(adminStats)
+
+      // Load categories
+      const categoriesData = await api.getCategories()
+      setCategories(categoriesData)
+
+      // Load products with filters
+      const filters: any = {
+        page: currentPage,
+        per_page: 20
+      }
+
+      if (searchQuery) {
+        filters.search = searchQuery
+      }
+
+      if (selectedCategory !== 'all') {
+        filters.category = selectedCategory
+      }
+
+      const productsData = await api.getProducts(filters)
+      setProducts(productsData.products)
+      setTotalPages(Math.ceil(productsData.total / 20))
+
+    } catch (err) {
+      console.error('Failed to load admin data:', err)
+      setError('Failed to load admin data')
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const handleDeleteProduct = async (productId: string) => {
+    if (!confirm('Are you sure you want to delete this product?')) {
+      return
     }
 
-    checkAuth()
-  }, [])
-
-  const handleAuthenticated = () => {
-    setIsAuthenticated(true)
+    try {
+      await api.deleteProduct(productId)
+      setProducts(products.filter(p => p.id !== productId))
+    } catch (err) {
+      console.error('Failed to delete product:', err)
+      alert('Failed to delete product')
+    }
   }
 
-  const handleLogout = () => {
-    logoutAdmin()
-    setIsAuthenticated(false)
-  }
-
-  // Show loading state
-  if (isLoading) {
+  if (loading && !products.length) {
     return (
       <Layout>
         <div className="min-h-screen bg-gray-50 flex items-center justify-center">
           <div className="text-center">
-            <div className="w-8 h-8 border-4 border-store-primary border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-            <p className="text-store-text-muted">Loading...</p>
+            <div className="w-8 h-8 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+            <p className="text-gray-600">Loading admin dashboard...</p>
           </div>
         </div>
       </Layout>
     )
   }
 
-  // Show authentication form if not authenticated
-  if (!isAuthenticated) {
-    return <AdminAuth onAuthenticated={handleAuthenticated} />
+  if (error) {
+    return (
+      <Layout>
+        <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+          <div className="text-center">
+            <AlertTriangle className="h-12 w-12 text-red-600 mx-auto mb-4" />
+            <h2 className="text-xl font-semibold text-gray-900 mb-2">Error Loading Admin Dashboard</h2>
+            <p className="text-gray-600 mb-4">{error}</p>
+            <Button onClick={loadAdminData}>Try Again</Button>
+          </div>
+        </div>
+      </Layout>
+    )
   }
 
   // Mock data for demonstration
