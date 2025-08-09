@@ -71,6 +71,7 @@ app.include_router(equipment_reservations_router, prefix="/api/v1", tags=["equip
 app.include_router(job_management_router, tags=["job-management"])
 app.include_router(machine_access_router, tags=["machine-access"])
 app.include_router(enhanced_bom_router, tags=["enhanced-bom"])
+app.include_router(access_control_router, prefix="/api/v1/access-control", tags=["access-control"])
 
 # Root endpoint
 @app.get("/")
