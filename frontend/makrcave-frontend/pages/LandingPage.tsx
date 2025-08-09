@@ -557,9 +557,9 @@ const LandingPage = () => {
               <CardContent>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                   {[
-                    'Access to bulk inventory',
-                    'Job forwarding from MakrX.Store',
-                    'Monetize via membership plans'
+                    'MakrX.Store integration & bulk ordering',
+                    'Fabrication job forwarding & revenue',
+                    'Ecosystem-wide member access & growth'
                   ].map((benefit, idx) => (
                     <div key={idx} className="text-center">
                       <div className="bg-blue-500/20 rounded-lg p-4 mb-3">
