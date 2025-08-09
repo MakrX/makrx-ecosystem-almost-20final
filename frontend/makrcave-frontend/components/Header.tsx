@@ -70,7 +70,7 @@ export default function Header() {
         </div>
 
         {/* Theme Toggle */}
-        <MakrXThemeToggle variant="compact" className="hidden sm:flex" />
+        <ThemeToggle variant="compact" className="hidden sm:flex" />
 
         {/* Notifications */}
         <NotificationPanel />
