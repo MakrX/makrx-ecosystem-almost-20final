@@ -13,7 +13,7 @@ import logging
 
 from app.core.config import settings
 from app.core.db import engine, create_tables
-from app.routes import auth, catalog, cart, orders, uploads, quotes, admin, webhooks, health
+from app.routes import auth, catalog, cart, orders, uploads, quotes, admin, webhooks, health, bridge
 
 # Configure logging
 logging.basicConfig(
