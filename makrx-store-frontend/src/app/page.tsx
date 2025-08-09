@@ -173,9 +173,9 @@ export default function HomePage() {
             {categories.map((category, index) => {
               const Icon = category.icon
               return (
-                <Link 
+                <Link
                   key={index}
-                  href={`/catalog/${category.name.toLowerCase().replace(' ', '-')}`}
+                  href={`/catalog/${category.name.toLowerCase().replace(/\s+/g, '-').replace('&', '').replace(/[^a-z0-9-]/g, '')}`}
                   className="group bg-white rounded-xl p-6 shadow-md hover:shadow-xl transition-all duration-300 hover:-translate-y-1"
                 >
                   <div className="text-center">
