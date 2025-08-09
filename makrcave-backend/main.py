@@ -22,6 +22,7 @@ from routes.machine_access import router as machine_access_router
 from routes.enhanced_bom import router as enhanced_bom_router
 from routes.access_control import router as access_control_router
 from routes.enhanced_analytics import router as enhanced_analytics_router
+from routes.notifications import router as notifications_router
 
 # Create FastAPI application
 app = FastAPI(
