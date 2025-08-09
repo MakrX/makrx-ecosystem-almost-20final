@@ -66,7 +66,17 @@ export function ThemeToggle() {
 
 // Compact version for mobile
 export function ThemeToggleCompact() {
-  const { theme, toggleTheme } = useTheme();
+  const { theme, setTheme } = useTheme();
+
+  const toggleTheme = () => {
+    if (theme === "light") {
+      setTheme("dark");
+    } else if (theme === "dark") {
+      setTheme("system");
+    } else {
+      setTheme("light");
+    }
+  };
 
   const getIcon = () => {
     switch (theme) {
