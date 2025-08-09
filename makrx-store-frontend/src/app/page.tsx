@@ -115,7 +115,7 @@ export default function HomePage() {
                 <Search className="mr-2 h-5 w-5" />
                 Browse Catalog
               </Button>
-              <Button size="xl" variant="outline" className="text-lg font-semibold border-2 border-white text-white hover:bg-white hover:text-gray-900">
+              <Button size="xl" className="text-lg font-semibold bg-white text-gray-900 hover:bg-gray-100 border-2 border-white">
                 <Upload className="mr-2 h-5 w-5" />
                 Upload & Quote
               </Button>
