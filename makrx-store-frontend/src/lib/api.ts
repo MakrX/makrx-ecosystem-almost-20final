@@ -664,7 +664,35 @@ class ApiClient {
   // Mock data methods for fallback when backend is unavailable
   private getMockProducts() {
     // Transform mock data to match API response format
-    const transformedProducts = mockProducts.map(product => ({
+    const transformedProducts = this.transformMockProducts()
+
+    return {
+      products: transformedProducts,
+      total: transformedProducts.length,
+      page: 1,
+      per_page: 20,
+      pages: Math.ceil(transformedProducts.length / 20),
+      has_next: false,
+      has_prev: false
+    }
+  }
+
+  private getMockFeaturedProducts(endpoint: string) {
+    // Extract limit from query params
+    const url = new URL(`http://localhost${endpoint}`)
+    const limit = parseInt(url.searchParams.get('limit') || '10')
+
+    // Get featured products from mock data
+    const transformedProducts = this.transformMockProducts()
+    const featuredProducts = transformedProducts.filter(product =>
+      product.tags.includes('featured') || product.tags.includes('popular')
+    ).slice(0, limit)
+
+    return featuredProducts
+  }
+
+  private transformMockProducts() {
+    return mockProducts.map(product => ({
       id: parseInt(product.id),
       slug: product.id,
       name: product.name,
@@ -693,16 +721,6 @@ class ApiClient {
       created_at: new Date().toISOString(),
       updated_at: new Date().toISOString()
     }))
-
-    return {
-      products: transformedProducts,
-      total: transformedProducts.length,
-      page: 1,
-      per_page: 20,
-      pages: Math.ceil(transformedProducts.length / 20),
-      has_next: false,
-      has_prev: false
-    }
   }
 
   private getMockCategories() {
