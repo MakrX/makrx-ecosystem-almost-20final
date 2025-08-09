@@ -6,12 +6,12 @@ import Layout from '@/components/layout/Layout'
 import { Button } from '@/components/ui/Button'
 import { withAuth } from '@/contexts/AuthContext'
 import { api, type Product, type AdminStats, formatPrice } from '@/lib/api'
-import {
-  Package,
-  Plus,
-  Edit3,
-  Trash2,
-  Search,
+import { 
+  Package, 
+  Plus, 
+  Edit3, 
+  Trash2, 
+  Search, 
   Filter,
   DollarSign,
   TrendingUp,
@@ -40,7 +40,7 @@ function AdminPortal() {
   const loadAdminData = async () => {
     try {
       setLoading(true)
-
+      
       // Load admin stats
       const adminStats = await api.getAdminStats()
       setStats(adminStats)
@@ -66,7 +66,7 @@ function AdminPortal() {
       const productsData = await api.getProducts(filters)
       setProducts(productsData.products)
       setTotalPages(Math.ceil(productsData.total / 20))
-
+      
     } catch (err) {
       console.error('Failed to load admin data:', err)
       setError('Failed to load admin data')
@@ -256,8 +256,8 @@ function AdminPortal() {
                       <tr key={product.id} className="hover:bg-gray-50">
                         <td className="px-6 py-4 whitespace-nowrap">
                           <div className="flex items-center">
-                            <img
-                              src={product.images[0] || '/placeholder.svg'}
+                            <img 
+                              src={product.images[0] || '/placeholder.svg'} 
                               alt={product.name}
                               className="h-10 w-10 rounded-lg object-cover"
                             />
@@ -310,9 +310,9 @@ function AdminPortal() {
                                 <Edit3 className="h-4 w-4" />
                               </Button>
                             </Link>
-                            <Button
-                              variant="ghost"
-                              size="sm"
+                            <Button 
+                              variant="ghost" 
+                              size="sm" 
                               className="text-gray-600 hover:text-red-600"
                               onClick={() => handleDeleteProduct(product.id)}
                             >
@@ -332,8 +332,8 @@ function AdminPortal() {
                 <Package className="h-12 w-12 text-gray-300 mx-auto mb-4" />
                 <h3 className="text-lg font-medium text-gray-900 mb-2">No products found</h3>
                 <p className="text-gray-500 mb-6">
-                  {searchQuery || selectedCategory !== 'all'
-                    ? 'Try adjusting your search or filter criteria.'
+                  {searchQuery || selectedCategory !== 'all' 
+                    ? 'Try adjusting your search or filter criteria.' 
                     : 'Get started by adding your first product.'
                   }
                 </p>
@@ -380,3 +380,5 @@ function AdminPortal() {
     </Layout>
   )
 }
+
+export default withAuth(AdminPortal, ['admin'])
