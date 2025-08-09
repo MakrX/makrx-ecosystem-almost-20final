@@ -194,13 +194,13 @@ export default function EnhancedIndex() {
                       </div>
                     </div>
                     <p className="text-muted-foreground mb-6">
-                      Upload designs, get instant quotes, order custom 3D prints, and browse 
-                      a marketplace of maker-created products and services.
+                      Maker-focused e-commerce: tools, materials, services, custom fabrication orders with instant quotes,
+                      and seamless integration with MakrCave for quick reorders and job materials.
                     </p>
                     <div className="flex flex-wrap gap-2">
-                      <span className="bg-makrx-yellow/10 text-makrx-yellow px-3 py-1 rounded-full text-sm">3D Printing</span>
-                      <span className="bg-makrx-yellow/10 text-makrx-yellow px-3 py-1 rounded-full text-sm">Marketplace</span>
-                      <span className="bg-makrx-yellow/10 text-makrx-yellow px-3 py-1 rounded-full text-sm">Design Upload</span>
+                      <span className="bg-makrx-yellow/10 text-makrx-yellow px-3 py-1 rounded-full text-sm">Custom Orders</span>
+                      <span className="bg-makrx-yellow/10 text-makrx-yellow px-3 py-1 rounded-full text-sm">Quick Reorders</span>
+                      <span className="bg-makrx-yellow/10 text-makrx-yellow px-3 py-1 rounded-full text-sm">Instant Quotes</span>
                     </div>
                   </div>
                 </Link>
