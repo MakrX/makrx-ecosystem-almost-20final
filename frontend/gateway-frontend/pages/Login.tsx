@@ -109,6 +109,14 @@ export default function Login() {
               </div>
             </div>
 
+            {/* Error Display */}
+            {error && (
+              <div className="bg-red-500/10 border border-red-500/20 rounded-lg p-3 flex items-center gap-2">
+                <AlertCircle className="w-4 h-4 text-red-400" />
+                <p className="text-sm text-red-400">{error.message}</p>
+              </div>
+            )}
+
             {/* Demo Credentials */}
             <div className="bg-makrx-yellow/10 border border-makrx-yellow/20 rounded-lg p-3">
               <p className="text-xs text-makrx-yellow font-medium mb-1">Demo Credentials:</p>
