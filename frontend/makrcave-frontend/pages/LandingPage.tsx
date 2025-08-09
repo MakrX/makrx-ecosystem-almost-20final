@@ -23,6 +23,30 @@ const LandingPage = () => {
             </div>
             
             <nav className="hidden md:flex items-center space-x-8">
+              <div className="relative group">
+                <button className="text-white/80 hover:text-white transition-colors flex items-center">
+                  MakrX Ecosystem
+                  <svg className="ml-1 h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                  </svg>
+                </button>
+                <div className="absolute left-0 mt-2 w-64 bg-black/90 backdrop-blur-md border border-white/20 shadow-lg rounded-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
+                  <div className="p-4 space-y-2">
+                    <a href="https://makrx.org" className="block p-2 hover:bg-white/10 rounded-md">
+                      <div className="font-medium text-white">MakrX.org</div>
+                      <div className="text-sm text-white/70">Ecosystem gateway & maker hub</div>
+                    </a>
+                    <div className="block p-2 bg-blue-500/20 rounded-md">
+                      <div className="font-medium text-blue-400">MakrCave</div>
+                      <div className="text-sm text-blue-300/70">You are here - Makerspace management</div>
+                    </div>
+                    <a href="https://store.makrx.org" className="block p-2 hover:bg-white/10 rounded-md">
+                      <div className="font-medium text-white">MakrX.Store</div>
+                      <div className="text-sm text-white/70">E-commerce & fabrication hub</div>
+                    </a>
+                  </div>
+                </div>
+              </div>
               <Link to="/find-makerspace" className="text-white/80 hover:text-white transition-colors">Find Makerspace</Link>
               <Link to="/makrverse" className="text-white/80 hover:text-white transition-colors">MakrVerse</Link>
               <a href="#features" className="text-white/80 hover:text-white transition-colors">Features</a>
