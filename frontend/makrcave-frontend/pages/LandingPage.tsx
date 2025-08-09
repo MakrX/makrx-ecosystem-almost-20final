@@ -695,8 +695,11 @@ const LandingPage = () => {
                 </div>
                 <span className="text-xl font-bold text-white">MakrCave</span>
               </div>
-              <p className="text-white/70">
-                Empowering makers worldwide with tools, spaces, and community.
+              <p className="text-white/70 mb-4">
+                Comprehensive makerspace management within the MakrX ecosystem.
+              </p>
+              <p className="text-white/60 text-sm">
+                MakrX is an initiative by Botness Technologies Pvt. Ltd.
               </p>
             </div>
             
