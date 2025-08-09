@@ -59,6 +59,7 @@ app.include_router(skill_router, prefix="/api/v1", tags=["skills"])
 app.include_router(bridge_router, prefix="/api/v1/bridge", tags=["bridge"])
 app.include_router(membership_plans_router)
 app.include_router(announcements_router)
+app.include_router(filament_tracking_router)
 
 # Root endpoint
 @app.get("/")
