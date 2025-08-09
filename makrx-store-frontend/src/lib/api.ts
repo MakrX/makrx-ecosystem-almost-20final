@@ -310,6 +310,8 @@ class ApiClient {
     switch (path) {
       case '/catalog/products':
         return this.getMockProducts() as T
+      case '/catalog/products/featured':
+        return this.getMockFeaturedProducts(endpoint) as T
       case '/catalog/categories':
         return this.getMockCategories() as T
       case '/cart':
