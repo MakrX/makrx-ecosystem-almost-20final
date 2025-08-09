@@ -567,7 +567,7 @@ export default function ProductPage() {
             {activeTab === "reviews" && product && (
               <ProductReviews
                 productId={product.id.toString()}
-                userId={isAuthenticated ? "current-user" : undefined}
+                userId={user?.id}
                 isAuthenticated={isAuthenticated}
               />
             )}
