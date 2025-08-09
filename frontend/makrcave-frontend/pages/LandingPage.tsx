@@ -484,7 +484,7 @@ const LandingPage = () => {
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-12 max-w-6xl mx-auto items-center">
             <div>
-              <h3 className="text-3xl font-bold text-white mb-6">Transform Your Institution</h3>
+              <h3 className="text-3xl font-bold text-white mb-6">Scale Your Educational Impact</h3>
               <div className="space-y-6">
                 {[
                   { title: 'Trackable Usage', desc: 'Monitor equipment usage and student engagement' },
