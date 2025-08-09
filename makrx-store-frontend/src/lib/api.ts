@@ -684,9 +684,16 @@ class ApiClient {
 
     // Get featured products from mock data
     const transformedProducts = this.transformMockProducts()
-    const featuredProducts = transformedProducts.filter(product =>
+    let featuredProducts = transformedProducts.filter(product =>
       product.tags.includes('featured') || product.tags.includes('popular')
-    ).slice(0, limit)
+    )
+
+    // If no featured products found, use first few products
+    if (featuredProducts.length === 0) {
+      featuredProducts = transformedProducts.slice(0, limit)
+    } else {
+      featuredProducts = featuredProducts.slice(0, limit)
+    }
 
     return featuredProducts
   }
