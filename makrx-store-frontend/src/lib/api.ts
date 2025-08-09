@@ -713,6 +713,32 @@ class ApiClient {
 
     return transformedCategories
   }
+
+  private getMockCart() {
+    return {
+      id: 'mock-cart',
+      user_id: null,
+      session_id: 'mock-session',
+      items: [],
+      item_count: 0,
+      subtotal: 0,
+      shipping_cost: 0,
+      tax_amount: 0,
+      total: 0,
+      currency: 'USD',
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString()
+    }
+  }
+
+  private getMockUser() {
+    return {
+      user_id: 'mock-user',
+      email: 'demo@makrx.store',
+      name: 'Demo User',
+      roles: ['user']
+    }
+  }
 }
 
 // Export singleton instance
