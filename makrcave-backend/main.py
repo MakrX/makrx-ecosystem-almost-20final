@@ -61,6 +61,7 @@ app.include_router(bridge_router, prefix="/api/v1/bridge", tags=["bridge"])
 app.include_router(membership_plans_router)
 app.include_router(announcements_router)
 app.include_router(filament_tracking_router)
+app.include_router(enhanced_projects_router, prefix="/api/v1/enhanced-projects", tags=["enhanced-projects"])
 
 # Root endpoint
 @app.get("/")
