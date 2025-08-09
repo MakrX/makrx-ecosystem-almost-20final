@@ -53,6 +53,7 @@ const App = () => {
                 <Route path="/store" element={<Store />} />
                 <Route path="/learn" element={<Learn />} />
                 <Route path="/profile" element={<EnhancedProfile />} />
+                <Route path="/admin/feature-flags" element={<FeatureFlagsAdmin />} />
                 {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                 <Route path="*" element={<NotFound />} />
               </Routes>
