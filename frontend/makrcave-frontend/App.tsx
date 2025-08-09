@@ -26,6 +26,7 @@ import SkillManagement from "./pages/SkillManagement";
 import NotificationsCenter from "./pages/NotificationsCenter";
 import MembershipPlans from "./pages/MembershipPlans";
 import Announcements from "./pages/Announcements";
+import EnhancedInventory from "./pages/EnhancedInventory";
 import AdminUsers from "./pages/admin/Users";
 import AdminMakerspace from "./pages/admin/Makerspace";
 import AdminMakerspaces from "./pages/admin/Makerspaces";
