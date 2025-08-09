@@ -37,7 +37,7 @@ const makerspaces: Makerspace[] = [
     equipment: ["3D Printers", "Laser Cutters", "CNC Mills", "Electronics Lab"],
     status: "Open",
     image: "/api/placeholder/400/250",
-    price: "$25/day",
+    price: "₹2,075/day",
   },
   {
     id: "2",
@@ -48,7 +48,7 @@ const makerspaces: Makerspace[] = [
     equipment: ["3D Printers", "Woodworking", "Textiles", "Ceramics"],
     status: "Busy",
     image: "/api/placeholder/400/250",
-    price: "$20/day",
+    price: "₹1,660/day",
   },
   {
     id: "3",
@@ -59,7 +59,7 @@ const makerspaces: Makerspace[] = [
     equipment: ["Advanced CNC", "Metal Working", "Electronics", "Testing Lab"],
     status: "Closed",
     image: "/api/placeholder/400/250",
-    price: "$35/day",
+    price: "₹2,905/day",
   },
 ];
 
@@ -209,7 +209,7 @@ export default function MakrCave() {
                   </div>
                   <div className="text-center">
                     <div className="text-2xl font-bold text-makrx-brown">
-                      $45
+                      ₹3,735
                     </div>
                     <div className="text-xs text-muted-foreground">
                       Credit Balance
