@@ -22,6 +22,10 @@ export default function HomePage() {
         
         setFeaturedProducts(Array.isArray(productsData) ? productsData : []);
         setCategories(Array.isArray(categoriesData) ? categoriesData : []);
+        console.log('Loaded data successfully:', {
+          products: productsData?.length || 0,
+          categories: categoriesData?.length || 0
+        });
       } catch (error) {
         console.error('Failed to load homepage data:', error);
       } finally {
