@@ -78,9 +78,9 @@ export default function Footer() {
   ]
 
   return (
-    <footer className="bg-gray-900 text-white">
+    <footer className="bg-gray-900 dark:bg-gray-950 text-white">
       {/* Top Section - Features */}
-      <div className="border-b border-gray-800">
+      <div className="border-b border-gray-800 dark:border-gray-700">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             {features.map((feature, index) => {
@@ -91,7 +91,7 @@ export default function Footer() {
                     <Icon className="h-8 w-8 text-white" />
                   </div>
                   <h3 className="text-lg font-semibold mb-2">{feature.title}</h3>
-                  <p className="text-gray-400 text-sm">{feature.description}</p>
+                  <p className="text-gray-400 dark:text-gray-500 text-sm">{feature.description}</p>
                 </div>
               )
             })}
