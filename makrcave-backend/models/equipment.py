@@ -105,6 +105,11 @@ class Equipment(Base):
     reservations = relationship("EquipmentReservation", back_populates="equipment", cascade="all, delete-orphan")
     ratings = relationship("EquipmentRating", back_populates="equipment", cascade="all, delete-orphan")
 
+    # Enhanced reservation system relationships
+    enhanced_reservations = relationship("EnhancedEquipmentReservation", back_populates="equipment", cascade="all, delete-orphan")
+    cost_rules = relationship("EquipmentCostRule", back_populates="equipment", cascade="all, delete-orphan")
+    skill_gates = relationship("EquipmentSkillGate", back_populates="equipment", cascade="all, delete-orphan")
+
     # Skill requirements (many-to-many relationship)
     required_skills = relationship("Skill", secondary="skill_equipment", back_populates="equipment")
 
