@@ -58,7 +58,7 @@ export default function Login() {
     <div className="min-h-screen bg-gradient-to-br from-makrx-blue via-makrx-blue/95 to-makrx-blue/90 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 flex items-center justify-center p-6">
       {/* Theme Toggle */}
       <div className="fixed top-6 right-6 z-50">
-        <MakrXThemeToggle variant="default" />
+        <ThemeToggle variant="default" />
       </div>
       {/* Background Pattern */}
       <div className="absolute inset-0 opacity-20">
