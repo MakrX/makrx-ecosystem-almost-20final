@@ -146,10 +146,12 @@ export default function HomePage() {
                 <Upload className="mr-2 h-5 w-5" />
                 Upload STL File
               </Button>
-              <Button size="lg" variant="outline" className="border-2 border-white text-white font-semibold hover:bg-white hover:text-store-primary">
-                View Sample Projects
-                <ArrowRight className="ml-2 h-5 w-5" />
-              </Button>
+              <Link href="/sample-projects">
+                <Button size="lg" variant="outline" className="border-2 border-white text-white font-semibold hover:bg-white hover:text-store-primary">
+                  View Sample Projects
+                  <ArrowRight className="ml-2 h-5 w-5" />
+                </Button>
+              </Link>
             </div>
           </div>
         </div>
