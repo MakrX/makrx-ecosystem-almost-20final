@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { Building2, Mail, Lock, ArrowLeft, CheckCircle, AlertCircle } from 'lucide-react';
-import MakrXThemeToggle from '../components/MakrXThemeToggle';
+import { ThemeToggle } from '../../../packages/ui/components/ThemeToggle';
 import authService from '../services/authService';
 
 export default function ForgotPassword() {
