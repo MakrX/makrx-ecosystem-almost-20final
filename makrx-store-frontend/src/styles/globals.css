@@ -67,6 +67,10 @@
   background: #f1f5f9;
 }
 
+.dark .store-scrollbar::-webkit-scrollbar-track {
+  background: #1e293b;
+}
+
 .store-scrollbar::-webkit-scrollbar-thumb {
   background: #6366f1;
   border-radius: 3px;
@@ -74,6 +78,14 @@
 
 .store-scrollbar::-webkit-scrollbar-thumb:hover {
   background: #4f46e5;
+}
+
+.dark .store-scrollbar::-webkit-scrollbar-thumb {
+  background: #5b21b6;
+}
+
+.dark .store-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #7c3aed;
 }
 
 /* Glassmorphism effects */
