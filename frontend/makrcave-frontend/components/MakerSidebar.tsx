@@ -13,7 +13,8 @@ import {
   MessageSquare,
   Heart,
   LogOut,
-  CreditCard
+  CreditCard,
+  Sparkles
 } from 'lucide-react';
 
 export default function MakerSidebar() {
