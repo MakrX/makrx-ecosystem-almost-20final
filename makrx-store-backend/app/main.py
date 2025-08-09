@@ -36,14 +36,16 @@ logging.basicConfig(
 
 logger = logging.getLogger(__name__)
 
-# Create FastAPI app
+# Create FastAPI app with security configuration
 app = FastAPI(
     title="MakrX Store API",
-    description="E-commerce and 3D printing services platform",
+    description="E-commerce and 3D printing services platform with comprehensive security",
     version="1.0.0",
-    docs_url="/docs",
-    redoc_url="/redoc",
-    openapi_url="/openapi.json"
+    docs_url="/docs" if settings.ENVIRONMENT != "production" else None,  # Disable docs in production
+    redoc_url="/redoc" if settings.ENVIRONMENT != "production" else None,
+    openapi_url="/openapi.json" if settings.ENVIRONMENT != "production" else None,
+    # Security headers
+    swagger_ui_parameters={"defaultModelsExpandDepth": -1} if settings.ENVIRONMENT != "production" else None
 )
 
 # Request ID middleware
