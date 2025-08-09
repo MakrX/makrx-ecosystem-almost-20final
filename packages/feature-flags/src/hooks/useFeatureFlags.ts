@@ -8,7 +8,7 @@
  * - Fail safe defaults
  */
 
-import { useMemo, useContext, createContext, ReactNode } from 'react';
+import { useMemo, useContext, createContext } from 'react';
 import { FeatureFlagEngine, FlagContext, FlagEvaluationResult } from '../core/FeatureFlagEngine';
 import ALL_FLAGS from '../flags';
 
@@ -20,38 +20,6 @@ interface FeatureFlagContextValue {
 }
 
 const FeatureFlagContext = createContext<FeatureFlagContextValue | null>(null);
-
-// Provider Component
-interface FeatureFlagProviderProps {
-  children: ReactNode;
-  initialContext: FlagContext;
-  customFlags?: any[];
-}
-
-export function FeatureFlagProvider({ children, initialContext, customFlags = [] }: FeatureFlagProviderProps) {
-  const engine = useMemo(() => {
-    const allFlags = [...ALL_FLAGS, ...customFlags];
-    return new FeatureFlagEngine(allFlags);
-  }, [customFlags]);
-
-  const [context, setContext] = React.useState<FlagContext>(initialContext);
-
-  const updateContext = (updates: Partial<FlagContext>) => {
-    setContext(prev => ({ ...prev, ...updates }));
-  };
-
-  const value = {
-    engine,
-    context,
-    updateContext
-  };
-
-  return (
-    <FeatureFlagContext.Provider value={value}>
-      {children}
-    </FeatureFlagContext.Provider>
-  );
-}
 
 // Hook to get the feature flag context
 function useFeatureFlagContext(): FeatureFlagContextValue {
@@ -117,8 +85,6 @@ export function useNamespaceFlags(namespace: 'global' | 'org' | 'cave' | 'store'
   }, [engine, context, namespace]);
 }
 
-// Specialized hooks for common patterns
-
 // Navigation link visibility
 export function useNavLinkFlag(flagKey: string): { show: boolean; reason: string } {
   const result = useFlag(flagKey, true);
@@ -178,11 +144,11 @@ export function useExperiment(flagKey: string): {
   
   const trackExposure = () => {
     // Emit analytics event for experiment exposure
-    if (typeof window !== 'undefined' && window.analytics) {
-      window.analytics.track('Experiment Exposed', {
+    if (typeof window !== 'undefined' && (window as any).analytics) {
+      (window as any).analytics.track('Experiment Exposed', {
         experimentKey: flagKey,
         variant: result.variant || 'control',
-        userId: result.flagKey // This would be the actual user ID in practice
+        flagKey: result.flagKey
       });
     }
   };
@@ -259,4 +225,21 @@ export function useDebugFlags(): Record<string, FlagEvaluationResult> {
   }, [engine, context]);
 }
 
+// Create a flag engine with initial context (for use without React)
+export function createFlagEngine(initialContext: FlagContext, customFlags: any[] = []): FeatureFlagEngine {
+  const allFlags = [...ALL_FLAGS, ...customFlags];
+  return new FeatureFlagEngine(allFlags);
+}
+
+// Evaluate flag outside of React (for use in utilities, API calls, etc.)
+export function evaluateFlag(
+  engine: FeatureFlagEngine, 
+  flagKey: string, 
+  context: FlagContext, 
+  defaultValue?: any
+): FlagEvaluationResult {
+  return engine.evaluate(flagKey, context, defaultValue);
+}
+
 export default useFlag;
+export { FeatureFlagContext, type FeatureFlagContextValue };
