@@ -4,6 +4,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../co
 import { Badge } from '../components/ui/badge';
 import { ArrowRight, MapPin, Users, Zap, Shield, Star, ChevronRight, Play, ExternalLink, Menu, X } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import InteractiveMap from '../components/InteractiveMap';
 
 const LandingPage = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = React.useState(false);
