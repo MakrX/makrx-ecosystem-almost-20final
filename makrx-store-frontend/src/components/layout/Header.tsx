@@ -103,6 +103,61 @@ export function Header() {
 
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center space-x-8">
+            {/* Ecosystem Links */}
+            <div className="relative group">
+              <button className="text-foreground hover:text-blue-600 dark:hover:text-blue-400 transition-colors flex items-center">
+                MakrX Ecosystem
+                <svg
+                  className="ml-1 h-4 w-4"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M19 9l-7 7-7-7"
+                  />
+                </svg>
+              </button>
+
+              <div className="absolute left-0 mt-2 w-64 bg-popover border border-border shadow-lg rounded-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
+                <div className="p-4 space-y-2">
+                  <a
+                    href="https://makrx.org"
+                    className="block p-2 hover:bg-accent hover:text-accent-foreground rounded-md"
+                  >
+                    <div className="font-medium text-popover-foreground">
+                      MakrX.org
+                    </div>
+                    <div className="text-sm text-muted-foreground">
+                      Ecosystem gateway & maker hub
+                    </div>
+                  </a>
+                  <a
+                    href="https://makrcave.com"
+                    className="block p-2 hover:bg-accent hover:text-accent-foreground rounded-md"
+                  >
+                    <div className="font-medium text-popover-foreground">
+                      MakrCave
+                    </div>
+                    <div className="text-sm text-muted-foreground">
+                      Makerspace management platform
+                    </div>
+                  </a>
+                  <div className="block p-2 bg-blue-50 dark:bg-blue-900/20 rounded-md">
+                    <div className="font-medium text-blue-600 dark:text-blue-400">
+                      MakrX.Store
+                    </div>
+                    <div className="text-sm text-blue-600/70 dark:text-blue-400/70">
+                      You are here - E-commerce hub
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
             <Link
               href="/catalog"
               className="text-foreground hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
