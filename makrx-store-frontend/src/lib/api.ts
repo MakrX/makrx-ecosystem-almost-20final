@@ -303,8 +303,15 @@ class ApiClient {
         return this.getMockProducts() as T
       case '/catalog/categories':
         return this.getMockCategories() as T
+      case '/cart':
+        return this.getMockCart() as T
+      case '/auth/user':
+        return this.getMockUser() as T
+      case '/health':
+        return { status: 'ok', timestamp: new Date().toISOString() } as T
       default:
-        throw new Error(`No mock data available for endpoint: ${endpoint}`)
+        console.warn(`No mock data available for endpoint: ${endpoint}, returning empty response`)
+        return {} as T
     }
   }
 
