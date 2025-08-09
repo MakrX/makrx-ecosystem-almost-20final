@@ -245,12 +245,14 @@ export default function CatalogPage() {
                   <button
                     onClick={() => setViewMode('grid')}
                     className={`p-2 ${viewMode === 'grid' ? 'bg-store-primary text-white' : 'text-gray-600'}`}
+                    data-view="grid"
                   >
                     <Grid3X3 className="h-4 w-4" />
                   </button>
                   <button
                     onClick={() => setViewMode('list')}
                     className={`p-2 ${viewMode === 'list' ? 'bg-store-primary text-white' : 'text-gray-600'}`}
+                    data-view="list"
                   >
                     <List className="h-4 w-4" />
                   </button>
