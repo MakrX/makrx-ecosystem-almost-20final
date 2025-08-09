@@ -10,6 +10,7 @@ import { AuthProvider } from "./contexts/AuthContext";
 import Header from "./components/Header";
 import Index from "./pages/Index";
 import Login from "./pages/Login";
+import Register from "./pages/Register";
 import MakrCave from "./pages/MakrCave";
 import Store from "./pages/Store";
 import Learn from "./pages/Learn";
