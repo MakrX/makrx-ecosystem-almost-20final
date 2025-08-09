@@ -52,16 +52,27 @@ export default function CartPage() {
     try {
       if (newQuantity === 0) {
         await api.removeFromCart(itemId);
+        const removedItem = cart.items.find(item => item.id === itemId);
         setCart(prev => prev ? {
           ...prev,
           items: prev.items.filter(item => item.id !== itemId),
           item_count: prev.item_count - 1,
           subtotal: prev.subtotal - (prev.items.find(item => item.id === itemId)?.total_price || 0)
         } : null);
+        addNotification({
+          type: 'success',
+          title: 'Item Removed',
+          message: `${removedItem?.product.name} removed from cart`
+        });
       } else {
         await api.updateCartItem(itemId, newQuantity);
         const updatedCart = await api.getCart();
         setCart(updatedCart);
+        addNotification({
+          type: 'success',
+          title: 'Cart Updated',
+          message: 'Quantity updated successfully'
+        });
       }
     } catch (error) {
       console.error('Failed to update cart item:', error);
