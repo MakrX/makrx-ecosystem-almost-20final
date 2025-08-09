@@ -4,14 +4,14 @@ import React from 'react'
 import Link from 'next/link'
 import { Button } from '@/components/ui/Button'
 import Layout from '@/components/layout/Layout'
-import { 
-  Printer3D, 
-  Cpu, 
-  Wrench, 
-  Package, 
-  Zap, 
-  Shield, 
-  Clock, 
+import {
+  Printer,
+  Cpu,
+  Wrench,
+  Package,
+  Zap,
+  Shield,
+  Clock,
   Star,
   ArrowRight,
   Upload,
@@ -65,7 +65,7 @@ export default function HomePage() {
   ]
 
   const categories = [
-    { name: "3D Printers", icon: Printer3D, count: "150+" },
+    { name: "3D Printers", icon: Printer, count: "150+" },
     { name: "Electronics", icon: Cpu, count: "500+" },
     { name: "Tools", icon: Wrench, count: "200+" },
     { name: "Components", icon: Package, count: "1000+" },
@@ -75,7 +75,7 @@ export default function HomePage() {
     {
       title: "3D Printing",
       description: "Upload your STL, get instant quotes, and have it printed by verified providers",
-      icon: Printer3D,
+      icon: Printer,
       features: ["Instant quotes", "Multiple materials", "Local providers"]
     },
     {
