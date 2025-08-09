@@ -7,8 +7,8 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "./contexts/AuthContext";
-import Header from "./components/Header";
-import Index from "./pages/Index";
+import EnhancedHeader from "./components/EnhancedHeader";
+import EnhancedIndex from "./pages/EnhancedIndex";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import MakrCave from "./pages/MakrCave";
@@ -16,6 +16,9 @@ import Store from "./pages/Store";
 import Learn from "./pages/Learn";
 import Profile from "./pages/Profile";
 import NotFound from "./pages/NotFound";
+
+// Import feature flag provider
+import { FeatureFlagProvider } from "../../packages/feature-flags/src/components/FeatureFlagProvider";
 
 const queryClient = new QueryClient();
 
