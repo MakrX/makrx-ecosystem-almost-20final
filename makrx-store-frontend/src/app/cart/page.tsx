@@ -76,7 +76,11 @@ export default function CartPage() {
       }
     } catch (error) {
       console.error('Failed to update cart item:', error);
-      alert('Failed to update cart item');
+      addNotification({
+        type: 'error',
+        title: 'Update Failed',
+        message: 'Failed to update cart item. Please try again.'
+      });
     } finally {
       setUpdating(prev => ({ ...prev, [itemId]: false }));
     }
