@@ -277,14 +277,14 @@ export default function HomePage() {
               const Icon = service.icon
               return (
                 <div key={index} className="bg-white rounded-xl p-8 shadow-md hover:shadow-xl transition-all duration-300">
-                  <div className="w-16 h-16 bg-gradient-to-br from-store-primary to-store-secondary rounded-xl flex items-center justify-center mb-6">
+                  <div className="w-16 h-16 bg-gradient-to-br from-store-primary to-store-secondary rounded-xl flex items-center justify-center mb-6 shadow-lg">
                     <Icon className="h-8 w-8 text-white" />
                   </div>
-                  <h3 className="text-2xl font-bold text-gray-900 mb-4">{service.title}</h3>
-                  <p className="text-gray-600 mb-6">{service.description}</p>
+                  <h3 className="text-2xl font-bold text-store-text mb-4">{service.title}</h3>
+                  <p className="text-store-text-muted mb-6">{service.description}</p>
                   <ul className="space-y-2 mb-6">
                     {service.features.map((feature, idx) => (
-                      <li key={idx} className="flex items-center text-gray-700">
+                      <li key={idx} className="flex items-center text-store-text-light">
                         <div className="w-2 h-2 bg-store-primary rounded-full mr-3"></div>
                         {feature}
                       </li>
@@ -302,7 +302,7 @@ export default function HomePage() {
       </section>
 
       {/* Stats Section */}
-      <section className="py-16 bg-gradient-to-r from-store-primary to-store-secondary">
+      <section className="py-16 bg-gradient-to-r from-store-primary to-store-secondary shadow-inner">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-8 text-center text-white">
             <div>
@@ -328,10 +328,10 @@ export default function HomePage() {
       {/* CTA Section */}
       <section className="py-16 bg-white">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">
+          <h2 className="text-3xl sm:text-4xl font-bold text-store-text mb-4">
             Ready to Start Making?
           </h2>
-          <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
+          <p className="text-xl text-store-text-muted mb-8 max-w-2xl mx-auto">
             Join thousands of makers who trust MakrX.Store for their projects and manufacturing needs.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
