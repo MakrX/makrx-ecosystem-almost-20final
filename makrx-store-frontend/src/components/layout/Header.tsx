@@ -49,21 +49,24 @@ export default function Header() {
 
             {/* Navigation - Desktop */}
             <nav className="hidden lg:flex items-center space-x-8 ml-8">
-              <Link href="/catalog" className="text-gray-700 hover:text-store-primary transition-colors font-medium">
+              <Link href="/catalog" className="text-store-text hover:text-store-primary transition-colors font-semibold">
                 Catalog
               </Link>
-              <Link href="/3d-printing" className="text-gray-700 hover:text-store-primary transition-colors font-medium flex items-center">
+              <Link href="/3d-printing" className="text-store-text hover:text-store-primary transition-colors font-semibold flex items-center">
                 <Printer className="h-4 w-4 mr-1" />
                 3D Printing
               </Link>
-              <Link href="/services" className="text-gray-700 hover:text-store-primary transition-colors font-medium">
+              <Link href="/services" className="text-store-text hover:text-store-primary transition-colors font-semibold">
                 Services
               </Link>
-              <Link href="/makers" className="text-gray-700 hover:text-store-primary transition-colors font-medium">
+              <Link href="/makers" className="text-store-text hover:text-store-primary transition-colors font-semibold">
                 Makers
               </Link>
-              <Link href="/enterprise" className="text-gray-700 hover:text-store-primary transition-colors font-medium">
+              <Link href="/enterprise" className="text-store-text hover:text-store-primary transition-colors font-semibold">
                 Enterprise
+              </Link>
+              <Link href="/admin" className="text-store-primary hover:text-store-primary-dark transition-colors font-semibold">
+                Admin
               </Link>
             </nav>
           </div>
