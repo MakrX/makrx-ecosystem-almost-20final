@@ -80,7 +80,7 @@ const TrendingProjectsWidget: React.FC<TrendingProjectsWidgetProps> = ({ project
         <CardTitle className="flex items-center justify-between">
           <div className="flex items-center space-x-2">
             <div className="w-6 h-6 bg-red-500 rounded-full flex items-center justify-center">
-              <Fire className="h-3 w-3 text-white" />
+              <Flame className="h-3 w-3 text-white" />
             </div>
             <span>Trending Now</span>
           </div>
