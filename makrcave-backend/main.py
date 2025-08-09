@@ -53,6 +53,7 @@ app.include_router(billing_router, prefix="/api/v1/billing", tags=["billing"])
 app.include_router(analytics_router, prefix="/api/v1")
 app.include_router(settings_router, prefix="/api/v1/makerspace")
 app.include_router(skill_router, prefix="/api/v1", tags=["skills"])
+app.include_router(bridge_router, prefix="/api/v1/bridge", tags=["bridge"])
 
 # Root endpoint
 @app.get("/")
