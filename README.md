@@ -1,221 +1,215 @@
 # MakrX Ecosystem
 
-![MakrX Logo](https://cdn.builder.io/api/v1/assets/f367f5e46f75423a83d3f29fae529dbb/92683663a93a4914bdaf2ee285888bd3?format=webp&width=400)
+**Dream, Make, Share** - A unified ecosystem for makers worldwide.
 
-**The Modular OS of Making** - An open-source, cloud-native ecosystem that unifies everything a maker needs: makerspace management, 3D printing, education, and community.
+## 🚀 Overview
 
-## 🚀 Quick Start
+MakrX is a comprehensive ecosystem designed to connect makers, inventors, and creative communities with the tools, spaces, and resources they need to design, prototype, and manufacture anything — efficiently, collaboratively, and at scale.
+
+### Vision Statement
+To democratize making by providing an integrated platform that bridges the gap between digital design and physical creation, fostering global maker communities through shared knowledge, resources, and collaboration.
+
+## 🏗️ Ecosystem Architecture
+
+The MakrX ecosystem consists of three primary domains working in perfect harmony:
+
+```
+┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
+│   MakrX.org     │    │   MakrCave      │    │  MakrX.Store    │
+│   (Gateway)     │◄──►│ (Management)    │◄──►│ (E-commerce)    │
+│                 │    │                 │    │                 │
+│ • Landing       │    │ • Makerspaces   │    │ • Products      │
+│ • Profiles      │    │ • Inventory     │    │ • Fabrication   ��
+│ • Navigation    │    │ • Equipment     │    │ • Orders        │
+│ • Community     │    │ • Projects      │    │ • BOM Import    │
+└─────────────────┘    └─────────────────┘    └─────────────────┘
+         │                       │                       │
+         └───────────────────────┼───────────────────────┘
+                                 │
+                    ┌─────────────────┐
+                    │ Shared Services │
+                    │                 │
+                    │ • Keycloak SSO  │
+                    │ • PostgreSQL    │
+                    │ • MinIO Storage │
+                    │ • API Gateway   │
+                    └─────────────────┘
+```
+
+## 🌐 Domain Breakdown
+
+| Domain | URL | Purpose | Target Users |
+|--------|-----|---------|--------------|
+| **MakrX.org** | `https://makrx.org` | Ecosystem gateway, landing pages, maker profiles | All users |
+| **MakrCave** | `https://makrcave.com` | Makerspace management, service provider portal | Admins, Providers, Members |
+| **MakrX.Store** | `https://makrx.store` | E-commerce, fabrication services, product catalog | Customers, Makers |
+
+## 🔧 Quick Start
 
 ### Prerequisites
-- Node.js 18+ and npm 9+
-- Docker and Docker Compose
+- Docker & Docker Compose
+- Node.js 18+
 - Git
 
-### Development Setup
+### Local Development Setup
 
-1. **Clone and setup:**
+1. **Clone the repository**
    ```bash
-   git clone https://github.com/makrx/ecosystem
+   git clone <repository-url>
    cd makrx-ecosystem
-   npm run setup
    ```
 
-2. **Start development servers:**
+2. **Environment Setup**
    ```bash
+   cp .env.production.template .env
+   # Edit .env with your local configuration
+   ```
+
+3. **Start the ecosystem**
+   ```bash
+   docker-compose up -d
+   npm install
    npm run dev
    ```
 
-3. **Access applications:**
-   - Gateway (Landing): http://localhost:3000
-   - MakrCave (Makerspace): http://localhost:3001  
-   - MakrX Store (Commerce): http://localhost:3002
-   - Keycloak SSO: http://localhost:8080
+4. **Access the applications**
+   - Gateway: `http://localhost:3000`
+   - MakrCave: `http://localhost:3001` 
+   - Store: `http://localhost:3002`
+   - API Documentation: `http://localhost:8000/docs`
 
-### Production Deployment
+## 👥 User Roles & Permissions
 
-```bash
-# Build and start all services
-npm run docker:build
-npm run docker:up
+| Role | Global Access | Domain Access | Key Permissions |
+|------|---------------|---------------|----------------|
+| **Super Admin** | Full ecosystem | All domains | System configuration, user management |
+| **Admin** | Organization-wide | Assigned domains | Feature flags, analytics, billing |
+| **Makerspace Admin** | Makerspace-scoped | MakrCave primary | Member management, inventory, equipment |
+| **Service Provider** | Provider-scoped | MakrCave, Store | Job management, order fulfillment |
+| **Member** | Community access | All domains | Equipment booking, project collaboration |
+| **Store Customer** | Public + purchases | Store primary | Product ordering, account management |
+| **Guest** | Public content | Landing pages | Browse, register, explore |
 
-# View logs
-npm run docker:logs
+## 🏃‍♂️ Key User Flows
+
+### 1. New User Onboarding
+```
+Register → Email Verification → Profile Setup → Domain Selection → Feature Access
 ```
 
-## 🏗️ Architecture
+### 2. Makerspace Workflow
+```
+Browse Makerspaces → Join/Apply → Equipment Training → Skill Certification → Book Equipment → Create Projects
+```
+
+### 3. E-commerce Flow
+```
+Browse Products → Add to Cart → Checkout → Payment → Order Fulfillment → Delivery
+```
+
+### 4. Fabrication Service
+```
+Upload STL → Auto-quote → Select Provider → Payment → Production → Quality Check → Shipping
+```
+
+## 🚀 Features
+
+### Core Platform Features
+- **Single Sign-On (SSO)** - Unified authentication across all domains
+- **Role-Based Access Control** - Granular permissions system
+- **Feature Flags** - Dynamic feature management
+- **Real-time Notifications** - Cross-platform messaging
+- **API-First Architecture** - Extensible and integrable
+
+### MakrCave Features
+- **Smart Inventory Management** - Auto-tracking with Store integration
+- **Equipment Reservations** - Skill-gated booking system
+- **Project Management** - BOM collaboration and version control
+- **Service Provider Portal** - Job management and fulfillment
+- **Analytics Dashboard** - Usage metrics and insights
+
+### Store Features
+- **Product Catalog** - Maker-focused inventory
+- **Instant Fabrication Quotes** - STL upload with auto-pricing
+- **BOM Integration** - Direct ordering from MakrCave projects
+- **Provider Network** - Global fabrication capabilities
+
+## 📁 Repository Structure
 
 ```
 makrx-ecosystem/
-├── frontend/                    # React applications
-│   ├── gateway-frontend/        # Landing & SSO navigation
-│   ├── makrcave-frontend/       # Makerspace portal
-│   └── makrx-store-frontend/    # Commerce & 3D printing
-├── backends/                    # FastAPI microservices
-│   ├── auth-service/            # Authentication & user management
-│   ├── makrcave-backend/        # Makerspace & inventory APIs
-│   └── makrx-store-backend/     # Product & order APIs
-├── packages/                    # Shared libraries
-│   ├── ui/                      # Component library
-│   ├── types/                   # TypeScript definitions
-│   └── utils/                   # Common utilities
-└── services/                    # Infrastructure
-    ├── keycloak/                # SSO & identity management
-    └── reverse-proxy/           # Nginx routing
+├── docs/                          # Documentation
+├── frontend/
+│   ├── gateway-frontend/          # MakrX.org (React)
+│   ├── makrcave-frontend/         # MakrCave (React)
+│   └── makrx-store-frontend/      # Store (Next.js)
+├── backends/
+│   ├── auth-service/              # Authentication service
+│   └── event-service/             # Event handling
+├── makrcave-backend/              # MakrCave API (FastAPI)
+├── makrx-store-backend/           # Store API (FastAPI)
+├── packages/
+│   ├── ui/                        # Shared UI components
+│   ├── types/                     # TypeScript definitions
+│   └── utils/                     # Shared utilities
+├��─ services/
+│   └── keycloak/                  # SSO configuration
+├── docker-compose.yml             # Local development
+├── docker-compose.prod.yml        # Production setup
+└── deploy.sh                      # Deployment script
 ```
 
-## 🧩 Ecosystem Components
+## 🛠️ Technology Stack
 
-### Frontend Applications
+### Frontend
+- **Framework**: React 18 (Gateway, MakrCave), Next.js 14 (Store)
+- **Styling**: Tailwind CSS, shadcn/ui components
+- **State**: React Context, TanStack Query
+- **Routing**: React Router, Next.js App Router
 
-| Application | Purpose | Port | URL |
-|-------------|---------|------|-----|
-| **Gateway** | Landing page, profile, SSO navigation | 3000 | makrx.org |
-| **MakrCave** | Makerspace management portal | 3001 | cave.makrx.org |
-| **Store** | Ecommerce & 3D print ordering | 3002 | store.makrx.org |
-
-### Backend Services
-
-| Service | Purpose | Port | Technology |
-|---------|---------|------|------------|
-| **Auth Service** | User management, Keycloak sync | 8001 | FastAPI + PostgreSQL |
-| **MakrCave API** | Inventory, projects, bookings | 8002 | FastAPI + PostgreSQL |
-| **Store API** | Products, orders, 3D printing | 8003 | FastAPI + PostgreSQL |
+### Backend
+- **API**: FastAPI (Python)
+- **Database**: PostgreSQL
+- **Authentication**: Keycloak
+- **Storage**: MinIO (S3-compatible)
+- **Queue**: Redis
+- **Search**: Elasticsearch (optional)
 
 ### Infrastructure
+- **Containerization**: Docker
+- **Orchestration**: Docker Compose / Kubernetes
+- **Proxy**: Nginx
+- **CI/CD**: GitHub Actions
+- **Monitoring**: Custom health checks
 
-| Service | Purpose | Port | Technology |
-|---------|---------|------|------------|
-| **Keycloak** | SSO, identity & access management | 8080 | Keycloak + PostgreSQL |
-| **PostgreSQL** | Primary database | 5432 | PostgreSQL 15 |
-| **Nginx** | Reverse proxy & load balancer | 80/443 | Nginx |
+## 📚 Documentation
 
-## 🔐 Authentication
-
-The ecosystem uses **Keycloak** for enterprise-grade SSO:
-
-- **Single Sign-On** across all applications
-- **Role-based access control** (RBAC)
-- **Custom MakrX theme** with brand styling
-- **Social login** integration ready
-- **Enterprise LDAP/SAML** support
-
-### Default Users
-
-| Username | Password | Role | Access |
-|----------|----------|------|--------|
-| `admin` | `makrx-admin-2024` | Super Admin | Full system access |
-| `demo` | `makrx2024` | Maker | Standard user access |
-
-## 🛠️ Development
-
-### Shared Packages
-
-- **@makrx/ui** - Design system components
-- **@makrx/types** - TypeScript definitions  
-- **@makrx/utils** - Common utilities
-
-### Environment Configuration
-
-Each service supports environment-specific configuration:
-
-```bash
-# Development
-NODE_ENV=development
-
-# Keycloak
-KEYCLOAK_URL=http://localhost:8080
-KEYCLOAK_REALM=makrx
-
-# Database
-DATABASE_URL=postgresql://makrx:makrx-db-2024@localhost:5432/makrx
-```
-
-### Available Scripts
-
-```bash
-# Development
-npm run dev                  # Start all frontends
-npm run dev:gateway         # Gateway only
-npm run dev:makrcave        # MakrCave only  
-npm run dev:store           # Store only
-
-# Building
-npm run build               # Build all packages & apps
-npm run build:packages      # Build shared packages only
-npm run build:frontends     # Build frontend apps only
-
-# Docker
-npm run docker:up           # Start all services
-npm run docker:down         # Stop all services
-npm run docker:build        # Build Docker images
-npm run docker:logs         # View logs
-
-# Quality
-npm run typecheck           # TypeScript validation
-```
-
-## 🎯 Roadmap
-
-### Phase 1: Core Platform ✅
-- [x] Microservices architecture
-- [x] Keycloak SSO integration
-- [x] Gateway landing page
-- [x] Basic auth flow
-- [x] Shared component library
-
-### Phase 2: MakrCave (Q1 2024)
-- [ ] Makerspace management
-- [ ] Inventory tracking
-- [ ] Equipment booking
-- [ ] Project collaboration
-- [ ] Member management
-
-### Phase 3: MakrX Store (Q2 2024)
-- [ ] Product marketplace
-- [ ] 3D print ordering
-- [ ] Design upload & quoting
-- [ ] Service provider network
-- [ ] Order fulfillment
-
-### Phase 4: Learning Hub (Q3 2024)
-- [ ] Interactive courses
-- [ ] Skill badges & certification
-- [ ] Community learning
-- [ ] Mentor network
-- [ ] Achievement system
-
-### Phase 5: Advanced Features (Q4 2024)
-- [ ] Mobile applications
-- [ ] IoT device integration
-- [ ] AI-powered recommendations
-- [ ] Global marketplace
-- [ ] Analytics dashboard
+- [**System Architecture**](docs/ARCHITECTURE.md) - Detailed technical architecture
+- [**API Documentation**](docs/API.md) - Complete API reference
+- [**Frontend Guide**](docs/FRONTEND.md) - Frontend development guide
+- [**Backend Guide**](docs/BACKEND.md) - Backend development guide
+- [**Deployment Guide**](docs/DEPLOYMENT.md) - Production deployment
+- [**Security Guide**](docs/SECURITY.md) - Security implementation
+- [**Contributing**](docs/CONTRIBUTING.md) - Contribution guidelines
 
 ## 🤝 Contributing
 
-We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) for details.
-
-### Development Guidelines
-
-1. **Code Style**: Follow TypeScript + ESLint rules
-2. **Components**: Use shared @makrx/ui components
-3. **Types**: Define interfaces in @makrx/types
-4. **Testing**: Write tests for new features
-5. **Documentation**: Update docs for API changes
+We welcome contributions! Please see our [Contributing Guide](docs/CONTRIBUTING.md) for details on:
+- Code style and standards
+- Pull request process
+- Feature flag usage
+- Testing requirements
 
 ## 📄 License
 
-MIT License - see [LICENSE](LICENSE) for details.
+This project is proprietary software. All rights reserved.
 
-## 🎉 Community
+## 🏢 About
 
-- **Discord**: [Join our maker community](https://discord.gg/makrx)
-- **GitHub**: [Report issues & contribute](https://github.com/makrx/ecosystem)
-- **Website**: [makrx.org](https://makrx.org)
-- **Blog**: [blog.makrx.org](https://blog.makrx.org)
+**MakrX** is an initiative by **Botness Technologies Pvt. Ltd.**
+
+For support, contact: [support@makrx.org](mailto:support@makrx.org)
 
 ---
 
-**Built with ❤️ by makers, for makers worldwide.** 🤖⚡
-
-*MakrX is open-source software that empowers the global maker community to build, learn, and share together.*
+**Ready to start making?** [Join the MakrX ecosystem](https://makrx.org) today!
