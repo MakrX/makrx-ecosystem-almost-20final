@@ -197,7 +197,7 @@ export default function PrintingHubPage() {
                   }`}
                 >
                   <input {...getInputProps()} />
-                  <Printer3D className="h-16 w-16 text-gray-400 mx-auto mb-4" />
+                  <Printer className="h-16 w-16 text-gray-400 mx-auto mb-4" />
                   {isDragActive ? (
                     <p className="text-store-primary font-medium">Drop your STL files here...</p>
                   ) : (
@@ -241,7 +241,7 @@ export default function PrintingHubPage() {
               {/* Print Settings */}
               <div className="bg-white rounded-xl shadow-lg p-6">
                 <h2 className="text-2xl font-bold text-gray-900 mb-6 flex items-center">
-                  <Printer3D className="h-6 w-6 mr-2 text-store-primary" />
+                  <Printer className="h-6 w-6 mr-2 text-store-primary" />
                   Print Settings
                 </h2>
                 
@@ -351,7 +351,7 @@ export default function PrintingHubPage() {
             <div className="space-y-8">
               {quotes.length === 0 ? (
                 <div className="bg-white rounded-xl shadow-lg p-8 text-center">
-                  <Printer3D className="h-16 w-16 text-gray-300 mx-auto mb-4" />
+                  <Printer className="h-16 w-16 text-gray-300 mx-auto mb-4" />
                   <h3 className="text-xl font-medium text-gray-900 mb-2">
                     Upload files to get quotes
                   </h3>
