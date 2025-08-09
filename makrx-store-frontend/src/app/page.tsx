@@ -19,8 +19,8 @@ export default function HomePage() {
           api.getCategories()
         ]);
         
-        setFeaturedProducts(productsData);
-        setCategories(categoriesData);
+        setFeaturedProducts(Array.isArray(productsData) ? productsData : []);
+        setCategories(Array.isArray(categoriesData) ? categoriesData : []);
       } catch (error) {
         console.error('Failed to load homepage data:', error);
       } finally {
