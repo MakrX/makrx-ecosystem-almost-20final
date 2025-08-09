@@ -17,7 +17,8 @@ import {
   LogOut,
   GraduationCap,
   Bell,
-  Sparkles
+  Sparkles,
+  TrendingUp
 } from 'lucide-react';
 
 export default function ManagerSidebar() {
@@ -80,6 +81,12 @@ export default function ManagerSidebar() {
       href: '/portal/analytics',
       icon: BarChart3,
       active: isActive('/portal/analytics')
+    },
+    {
+      name: 'Capacity Planning',
+      href: '/portal/capacity-planning',
+      icon: TrendingUp,
+      active: isActive('/portal/capacity-planning')
     },
     {
       name: 'Notifications Center',
