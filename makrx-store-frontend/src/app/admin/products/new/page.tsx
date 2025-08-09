@@ -532,14 +532,14 @@ export default function AddProductPage() {
 
                 {/* Submit Button */}
                 <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-                  <Button 
-                    type="submit" 
+                  <Button
+                    type="submit"
                     className="w-full bg-blue-600 hover:bg-blue-700 text-white"
-                    disabled={isLoading}
-                    loading={isLoading}
+                    disabled={isSubmitLoading}
+                    loading={isSubmitLoading}
                   >
                     <Save className="h-4 w-4 mr-2" />
-                    {isLoading ? 'Adding Product...' : 'Add Product'}
+                    {isSubmitLoading ? 'Adding Product...' : 'Add Product'}
                   </Button>
                 </div>
               </div>
