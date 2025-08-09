@@ -51,7 +51,7 @@ const App = () => {
                 <Route path="/makrcave" element={<MakrCave />} />
                 <Route path="/store" element={<Store />} />
                 <Route path="/learn" element={<Learn />} />
-                <Route path="/profile" element={<Profile />} />
+                <Route path="/profile" element={<EnhancedProfile />} />
                 {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                 <Route path="*" element={<NotFound />} />
               </Routes>
