@@ -715,35 +715,53 @@ class ApiClient {
   }
 
   private transformMockProducts() {
-    return mockProducts.map((product, index) => ({
-      id: typeof product.id === 'string' ? parseInt(product.id.replace(/\D/g, '')) || (index + 1) : (index + 1),
-      slug: product.id,
-      name: product.name,
-      description: product.description,
-      short_description: product.shortDescription,
-      brand: product.brand,
-      category_id: 1,
-      category: { id: 1, name: product.category, slug: product.category },
-      price: product.originalPrice || product.price,
-      sale_price: product.originalPrice ? product.price : null,
-      effective_price: product.price,
-      currency: 'USD',
-      stock_qty: product.stockCount,
-      track_inventory: true,
-      in_stock: product.inStock,
-      allow_backorder: false,
-      attributes: {},
-      specifications: product.specifications,
-      compatibility: product.compatibility,
-      images: product.images,
-      videos: [],
-      meta_title: product.name,
-      meta_description: product.shortDescription,
-      tags: product.tags,
-      sku: product.sku,
-      created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString()
-    }))
+    return mockProducts.map((product, index) => {
+      // Generate a unique numeric ID
+      const numericId = typeof product.id === 'string'
+        ? parseInt(product.id.replace(/\D/g, '')) || (index + 1)
+        : (index + 1)
+
+      return {
+        id: numericId,
+        slug: product.id || `product-${index + 1}`,
+        name: product.name || `Product ${index + 1}`,
+        description: product.description || '',
+        short_description: product.shortDescription || product.description || '',
+        brand: product.brand || '',
+        category_id: 1,
+        category: {
+          id: 1,
+          name: product.category || 'General',
+          slug: product.category || 'general'
+        },
+        price: product.originalPrice || product.price || 0,
+        sale_price: product.originalPrice ? product.price : null,
+        effective_price: product.price || 0,
+        currency: 'USD',
+        stock_qty: product.stockCount || 0,
+        track_inventory: true,
+        in_stock: product.inStock !== undefined ? product.inStock : true,
+        allow_backorder: false,
+        attributes: {},
+        specifications: product.specifications || {},
+        compatibility: product.compatibility || [],
+        images: product.images && product.images.length > 0
+          ? product.images
+          : ['/api/placeholder/400/300'],
+        videos: [],
+        meta_title: product.name || `Product ${index + 1}`,
+        meta_description: product.shortDescription || product.description || '',
+        tags: product.tags || [],
+        sku: product.sku || `SKU-${index + 1}`,
+        is_active: true,
+        is_featured: product.featured || false,
+        is_digital: false,
+        weight: product.weight || 0,
+        dimensions: product.dimensions || { length: 0, width: 0, height: 0 },
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString()
+      }
+    })
   }
 
   private getMockCategories() {
