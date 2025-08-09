@@ -278,3 +278,139 @@ class ProjectActivityLog(Base):
     
     # Relationships
     project = relationship("Project", back_populates="activity_logs")
+
+class ProjectTeamRole(Base):
+    """Custom team roles for projects beyond basic collaborator roles"""
+    __tablename__ = "project_team_roles"
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    project_id = Column(String(100), ForeignKey("projects.project_id"), nullable=False)
+    user_id = Column(String(100), nullable=False, index=True)
+
+    # Custom role definition
+    role_name = Column(String(100), nullable=False)  # "Lead Developer", "3D Printing Specialist", etc.
+    role_description = Column(Text, nullable=True)
+    permissions = Column(JSON, nullable=True, default=list)  # Specific permissions for this role
+
+    # Role assignment details
+    assigned_by = Column(String(100), nullable=False)
+    assigned_at = Column(DateTime(timezone=True), server_default=func.now())
+    is_active = Column(Boolean, default=True)
+
+    # Relationships
+    project = relationship("Project", foreign_keys=[project_id])
+
+class ProjectFork(Base):
+    """Track project forks for public projects"""
+    __tablename__ = "project_forks"
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    original_project_id = Column(String(100), ForeignKey("projects.project_id"), nullable=False)
+    forked_project_id = Column(String(100), ForeignKey("projects.project_id"), nullable=False)
+
+    # Fork details
+    forked_by = Column(String(100), nullable=False, index=True)
+    fork_reason = Column(Text, nullable=True)  # Why they forked it
+    modifications_planned = Column(Text, nullable=True)  # What they plan to change
+
+    # Metadata
+    forked_at = Column(DateTime(timezone=True), server_default=func.now())
+
+    # Relationships
+    original_project = relationship("Project", foreign_keys=[original_project_id])
+    forked_project = relationship("Project", foreign_keys=[forked_project_id])
+
+class ProjectLike(Base):
+    """Track likes/favorites for public projects"""
+    __tablename__ = "project_likes"
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    project_id = Column(String(100), ForeignKey("projects.project_id"), nullable=False)
+    user_id = Column(String(100), nullable=False, index=True)
+
+    # Like details
+    liked_at = Column(DateTime(timezone=True), server_default=func.now())
+
+    # Relationships
+    project = relationship("Project", foreign_keys=[project_id])
+
+class ProjectComment(Base):
+    """Comments on public projects"""
+    __tablename__ = "project_comments"
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    project_id = Column(String(100), ForeignKey("projects.project_id"), nullable=False)
+    user_id = Column(String(100), nullable=False, index=True)
+
+    # Comment details
+    comment_text = Column(Text, nullable=False)
+    is_question = Column(Boolean, default=False)  # Is this a question?
+    is_suggestion = Column(Boolean, default=False)  # Is this a suggestion?
+    parent_comment_id = Column(Integer, ForeignKey("project_comments.id"), nullable=True)  # For replies
+
+    # Moderation
+    is_approved = Column(Boolean, default=True)
+    is_flagged = Column(Boolean, default=False)
+    flagged_reason = Column(String(100), nullable=True)
+
+    # Metadata
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
+
+    # Relationships
+    project = relationship("Project", foreign_keys=[project_id])
+    parent_comment = relationship("ProjectComment", remote_side=[id], backref="replies")
+
+class ProjectBOMOrder(Base):
+    """Track BOM item orders through MakrX Store"""
+    __tablename__ = "project_bom_orders"
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    project_id = Column(String(100), ForeignKey("projects.project_id"), nullable=False)
+    bom_item_id = Column(Integer, ForeignKey("project_bom.id"), nullable=False)
+
+    # Order details
+    makrx_order_id = Column(String(100), nullable=True)  # Reference to order in MakrX Store
+    quantity_ordered = Column(Integer, nullable=False)
+    unit_price = Column(Float, nullable=True)
+    total_price = Column(Float, nullable=True)
+
+    # Order status
+    order_status = Column(String(50), default="pending")  # pending, confirmed, shipped, delivered, cancelled
+    tracking_number = Column(String(100), nullable=True)
+    estimated_delivery = Column(DateTime(timezone=True), nullable=True)
+    actual_delivery = Column(DateTime(timezone=True), nullable=True)
+
+    # Metadata
+    ordered_by = Column(String(100), nullable=False)
+    ordered_at = Column(DateTime(timezone=True), server_default=func.now())
+
+    # Relationships
+    project = relationship("Project", foreign_keys=[project_id])
+    bom_item = relationship("ProjectBOM", foreign_keys=[bom_item_id])
+
+class ProjectResourceSharing(Base):
+    """Share project resources with other projects"""
+    __tablename__ = "project_resource_sharing"
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    source_project_id = Column(String(100), ForeignKey("projects.project_id"), nullable=False)
+    target_project_id = Column(String(100), ForeignKey("projects.project_id"), nullable=False)
+
+    # What's being shared
+    resource_type = Column(String(50), nullable=False)  # bom_item, file, milestone_template, etc.
+    resource_id = Column(String(100), nullable=False)  # ID of the specific resource
+
+    # Sharing details
+    shared_by = Column(String(100), nullable=False)
+    sharing_notes = Column(Text, nullable=True)
+    is_approved = Column(Boolean, default=False)  # Does target project accept the shared resource?
+    approved_by = Column(String(100), nullable=True)
+
+    # Metadata
+    shared_at = Column(DateTime(timezone=True), server_default=func.now())
+    approved_at = Column(DateTime(timezone=True), nullable=True)
+
+    # Relationships
+    source_project = relationship("Project", foreign_keys=[source_project_id])
+    target_project = relationship("Project", foreign_keys=[target_project_id])
