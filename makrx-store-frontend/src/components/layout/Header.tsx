@@ -65,9 +65,6 @@ export default function Header() {
               <Link href="/enterprise" className="text-store-text hover:text-store-primary transition-colors font-semibold">
                 Enterprise
               </Link>
-              <Link href="/admin" className="text-store-primary hover:text-store-primary-dark transition-colors font-semibold">
-                Admin
-              </Link>
             </nav>
           </div>
 
