@@ -4,14 +4,14 @@ import React, { useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/Button'
-import { 
-  ShoppingCart, 
-  User, 
-  Search, 
-  Menu, 
-  X, 
-  Package, 
-  Printer3D, 
+import {
+  ShoppingCart,
+  User,
+  Search,
+  Menu,
+  X,
+  Package,
+  Printer,
   Settings,
   LogOut,
   Heart,
@@ -53,7 +53,7 @@ export default function Header() {
                 Catalog
               </Link>
               <Link href="/3d-printing" className="text-gray-700 hover:text-store-primary transition-colors font-medium flex items-center">
-                <Printer3D className="h-4 w-4 mr-1" />
+                <Printer className="h-4 w-4 mr-1" />
                 3D Printing
               </Link>
               <Link href="/services" className="text-gray-700 hover:text-store-primary transition-colors font-medium">
@@ -135,7 +135,7 @@ export default function Header() {
                     Orders
                   </Link>
                   <Link href="/provider-dashboard" className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                    <Printer3D className="h-4 w-4 mr-2" />
+                    <Printer className="h-4 w-4 mr-2" />
                     Provider Dashboard
                   </Link>
                   <Link href="/settings" className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
