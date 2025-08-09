@@ -175,18 +175,18 @@ export default function HomePage() {
                   </p>
                   <div className="flex items-center justify-between">
                     <div className="flex flex-col">
-                      <span className="font-bold text-gray-900">
+                      <span className="font-bold text-card-foreground">
                         {formatPrice(product.effective_price, product.currency)}
                       </span>
                       {product.sale_price && (
-                        <span className="text-sm text-gray-500 line-through">
+                        <span className="text-sm text-muted-foreground line-through">
                           {formatPrice(product.price, product.currency)}
                         </span>
                       )}
                     </div>
                     <div className="flex items-center">
                       <Star className="h-4 w-4 text-yellow-400 fill-current" />
-                      <span className="text-sm text-gray-600 ml-1">4.8</span>
+                      <span className="text-sm text-muted-foreground ml-1">4.8</span>
                     </div>
                   </div>
                   {!product.in_stock && (
