@@ -18,7 +18,8 @@ import {
   GraduationCap,
   Bell,
   Sparkles,
-  TrendingUp
+  TrendingUp,
+  BookOpen
 } from 'lucide-react';
 
 export default function ManagerSidebar() {
@@ -87,6 +88,12 @@ export default function ManagerSidebar() {
       href: '/portal/capacity-planning',
       icon: TrendingUp,
       active: isActive('/portal/capacity-planning')
+    },
+    {
+      name: 'Learning Center',
+      href: '/portal/learning',
+      icon: BookOpen,
+      active: isActive('/portal/learning')
     },
     {
       name: 'Notifications Center',
