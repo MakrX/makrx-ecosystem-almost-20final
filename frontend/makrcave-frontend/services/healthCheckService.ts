@@ -204,10 +204,19 @@ class HealthCheckService {
   // Generic API endpoint checker
   private async checkAPIEndpoint(serviceName: string, endpoint: string): Promise<HealthCheckResult> {
     const startTime = performance.now();
+    let controller: AbortController | null = null;
+    let timeoutId: NodeJS.Timeout | null = null;
+
     try {
       const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '/api';
-      const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 5000); // 5 second timeout
+      controller = new AbortController();
+
+      // Set up timeout with proper cleanup
+      timeoutId = setTimeout(() => {
+        if (controller && !controller.signal.aborted) {
+          controller.abort();
+        }
+      }, 5000); // 5 second timeout
 
       const response = await fetch(`${API_BASE_URL}${endpoint}`, {
         signal: controller.signal,
@@ -216,7 +225,12 @@ class HealthCheckService {
         },
       });
 
-      clearTimeout(timeoutId);
+      // Clear timeout on successful response
+      if (timeoutId) {
+        clearTimeout(timeoutId);
+        timeoutId = null;
+      }
+
       const responseTime = performance.now() - startTime;
 
       let status: 'healthy' | 'degraded' | 'unhealthy';
@@ -245,20 +259,47 @@ class HealthCheckService {
         }
       };
     } catch (error) {
+      // Clean up timeout if it exists
+      if (timeoutId) {
+        clearTimeout(timeoutId);
+      }
+
       const responseTime = performance.now() - startTime;
-      
+
+      // Handle different types of errors
+      let errorMessage = 'Unknown error';
+      let details = 'API check failed';
+
+      if (error instanceof Error) {
+        errorMessage = error.message;
+
+        // Handle specific error types
+        if (error.name === 'AbortError') {
+          details = 'Request timeout - API not responding within 5 seconds';
+          errorMessage = 'Request timeout';
+        } else if (error.message.includes('Failed to fetch')) {
+          details = 'Network error - unable to connect to API';
+          errorMessage = 'Network connection failed';
+        }
+      }
+
       // Determine if this is a cloud environment where API might not be available
-      const isCloudEnvironment = window.location.hostname.includes('fly.dev') || 
+      const isCloudEnvironment = window.location.hostname.includes('fly.dev') ||
                                  window.location.hostname.includes('builder.codes');
-      
+
       if (isCloudEnvironment) {
         return {
           service: serviceName,
           status: 'degraded',
           responseTime,
           timestamp: new Date().toISOString(),
-          details: 'API unavailable - using fallback data',
-          metadata: { endpoint, usingFallback: true }
+          details: 'API unavailable in cloud environment - using fallback data',
+          metadata: {
+            endpoint,
+            usingFallback: true,
+            errorType: error instanceof Error ? error.name : 'Unknown',
+            originalError: errorMessage
+          }
         };
       }
 
@@ -267,8 +308,12 @@ class HealthCheckService {
         status: 'unhealthy',
         responseTime,
         timestamp: new Date().toISOString(),
-        error: error instanceof Error ? error.message : 'API check failed',
-        metadata: { endpoint }
+        error: errorMessage,
+        details,
+        metadata: {
+          endpoint,
+          errorType: error instanceof Error ? error.name : 'Unknown'
+        }
       };
     }
   }
