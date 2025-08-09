@@ -37,6 +37,12 @@ export default function MakerSidebar() {
       active: isActive('/portal/projects')
     },
     {
+      name: 'Project Showcase',
+      href: '/portal/showcase',
+      icon: Sparkles,
+      active: isActive('/portal/showcase')
+    },
+    {
       name: 'Reservations',
       href: '/portal/reservations',
       icon: Calendar,
