@@ -5,6 +5,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { ArrowRight, Star, Users, Package, Truck, Clock } from 'lucide-react';
 import { api, type Product, type Category, formatPrice } from '@/lib/api';
+import { DarkModeDemo } from '@/components/DarkModeDemo';
 
 export default function HomePage() {
   const [featuredProducts, setFeaturedProducts] = useState<Product[]>([]);
