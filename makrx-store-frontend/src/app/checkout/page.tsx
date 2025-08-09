@@ -395,7 +395,85 @@ function CheckoutPage() {
                             required
                           />
                         </div>
-                        {/* Add other shipping address fields... */}
+
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-2">
+                            Phone Number *
+                          </label>
+                          <input
+                            type="tel"
+                            value={shippingAddress.phone}
+                            onChange={(e) => setShippingAddress(prev => ({ ...prev, phone: e.target.value }))}
+                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            required
+                          />
+                        </div>
+
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-2">
+                            Street Address *
+                          </label>
+                          <input
+                            type="text"
+                            value={shippingAddress.line1}
+                            onChange={(e) => setShippingAddress(prev => ({ ...prev, line1: e.target.value }))}
+                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            required
+                          />
+                        </div>
+
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-2">
+                            Apartment, suite, etc. (optional)
+                          </label>
+                          <input
+                            type="text"
+                            value={shippingAddress.line2}
+                            onChange={(e) => setShippingAddress(prev => ({ ...prev, line2: e.target.value }))}
+                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                          />
+                        </div>
+
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                          <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-2">
+                              City *
+                            </label>
+                            <input
+                              type="text"
+                              value={shippingAddress.city}
+                              onChange={(e) => setShippingAddress(prev => ({ ...prev, city: e.target.value }))}
+                              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                              required
+                            />
+                          </div>
+
+                          <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-2">
+                              State *
+                            </label>
+                            <input
+                              type="text"
+                              value={shippingAddress.state}
+                              onChange={(e) => setShippingAddress(prev => ({ ...prev, state: e.target.value }))}
+                              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                              required
+                            />
+                          </div>
+
+                          <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-2">
+                              ZIP Code *
+                            </label>
+                            <input
+                              type="text"
+                              value={shippingAddress.postal_code}
+                              onChange={(e) => setShippingAddress(prev => ({ ...prev, postal_code: e.target.value }))}
+                              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                              required
+                            />
+                          </div>
+                        </div>
                       </div>
                     </div>
                   )}
