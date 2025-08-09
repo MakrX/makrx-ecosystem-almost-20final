@@ -265,7 +265,7 @@ const LandingPage = () => {
             <Card className="bg-white/10 backdrop-blur-md border-white/20">
               <CardContent className="p-6 text-center">
                 <div className="text-4xl mb-4">🏆</div>
-                <h3 className="text-xl font-semibent text-white mb-2">Travel Badges</h3>
+                <h3 className="text-xl font-semibold text-white mb-2">Travel Badges</h3>
                 <p className="text-white/70">Earn achievements as you explore caves, connect with makers, and discover new technologies</p>
               </CardContent>
             </Card>
