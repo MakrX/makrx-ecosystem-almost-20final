@@ -16,7 +16,8 @@ import {
   Building2,
   LogOut,
   GraduationCap,
-  Bell
+  Bell,
+  Sparkles
 } from 'lucide-react';
 
 export default function ManagerSidebar() {
