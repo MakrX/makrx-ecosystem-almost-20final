@@ -196,3 +196,8 @@ export interface FeatureAccessResult {
   flag?: FeatureFlag;
   reason?: 'disabled' | 'insufficient_role' | 'not_found' | 'environment_mismatch';
 }
+
+// Demo API Types (from shared/api.ts)
+export interface DemoResponse {
+  message: string;
+}
