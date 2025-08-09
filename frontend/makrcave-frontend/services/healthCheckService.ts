@@ -64,28 +64,89 @@ class HealthCheckService {
     const startTime = performance.now();
     const results: HealthCheckResult[] = [];
 
-    // Run all checks in parallel
+    // Run all checks in parallel with enhanced error handling
     const checkPromises = Array.from(this.checks.entries()).map(async ([name, checkFn]) => {
       try {
         const result = await this.runSingleCheck(name, checkFn);
         return result;
       } catch (error) {
+        console.warn(`Health check failed for ${name}:`, error);
+
+        // Provide more detailed error information
+        let errorMessage = 'Unknown error';
+        let details = 'Health check failed';
+
+        if (error instanceof Error) {
+          errorMessage = error.message;
+          if (error.name === 'AbortError') {
+            details = 'Check timeout - service not responding';
+          } else if (error.message.includes('Failed to fetch')) {
+            details = 'Network connectivity issue';
+          }
+        }
+
         return {
           service: name,
           status: 'unhealthy' as const,
           responseTime: performance.now() - startTime,
           timestamp: new Date().toISOString(),
-          error: error instanceof Error ? error.message : 'Unknown error'
+          error: errorMessage,
+          details,
+          metadata: {
+            errorType: error instanceof Error ? error.name : 'Unknown',
+            checkFailed: true
+          }
         };
       }
     });
 
-    const checkResults = await Promise.all(checkPromises);
-    results.push(...checkResults);
+    try {
+      const checkResults = await Promise.allSettled(checkPromises);
+
+      // Process all results, including rejected promises
+      checkResults.forEach((result, index) => {
+        const [name] = Array.from(this.checks.entries())[index];
+
+        if (result.status === 'fulfilled') {
+          results.push(result.value);
+        } else {
+          console.error(`Health check promise rejected for ${name}:`, result.reason);
+          results.push({
+            service: name,
+            status: 'unhealthy' as const,
+            responseTime: performance.now() - startTime,
+            timestamp: new Date().toISOString(),
+            error: 'Promise rejected',
+            details: 'Health check promise was rejected',
+            metadata: {
+              promiseRejected: true,
+              reason: result.reason?.toString() || 'Unknown reason'
+            }
+          });
+        }
+      });
+    } catch (error) {
+      console.error('Critical error in health check system:', error);
+
+      // If Promise.allSettled fails, return a minimal status
+      return {
+        overall: 'unhealthy',
+        services: [{
+          service: 'health-check-system',
+          status: 'unhealthy',
+          responseTime: performance.now() - startTime,
+          timestamp: new Date().toISOString(),
+          error: 'Health check system failure',
+          details: 'Critical error in health monitoring'
+        }],
+        lastUpdated: new Date().toISOString(),
+        environment: this.getEnvironment()
+      };
+    }
 
     // Determine overall health
     const overall = this.calculateOverallHealth(results);
-    
+
     return {
       overall,
       services: results,
