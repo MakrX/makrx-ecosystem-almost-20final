@@ -7,29 +7,33 @@ export default function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
+  const { login, isLoading, error, clearError, isAuthenticated } = useAuth();
+
+  // Redirect if already authenticated
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate('/');
+    }
+  }, [isAuthenticated, navigate]);
+
+  // Clear error when user starts typing
+  useEffect(() => {
+    if (error) {
+      clearError();
+    }
+  }, [email, password, clearError]);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsLoading(true);
 
-    // Dummy login - simulate API call
-    setTimeout(() => {
-      // Simulate successful login
-      localStorage.setItem('makrx_user', JSON.stringify({
-        id: '1',
-        email,
-        username: email.split('@')[0],
-        firstName: 'Demo',
-        lastName: 'User',
-        roles: ['maker']
-      }));
-      
-      localStorage.setItem('makrx_access_token', 'dummy_token_' + Date.now());
-      setIsLoading(false);
+    try {
+      await login(email, password);
       navigate('/');
-    }, 1500);
+    } catch (err) {
+      // Error is handled by AuthContext
+      console.error('Login failed:', err);
+    }
   };
 
   return (
