@@ -24,6 +24,8 @@ import Settings from "./pages/Settings";
 import Profile from "./pages/Profile";
 import SkillManagement from "./pages/SkillManagement";
 import NotificationsCenter from "./pages/NotificationsCenter";
+import MembershipPlans from "./pages/MembershipPlans";
+import Announcements from "./pages/Announcements";
 import AdminUsers from "./pages/admin/Users";
 import AdminMakerspace from "./pages/admin/Makerspace";
 import AdminMakerspaces from "./pages/admin/Makerspaces";
