@@ -4,7 +4,17 @@ import { Sun, Moon, Monitor } from "lucide-react";
 import { useTheme } from "@/contexts/SharedThemeProvider";
 
 export function ThemeToggle() {
-  const { theme, effectiveTheme, toggleTheme } = useTheme();
+  const { theme, effectiveTheme, setTheme } = useTheme();
+
+  const toggleTheme = () => {
+    if (theme === "light") {
+      setTheme("dark");
+    } else if (theme === "dark") {
+      setTheme("system");
+    } else {
+      setTheme("light");
+    }
+  };
 
   const getIcon = () => {
     switch (theme) {
