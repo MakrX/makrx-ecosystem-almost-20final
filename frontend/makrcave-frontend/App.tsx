@@ -46,6 +46,7 @@ import CapacityPlanning from "./pages/CapacityPlanning";
 import LearningCenter from "./pages/LearningCenter";
 import AdvancedMaintenance from "./pages/AdvancedMaintenance";
 import SmartInventory from "./pages/SmartInventory";
+import Community from "./pages/Community";
 import ProtectedRoute from "./components/ProtectedRoute";
 import ErrorBoundary from "./components/ErrorBoundary";
 import { createRoot } from "react-dom/client";
@@ -100,6 +101,7 @@ const App = () => (
                       <Route path="learning" element={<LearningCenter />} />
                       <Route path="advanced-maintenance" element={<AdvancedMaintenance />} />
                       <Route path="smart-inventory" element={<SmartInventory />} />
+                      <Route path="community" element={<Community />} />
                       <Route path="reservations" element={<Reservations />} />
                       <Route path="members" element={<Members />} />
                       <Route path="billing" element={<Billing />} />
