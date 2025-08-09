@@ -86,6 +86,7 @@ const App = () => (
                       <Route index element={<Navigate to="dashboard" replace />} />
                       <Route path="dashboard" element={<Dashboard />} />
                       <Route path="inventory" element={<Inventory />} />
+                      <Route path="enhanced-inventory" element={<EnhancedInventory />} />
                       <Route path="equipment" element={<Equipment />} />
                       <Route path="projects" element={<Projects />} />
                       <Route path="projects/:projectId" element={<ProjectDetail />} />
