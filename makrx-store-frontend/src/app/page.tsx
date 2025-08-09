@@ -131,14 +131,14 @@ export default function HomePage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center mb-12">
             <div>
-              <h2 className="text-3xl font-bold text-gray-900 mb-4">Featured Products</h2>
-              <p className="text-lg text-gray-600">
+              <h2 className="text-3xl font-bold text-foreground mb-4">Featured Products</h2>
+              <p className="text-lg text-muted-foreground">
                 Our most popular and highly-rated products
               </p>
             </div>
             <Link
               href="/catalog?is_featured=true"
-              className="text-blue-600 hover:text-blue-700 font-medium"
+              className="text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 font-medium"
             >
               View All Featured
             </Link>
