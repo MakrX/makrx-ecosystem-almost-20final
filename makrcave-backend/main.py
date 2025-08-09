@@ -12,6 +12,8 @@ from routes.analytics import router as analytics_router
 from routes.makerspace_settings import router as settings_router
 from routes.skill import router as skill_router
 from routes.bridge import router as bridge_router
+from routes.membership_plans import router as membership_plans_router
+from routes.announcements import router as announcements_router
 
 # Create FastAPI application
 app = FastAPI(
