@@ -69,7 +69,7 @@ frontend/makrcave-frontend/
 │   ├── equipment/         # Equipment management
 │   ├── inventory/         # Inventory tracking
 │   ├── maintenance/       # Equipment maintenance
-│   ├─��� projects/          # Project management
+│   ├── projects/          # Project management
 │   └── ui/                # UI components
 ├── contexts/
 │   ├── AuthContext.tsx    # Authentication
@@ -523,7 +523,17 @@ function ResponsiveCard() {
         sm:p-6
         lg:p-8
       ">
-        {/* Content */}
+        <h3 className="text-lg font-semibold mb-2">Equipment Status</h3>
+        <div className="space-y-2">
+          <div className="flex justify-between">
+            <span>Available</span>
+            <span className="font-medium">8</span>
+          </div>
+          <div className="flex justify-between">
+            <span>In Use</span>
+            <span className="font-medium">3</span>
+          </div>
+        </div>
       </CardContent>
     </Card>
   );
