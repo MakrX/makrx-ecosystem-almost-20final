@@ -184,13 +184,81 @@ app.include_router(bridge.router, prefix="/bridge", tags=["Bridge"])
 
 @app.on_event("startup")
 async def startup_event():
-    """Initialize database and other startup tasks"""
-    logger.info("Starting MakrX Store API...")
-    
-    # Create database tables
-    await create_tables()
-    
-    logger.info("MakrX Store API started successfully")
+    """Initialize database, security components, and other startup tasks"""
+    logger.info("Starting MakrX Store API with comprehensive security...")
+
+    try:
+        # Create database tables
+        await create_tables()
+
+        # Initialize security components
+        logger.info("Initializing security components...")
+
+        # Check for secrets that need rotation
+        due_rotations = await secrets_manager.check_rotation_due()
+        if due_rotations:
+            logger.warning(f"Found {len(due_rotations)} secrets due for rotation")
+            for secret in due_rotations:
+                logger.warning(f"Secret '{secret['secret_name']}' overdue by {secret['days_overdue']} days")
+
+        # Start background tasks
+        asyncio.create_task(start_security_background_tasks())
+
+        # Log successful startup
+        await security_logger.log_security_event(
+            event_type="system_startup",
+            action="api_started",
+            success=True,
+            context={"version": "1.0.0", "environment": settings.ENVIRONMENT}
+        )
+
+        logger.info("MakrX Store API started successfully with security enabled")
+
+    except Exception as e:
+        logger.error(f"Failed to start API: {e}")
+        await security_logger.log_security_event(
+            event_type="system_startup",
+            action="api_start_failed",
+            success=False,
+            context={"error": str(e)}
+        )
+        raise
+
+async def start_security_background_tasks():
+    """Start background security tasks"""
+    try:
+        # Schedule daily retention policy enforcement
+        asyncio.create_task(schedule_retention_enforcement())
+
+        # Schedule secret rotation checks
+        asyncio.create_task(schedule_secret_rotation_checks())
+
+        logger.info("Security background tasks started")
+
+    except Exception as e:
+        logger.error(f"Failed to start security background tasks: {e}")
+
+async def schedule_retention_enforcement():
+    """Schedule daily data retention enforcement"""
+    while True:
+        try:
+            await asyncio.sleep(86400)  # 24 hours
+            logger.info("Running scheduled data retention enforcement")
+            await retention_manager.enforce_retention_policies()
+        except Exception as e:
+            logger.error(f"Retention enforcement failed: {e}")
+
+async def schedule_secret_rotation_checks():
+    """Schedule periodic secret rotation checks"""
+    while True:
+        try:
+            await asyncio.sleep(3600)  # 1 hour
+            due_rotations = await secrets_manager.check_rotation_due()
+            if due_rotations:
+                logger.warning(f"Found {len(due_rotations)} secrets due for rotation")
+                # In production, trigger alerts or automated rotation
+        except Exception as e:
+            logger.error(f"Secret rotation check failed: {e}")
 
 @app.on_event("shutdown")
 async def shutdown_event():
