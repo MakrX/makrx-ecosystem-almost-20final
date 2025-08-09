@@ -1,9 +1,10 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Layout from '@/components/layout/Layout'
 import { Button } from '@/components/ui/Button'
+import AdminAuth, { isAdminAuthenticated } from '@/components/AdminAuth'
 import { 
   Save, 
   ArrowLeft, 
