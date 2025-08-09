@@ -271,8 +271,8 @@ export function Header() {
 
       {/* Mobile menu */}
       {isMenuOpen && (
-        <div className="md:hidden border-t border-gray-200">
-          <div className="px-4 py-2 space-y-1 bg-white">
+        <div className="md:hidden border-t border-border">
+          <div className="px-4 py-2 space-y-1 bg-background">
             {/* Mobile Search */}
             <div className="py-2">
               <SmartSearch onSearch={handleSearch} />
@@ -280,7 +280,7 @@ export function Header() {
 
             <Link
               href="/catalog"
-              className="block py-2 text-gray-700 hover:text-blue-600"
+              className="block py-2 text-foreground hover:text-blue-600 dark:hover:text-blue-400"
               onClick={() => setIsMenuOpen(false)}
             >
               Catalog
@@ -288,12 +288,12 @@ export function Header() {
 
             {/* Mobile Categories */}
             <div className="py-2">
-              <div className="font-medium text-gray-900 mb-2">Categories</div>
+              <div className="font-medium text-foreground mb-2">Categories</div>
               {rootCategories.map((category) => (
                 <button
                   key={category.id}
                   onClick={() => handleCategoryClick(category)}
-                  className="block w-full text-left py-1 pl-4 text-gray-600 hover:text-blue-600"
+                  className="block w-full text-left py-1 pl-4 text-muted-foreground hover:text-blue-600 dark:hover:text-blue-400"
                 >
                   {category.name}
                 </button>
@@ -302,24 +302,24 @@ export function Header() {
 
             {/* Mobile Services */}
             <div className="py-2">
-              <div className="font-medium text-gray-900 mb-2">Services</div>
+              <div className="font-medium text-foreground mb-2">Services</div>
               <Link
                 href="/3d-printing"
-                className="block py-1 pl-4 text-gray-600 hover:text-blue-600"
+                className="block py-1 pl-4 text-muted-foreground hover:text-blue-600 dark:hover:text-blue-400"
                 onClick={() => setIsMenuOpen(false)}
               >
                 3D Printing
               </Link>
               <Link
                 href="/upload"
-                className="block py-1 pl-4 text-gray-600 hover:text-blue-600"
+                className="block py-1 pl-4 text-muted-foreground hover:text-blue-600 dark:hover:text-blue-400"
                 onClick={() => setIsMenuOpen(false)}
               >
                 Upload & Quote
               </Link>
               <Link
                 href="/sample-projects"
-                className="block py-1 pl-4 text-gray-600 hover:text-blue-600"
+                className="block py-1 pl-4 text-muted-foreground hover:text-blue-600 dark:hover:text-blue-400"
                 onClick={() => setIsMenuOpen(false)}
               >
                 Sample Projects
@@ -328,22 +328,28 @@ export function Header() {
 
             <Link
               href="/about"
-              className="block py-2 text-gray-700 hover:text-blue-600"
+              className="block py-2 text-foreground hover:text-blue-600 dark:hover:text-blue-400"
               onClick={() => setIsMenuOpen(false)}
             >
               About
             </Link>
 
+            {/* Theme Toggle for Mobile */}
+            <div className="py-2 border-t border-border">
+              <div className="font-medium text-foreground mb-2">Appearance</div>
+              <ThemeToggleCompact />
+            </div>
+
             {/* Mobile user menu */}
             {isAuthenticated && (
-              <div className="py-2 border-t border-gray-200">
-                <div className="font-medium text-gray-900 mb-2">Account</div>
+              <div className="py-2 border-t border-border">
+                <div className="font-medium text-foreground mb-2">Account</div>
                 <button
                   onClick={() => {
                     handleUserMenuClick('account');
                     setIsMenuOpen(false);
                   }}
-                  className="block w-full text-left py-1 pl-4 text-gray-600 hover:text-blue-600"
+                  className="block w-full text-left py-1 pl-4 text-muted-foreground hover:text-blue-600 dark:hover:text-blue-400"
                 >
                   My Account
                 </button>
@@ -352,7 +358,7 @@ export function Header() {
                     handleUserMenuClick('orders');
                     setIsMenuOpen(false);
                   }}
-                  className="block w-full text-left py-1 pl-4 text-gray-600 hover:text-blue-600"
+                  className="block w-full text-left py-1 pl-4 text-muted-foreground hover:text-blue-600 dark:hover:text-blue-400"
                 >
                   My Orders
                 </button>
@@ -361,7 +367,7 @@ export function Header() {
                     handleUserMenuClick('logout');
                     setIsMenuOpen(false);
                   }}
-                  className="block w-full text-left py-1 pl-4 text-red-600 hover:text-red-700"
+                  className="block w-full text-left py-1 pl-4 text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300"
                 >
                   Sign Out
                 </button>
