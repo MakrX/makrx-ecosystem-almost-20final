@@ -97,6 +97,8 @@ const App = () => (
                       <Route path="profile" element={<Profile />} />
                       <Route path="skills" element={<SkillManagement />} />
                       <Route path="notifications" element={<NotificationsCenter />} />
+                      <Route path="membership-plans" element={<MembershipPlans />} />
+                      <Route path="announcements" element={<Announcements />} />
                       <Route path="system-health" element={
                         <ProtectedRoute
                           adminFeature="healthMonitoring"
