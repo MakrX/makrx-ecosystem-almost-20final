@@ -40,7 +40,7 @@ const LandingPage = () => {
                       <div className="font-medium text-blue-400">MakrCave</div>
                       <div className="text-sm text-blue-300/70">You are here - Makerspace management</div>
                     </div>
-                    <a href="https://store.makrx.org" className="block p-2 hover:bg-white/10 rounded-md">
+                    <a href="https://makrx.store" className="block p-2 hover:bg-white/10 rounded-md">
                       <div className="font-medium text-white">MakrX.Store</div>
                       <div className="text-sm text-white/70">E-commerce & fabrication hub</div>
                     </a>
