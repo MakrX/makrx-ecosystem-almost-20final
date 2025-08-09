@@ -1,489 +1,693 @@
-'use client'
+'use client';
 
-import React, { useState, useCallback } from 'react'
-import { useDropzone } from 'react-dropzone'
-import Layout from '@/components/layout/Layout'
-import { Button } from '@/components/ui/Button'
-import {
-  Upload,
-  File,
-  X,
-  Printer,
-  Clock,
-  DollarSign,
-  Ruler,
-  Package,
-  Star,
-  MapPin,
-  ChevronDown,
-  Info
-} from 'lucide-react'
-import { formatFileSize, validateSTLFile } from '@/lib/utils'
+import { useState, useEffect, useRef } from 'react';
+import { useRouter } from 'next/navigation';
+import Image from 'next/image';
+import Link from 'next/link';
+import { 
+  Upload, FileText, Printer, Zap, Clock, Star, 
+  Check, ChevronRight, Camera, Package, Shield,
+  Download, AlertCircle, RefreshCw
+} from 'lucide-react';
+import { api, formatPrice } from '@/lib/api';
+import { useAuth } from '@/contexts/AuthContext';
+
+const SUPPORTED_FORMATS = ['.stl', '.obj', '.3mf', '.step', '.stp'];
+const MAX_FILE_SIZE = 100 * 1024 * 1024; // 100MB
+
+const MATERIALS = [
+  { id: 'pla', name: 'PLA', description: 'Easy to print, biodegradable', price: 0.15 },
+  { id: 'pla+', name: 'PLA+', description: 'Enhanced PLA with better strength', price: 0.18 },
+  { id: 'abs', name: 'ABS', description: 'Durable, heat resistant', price: 0.18 },
+  { id: 'petg', name: 'PETG', description: 'Chemical resistant, food safe', price: 0.20 },
+  { id: 'tpu', name: 'TPU', description: 'Flexible, rubber-like', price: 0.30 },
+  { id: 'resin', name: 'Resin', description: 'High detail, smooth finish', price: 0.35 },
+];
+
+const QUALITIES = [
+  { id: 'draft', name: 'Draft', description: '0.3mm layers, fast printing', multiplier: 0.7 },
+  { id: 'standard', name: 'Standard', description: '0.2mm layers, balanced', multiplier: 1.0 },
+  { id: 'high', name: 'High', description: '0.15mm layers, fine details', multiplier: 1.4 },
+  { id: 'ultra', name: 'Ultra', description: '0.1mm layers, premium quality', multiplier: 2.0 },
+];
 
 interface UploadedFile {
-  file: File
-  id: string
-  preview?: string
+  id: string;
+  name: string;
+  size: number;
+  status: 'uploading' | 'processing' | 'processed' | 'failed';
+  volume_mm3?: number;
+  dimensions?: { x: number; y: number; z: number };
+  error?: string;
 }
 
-interface PrintQuote {
-  material: string
-  quality: string
-  infill: number
-  support: boolean
-  price: number
-  printTime: number
-  volume: number
-  providerId: string
-  providerName: string
-  providerRating: number
-  distance: number
-}
+export default function PrintingServicesPage() {
+  const router = useRouter();
+  const { isAuthenticated, login } = useAuth();
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  
+  const [uploadedFiles, setUploadedFiles] = useState<UploadedFile[]>([]);
+  const [selectedMaterial, setSelectedMaterial] = useState('pla');
+  const [selectedQuality, setSelectedQuality] = useState('standard');
+  const [selectedColor, setSelectedColor] = useState('natural');
+  const [quantity, setQuantity] = useState(1);
+  const [infillPercentage, setInfillPercentage] = useState(20);
+  const [supports, setSupports] = useState(false);
+  const [quote, setQuote] = useState<any>(null);
+  const [quoteLoading, setQuoteLoading] = useState(false);
+  const [dragActive, setDragActive] = useState(false);
 
-export default function PrintingHubPage() {
-  const [uploadedFiles, setUploadedFiles] = useState<UploadedFile[]>([])
-  const [selectedMaterial, setSelectedMaterial] = useState('PLA')
-  const [selectedQuality, setSelectedQuality] = useState('Standard')
-  const [infillPercentage, setInfillPercentage] = useState(15)
-  const [needsSupport, setNeedsSupport] = useState(false)
-  const [quotes, setQuotes] = useState<PrintQuote[]>([])
-  const [isGettingQuotes, setIsGettingQuotes] = useState(false)
+  const handleDrag = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (e.type === 'dragenter' || e.type === 'dragover') {
+      setDragActive(true);
+    } else if (e.type === 'dragleave') {
+      setDragActive(false);
+    }
+  };
 
-  const materials = [
-    { name: 'PLA', price: 0.025, description: 'Easy to print, biodegradable' },
-    { name: 'ABS', price: 0.030, description: 'Strong, heat resistant' },
-    { name: 'PETG', price: 0.035, description: 'Chemical resistant, clear' },
-    { name: 'TPU', price: 0.050, description: 'Flexible, rubber-like' },
-    { name: 'Wood Fill', price: 0.040, description: 'Wood-like appearance' },
-    { name: 'Metal Fill', price: 0.080, description: 'Heavy, metallic finish' },
-  ]
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setDragActive(false);
+    
+    const files = Array.from(e.dataTransfer.files);
+    handleFiles(files);
+  };
 
-  const qualities = [
-    { name: 'Draft', layer: '0.3mm', description: 'Fast, rough finish' },
-    { name: 'Standard', layer: '0.2mm', description: 'Good balance of speed and quality' },
-    { name: 'High', layer: '0.1mm', description: 'Slow, smooth finish' },
-    { name: 'Ultra', layer: '0.05mm', description: 'Very slow, finest detail' },
-  ]
+  const handleFileInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(e.target.files || []);
+    handleFiles(files);
+  };
 
-  const onDrop = useCallback((acceptedFiles: File[]) => {
-    acceptedFiles.forEach((file) => {
-      const validation = validateSTLFile(file)
-      if (validation.valid) {
-        const newFile: UploadedFile = {
-          file,
-          id: Math.random().toString(36).substr(2, 9),
-        }
-        setUploadedFiles(prev => [...prev, newFile])
-      } else {
-        alert(validation.error)
+  const handleFiles = async (files: File[]) => {
+    if (!isAuthenticated) {
+      login();
+      return;
+    }
+
+    for (const file of files) {
+      // Validate file
+      if (!validateFile(file)) {
+        continue;
       }
-    })
-  }, [])
 
-  const { getRootProps, getInputProps, isDragActive } = useDropzone({
-    onDrop,
-    accept: {
-      'application/octet-stream': ['.stl'],
-      'model/stl': ['.stl'],
-    },
-    multiple: true,
-  })
+      const uploadId = `upload_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+      
+      // Add file to state
+      const uploadedFile: UploadedFile = {
+        id: uploadId,
+        name: file.name,
+        size: file.size,
+        status: 'uploading'
+      };
+      
+      setUploadedFiles(prev => [...prev, uploadedFile]);
 
-  const removeFile = (id: string) => {
-    setUploadedFiles(prev => prev.filter(f => f.id !== id))
-  }
+      try {
+        // Get upload URL
+        const uploadResponse = await api.createUploadUrl(
+          file.name,
+          file.type || 'application/octet-stream',
+          file.size
+        );
 
-  const getQuotes = async () => {
-    if (uploadedFiles.length === 0) return
-    
-    setIsGettingQuotes(true)
-    
-    // Simulate API call for quotes
-    setTimeout(() => {
-      const mockQuotes: PrintQuote[] = [
-        {
-          material: selectedMaterial,
-          quality: selectedQuality,
-          infill: infillPercentage,
-          support: needsSupport,
-          price: 25.99,
-          printTime: 4.5,
-          volume: 12.5,
-          providerId: '1',
-          providerName: 'TechPrint Solutions',
-          providerRating: 4.9,
-          distance: 2.3
-        },
-        {
-          material: selectedMaterial,
-          quality: selectedQuality,
-          infill: infillPercentage,
-          support: needsSupport,
-          price: 28.50,
-          printTime: 4.2,
-          volume: 12.5,
-          providerId: '2',
-          providerName: 'MakerSpace Pro',
-          providerRating: 4.8,
-          distance: 5.1
-        },
-        {
-          material: selectedMaterial,
-          quality: selectedQuality,
-          infill: infillPercentage,
-          support: needsSupport,
-          price: 22.75,
-          printTime: 5.1,
-          volume: 12.5,
-          providerId: '3',
-          providerName: 'Rapid Prototypes',
-          providerRating: 4.7,
-          distance: 8.7
+        // Upload file to S3/MinIO
+        const formData = new FormData();
+        Object.entries(uploadResponse.fields).forEach(([key, value]) => {
+          formData.append(key, value);
+        });
+        formData.append('file', file);
+
+        const uploadResult = await fetch(uploadResponse.upload_url, {
+          method: 'POST',
+          body: formData
+        });
+
+        if (!uploadResult.ok) {
+          throw new Error('Upload failed');
         }
-      ]
-      setQuotes(mockQuotes)
-      setIsGettingQuotes(false)
-    }, 2000)
-  }
+
+        // Mark upload as complete
+        await api.completeUpload(uploadResponse.upload_id, uploadResponse.file_key);
+
+        // Update status to processing
+        setUploadedFiles(prev => prev.map(f => 
+          f.id === uploadId ? { ...f, status: 'processing' } : f
+        ));
+
+        // Poll for processing completion
+        pollUploadStatus(uploadResponse.upload_id, uploadId);
+
+      } catch (error) {
+        console.error('Upload failed:', error);
+        setUploadedFiles(prev => prev.map(f => 
+          f.id === uploadId ? { ...f, status: 'failed', error: 'Upload failed' } : f
+        ));
+      }
+    }
+  };
+
+  const pollUploadStatus = async (uploadId: string, localId: string) => {
+    let attempts = 0;
+    const maxAttempts = 30;
+
+    const poll = async () => {
+      try {
+        const upload = await api.getUpload(uploadId);
+        
+        if (upload.status === 'processed') {
+          setUploadedFiles(prev => prev.map(f => 
+            f.id === localId ? { 
+              ...f, 
+              status: 'processed',
+              volume_mm3: upload.volume_mm3 ? Number(upload.volume_mm3) : undefined,
+              dimensions: upload.dimensions
+            } : f
+          ));
+          return;
+        } else if (upload.status === 'failed') {
+          setUploadedFiles(prev => prev.map(f => 
+            f.id === localId ? { 
+              ...f, 
+              status: 'failed',
+              error: upload.error_message || 'Processing failed'
+            } : f
+          ));
+          return;
+        }
+
+        attempts++;
+        if (attempts < maxAttempts) {
+          setTimeout(poll, 2000); // Poll every 2 seconds
+        } else {
+          setUploadedFiles(prev => prev.map(f => 
+            f.id === localId ? { 
+              ...f, 
+              status: 'failed',
+              error: 'Processing timeout'
+            } : f
+          ));
+        }
+      } catch (error) {
+        console.error('Failed to check upload status:', error);
+        setUploadedFiles(prev => prev.map(f => 
+          f.id === localId ? { 
+            ...f, 
+            status: 'failed',
+            error: 'Failed to check status'
+          } : f
+        ));
+      }
+    };
+
+    poll();
+  };
+
+  const validateFile = (file: File): boolean => {
+    // Check file type
+    const extension = '.' + file.name.split('.').pop()?.toLowerCase();
+    if (!SUPPORTED_FORMATS.includes(extension)) {
+      alert(`Unsupported file format. Please use: ${SUPPORTED_FORMATS.join(', ')}`);
+      return false;
+    }
+
+    // Check file size
+    if (file.size > MAX_FILE_SIZE) {
+      alert(`File too large. Maximum size is ${MAX_FILE_SIZE / 1024 / 1024}MB`);
+      return false;
+    }
+
+    return true;
+  };
+
+  const generateQuote = async () => {
+    const processedFiles = uploadedFiles.filter(f => f.status === 'processed');
+    if (processedFiles.length === 0) {
+      alert('Please upload and process at least one file');
+      return;
+    }
+
+    setQuoteLoading(true);
+    try {
+      // For now, use the first file for quote generation
+      const file = processedFiles[0];
+      
+      const quoteData = await api.createQuote({
+        upload_id: file.id,
+        material: selectedMaterial,
+        quality: selectedQuality,
+        color: selectedColor,
+        infill_percentage: infillPercentage,
+        supports,
+        quantity
+      });
+
+      setQuote(quoteData);
+    } catch (error) {
+      console.error('Failed to generate quote:', error);
+      alert('Failed to generate quote. Please try again.');
+    } finally {
+      setQuoteLoading(false);
+    }
+  };
+
+  const removeFile = (fileId: string) => {
+    setUploadedFiles(prev => prev.filter(f => f.id !== fileId));
+    setQuote(null); // Clear quote when files change
+  };
+
+  const formatFileSize = (bytes: number): string => {
+    if (bytes === 0) return '0 Bytes';
+    const k = 1024;
+    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+  };
 
   return (
-    <Layout>
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50">
+    <div className="min-h-screen bg-gray-50">
+      <div className="max-w-7xl mx-auto px-4 py-8 sm:px-6 lg:px-8">
         {/* Header */}
-        <section className="py-16 bg-gradient-to-r from-store-primary to-store-secondary text-white">
-          <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="text-center max-w-4xl mx-auto">
-              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-6">
-                3D Printing Hub
-              </h1>
-              <p className="text-xl sm:text-2xl text-white/90 mb-8">
-                Upload your designs, get instant quotes, and have them printed by verified local providers
-              </p>
-              <div className="flex items-center justify-center space-x-8 text-white/90">
-                <div className="flex items-center">
-                  <Clock className="h-5 w-5 mr-2" />
-                  Instant Quotes
-                </div>
-                <div className="flex items-center">
-                  <MapPin className="h-5 w-5 mr-2" />
-                  Local Providers
-                </div>
-                <div className="flex items-center">
-                  <Star className="h-5 w-5 mr-2" />
-                  Verified Quality
-                </div>
-              </div>
+        <div className="text-center mb-12">
+          <h1 className="text-4xl font-bold text-gray-900 mb-4">
+            Professional 3D Printing Services
+          </h1>
+          <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+            Transform your digital designs into high-quality physical objects with our 
+            state-of-the-art 3D printing technology and premium materials.
+          </p>
+        </div>
+
+        {/* Service Features */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
+          <div className="bg-white p-8 rounded-lg shadow-sm text-center">
+            <div className="w-16 h-16 bg-blue-100 rounded-lg flex items-center justify-center mx-auto mb-6">
+              <Zap className="h-8 w-8 text-blue-600" />
             </div>
+            <h3 className="text-xl font-semibold text-gray-900 mb-4">Instant Quotes</h3>
+            <p className="text-gray-600">
+              Upload your file and get pricing instantly. No waiting, no hidden fees.
+            </p>
           </div>
-        </section>
 
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-            {/* Left Column - Upload & Settings */}
-            <div className="space-y-8">
-              {/* File Upload */}
-              <div className="bg-white rounded-xl shadow-lg p-6">
-                <h2 className="text-2xl font-bold text-gray-900 mb-6 flex items-center">
-                  <Upload className="h-6 w-6 mr-2 text-store-primary" />
-                  Upload Your Files
-                </h2>
-                
-                <div
-                  {...getRootProps()}
-                  className={`border-2 border-dashed rounded-lg p-8 text-center cursor-pointer transition-all ${
-                    isDragActive 
-                      ? 'border-store-primary bg-store-primary/5' 
-                      : 'border-gray-300 hover:border-store-primary hover:bg-gray-50'
-                  }`}
-                >
-                  <input {...getInputProps()} />
-                  <Printer className="h-16 w-16 text-gray-400 mx-auto mb-4" />
-                  {isDragActive ? (
-                    <p className="text-store-primary font-medium">Drop your STL files here...</p>
-                  ) : (
-                    <div>
-                      <p className="text-gray-600 mb-2">
-                        Drag & drop your STL files here, or <span className="text-store-primary font-medium">browse</span>
-                      </p>
-                      <p className="text-sm text-gray-500">
-                        Supports STL files up to 100MB
-                      </p>
-                    </div>
-                  )}
-                </div>
-
-                {/* Uploaded Files */}
-                {uploadedFiles.length > 0 && (
-                  <div className="mt-6 space-y-3">
-                    <h3 className="font-medium text-gray-900">Uploaded Files:</h3>
-                    {uploadedFiles.map((file) => (
-                      <div key={file.id} className="flex items-center justify-between bg-gray-50 rounded-lg p-3">
-                        <div className="flex items-center">
-                          <File className="h-5 w-5 text-gray-400 mr-3" />
-                          <div>
-                            <p className="font-medium text-gray-900">{file.file.name}</p>
-                            <p className="text-sm text-gray-500">{formatFileSize(file.file.size)}</p>
-                          </div>
-                        </div>
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => removeFile(file.id)}
-                        >
-                          <X className="h-4 w-4" />
-                        </Button>
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </div>
-
-              {/* Print Settings */}
-              <div className="bg-white rounded-xl shadow-lg p-6">
-                <h2 className="text-2xl font-bold text-gray-900 mb-6 flex items-center">
-                  <Printer className="h-6 w-6 mr-2 text-store-primary" />
-                  Print Settings
-                </h2>
-                
-                <div className="space-y-6">
-                  {/* Material Selection */}
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-3">
-                      Material
-                    </label>
-                    <div className="grid grid-cols-2 gap-3">
-                      {materials.map((material) => (
-                        <button
-                          key={material.name}
-                          onClick={() => setSelectedMaterial(material.name)}
-                          className={`p-3 rounded-lg border text-left transition-all ${
-                            selectedMaterial === material.name
-                              ? 'border-store-primary bg-store-primary/5'
-                              : 'border-gray-200 hover:border-gray-300'
-                          }`}
-                        >
-                          <div className="font-medium text-gray-900">{material.name}</div>
-                          <div className="text-sm text-gray-500">{material.description}</div>
-                          <div className="text-sm font-medium text-store-primary">
-                            ${material.price}/cm³
-                          </div>
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-
-                  {/* Quality Selection */}
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-3">
-                      Print Quality
-                    </label>
-                    <div className="grid grid-cols-2 gap-3">
-                      {qualities.map((quality) => (
-                        <button
-                          key={quality.name}
-                          onClick={() => setSelectedQuality(quality.name)}
-                          className={`p-3 rounded-lg border text-left transition-all ${
-                            selectedQuality === quality.name
-                              ? 'border-store-primary bg-store-primary/5'
-                              : 'border-gray-200 hover:border-gray-300'
-                          }`}
-                        >
-                          <div className="font-medium text-gray-900">{quality.name}</div>
-                          <div className="text-sm text-gray-500">{quality.layer}</div>
-                          <div className="text-sm text-gray-500">{quality.description}</div>
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-
-                  {/* Infill Percentage */}
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-3">
-                      Infill: {infillPercentage}%
-                    </label>
-                    <input
-                      type="range"
-                      min="10"
-                      max="100"
-                      step="5"
-                      value={infillPercentage}
-                      onChange={(e) => setInfillPercentage(Number(e.target.value))}
-                      className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer slider"
-                    />
-                    <div className="flex justify-between text-sm text-gray-500 mt-1">
-                      <span>Light (faster)</span>
-                      <span>Solid (stronger)</span>
-                    </div>
-                  </div>
-
-                  {/* Support Material */}
-                  <div>
-                    <label className="flex items-center">
-                      <input
-                        type="checkbox"
-                        checked={needsSupport}
-                        onChange={(e) => setNeedsSupport(e.target.checked)}
-                        className="rounded border-gray-300 text-store-primary focus:ring-store-primary"
-                      />
-                      <span className="ml-2 text-sm font-medium text-gray-700">
-                        Add support material
-                      </span>
-                    </label>
-                    <p className="text-sm text-gray-500 ml-6">
-                      Recommended for overhangs and complex geometries
-                    </p>
-                  </div>
-                </div>
-
-                <Button
-                  onClick={getQuotes}
-                  disabled={uploadedFiles.length === 0 || isGettingQuotes}
-                  loading={isGettingQuotes}
-                  className="w-full mt-6"
-                  size="lg"
-                >
-                  {isGettingQuotes ? 'Getting Quotes...' : 'Get Instant Quotes'}
-                </Button>
-              </div>
+          <div className="bg-white p-8 rounded-lg shadow-sm text-center">
+            <div className="w-16 h-16 bg-green-100 rounded-lg flex items-center justify-center mx-auto mb-6">
+              <Clock className="h-8 w-8 text-green-600" />
             </div>
+            <h3 className="text-xl font-semibold text-gray-900 mb-4">Fast Turnaround</h3>
+            <p className="text-gray-600">
+              Most orders completed within 24-48 hours. Rush orders available.
+            </p>
+          </div>
 
-            {/* Right Column - Quotes & Providers */}
-            <div className="space-y-8">
-              {quotes.length === 0 ? (
-                <div className="bg-white rounded-xl shadow-lg p-8 text-center">
-                  <Printer className="h-16 w-16 text-gray-300 mx-auto mb-4" />
-                  <h3 className="text-xl font-medium text-gray-900 mb-2">
-                    Upload files to get quotes
-                  </h3>
-                  <p className="text-gray-500">
-                    Once you upload your STL files and configure print settings, 
-                    you'll see instant quotes from verified local providers.
-                  </p>
-                </div>
-              ) : (
-                <div className="bg-white rounded-xl shadow-lg p-6">
-                  <h2 className="text-2xl font-bold text-gray-900 mb-6 flex items-center">
-                    <DollarSign className="h-6 w-6 mr-2 text-store-primary" />
-                    Instant Quotes ({quotes.length})
-                  </h2>
-                  
-                  <div className="space-y-4">
-                    {quotes.map((quote, index) => (
-                      <div 
-                        key={quote.providerId}
-                        className="border border-gray-200 rounded-lg p-4 hover:border-store-primary transition-colors"
-                      >
-                        <div className="flex items-start justify-between mb-3">
+          <div className="bg-white p-8 rounded-lg shadow-sm text-center">
+            <div className="w-16 h-16 bg-purple-100 rounded-lg flex items-center justify-center mx-auto mb-6">
+              <Star className="h-8 w-8 text-purple-600" />
+            </div>
+            <h3 className="text-xl font-semibold text-gray-900 mb-4">Premium Quality</h3>
+            <p className="text-gray-600">
+              Professional-grade printers and materials for exceptional results.
+            </p>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          {/* File Upload Section */}
+          <div className="lg:col-span-2 space-y-8">
+            {/* Upload Area */}
+            <div className="bg-white rounded-lg shadow-sm p-6">
+              <h2 className="text-2xl font-semibold text-gray-900 mb-6">Upload Your Files</h2>
+              
+              <div
+                className={`border-2 border-dashed rounded-lg p-8 text-center transition-colors ${
+                  dragActive 
+                    ? 'border-blue-500 bg-blue-50' 
+                    : 'border-gray-300 hover:border-gray-400'
+                }`}
+                onDragEnter={handleDrag}
+                onDragLeave={handleDrag}
+                onDragOver={handleDrag}
+                onDrop={handleDrop}
+              >
+                <Upload className="mx-auto h-12 w-12 text-gray-400 mb-4" />
+                <h3 className="text-lg font-medium text-gray-900 mb-2">
+                  Drop files here or click to upload
+                </h3>
+                <p className="text-gray-600 mb-4">
+                  Supported formats: {SUPPORTED_FORMATS.join(', ')}
+                </p>
+                <p className="text-sm text-gray-500 mb-4">
+                  Maximum file size: {MAX_FILE_SIZE / 1024 / 1024}MB
+                </p>
+                
+                <button
+                  onClick={() => fileInputRef.current?.click()}
+                  className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors"
+                >
+                  Choose Files
+                </button>
+                
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  multiple
+                  accept={SUPPORTED_FORMATS.join(',')}
+                  onChange={handleFileInput}
+                  className="hidden"
+                />
+              </div>
+
+              {/* Uploaded Files */}
+              {uploadedFiles.length > 0 && (
+                <div className="mt-6">
+                  <h3 className="text-lg font-medium text-gray-900 mb-4">Uploaded Files</h3>
+                  <div className="space-y-3">
+                    {uploadedFiles.map((file) => (
+                      <div key={file.id} className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                        <div className="flex items-center">
+                          <FileText className="h-8 w-8 text-gray-400 mr-3" />
                           <div>
-                            <h3 className="font-semibold text-gray-900">{quote.providerName}</h3>
-                            <div className="flex items-center mt-1">
-                              <div className="flex items-center">
-                                {[...Array(5)].map((_, i) => (
-                                  <Star 
-                                    key={i} 
-                                    className={`h-4 w-4 ${
-                                      i < Math.floor(quote.providerRating) 
-                                        ? 'text-yellow-400 fill-current' 
-                                        : 'text-gray-300'
-                                    }`} 
-                                  />
-                                ))}
-                              </div>
-                              <span className="text-sm text-gray-600 ml-2">
-                                {quote.providerRating} • {quote.distance} miles away
-                              </span>
-                            </div>
-                          </div>
-                          <div className="text-right">
-                            <div className="text-2xl font-bold text-store-primary">
-                              ${quote.price}
-                            </div>
-                            {index === 0 && (
-                              <span className="inline-block bg-store-success text-white text-xs px-2 py-1 rounded-full mt-1">
-                                Best Price
-                              </span>
+                            <p className="font-medium text-gray-900">{file.name}</p>
+                            <p className="text-sm text-gray-600">{formatFileSize(file.size)}</p>
+                            {file.volume_mm3 && (
+                              <p className="text-sm text-gray-600">
+                                Volume: {(file.volume_mm3 / 1000).toFixed(2)} cm³
+                              </p>
+                            )}
+                            {file.dimensions && (
+                              <p className="text-sm text-gray-600">
+                                Size: {file.dimensions.x.toFixed(1)} × {file.dimensions.y.toFixed(1)} × {file.dimensions.z.toFixed(1)} mm
+                              </p>
                             )}
                           </div>
                         </div>
                         
-                        <div className="grid grid-cols-3 gap-4 text-sm text-gray-600 mb-4">
-                          <div className="flex items-center">
-                            <Clock className="h-4 w-4 mr-1" />
-                            {quote.printTime}h
-                          </div>
-                          <div className="flex items-center">
-                            <Ruler className="h-4 w-4 mr-1" />
-                            {quote.volume} cm³
-                          </div>
-                          <div className="flex items-center">
-                            <Package className="h-4 w-4 mr-1" />
-                            {quote.material}
-                          </div>
-                        </div>
-                        
-                        <div className="flex gap-3">
-                          <Button variant="outline" className="flex-1">
-                            View Details
-                          </Button>
-                          <Button className="flex-1">
-                            Select Provider
-                          </Button>
+                        <div className="flex items-center space-x-2">
+                          {file.status === 'uploading' && (
+                            <div className="flex items-center text-blue-600">
+                              <RefreshCw className="h-4 w-4 animate-spin mr-1" />
+                              <span className="text-sm">Uploading...</span>
+                            </div>
+                          )}
+                          {file.status === 'processing' && (
+                            <div className="flex items-center text-yellow-600">
+                              <RefreshCw className="h-4 w-4 animate-spin mr-1" />
+                              <span className="text-sm">Processing...</span>
+                            </div>
+                          )}
+                          {file.status === 'processed' && (
+                            <div className="flex items-center text-green-600">
+                              <Check className="h-4 w-4 mr-1" />
+                              <span className="text-sm">Ready</span>
+                            </div>
+                          )}
+                          {file.status === 'failed' && (
+                            <div className="flex items-center text-red-600">
+                              <AlertCircle className="h-4 w-4 mr-1" />
+                              <span className="text-sm">{file.error || 'Failed'}</span>
+                            </div>
+                          )}
+                          
+                          <button
+                            onClick={() => removeFile(file.id)}
+                            className="text-red-600 hover:text-red-700 p-1"
+                          >
+                            ×
+                          </button>
                         </div>
                       </div>
                     ))}
                   </div>
                 </div>
               )}
+            </div>
 
-              {/* How It Works */}
-              <div className="bg-white rounded-xl shadow-lg p-6">
-                <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center">
-                  <Info className="h-5 w-5 mr-2 text-store-primary" />
-                  How It Works
-                </h3>
-                <div className="space-y-4">
-                  <div className="flex items-start">
-                    <div className="w-8 h-8 bg-store-primary rounded-full flex items-center justify-center text-white font-bold text-sm mr-3 mt-1">
-                      1
-                    </div>
-                    <div>
-                      <h4 className="font-medium text-gray-900">Upload Your Design</h4>
-                      <p className="text-sm text-gray-600">Upload STL files and configure print settings</p>
-                    </div>
+            {/* Print Settings */}
+            <div className="bg-white rounded-lg shadow-sm p-6">
+              <h2 className="text-2xl font-semibold text-gray-900 mb-6">Print Settings</h2>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {/* Material Selection */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-3">
+                    Material
+                  </label>
+                  <div className="space-y-2">
+                    {MATERIALS.map((material) => (
+                      <label key={material.id} className="flex items-center p-3 border border-gray-200 rounded-lg cursor-pointer hover:bg-gray-50">
+                        <input
+                          type="radio"
+                          name="material"
+                          value={material.id}
+                          checked={selectedMaterial === material.id}
+                          onChange={(e) => setSelectedMaterial(e.target.value)}
+                          className="mr-3"
+                        />
+                        <div className="flex-1">
+                          <div className="font-medium text-gray-900">{material.name}</div>
+                          <div className="text-sm text-gray-600">{material.description}</div>
+                        </div>
+                        <div className="text-sm font-medium text-gray-900">
+                          ${material.price}/cm³
+                        </div>
+                      </label>
+                    ))}
                   </div>
-                  <div className="flex items-start">
-                    <div className="w-8 h-8 bg-store-primary rounded-full flex items-center justify-center text-white font-bold text-sm mr-3 mt-1">
-                      2
-                    </div>
-                    <div>
-                      <h4 className="font-medium text-gray-900">Compare Quotes</h4>
-                      <p className="text-sm text-gray-600">Get instant quotes from verified local providers</p>
-                    </div>
+                </div>
+
+                {/* Quality Selection */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-3">
+                    Print Quality
+                  </label>
+                  <div className="space-y-2">
+                    {QUALITIES.map((quality) => (
+                      <label key={quality.id} className="flex items-center p-3 border border-gray-200 rounded-lg cursor-pointer hover:bg-gray-50">
+                        <input
+                          type="radio"
+                          name="quality"
+                          value={quality.id}
+                          checked={selectedQuality === quality.id}
+                          onChange={(e) => setSelectedQuality(e.target.value)}
+                          className="mr-3"
+                        />
+                        <div className="flex-1">
+                          <div className="font-medium text-gray-900">{quality.name}</div>
+                          <div className="text-sm text-gray-600">{quality.description}</div>
+                        </div>
+                      </label>
+                    ))}
                   </div>
-                  <div className="flex items-start">
-                    <div className="w-8 h-8 bg-store-primary rounded-full flex items-center justify-center text-white font-bold text-sm mr-3 mt-1">
-                      3
+                </div>
+              </div>
+
+              {/* Additional Settings */}
+              <div className="mt-6 grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Color
+                  </label>
+                  <select
+                    value={selectedColor}
+                    onChange={(e) => setSelectedColor(e.target.value)}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  >
+                    <option value="natural">Natural</option>
+                    <option value="white">White</option>
+                    <option value="black">Black</option>
+                    <option value="red">Red</option>
+                    <option value="blue">Blue</option>
+                    <option value="green">Green</option>
+                    <option value="yellow">Yellow</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Quantity
+                  </label>
+                  <input
+                    type="number"
+                    min="1"
+                    max="100"
+                    value={quantity}
+                    onChange={(e) => setQuantity(parseInt(e.target.value))}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Infill Percentage
+                  </label>
+                  <select
+                    value={infillPercentage}
+                    onChange={(e) => setInfillPercentage(parseInt(e.target.value))}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  >
+                    <option value={10}>10% - Lightweight</option>
+                    <option value={20}>20% - Standard</option>
+                    <option value={50}>50% - Strong</option>
+                    <option value={100}>100% - Solid</option>
+                  </select>
+                </div>
+              </div>
+
+              <div className="mt-6">
+                <label className="flex items-center">
+                  <input
+                    type="checkbox"
+                    checked={supports}
+                    onChange={(e) => setSupports(e.target.checked)}
+                    className="rounded border-gray-300 mr-2"
+                  />
+                  <span className="text-sm font-medium text-gray-700">
+                    Add supports (recommended for overhangs)
+                  </span>
+                </label>
+              </div>
+            </div>
+          </div>
+
+          {/* Quote Section */}
+          <div className="lg:col-span-1">
+            <div className="bg-white rounded-lg shadow-sm p-6 sticky top-4">
+              <h2 className="text-xl font-semibold text-gray-900 mb-6">Get Quote</h2>
+              
+              {!isAuthenticated ? (
+                <div className="text-center">
+                  <p className="text-gray-600 mb-4">
+                    Sign in to upload files and get instant quotes
+                  </p>
+                  <button
+                    onClick={login}
+                    className="w-full bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700"
+                  >
+                    Sign In
+                  </button>
+                </div>
+              ) : (
+                <>
+                  <button
+                    onClick={generateQuote}
+                    disabled={uploadedFiles.filter(f => f.status === 'processed').length === 0 || quoteLoading}
+                    className="w-full bg-blue-600 text-white py-3 px-4 rounded-lg font-semibold hover:bg-blue-700 disabled:bg-gray-300 disabled:cursor-not-allowed mb-6"
+                  >
+                    {quoteLoading ? (
+                      <div className="flex items-center justify-center">
+                        <RefreshCw className="h-5 w-5 animate-spin mr-2" />
+                        Calculating...
+                      </div>
+                    ) : (
+                      'Get Instant Quote'
+                    )}
+                  </button>
+
+                  {quote && (
+                    <div className="space-y-4">
+                      <div className="bg-blue-50 p-4 rounded-lg">
+                        <div className="flex justify-between items-center mb-2">
+                          <span className="text-sm text-gray-600">Estimated Price</span>
+                          <span className="text-2xl font-bold text-blue-600">
+                            {formatPrice(quote.price, quote.currency)}
+                          </span>
+                        </div>
+                        <div className="text-sm text-gray-600">
+                          <div className="flex justify-between">
+                            <span>Estimated Weight:</span>
+                            <span>{quote.estimated_weight_g}g</span>
+                          </div>
+                          <div className="flex justify-between">
+                            <span>Print Time:</span>
+                            <span>{Math.round(quote.estimated_time_minutes / 60)}h {quote.estimated_time_minutes % 60}m</span>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="space-y-2 text-sm">
+                        <div className="flex justify-between">
+                          <span className="text-gray-600">Material Cost:</span>
+                          <span>{formatPrice(quote.breakdown.material_cost, quote.currency)}</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-gray-600">Machine Time:</span>
+                          <span>{formatPrice(quote.breakdown.machine_cost, quote.currency)}</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-gray-600">Labor:</span>
+                          <span>{formatPrice(quote.breakdown.labor_cost, quote.currency)}</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-gray-600">Setup Fee:</span>
+                          <span>{formatPrice(quote.breakdown.setup_fee, quote.currency)}</span>
+                        </div>
+                        <div className="border-t pt-2 flex justify-between font-semibold">
+                          <span>Total:</span>
+                          <span>{formatPrice(quote.price, quote.currency)}</span>
+                        </div>
+                      </div>
+
+                      <button
+                        onClick={() => router.push('/checkout')}
+                        className="w-full bg-green-600 text-white py-3 px-4 rounded-lg font-semibold hover:bg-green-700"
+                      >
+                        Order Now
+                      </button>
                     </div>
-                    <div>
-                      <h4 className="font-medium text-gray-900">Place Order</h4>
-                      <p className="text-sm text-gray-600">Choose your provider and place your order</p>
-                    </div>
-                  </div>
-                  <div className="flex items-start">
-                    <div className="w-8 h-8 bg-store-primary rounded-full flex items-center justify-center text-white font-bold text-sm mr-3 mt-1">
-                      4
-                    </div>
-                    <div>
-                      <h4 className="font-medium text-gray-900">Get Your Print</h4>
-                      <p className="text-sm text-gray-600">Pickup locally or have it shipped to you</p>
-                    </div>
-                  </div>
+                  )}
+                </>
+              )}
+
+              {/* Trust Signals */}
+              <div className="mt-8 space-y-4 pt-6 border-t border-gray-200">
+                <div className="flex items-center text-sm text-gray-600">
+                  <Shield className="h-4 w-4 mr-2" />
+                  Secure file handling
+                </div>
+                <div className="flex items-center text-sm text-gray-600">
+                  <Package className="h-4 w-4 mr-2" />
+                  Quality guaranteed
+                </div>
+                <div className="flex items-center text-sm text-gray-600">
+                  <Clock className="h-4 w-4 mr-2" />
+                  Fast turnaround
                 </div>
               </div>
             </div>
           </div>
         </div>
+
+        {/* Sample Gallery */}
+        <div className="mt-16">
+          <div className="text-center mb-8">
+            <h2 className="text-3xl font-bold text-gray-900 mb-4">Sample Work</h2>
+            <p className="text-lg text-gray-600">
+              See the quality of our 3D printing services
+            </p>
+          </div>
+          
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
+              <div key={i} className="aspect-square bg-gray-200 rounded-lg overflow-hidden">
+                <div className="w-full h-full flex items-center justify-center text-gray-400">
+                  <Camera className="h-8 w-8" />
+                </div>
+              </div>
+            ))}
+          </div>
+          
+          <div className="text-center mt-8">
+            <Link
+              href="/sample-projects"
+              className="inline-flex items-center text-blue-600 hover:text-blue-700 font-medium"
+            >
+              View All Samples <ChevronRight className="ml-2 h-4 w-4" />
+            </Link>
+          </div>
+        </div>
       </div>
-    </Layout>
-  )
+    </div>
+  );
 }
