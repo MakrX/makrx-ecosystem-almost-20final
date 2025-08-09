@@ -85,7 +85,7 @@ const services: Service[] = [
     title: '3D Printing Service',
     description: 'Upload your STL files and get professional 3D prints delivered',
     icon: Upload,
-    price: 'From $5',
+    price: 'From ₹415',
     turnaround: '2-5 days',
     features: ['PLA, ABS, PETG materials', 'Layer heights from 0.1mm', 'Multi-color printing', 'Post-processing available'],
     color: 'makrx-blue'
@@ -94,7 +94,7 @@ const services: Service[] = [
     title: 'CNC Machining',
     description: 'Precision CNC machining for metals, plastics, and composites',
     icon: Zap,
-    price: 'From $25',
+    price: 'From ₹2,075',
     turnaround: '3-7 days',
     features: ['Aluminum, steel, brass', 'Tolerances to ±0.005"', 'Surface finishing', 'Assembly services'],
     color: 'makrx-yellow'
@@ -103,7 +103,7 @@ const services: Service[] = [
     title: 'Laser Cutting',
     description: 'High-precision laser cutting and engraving services',
     icon: Palette,
-    price: 'From $10',
+    price: 'From ₹830',
     turnaround: '1-3 days',
     features: ['Wood, acrylic, metal', 'Thickness up to 20mm', 'Custom engraving', 'Batch discounts'],
     color: 'makrx-brown'
@@ -112,7 +112,7 @@ const services: Service[] = [
     title: 'PCB Assembly',
     description: 'Professional PCB manufacturing and component assembly',
     icon: Shield,
-    price: 'From $15',
+    price: 'From ₹1,245',
     turnaround: '5-10 days',
     features: ['SMT and THT assembly', 'Testing included', 'BOM sourcing', 'Quality certification'],
     color: 'makrx-blue'
