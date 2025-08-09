@@ -25,7 +25,7 @@ class HealthMiddleware {
 
   // Wrap the native fetch to monitor all API calls
   interceptFetch() {
-    if (typeof window === 'undefined' || window.fetch._healthWrapped) {
+    if (typeof window === 'undefined' || (window.fetch as any)._healthWrapped) {
       return; // Already wrapped or not in browser environment
     }
 
@@ -34,13 +34,21 @@ class HealthMiddleware {
 
     window.fetch = async function(...args: Parameters<typeof fetch>): Promise<Response> {
       const startTime = performance.now();
-      const url = args[0] instanceof Request ? args[0].url : args[0].toString();
-      const method = args[1]?.method || (args[0] instanceof Request ? args[0].method : 'GET');
-      
+      let url: string;
+      let method: string;
+
+      try {
+        url = args[0] instanceof Request ? args[0].url : args[0].toString();
+        method = args[1]?.method || (args[0] instanceof Request ? args[0].method : 'GET');
+      } catch (error) {
+        // If we can't extract URL/method, just proceed with original fetch
+        return originalFetch.apply(this, args);
+      }
+
       try {
         const response = await originalFetch.apply(this, args);
         const endTime = performance.now();
-        
+
         // Record metrics for API calls only (not assets, etc.)
         if (self.isAPICall(url)) {
           const metrics: APIHealthMetrics = {
@@ -51,15 +59,16 @@ class HealthMiddleware {
             timestamp: new Date().toISOString(),
             success: response.ok
           };
-          
+
           self.recordMetrics(metrics);
         }
-        
+
         return response;
       } catch (error) {
         const endTime = performance.now();
-        
-        if (self.isAPICall(url)) {
+
+        // Only record metrics if we successfully extracted URL and this is an API call
+        if (url && self.isAPICall(url)) {
           const metrics: APIHealthMetrics = {
             endpoint: self.extractEndpoint(url),
             method,
@@ -69,10 +78,11 @@ class HealthMiddleware {
             success: false,
             error: error instanceof Error ? error.message : 'Network error'
           };
-          
+
           self.recordMetrics(metrics);
         }
-        
+
+        // Re-throw the original error
         throw error;
       }
     };
