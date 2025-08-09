@@ -132,10 +132,10 @@ const LandingPage = () => {
           
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 sm:gap-6 lg:gap-8 max-w-6xl mx-auto">
             {[
-              { icon: '🔧', label: 'Tools', desc: 'Access professional equipment' },
-              { icon: '🏭', label: 'Spaces', desc: 'Physical makerspaces worldwide' },
-              { icon: '💻', label: 'Portal', desc: 'Smart management platform' },
-              { icon: '🛒', label: 'Store', desc: 'Instant manufacturing services' }
+              { icon: '📦', label: 'Inventory', desc: 'Track tools, materials & filaments' },
+              { icon: '🏗️', label: 'Projects', desc: 'Manage with BOMs & team collaboration' },
+              { icon: '📅', label: 'Reservations', desc: 'Skill-gated equipment booking' },
+              { icon: '⚙️', label: 'Jobs', desc: 'Service provider & fabrication management' }
             ].map((item, idx) => (
               <div key={idx} className="text-center">
                 <div className="text-5xl mb-4">{item.icon}</div>
