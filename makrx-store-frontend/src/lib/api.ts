@@ -287,6 +287,15 @@ class ApiClient {
       // Fallback to mock data for development when backend is not available
       if (error instanceof TypeError && error.message === 'Failed to fetch') {
         console.warn(`Backend not available, using mock data for: ${endpoint}`)
+
+        // Show a one-time notification that we're using mock data
+        if (!sessionStorage.getItem('mock-data-notice-shown')) {
+          sessionStorage.setItem('mock-data-notice-shown', 'true')
+          if (typeof window !== 'undefined') {
+            console.info('🔧 Development Mode: Backend server not available, using mock data for demo purposes.')
+          }
+        }
+
         return this.getMockData<T>(endpoint)
       }
 
