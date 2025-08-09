@@ -340,9 +340,9 @@ const LandingPage = () => {
         <div className="container mx-auto px-6">
           <div className="text-center mb-16">
             <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
-              Seamless Ecosystem Integration
+              <span className="text-blue-400">MakrX</span> Ecosystem Integration
             </h2>
-            <p className="text-xl text-white/80">Connected to the entire MakrX ecosystem</p>
+            <p className="text-xl text-white/80">Seamlessly connected across the unified platform for makers</p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
