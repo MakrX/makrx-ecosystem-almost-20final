@@ -41,6 +41,7 @@ import FindMakerspace from "./pages/FindMakerspace";
 import Contact from "./pages/Contact";
 import NotFound from "./pages/NotFound";
 import MakrVerse from "./pages/MakrVerse";
+import ProjectShowcase from "./pages/ProjectShowcase";
 import ProtectedRoute from "./components/ProtectedRoute";
 import ErrorBoundary from "./components/ErrorBoundary";
 import { createRoot } from "react-dom/client";
