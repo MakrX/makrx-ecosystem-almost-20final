@@ -155,7 +155,7 @@ export default function AddProductPage() {
     
     if (!validateForm()) return
 
-    setIsLoading(true)
+    setIsSubmitLoading(true)
     
     try {
       // Simulate API call
