@@ -4,6 +4,7 @@ import React from 'react'
 import { Toaster } from 'react-hot-toast'
 import Header from './Header'
 import Footer from './Footer'
+import KeyboardShortcutsProvider from '@/components/KeyboardShortcuts'
 
 interface LayoutProps {
   children: React.ReactNode
