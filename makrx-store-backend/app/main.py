@@ -15,7 +15,7 @@ import asyncio
 
 from app.core.config import settings
 from app.core.db import engine, create_tables
-from app.routes import auth, catalog, cart, orders, uploads, quotes, admin, webhooks, health, bridge
+from app.routes import auth, catalog, cart, orders, uploads, quotes, admin, webhooks, health, bridge, security_management
 
 # Import comprehensive security modules
 from app.middleware.api_security import setup_api_security
