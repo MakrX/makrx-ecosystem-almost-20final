@@ -34,9 +34,9 @@ export default function Footer() {
     ],
     company: [
       { name: "About Us", href: "/about" },
+      { name: "MakrX.org", href: "https://makrx.org" },
+      { name: "MakrCave", href: "https://makrcave.com" },
       { name: "Careers", href: "/careers" },
-      { name: "Press", href: "/press" },
-      { name: "Blog", href: "/blog" },
       { name: "Contact", href: "/contact" },
     ],
     support: [
