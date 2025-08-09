@@ -18,6 +18,8 @@ import {
 
 export default function AddProductPage() {
   const router = useRouter()
+  const [isAuthenticated, setIsAuthenticated] = useState(false)
+  const [isLoading, setIsLoading] = useState(true)
   const [formData, setFormData] = useState({
     name: '',
     description: '',
