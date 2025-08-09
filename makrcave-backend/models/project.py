@@ -95,6 +95,20 @@ class Project(Base):
     view_count = Column(Integer, default=0)  # Number of times viewed
     fork_count = Column(Integer, default=0)  # Number of times forked/copied
     like_count = Column(Integer, default=0)  # Number of likes/favorites
+    comment_count = Column(Integer, default=0)  # Number of comments
+    download_count = Column(Integer, default=0)  # Number of downloads
+
+    # Showcase specific fields
+    category = Column(String(100), nullable=True)  # Project category
+    subcategories = Column(JSON, nullable=True, default=list)  # Project subcategories
+    estimated_time = Column(String(100), nullable=True)  # Time to complete
+    estimated_cost = Column(Float, nullable=True)  # Estimated cost to build
+    thumbnail_url = Column(String(500), nullable=True)  # Project thumbnail
+    gallery_images = Column(JSON, nullable=True, default=list)  # Gallery images
+    demo_video_url = Column(String(500), nullable=True)  # Demo video URL
+    is_staff_pick = Column(Boolean, default=False)  # Staff pick highlight
+    is_trending = Column(Boolean, default=False)  # Trending project
+    featured_at = Column(DateTime(timezone=True), nullable=True)  # When featured
 
     # Equipment and space requirements
     required_equipment = Column(JSON, nullable=True, default=list)  # Equipment needed
