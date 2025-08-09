@@ -75,6 +75,7 @@ app.include_router(machine_access_router, tags=["machine-access"])
 app.include_router(enhanced_bom_router, tags=["enhanced-bom"])
 app.include_router(access_control_router, prefix="/api/v1/access-control", tags=["access-control"])
 app.include_router(enhanced_analytics_router, prefix="/api/v1/enhanced-analytics", tags=["enhanced-analytics"])
+app.include_router(notifications_router, prefix="/api/v1/notifications", tags=["notifications"])
 
 # Root endpoint
 @app.get("/")
