@@ -118,7 +118,7 @@ export default function HomePage() {
           <div className="text-center mt-8">
             <Link
               href="/catalog"
-              className="inline-flex items-center text-blue-600 hover:text-blue-700 font-medium"
+              className="inline-flex items-center text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 font-medium"
             >
               View All Categories <ArrowRight className="ml-2 h-4 w-4" />
             </Link>
