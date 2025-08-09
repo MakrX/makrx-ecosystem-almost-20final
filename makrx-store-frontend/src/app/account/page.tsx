@@ -120,7 +120,7 @@ export default function AccountDashboard() {
     },
     {
       title: "Total Spent",
-      value: "$2,847",
+      value: "₹2,36,301",
       icon: DollarSign,
       color: "bg-green-500",
       subtext: "Lifetime",
@@ -137,7 +137,7 @@ export default function AccountDashboard() {
       value: user.points.toLocaleString(),
       icon: Star,
       color: "bg-yellow-500",
-      subtext: "$12.50 value",
+      subtext: "₹1,038 value",
     },
   ];
 
