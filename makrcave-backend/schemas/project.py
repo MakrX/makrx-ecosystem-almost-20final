@@ -421,3 +421,154 @@ class GitHubActivity(BaseModel):
     created_at: datetime
     url: str
     metadata: Optional[Dict[str, Any]] = None
+
+# Enhanced project management schemas
+class ProjectForkCreate(BaseModel):
+    original_project_id: str = Field(..., min_length=1)
+    new_project_name: str = Field(..., min_length=1, max_length=200)
+    fork_reason: Optional[str] = None
+    modifications_planned: Optional[str] = None
+
+class ProjectForkResponse(BaseModel):
+    id: int
+    original_project_id: str
+    forked_project_id: str
+    forked_by: str
+    fork_reason: Optional[str] = None
+    modifications_planned: Optional[str] = None
+    forked_at: datetime
+
+    class Config:
+        from_attributes = True
+
+class ProjectLikeResponse(BaseModel):
+    id: int
+    project_id: str
+    user_id: str
+    liked_at: datetime
+
+    class Config:
+        from_attributes = True
+
+class ProjectCommentCreate(BaseModel):
+    comment_text: str = Field(..., min_length=1, max_length=1000)
+    is_question: bool = False
+    is_suggestion: bool = False
+    parent_comment_id: Optional[int] = None
+
+class ProjectCommentResponse(BaseModel):
+    id: int
+    project_id: str
+    user_id: str
+    comment_text: str
+    is_question: bool = False
+    is_suggestion: bool = False
+    parent_comment_id: Optional[int] = None
+    is_approved: bool = True
+    is_flagged: bool = False
+    flagged_reason: Optional[str] = None
+    created_at: datetime
+    updated_at: datetime
+    replies: List['ProjectCommentResponse'] = []
+
+    class Config:
+        from_attributes = True
+
+# Update to handle recursive comments
+ProjectCommentResponse.model_rebuild()
+
+class BOMOrderCreate(BaseModel):
+    bom_item_id: int = Field(..., gt=0)
+    quantity_ordered: int = Field(..., gt=0)
+    notes: Optional[str] = None
+
+class BOMOrderResponse(BaseModel):
+    id: int
+    project_id: str
+    bom_item_id: int
+    makrx_order_id: Optional[str] = None
+    quantity_ordered: int
+    unit_price: Optional[float] = None
+    total_price: Optional[float] = None
+    order_status: str = "pending"
+    tracking_number: Optional[str] = None
+    estimated_delivery: Optional[datetime] = None
+    actual_delivery: Optional[datetime] = None
+    ordered_by: str
+    ordered_at: datetime
+
+    class Config:
+        from_attributes = True
+
+class ProjectTeamRoleCreate(BaseModel):
+    user_id: str = Field(..., min_length=1)
+    role_name: str = Field(..., min_length=1, max_length=100)
+    role_description: Optional[str] = None
+    permissions: Optional[List[str]] = []
+
+class ProjectTeamRoleResponse(BaseModel):
+    id: int
+    project_id: str
+    user_id: str
+    role_name: str
+    role_description: Optional[str] = None
+    permissions: Optional[List[str]] = []
+    assigned_by: str
+    assigned_at: datetime
+    is_active: bool = True
+
+    class Config:
+        from_attributes = True
+
+class ResourceSharingCreate(BaseModel):
+    target_project_id: str = Field(..., min_length=1)
+    resource_type: str = Field(..., regex="^(bom_item|file|milestone_template|equipment_config)$")
+    resource_id: str = Field(..., min_length=1)
+    sharing_notes: Optional[str] = None
+
+class ResourceSharingResponse(BaseModel):
+    id: int
+    source_project_id: str
+    target_project_id: str
+    resource_type: str
+    resource_id: str
+    shared_by: str
+    sharing_notes: Optional[str] = None
+    is_approved: bool = False
+    approved_by: Optional[str] = None
+    shared_at: datetime
+    approved_at: Optional[datetime] = None
+
+    class Config:
+        from_attributes = True
+
+class PublicProjectsFilter(BaseModel):
+    difficulty_level: Optional[str] = None
+    required_skills: Optional[List[str]] = None
+    required_equipment: Optional[List[str]] = None
+    license_type: Optional[str] = None
+    min_likes: Optional[int] = None
+    featured_only: bool = False
+    has_bom: Optional[bool] = None
+    has_files: Optional[bool] = None
+
+class EnhancedProjectSummaryResponse(ProjectSummaryResponse):
+    # Additional fields for public project discovery
+    difficulty_level: str = "beginner"
+    estimated_duration: Optional[str] = None
+    required_skills: Optional[List[str]] = []
+    learning_objectives: Optional[List[str]] = []
+    license_type: str = "cc-by-sa"
+    required_equipment: Optional[List[str]] = []
+
+    # Engagement metrics
+    view_count: int = 0
+    fork_count: int = 0
+    like_count: int = 0
+
+    # Enhanced response includes owner information for public projects
+    owner_name: Optional[str] = None
+    owner_avatar: Optional[str] = None
+
+    class Config:
+        from_attributes = True
