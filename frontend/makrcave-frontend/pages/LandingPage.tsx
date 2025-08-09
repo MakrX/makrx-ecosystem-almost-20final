@@ -702,8 +702,8 @@ const LandingPage = () => {
             <div>
               <h4 className="text-white font-semibold mb-4">Discover</h4>
               <ul className="space-y-2 text-white/70">
-                <li><a href="#explore" className="hover:text-white transition-colors">Find MakrCave</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Start a MakrCave</a></li>
+                <li><Link to="/find-makerspace" className="hover:text-white transition-colors">Find MakrCave</Link></li>
+                <li><Link to="/contact" className="hover:text-white transition-colors">Start a MakrCave</Link></li>
                 <li><a href="#features" className="hover:text-white transition-colors">Features</a></li>
                 <li><a href="#community" className="hover:text-white transition-colors">Community</a></li>
               </ul>
