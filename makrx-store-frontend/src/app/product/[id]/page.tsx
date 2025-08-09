@@ -263,11 +263,12 @@ export default function ProductDetailPage() {
 
                 {/* CTA Buttons */}
                 <div className="space-y-3 mb-6">
-                  <Button 
+                  <Button
                     onClick={handleAddToCart}
                     className="w-full font-semibold text-lg py-4"
                     disabled={!product.inStock}
                     size="lg"
+                    data-add-to-cart
                   >
                     <ShoppingCart className="h-5 w-5 mr-2" />
                     Add to Cart - ${(product.price * quantity).toFixed(2)}
