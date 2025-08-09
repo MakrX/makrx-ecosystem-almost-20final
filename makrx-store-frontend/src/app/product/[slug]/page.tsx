@@ -445,7 +445,7 @@ export default function ProductPage() {
                     <p className="text-sm font-medium text-gray-900">
                       Free shipping
                     </p>
-                    <p className="text-xs text-gray-600">On orders over $75</p>
+                    <p className="text-xs text-gray-600">On orders over ₹6,225</p>
                   </div>
                 </div>
 

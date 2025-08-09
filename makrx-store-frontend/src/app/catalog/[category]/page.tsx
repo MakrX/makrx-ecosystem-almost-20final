@@ -172,7 +172,7 @@ export default function CategoryPage() {
                 <div className="flex items-center gap-4 text-sm text-store-text-light">
                   <span>{category.productCount} products</span>
                   <span>•</span>
-                  <span>Free shipping on orders over $75</span>
+                  <span>Free shipping on orders over ₹6,225</span>
                   <span>•</span>
                   <span>Expert support available</span>
                 </div>
