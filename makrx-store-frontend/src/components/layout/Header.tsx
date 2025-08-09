@@ -67,16 +67,130 @@ export default function Header() {
 
             {/* Navigation - Desktop */}
             <nav className="hidden lg:flex items-center space-x-8 ml-8">
-              <Link href="/catalog" className="text-store-text hover:text-store-primary transition-colors font-semibold">
-                Catalog
-              </Link>
-              <Link href="/3d-printing" className="text-store-text hover:text-store-primary transition-colors font-semibold flex items-center">
-                <Printer className="h-4 w-4 mr-1" />
-                3D Printing
-              </Link>
-              <Link href="/services" className="text-store-text hover:text-store-primary transition-colors font-semibold">
-                Services
-              </Link>
+              {/* Catalog Dropdown */}
+              <div
+                className="relative"
+                onMouseEnter={() => setActiveDropdown('catalog')}
+                onMouseLeave={() => setActiveDropdown(null)}
+              >
+                <button className="text-store-text hover:text-store-primary transition-colors font-semibold flex items-center">
+                  Catalog
+                  <ChevronDown className="h-4 w-4 ml-1" />
+                </button>
+
+                {activeDropdown === 'catalog' && (
+                  <div className="absolute top-full left-0 mt-2 w-96 bg-white rounded-xl shadow-2xl border border-gray-200 z-50">
+                    <div className="p-6">
+                      <div className="mb-4">
+                        <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-3">
+                          Featured Categories
+                        </h3>
+                        <div className="grid grid-cols-2 gap-3">
+                          {featuredCategories.map(category => (
+                            <Link
+                              key={category.id}
+                              href={`/catalog/${category.slug}`}
+                              className="flex items-center p-3 rounded-lg hover:bg-gray-50 transition-colors group"
+                            >
+                              <div className="w-10 h-10 bg-gradient-to-br from-store-primary to-store-secondary rounded-lg flex items-center justify-center mr-3 group-hover:scale-105 transition-transform">
+                                <Package className="h-5 w-5 text-white" />
+                              </div>
+                              <div>
+                                <div className="font-medium text-store-text group-hover:text-store-primary">
+                                  {category.name}
+                                </div>
+                                <div className="text-xs text-gray-500">
+                                  {category.productCount} products
+                                </div>
+                              </div>
+                            </Link>
+                          ))}
+                        </div>
+                      </div>
+
+                      <div className="border-t border-gray-200 pt-4">
+                        <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-3">
+                          More Categories
+                        </h3>
+                        <div className="space-y-1">
+                          {otherCategories.map(category => (
+                            <Link
+                              key={category.id}
+                              href={`/catalog/${category.slug}`}
+                              className="block px-3 py-2 text-sm text-store-text hover:text-store-primary hover:bg-gray-50 rounded-lg transition-colors"
+                            >
+                              {category.name} ({category.productCount})
+                            </Link>
+                          ))}
+                        </div>
+                      </div>
+
+                      <div className="border-t border-gray-200 pt-4 mt-4">
+                        <Link
+                          href="/catalog"
+                          className="block w-full text-center bg-store-primary text-white py-2 rounded-lg font-medium hover:bg-store-primary-dark transition-colors"
+                        >
+                          Browse All Products
+                        </Link>
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* Services Dropdown */}
+              <div
+                className="relative"
+                onMouseEnter={() => setActiveDropdown('services')}
+                onMouseLeave={() => setActiveDropdown(null)}
+              >
+                <button className="text-store-text hover:text-store-primary transition-colors font-semibold flex items-center">
+                  Services
+                  <ChevronDown className="h-4 w-4 ml-1" />
+                </button>
+
+                {activeDropdown === 'services' && (
+                  <div className="absolute top-full left-0 mt-2 w-80 bg-white rounded-xl shadow-2xl border border-gray-200 z-50">
+                    <div className="p-4">
+                      <div className="space-y-2">
+                        {servicesMenu.map(service => {
+                          const Icon = service.icon
+                          return (
+                            <Link
+                              key={service.name}
+                              href={service.href}
+                              className="flex items-start p-3 rounded-lg hover:bg-gray-50 transition-colors group"
+                            >
+                              <div className="w-10 h-10 bg-gradient-to-br from-store-primary to-store-secondary rounded-lg flex items-center justify-center mr-3 group-hover:scale-105 transition-transform">
+                                <Icon className="h-5 w-5 text-white" />
+                              </div>
+                              <div>
+                                <div className="font-medium text-store-text group-hover:text-store-primary">
+                                  {service.name}
+                                </div>
+                                <div className="text-xs text-gray-500 mt-1">
+                                  {service.description}
+                                </div>
+                              </div>
+                            </Link>
+                          )
+                        })}
+                      </div>
+
+                      <div className="border-t border-gray-200 pt-4 mt-4">
+                        <Link
+                          href="/services"
+                          className="block w-full text-center bg-store-primary text-white py-2 rounded-lg font-medium hover:bg-store-primary-dark transition-colors"
+                        >
+                          View All Services
+                        </Link>
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* Direct Links */}
               <Link href="/makers" className="text-store-text hover:text-store-primary transition-colors font-semibold">
                 Makers
               </Link>
