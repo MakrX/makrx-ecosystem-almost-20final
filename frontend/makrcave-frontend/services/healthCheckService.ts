@@ -34,25 +34,34 @@ class HealthCheckService {
   // INITIALIZE ALL HEALTH CHECKS
   // ========================================
   private initializeChecks() {
-    // Core API checks
-    this.checks.set('authentication', this.checkAuthentication.bind(this));
-    this.checks.set('billing-api', this.checkBillingAPI.bind(this));
-    this.checks.set('analytics-api', this.checkAnalyticsAPI.bind(this));
-    this.checks.set('equipment-api', this.checkEquipmentAPI.bind(this));
-    this.checks.set('inventory-api', this.checkInventoryAPI.bind(this));
-    this.checks.set('projects-api', this.checkProjectsAPI.bind(this));
-    this.checks.set('maintenance-api', this.checkMaintenanceAPI.bind(this));
-    this.checks.set('makerspaces-api', this.checkMakerspacesAPI.bind(this));
+    const isCloudEnvironment = this.getEnvironment() === 'cloud';
 
-    // Frontend checks
+    // Always include these frontend checks
     this.checks.set('local-storage', this.checkLocalStorage.bind(this));
     this.checks.set('browser-features', this.checkBrowserFeatures.bind(this));
     this.checks.set('theme-system', this.checkThemeSystem.bind(this));
     this.checks.set('routing', this.checkRouting.bind(this));
-
-    // External dependencies
-    this.checks.set('cdn-resources', this.checkCDNResources.bind(this));
     this.checks.set('network-connectivity', this.checkNetworkConnectivity.bind(this));
+
+    // Include authentication check (doesn't make external calls)
+    this.checks.set('authentication', this.checkAuthentication.bind(this));
+
+    // Only add API checks in local/development environments
+    if (!isCloudEnvironment) {
+      this.checks.set('billing-api', this.checkBillingAPI.bind(this));
+      this.checks.set('analytics-api', this.checkAnalyticsAPI.bind(this));
+      this.checks.set('equipment-api', this.checkEquipmentAPI.bind(this));
+      this.checks.set('inventory-api', this.checkInventoryAPI.bind(this));
+      this.checks.set('projects-api', this.checkProjectsAPI.bind(this));
+      this.checks.set('maintenance-api', this.checkMaintenanceAPI.bind(this));
+      this.checks.set('makerspaces-api', this.checkMakerspacesAPI.bind(this));
+    } else {
+      // Add mock API checks for cloud environments
+      this.checks.set('api-services', this.checkMockAPIServices.bind(this));
+    }
+
+    // CDN check can be included everywhere
+    this.checks.set('cdn-resources', this.checkCDNResources.bind(this));
   }
 
   // ========================================
