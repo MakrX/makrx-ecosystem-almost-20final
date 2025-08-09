@@ -85,8 +85,8 @@ export function Header() {
           {/* Logo */}
           <div className="flex items-center">
             <Link href="/" className="flex items-center space-x-2">
-              <div className="text-2xl font-bold text-blue-600">MakrX</div>
-              <span className="text-gray-600">Store</span>
+              <div className="text-2xl font-bold text-blue-600 dark:text-blue-400">MakrX</div>
+              <span className="text-muted-foreground">Store</span>
             </Link>
           </div>
 
