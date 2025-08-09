@@ -1,5 +1,5 @@
 import { RequestHandler } from "express";
-import { DemoResponse } from "@shared/api";
+import { DemoResponse } from "../../packages/types";
 
 export const handleDemo: RequestHandler = (req, res) => {
   const response: DemoResponse = {
