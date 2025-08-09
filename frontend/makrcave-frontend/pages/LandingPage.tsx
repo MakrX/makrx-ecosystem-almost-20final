@@ -536,9 +536,9 @@ const LandingPage = () => {
           <div className="max-w-4xl mx-auto">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
               {[
-                { step: '01', title: 'Apply', desc: 'Submit your makerspace for review' },
-                { step: '02', title: 'Setup', desc: 'We evaluate & support your integration' },
-                { step: '03', title: 'Launch', desc: 'Become part of the global network' }
+                { step: '01', title: 'Apply', desc: 'Submit your makerspace to join the MakrX ecosystem' },
+                { step: '02', title: 'Setup', desc: 'Complete integration with ecosystem support and training' },
+                { step: '03', title: 'Launch', desc: 'Go live as part of the global MakrX network' }
               ].map((step, idx) => (
                 <div key={idx} className="text-center">
                   <div className="bg-gradient-to-r from-blue-500 to-purple-600 text-white text-2xl font-bold rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
