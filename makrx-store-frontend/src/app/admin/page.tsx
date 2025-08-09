@@ -250,62 +250,79 @@ function AdminPortal() {
                   </tr>
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
-                  {filteredProducts.map((product) => (
-                    <tr key={product.id} className="hover:bg-gray-50">
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="flex items-center">
-                          <img 
-                            src={product.image} 
-                            alt={product.name}
-                            className="h-10 w-10 rounded-lg object-cover"
-                          />
-                          <div className="ml-4">
-                            <div className="text-sm font-medium text-gray-900">
-                              {product.name}
-                            </div>
-                            <div className="text-sm text-gray-500">
-                              ID: {product.id}
+                  {products.map((product) => {
+                    const status = getProductStatus(product)
+                    return (
+                      <tr key={product.id} className="hover:bg-gray-50">
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <div className="flex items-center">
+                            <img
+                              src={product.images[0] || '/placeholder.svg'}
+                              alt={product.name}
+                              className="h-10 w-10 rounded-lg object-cover"
+                            />
+                            <div className="ml-4">
+                              <div className="text-sm font-medium text-gray-900">
+                                {product.name}
+                              </div>
+                              <div className="text-sm text-gray-500">
+                                SKU: {product.sku}
+                              </div>
                             </div>
                           </div>
-                        </div>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <span className="text-sm text-gray-900 capitalize">
-                          {product.category.replace('-', ' ')}
-                        </span>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <span className="text-sm font-medium text-gray-900">
-                          ${product.price}
-                        </span>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <span className="text-sm text-gray-900">
-                          {product.stock} units
-                        </span>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getStatusColor(product.status)}`}>
-                          {getStatusText(product.status)}
-                        </span>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                        <div className="flex items-center justify-end space-x-2">
-                          <Button variant="ghost" size="sm" className="text-gray-600 hover:text-blue-600">
-                            <Eye className="h-4 w-4" />
-                          </Button>
-                          <Link href={`/admin/products/${product.id}/edit`}>
-                            <Button variant="ghost" size="sm" className="text-gray-600 hover:text-green-600">
-                              <Edit3 className="h-4 w-4" />
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <span className="text-sm text-gray-900">
+                            {product.category?.name || 'Uncategorized'}
+                          </span>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <div className="text-sm">
+                            <span className="font-medium text-gray-900">
+                              {formatPrice(product.effective_price, product.currency)}
+                            </span>
+                            {product.sale_price && product.sale_price < product.price && (
+                              <div className="text-xs text-gray-500 line-through">
+                                {formatPrice(product.price, product.currency)}
+                              </div>
+                            )}
+                          </div>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <span className="text-sm text-gray-900">
+                            {product.track_inventory ? `${product.stock_qty} units` : 'Not tracked'}
+                          </span>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${status.color}`}>
+                            {status.text}
+                          </span>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                          <div className="flex items-center justify-end space-x-2">
+                            <Link href={`/product/${product.slug}`}>
+                              <Button variant="ghost" size="sm" className="text-gray-600 hover:text-blue-600">
+                                <Eye className="h-4 w-4" />
+                              </Button>
+                            </Link>
+                            <Link href={`/admin/products/${product.id}/edit`}>
+                              <Button variant="ghost" size="sm" className="text-gray-600 hover:text-green-600">
+                                <Edit3 className="h-4 w-4" />
+                              </Button>
+                            </Link>
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              className="text-gray-600 hover:text-red-600"
+                              onClick={() => handleDeleteProduct(product.id)}
+                            >
+                              <Trash2 className="h-4 w-4" />
                             </Button>
-                          </Link>
-                          <Button variant="ghost" size="sm" className="text-gray-600 hover:text-red-600">
-                            <Trash2 className="h-4 w-4" />
-                          </Button>
-                        </div>
-                      </td>
-                    </tr>
-                  ))}
+                          </div>
+                        </td>
+                      </tr>
+                    )
+                  })}
                 </tbody>
               </table>
             </div>
