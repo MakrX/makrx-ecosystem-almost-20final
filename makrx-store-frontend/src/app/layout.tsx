@@ -36,8 +36,12 @@ export const metadata: Metadata = {
     description: 'Premium 3D printing materials, equipment, and professional printing services',
     images: ['/og-image.jpg'],
   },
-  viewport: 'width=device-width, initial-scale=1',
   robots: 'index, follow',
+}
+
+export const viewport = {
+  width: 'device-width',
+  initialScale: 1,
 }
 
 export default function RootLayout({
