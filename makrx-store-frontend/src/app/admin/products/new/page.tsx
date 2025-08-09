@@ -36,7 +36,46 @@ export default function AddProductPage() {
   const [currentTag, setCurrentTag] = useState('')
   const [currentSpec, setCurrentSpec] = useState({ key: '', value: '' })
   const [errors, setErrors] = useState({})
-  const [isLoading, setIsLoading] = useState(false)
+  const [isSubmitLoading, setIsSubmitLoading] = useState(false)
+
+  useEffect(() => {
+    // Check authentication status on component mount
+    const checkAuth = () => {
+      const authenticated = isAdminAuthenticated()
+      if (!authenticated) {
+        router.push('/admin')
+        return
+      }
+      setIsAuthenticated(authenticated)
+      setIsLoading(false)
+    }
+
+    checkAuth()
+  }, [router])
+
+  const handleAuthenticated = () => {
+    setIsAuthenticated(true)
+    setIsLoading(false)
+  }
+
+  // Show loading state
+  if (isLoading) {
+    return (
+      <Layout>
+        <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+          <div className="text-center">
+            <div className="w-8 h-8 border-4 border-store-primary border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+            <p className="text-store-text-muted">Loading...</p>
+          </div>
+        </div>
+      </Layout>
+    )
+  }
+
+  // Show authentication form if not authenticated
+  if (!isAuthenticated) {
+    return <AdminAuth onAuthenticated={handleAuthenticated} />
+  }
 
   const categories = [
     { value: '3d-printers', label: '3D Printers' },
