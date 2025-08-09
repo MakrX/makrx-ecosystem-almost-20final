@@ -186,6 +186,10 @@ html {
   outline-offset: 2px;
 }
 
+.dark .focus-visible:focus-visible {
+  outline: 2px solid #8b5cf6;
+}
+
 /* Print styles */
 @media print {
   .no-print {
