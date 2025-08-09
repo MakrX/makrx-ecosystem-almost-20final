@@ -20,6 +20,7 @@ from routes.equipment_reservations import router as equipment_reservations_route
 from routes.job_management import router as job_management_router
 from routes.machine_access import router as machine_access_router
 from routes.enhanced_bom import router as enhanced_bom_router
+from routes.access_control import router as access_control_router
 
 # Create FastAPI application
 app = FastAPI(
