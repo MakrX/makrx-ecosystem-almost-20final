@@ -119,10 +119,11 @@ export default function Footer() {
                 </span>
               </div>
             </div>
-            <p className="text-gray-400 dark:text-gray-500 mb-6 leading-relaxed">
-              The future of making is here. Your one-stop shop for tools,
-              components, and manufacturing services built for makers, by
-              makers.
+            <p className="text-gray-400 dark:text-gray-500 mb-4 leading-relaxed">
+              The e-commerce hub of the MakrX ecosystem. Tools, materials, and fabrication services integrated with the global maker community.
+            </p>
+            <p className="text-gray-500 dark:text-gray-600 text-sm mb-6">
+              MakrX is an initiative by Botness Technologies Pvt. Ltd.
             </p>
             <div className="space-y-2 text-sm text-gray-400 dark:text-gray-500">
               <div className="flex items-center">
@@ -248,7 +249,7 @@ export default function Footer() {
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-6">
           <div className="flex flex-col md:flex-row items-center justify-between gap-4">
             <div className="flex flex-wrap items-center gap-6 text-sm text-gray-400 dark:text-gray-500">
-              <span>© 2024 MakrX.Store. All rights reserved.</span>
+              <span>© 2024 MakrX by Botness Technologies Pvt. Ltd. All rights reserved.</span>
               {footerLinks.legal.map((link, index) => (
                 <Link
                   key={index}
