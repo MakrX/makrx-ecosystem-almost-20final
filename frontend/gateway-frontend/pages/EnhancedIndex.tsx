@@ -147,8 +147,8 @@ export default function EnhancedIndex() {
                 The Complete <span className="text-makrx-yellow">Maker Ecosystem</span>
               </h2>
               <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-                Everything you need to bring ideas to life, manage your makerspace, 
-                and connect with the global maker community.
+                Everything you need to bring ideas to life, build and manage makerspaces,
+                and connect with a global community of creators. From empty room to thriving hub — we provide end-to-end support.
               </p>
             </div>
 
