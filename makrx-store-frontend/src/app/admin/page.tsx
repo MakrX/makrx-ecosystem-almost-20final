@@ -173,7 +173,7 @@ function AdminPortal() {
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
           {/* Stats Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-            {stats.map((stat, index) => {
+            {statsData.map((stat, index) => {
               const Icon = stat.icon
               return (
                 <div key={index} className="bg-white rounded-xl shadow-sm p-6 border border-gray-200">
