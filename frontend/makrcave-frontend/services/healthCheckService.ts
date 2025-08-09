@@ -24,7 +24,7 @@ export interface SystemHealthStatus {
 class HealthCheckService {
   private checks: Map<string, () => Promise<HealthCheckResult>> = new Map();
   private cachedResults: Map<string, HealthCheckResult> = new Map();
-  private cacheTimeout = 30000; // 30 seconds
+  private cacheTimeout = 60000; // 60 seconds - longer cache for cloud environments
 
   constructor() {
     this.initializeChecks();
