@@ -487,10 +487,10 @@ const LandingPage = () => {
               <h3 className="text-3xl font-bold text-white mb-6">Scale Your Educational Impact</h3>
               <div className="space-y-6">
                 {[
-                  { title: 'Trackable Usage', desc: 'Monitor equipment usage and student engagement' },
-                  { title: 'Automated Access', desc: 'Skill-based permissions and safety protocols' },
-                  { title: 'Safe Learning', desc: 'Built-in safety measures and guided learning paths' },
-                  { title: 'Modern Infrastructure', desc: 'Future-ready platform that scales with your needs' }
+                  { title: 'Real-Time Analytics', desc: 'Track usage, engagement, and learning outcomes across all equipment' },
+                  { title: 'Skill-Based Access', desc: 'Automated safety protocols with competency verification' },
+                  { title: 'Integrated Learning', desc: 'Connected to the global MakrX ecosystem and community' },
+                  { title: 'Scalable Platform', desc: 'Enterprise-grade infrastructure that grows with your institution' }
                 ].map((benefit, idx) => (
                   <div key={idx} className="flex items-start space-x-4">
                     <div className="bg-blue-500 rounded-full p-2 mt-1">
