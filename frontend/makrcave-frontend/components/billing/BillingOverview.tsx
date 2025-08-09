@@ -219,7 +219,7 @@ const BillingOverview: React.FC<BillingOverviewProps> = ({
                   <CheckCircle className="h-4 w-4 text-green-600 mt-0.5" />
                   <div className="text-sm">
                     <p className="font-medium text-green-800">Revenue Target Achieved</p>
-                    <p className="text-green-700">Monthly revenue target of $12,000 reached 3 days early.</p>
+                    <p className="text-green-700">Monthly revenue target of ₹9,96,000 reached 3 days early.</p>
                   </div>
                 </div>
                 

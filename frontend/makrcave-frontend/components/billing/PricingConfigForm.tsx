@@ -42,7 +42,7 @@ const PricingConfigForm: React.FC = () => {
     },
     
     // Credit System
-    creditConversionRate: 0.50, // 1 credit = $0.50
+    creditConversionRate: 41.50, // 1 credit = ₹41.50
     minimumCreditPurchase: 10,
     creditBonusThresholds: [
       { amount: 100, bonus: 10 },
@@ -466,7 +466,7 @@ const PricingConfigForm: React.FC = () => {
                 </div>
                 <div className="flex items-end">
                   <p className="text-sm text-gray-600">
-                    Fee on $100: ${(config.feeRate * 100).toFixed(2)}
+                    Fee on ₹8,300: ₹{(config.feeRate * 8300).toFixed(2)}
                   </p>
                 </div>
               </div>

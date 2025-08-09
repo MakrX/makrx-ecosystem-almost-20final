@@ -134,7 +134,7 @@ const NotificationsCenter: React.FC = () => {
       type: 'success',
       category: 'billing',
       title: 'Payment Received',
-      message: 'Monthly membership payment of $75 received from Michael Chen.',
+      message: 'Monthly membership payment of ₹6,225 received from Michael Chen.',
       priority: 'low',
       status: 'read',
       createdAt: '2024-01-19T16:20:00Z',
