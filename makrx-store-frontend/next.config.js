@@ -9,11 +9,6 @@ const nextConfig = {
   env: {
     CUSTOM_KEY: 'makrx-store',
   },
-  experimental: {
-    allowedDevOrigins: [
-      'e986654b5a5843d7b3f8adf13b61022c-556d114307be4dee892ae999b.fly.dev'
-    ]
-  }
 }
 
 module.exports = nextConfig
