@@ -21,7 +21,8 @@ import {
   TrendingUp,
   BookOpen,
   Shield,
-  MessageSquare
+  MessageSquare,
+  Zap
 } from 'lucide-react';
 
 export default function ManagerSidebar() {
@@ -114,6 +115,12 @@ export default function ManagerSidebar() {
       href: '/portal/community',
       icon: MessageSquare,
       active: isActive('/portal/community')
+    },
+    {
+      name: 'Integrations',
+      href: '/portal/integrations',
+      icon: Zap,
+      active: isActive('/portal/integrations')
     },
     {
       name: 'Notifications Center',
