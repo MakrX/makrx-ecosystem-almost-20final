@@ -725,7 +725,7 @@ const LandingPage = () => {
                 <li><a href="#" className="hover:text-white transition-colors">Instagram</a></li>
                 <li><a href="#" className="hover:text-white transition-colors">YouTube</a></li>
                 <li><a href="#" className="hover:text-white transition-colors">GitHub</a></li>
-                <li><a href="mailto:support@makrx.org" className="hover:text-white transition-colors">Contact</a></li>
+                <li><Link to="/contact" className="hover:text-white transition-colors">Contact Us</Link></li>
               </ul>
             </div>
           </div>
