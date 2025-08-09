@@ -7,14 +7,31 @@ interface User {
   firstName?: string;
   lastName?: string;
   roles: string[];
+  createdAt?: string;
+  lastLoginAt?: string;
+}
+
+interface AuthError {
+  message: string;
+  code?: string;
+}
+
+interface RegisterData {
+  firstName: string;
+  lastName: string;
+  email: string;
+  password: string;
 }
 
 interface AuthContextType {
   user: User | null;
   isAuthenticated: boolean;
   isLoading: boolean;
+  error: AuthError | null;
   login: (email: string, password: string) => Promise<void>;
+  register: (data: RegisterData) => Promise<void>;
   logout: () => void;
+  clearError: () => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
