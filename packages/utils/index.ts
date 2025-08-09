@@ -106,8 +106,8 @@ export const api = {
 
 // Price utilities
 export const price = {
-  format: (amount: number, currency = 'USD'): string => {
-    return new Intl.NumberFormat('en-US', {
+  format: (amount: number, currency = 'INR'): string => {
+    return new Intl.NumberFormat('en-IN', {
       style: 'currency',
       currency
     }).format(amount);
