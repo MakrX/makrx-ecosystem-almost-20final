@@ -149,7 +149,7 @@ interface TestimonialProps {
 }
 
 const Testimonial: React.FC<TestimonialProps> = ({ quote, author, role, company }) => (
-  <div className="bg-white dark:bg-gray-800 rounded-2xl p-8 shadow-lg hover:shadow-xl transition-shadow border border-gray-100 dark:border-gray-700">
+  <div className="bg-white dark:bg-slate-950 rounded-2xl p-8 shadow-lg hover:shadow-xl transition-shadow border border-gray-100 dark:border-slate-800">
     <div className="flex items-center mb-4">
       {[...Array(5)].map((_, i) => (
         <Star key={i} className="w-5 h-5 text-makrx-yellow fill-current" />
