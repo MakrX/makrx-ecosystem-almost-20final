@@ -805,6 +805,29 @@ class ApiClient {
     }>("/capabilities");
   }
 
+  // Admin methods
+  async getAdminStats(): Promise<AdminStats> {
+    return this.request<AdminStats>("/admin/stats");
+  }
+
+  async deleteProduct(id: number) {
+    return this.request<{ message: string }>(`/products/${id}`, {
+      method: "DELETE",
+    });
+  }
+
+  // User notification settings
+  async updateNotificationSettings(settings: NotificationSettings) {
+    return this.request<{ message: string }>("/user/notifications", {
+      method: "PUT",
+      body: JSON.stringify(settings),
+    });
+  }
+
+  async getNotificationSettings(): Promise<NotificationSettings> {
+    return this.request<NotificationSettings>("/user/notifications");
+  }
+
   // Mock data methods for fallback when backend is unavailable
   private getMockProducts() {
     // Transform mock data to match API response format
