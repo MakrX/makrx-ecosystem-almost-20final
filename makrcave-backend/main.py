@@ -4,6 +4,9 @@ from fastapi.responses import JSONResponse
 import uvicorn
 import os
 
+# Import security middleware
+from middleware.security import add_security_middleware
+
 from routes.inventory import router as inventory_router
 from routes.equipment import router as equipment_router
 from routes.project import router as project_router
