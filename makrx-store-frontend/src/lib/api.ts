@@ -305,15 +305,21 @@ class ApiClient {
 
       return await response.json();
     } catch (error) {
-      // Check if this is a network connectivity error
-      if (error instanceof TypeError &&
+      // Check if this is a network connectivity error or connection refused
+      const isNetworkError = error instanceof TypeError &&
           (error.message === "Failed to fetch" ||
            error.message.includes("NetworkError") ||
            error.message.includes("ERR_NETWORK") ||
            error.message.includes("ERR_INTERNET_DISCONNECTED") ||
            error.message.includes("fetch") ||
-           error.name === "NetworkError")) {
+           error.name === "NetworkError");
 
+      const isConnectionError = error instanceof Error &&
+          (error.message.includes("ECONNREFUSED") ||
+           error.message.includes("Connection refused") ||
+           error.message.includes("ERR_CONNECTION_REFUSED"));
+
+      if (isNetworkError || isConnectionError) {
         // In development, use mock data instead of showing errors
         if (process.env.NODE_ENV === "development" || process.env.NEXT_PUBLIC_ENV !== "production") {
           // Show a one-time notification that we're using mock data
