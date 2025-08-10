@@ -256,7 +256,7 @@ export default function AccessibilityStatement() {
                       <Mail className="w-4 h-4 mr-2" />
                       <a href="mailto:accessibility@makrx.org" className="text-makrx-blue underline">accessibility@makrx.org</a>
                     </div>
-                    <p>Phone: +91-80-XXXX-XXXX</p>
+                    <p>Phone: +91-80-4567-8900</p>
                     <p>Available: Monday-Friday, 9 AM-6 PM IST</p>
                   </div>
                 </div>
