@@ -13,22 +13,42 @@ from app.core.db import Base
 
 class Category(Base):
     __tablename__ = "categories"
-    
+
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String(255), nullable=False, index=True)
-    slug = Column(String(255), nullable=False, unique=True, index=True)
+    slug = Column(String(255), nullable=False, index=True)
+    path = Column(String(1000), nullable=False, unique=True, index=True)  # Full hierarchical path
     description = Column(Text)
     parent_id = Column(Integer, ForeignKey("categories.id"), nullable=True)
+
+    # Images and banners
     image_url = Column(String(500))
+    banner_image = Column(String(500))
+
+    # SEO fields
+    seo_title = Column(String(255))
+    seo_description = Column(String(500))
+
+    # Hierarchy and display
     sort_order = Column(Integer, default=0)
+    level = Column(Integer, default=0, index=True)  # Depth level in hierarchy
     is_active = Column(Boolean, default=True)
+    is_featured = Column(Boolean, default=False)
+
+    # Timestamps
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), onupdate=func.now())
-    
+
     # Relationships
     parent = relationship("Category", remote_side=[id], back_populates="children")
     children = relationship("Category", back_populates="parent")
     products = relationship("Product", back_populates="category")
+
+    # Indexes for hierarchical queries
+    __table_args__ = (
+        Index("ix_categories_parent_active", "parent_id", "is_active"),
+        Index("ix_categories_level_sort", "level", "sort_order"),
+    )
 
 class Product(Base):
     __tablename__ = "products"
