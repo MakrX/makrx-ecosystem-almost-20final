@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { ChevronDownIcon, ChevronUpIcon } from '@heroicons/react/24/outline';
+// Using inline SVGs instead of Heroicons
 
 interface SearchFacet {
   name: string;
@@ -78,9 +78,13 @@ export default function SearchFilters({ facets, activeFilters, onFilterChange }:
                 {facet.name.replace('_', ' ')}
               </span>
               {expandedSections.has(facet.name) ? (
-                <ChevronUpIcon className="h-4 w-4 text-gray-500" />
+                <svg className="h-4 w-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 15l7-7 7 7" />
+                </svg>
               ) : (
-                <ChevronDownIcon className="h-4 w-4 text-gray-500" />
+                <svg className="h-4 w-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                </svg>
               )}
             </button>
 
