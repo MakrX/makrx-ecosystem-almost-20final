@@ -319,18 +319,4 @@ export function useExperimentTracking(flagKey: string) {
   return { variant, isInExperiment };
 }
 
-// Export all components
-export {
-  FlagGuard,
-  NavLinkGuard,
-  ModuleGuard,
-  KillSwitchGuard,
-  AdminGuard,
-  ButtonGuard,
-  RouteGuard,
-  Experiment,
-  ComingSoonBadge,
-  ComingSoonModule,
-  MaintenanceNotice,
-  NotFoundPage
-};
+// All components are already exported above with their function declarations
