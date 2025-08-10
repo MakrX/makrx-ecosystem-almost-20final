@@ -31,7 +31,7 @@ export default function AccountDashboard() {
     name: "John Doe",
     email: "john@example.com",
     memberSince: "2023-01-15",
-    profileImage: "/api/placeholder/100/100",
+    profileImage: "https://via.placeholder.com/100x100/3B82F6/FFFFFF?text=User",
     tier: "Maker Pro",
     points: 1250,
   };
