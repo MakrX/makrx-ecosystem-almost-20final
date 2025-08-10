@@ -157,25 +157,25 @@ const teamMembers: TeamMember[] = [
   {
     name: "Sarah Chen",
     role: "CEO & Founder",
-    image: "/api/placeholder/150/150",
+    image: "https://via.placeholder.com/150x150/3B82F6/FFFFFF?text=Team",
     bio: "Former SpaceX manufacturing engineer with a passion for democratizing access to manufacturing technology.",
   },
   {
     name: "Marcus Rodriguez",
     role: "CTO",
-    image: "/api/placeholder/150/150",
+    image: "https://via.placeholder.com/150x150/3B82F6/FFFFFF?text=Team",
     bio: "Tech veteran with 15 years building scalable platforms. Previously at Google and Uber.",
   },
   {
     name: "Emily Park",
     role: "Head of Design",
-    image: "/api/placeholder/150/150",
+    image: "https://via.placeholder.com/150x150/3B82F6/FFFFFF?text=Team",
     bio: "Design leader focused on creating intuitive experiences for complex manufacturing workflows.",
   },
   {
     name: "David Kim",
     role: "VP Engineering",
-    image: "/api/placeholder/150/150",
+    image: "https://via.placeholder.com/150x150/3B82F6/FFFFFF?text=Team",
     bio: "Engineering leader who believes in the power of automation to transform manufacturing.",
   },
 ];
