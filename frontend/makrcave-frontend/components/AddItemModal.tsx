@@ -112,8 +112,7 @@ export default function AddItemModal({ isOpen, onClose, editItem, onSubmit }: Ad
     }
 
     try {
-      // Check against existing inventory items using the context
-      const { inventoryItems } = useMakerspace();
+      // Check against existing inventory items from context
 
       // Check for exact name match
       const nameMatch = inventoryItems.find(item =>
