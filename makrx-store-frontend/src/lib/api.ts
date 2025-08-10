@@ -379,7 +379,8 @@ class ApiClient {
 
       return await response.json();
     } catch (error) {
-      // Check if this is a network connectivity error or connection refused
+      // Check if this is a network connectivity error, abort error, or connection refused
+      const isAbortError = error instanceof Error && error.name === 'AbortError';
       const isNetworkError = error instanceof TypeError &&
           (error.message === "Failed to fetch" ||
            error.message.includes("NetworkError") ||
@@ -395,10 +396,10 @@ class ApiClient {
            error.message.includes("CORS") ||
            error.message.includes("net::ERR"));
 
-      // Always use mock data in development for network errors
-      if (isNetworkError || isConnectionError || (process.env.NODE_ENV === "development" && url.includes("localhost:8003"))) {
-        // Show a one-time notification that we're using mock data
-        if (typeof window !== "undefined" && !sessionStorage.getItem("mock-data-notice-shown")) {
+      // Always use mock data in development for network errors, abort errors, or connection issues
+      if (isAbortError || isNetworkError || isConnectionError || (process.env.NODE_ENV === "development" && url.includes("localhost:8003"))) {
+        // Show a one-time notification that we're using mock data (but not for abort errors)
+        if (!isAbortError && typeof window !== "undefined" && !sessionStorage.getItem("mock-data-notice-shown")) {
           sessionStorage.setItem("mock-data-notice-shown", "true");
           console.info(
             "🔧 Development Mode: Backend server not available, using mock data for demo purposes.",
@@ -408,8 +409,8 @@ class ApiClient {
         return this.getMockData<T>(endpoint);
       }
 
-      // Only log detailed errors in development and only for non-network issues
-      if (process.env.NODE_ENV === "development" && !isNetworkError && !isConnectionError) {
+      // Only log detailed errors in development and only for non-network/non-abort issues
+      if (process.env.NODE_ENV === "development" && !isNetworkError && !isConnectionError && !isAbortError) {
         console.warn(`API request failed: ${endpoint}`, error.message);
       }
 
