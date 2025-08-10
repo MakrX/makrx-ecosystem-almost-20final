@@ -33,11 +33,11 @@ export default function DevErrorHandler() {
     // Also handle regular errors that might be related to RSC
     const handleError = (event: ErrorEvent) => {
       const error = event.error;
-      if (error &&
-          (error.message?.includes('Failed to fetch') ||
-           error.message?.includes('RSC payload') ||
-           error.message?.includes('fetchServerResponse'))) {
-        console.warn('Development: RSC-related error caught and suppressed');
+      if (error && error.stack && (
+          (error.message?.includes('Failed to fetch') &&
+           error.stack.includes('fetchServerResponse')) ||
+          error.message?.includes('RSC payload'))) {
+        console.warn('Development: Next.js RSC-related error caught and suppressed');
         event.preventDefault();
         return false;
       }
