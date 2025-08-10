@@ -10,6 +10,12 @@ const nextConfig = {
       exclude: ["error"]
     } : false,
   },
+  // Add development server configuration to fix RSC payload issues
+  devIndicators: {
+    buildActivity: false,
+  },
+  // Disable fast refresh in production-like environments
+  fastRefresh: process.env.NODE_ENV === "development",
   images: {
     domains: ["localhost", "makrx.store", "images.unsplash.com"],
     unoptimized: true,
