@@ -25,7 +25,7 @@ import {
 } from "lucide-react";
 
 // Import feature flag components
-import { NavLinkGuard, FlagGuard, useBooleanFlag } from "../lib/feature-flags";
+import { NavLinkGuard, FlagGuard, useBooleanFlag, useIsInternalUser } from "../lib/feature-flags";
 
 export default function EnhancedHeader() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
