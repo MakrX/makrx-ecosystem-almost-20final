@@ -179,10 +179,10 @@ body {
   transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-/* Dark mode body styles */
+/* Dark mode body styles - Much darker theme */
 .dark body {
-  background-color: var(--gray-900);
-  color: var(--gray-100);
+  background-color: #0a0a0a;
+  color: #e2e8f0;
 }
 
 /* Enhanced focus styles for accessibility */
@@ -800,26 +800,26 @@ input::placeholder, textarea::placeholder {
 }
 
 .dark .card {
-  background: var(--gray-800);
-  border-color: var(--gray-700);
+  background: #1a1a1a;
+  border-color: #2a2a2a;
 }
 
 .dark .backdrop-blur-glass {
-  background-color: rgba(17, 24, 39, 0.85);
+  background-color: rgba(10, 10, 10, 0.9);
 }
 
 .dark input,
 .dark textarea,
 .dark select {
-  background-color: var(--gray-800);
-  border-color: var(--gray-600);
-  color: var(--gray-100);
+  background-color: #1a1a1a;
+  border-color: #2a2a2a;
+  color: #e2e8f0;
 }
 
 .dark input:focus,
 .dark textarea:focus,
 .dark select:focus {
-  background-color: var(--gray-700);
+  background-color: #0f0f0f;
   border-color: var(--makrx-blue);
   box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
 }
@@ -830,25 +830,25 @@ input::placeholder, textarea::placeholder {
 }
 
 .dark .makrx-btn-ghost {
-  color: var(--gray-300);
+  color: #cbd5e1;
 }
 
 .dark .makrx-btn-ghost:hover {
-  background: var(--gray-800);
-  color: var(--gray-100);
+  background: #1a1a1a;
+  color: #e2e8f0;
 }
 
 .dark :::-webkit-scrollbar-track {
-  background: var(--gray-800);
+  background: #0a0a0a;
 }
 
 .dark :::-webkit-scrollbar-thumb {
-  background: var(--gray-600);
-  border-color: var(--gray-800);
+  background: #2a2a2a;
+  border-color: #0a0a0a;
 }
 
 .dark :::-webkit-scrollbar-thumb:hover {
-  background: var(--gray-500);
+  background: #404040;
 }
 
 /* Dark mode system preference support */
