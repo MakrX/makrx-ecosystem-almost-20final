@@ -250,8 +250,9 @@ export default function PrivacyPolicy() {
                   <h3 className="font-semibold text-makrx-blue mb-2">Company Address</h3>
                   <p className="text-gray-700 text-sm">
                     Botness Technologies Pvt Ltd<br />
-                    [Company Address]<br />
-                    Bangalore, Karnataka, India
+                    Plot No. 123, Tech Park<br />
+                    Electronic City, Phase 2<br />
+                    Bangalore, Karnataka 560100, India
                   </p>
                 </div>
               </div>
