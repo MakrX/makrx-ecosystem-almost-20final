@@ -24,20 +24,29 @@ export function Header() {
   const { user, isAuthenticated, login, logout } = useAuth();
   const router = useRouter();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [categories, setCategories] = useState<Category[]>([]);
+  const [categories, setCategories] = useState<AdminCategory[]>([]);
   const [cartItemCount, setCartItemCount] = useState(0);
   const [hoveredCategory, setHoveredCategory] = useState<number | null>(null);
 
   // Load categories and cart count
   useEffect(() => {
-    const loadCategories = async () => {
+    const loadCategories = () => {
       try {
-        const categoriesData = await api.getCategories();
+        const categoriesData = adminDataService.getCategories();
         setCategories(categoriesData);
       } catch (error) {
         console.error("Failed to load categories:", error);
       }
     };
+
+    // Listen for category updates from admin panel
+    const handleCategoriesUpdate = (event: CustomEvent) => {
+      setCategories(event.detail);
+    };
+
+    window.addEventListener('categoriesUpdated', handleCategoriesUpdate as EventListener);
+
+    loadCategories();
 
     const loadCartCount = async () => {
       if (isAuthenticated) {
