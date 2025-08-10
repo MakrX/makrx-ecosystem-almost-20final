@@ -269,14 +269,14 @@ export default function HomePage() {
               <Zap className="ml-3 w-5 h-5 group-hover:translate-x-1 group-hover:rotate-12 transition-all duration-300 relative z-10" />
             </Link>
 
-            <button
+            <a
+              href="/ecosystem"
               className="group relative inline-flex items-center justify-center px-6 sm:px-8 py-3 sm:py-4 text-base sm:text-lg font-semibold rounded-2xl bg-white/10 text-white border-2 border-white/20 hover:bg-white/20 hover:border-white/40 transition-all duration-300 hover:scale-105 backdrop-blur-sm overflow-hidden"
-              onClick={() => setIsLauncherOpen(true)}
             >
               <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent transform -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-700"></div>
-              <span className="relative z-10">Launch Apps</span>
+              <span className="relative z-10">Explore Ecosystem</span>
               <Play className="ml-3 w-5 h-5 group-hover:translate-x-1 group-hover:scale-110 transition-all duration-300 relative z-10" />
-            </button>
+            </a>
           </div>
 
           {showVideo && (
