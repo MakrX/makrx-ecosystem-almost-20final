@@ -52,10 +52,10 @@ export default function EnhancedHeader() {
     const baseNav = [];
 
     // External ecosystem URLs
-    const makrcaveUrl = process.env.VITE_MAKRCAVE_URL || 'https://makrcave.com';
-    const storeUrl = process.env.VITE_STORE_URL || 'https://makrx.store';
-    const learnUrl = process.env.VITE_LEARN_URL || 'https://learn.makrx.org';
-    const customPrintUrl = process.env.VITE_3D_STORE_URL || 'https://3d.makrx.store';
+    const makrcaveUrl = import.meta.env.VITE_MAKRCAVE_URL || 'https://makrcave.com';
+    const storeUrl = import.meta.env.VITE_STORE_URL || 'https://makrx.store';
+    const learnUrl = import.meta.env.VITE_LEARN_URL || 'https://learn.makrx.org';
+    const customPrintUrl = import.meta.env.VITE_3D_STORE_URL || 'https://3d.makrx.store';
 
     if (showMakrCave) {
       baseNav.push({
