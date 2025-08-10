@@ -15,6 +15,7 @@ import {
 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { api, type Category, type Product } from "@/lib/api";
+import { adminDataService, type AdminCategory } from "@/lib/adminData";
 import SmartSearch from "@/components/SmartSearch";
 import NotificationDropdown from "@/components/NotificationDropdown";
 import { ThemeToggle, ThemeToggleCompact } from "@/components/ThemeToggle";
