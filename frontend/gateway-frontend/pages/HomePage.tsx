@@ -88,7 +88,7 @@ export default function HomePage() {
   return (
     <div className="min-h-screen">
       {/* Hero Section */}
-      <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-to-br from-makrx-blue via-makrx-blue/90 to-purple-900">
+      <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-to-br from-makrx-blue via-makrx-blue/90 to-purple-900 px-4 sm:px-6">
         {/* Background Pattern */}
         <div className="absolute inset-0 opacity-10">
           <div className="absolute inset-0" style={{
@@ -96,7 +96,7 @@ export default function HomePage() {
           }} />
         </div>
 
-        <div className="relative z-10 max-w-7xl mx-auto px-6 text-center">
+        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <div className="mb-8">
             {/* Animated Logo/Brand */}
             <div className="mb-8">
@@ -106,7 +106,7 @@ export default function HomePage() {
                   <div className="absolute inset-0 bg-gradient-to-r from-makrx-yellow/20 to-transparent rounded-2xl blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-700 -z-10"></div>
                 </h1>
               </div>
-              <div className="text-2xl lg:text-4xl font-light text-white/80 mb-6">
+              <div className="text-xl sm:text-2xl lg:text-4xl font-light text-white/80 mb-6">
                 <span className="inline-block animate-slide-in-left hover:text-makrx-yellow transition-colors duration-300 cursor-default">Dream.</span>{' '}
                 <span className="inline-block animate-slide-in-right hover:text-makrx-yellow transition-colors duration-300 cursor-default" style={{animationDelay: '0.5s'}}>Make.</span>{' '}
                 <span className="inline-block animate-slide-in-left hover:text-makrx-yellow transition-colors duration-300 cursor-default" style={{animationDelay: '1s'}}>Share.</span>
@@ -119,15 +119,15 @@ export default function HomePage() {
             </div>
           </div>
 
-          <p className="text-xl md:text-2xl text-white/90 mb-12 max-w-4xl mx-auto leading-relaxed">
+          <p className="text-lg sm:text-xl lg:text-2xl text-white/90 mb-8 sm:mb-12 max-w-4xl mx-auto leading-relaxed px-4">
             Access world-class makerspaces, shop cutting-edge tools, learn new skills, and bring your ideas to life.
             Join thousands of makers, innovators, and creators in the MakrX ecosystem.
           </p>
 
-          <div className="flex flex-col sm:flex-row gap-6 justify-center mb-16">
+          <div className="flex flex-col sm:flex-row gap-4 sm:gap-6 justify-center mb-12 sm:mb-16 px-4">
             <Link
               to="/register"
-              className="group relative inline-flex items-center justify-center px-8 py-4 text-lg font-semibold rounded-2xl bg-makrx-yellow text-makrx-blue hover:bg-yellow-300 transition-all duration-300 hover:scale-105 hover:shadow-2xl overflow-hidden"
+              className="group relative inline-flex items-center justify-center px-6 sm:px-8 py-3 sm:py-4 text-base sm:text-lg font-semibold rounded-2xl bg-makrx-yellow text-makrx-blue hover:bg-yellow-300 transition-all duration-300 hover:scale-105 hover:shadow-2xl overflow-hidden"
             >
               <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent transform -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-700"></div>
               <span className="relative z-10">Get Started Free</span>
@@ -135,7 +135,7 @@ export default function HomePage() {
             </Link>
 
             <button
-              className="group relative inline-flex items-center justify-center px-8 py-4 text-lg font-semibold rounded-2xl bg-white/10 text-white border-2 border-white/20 hover:bg-white/20 hover:border-white/40 transition-all duration-300 hover:scale-105 backdrop-blur-sm overflow-hidden"
+              className="group relative inline-flex items-center justify-center px-6 sm:px-8 py-3 sm:py-4 text-base sm:text-lg font-semibold rounded-2xl bg-white/10 text-white border-2 border-white/20 hover:bg-white/20 hover:border-white/40 transition-all duration-300 hover:scale-105 backdrop-blur-sm overflow-hidden"
               onClick={() => {/* Open app launcher */}}
             >
               <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent transform -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-700"></div>
