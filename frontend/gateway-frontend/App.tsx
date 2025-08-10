@@ -42,7 +42,7 @@ const App = () => {
     userId: undefined, // Will be set by AuthProvider
     sessionId: undefined,
     roles: [],
-    environment: process.env.NODE_ENV as 'development' | 'staging' | 'production' || 'development',
+    environment: import.meta.env.MODE as 'development' | 'staging' | 'production' || 'development',
     userAgent: navigator.userAgent,
     country: 'IN', // Default to India, can be detected
     pincode: undefined
