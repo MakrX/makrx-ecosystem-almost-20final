@@ -20,8 +20,7 @@ import {
   Truck,
   ChevronDown,
   ArrowRight,
-  Home,
-  Compare
+  Home
 } from 'lucide-react'
 import { products, categories, filters, filterProducts, sortProducts, type Product, getProductsByCategory } from '@/data/products'
 import { getAllFiltersForCategory, type CategoryFilter } from '@/data/categoryFilters'
