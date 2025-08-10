@@ -33,10 +33,38 @@ export default function EnhancedCategoryFilters({
   facets,
   activeFilters,
   onFilterChange,
-  isOpen,
   onToggle,
+  category,
+  onFiltersChange,
+  onClose,
+  isOpen,
   className = "",
 }: EnhancedCategoryFiltersProps) {
+  // Handle legacy category-based interface
+  if (category && onFiltersChange) {
+    return (
+      <div className={`bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6 ${className}`}>
+        <div className="flex items-center justify-between mb-4">
+          <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+            Filters
+          </h3>
+          {onClose && (
+            <button
+              onClick={onClose}
+              className="md:hidden p-1 text-gray-400 hover:text-gray-600"
+            >
+              <X className="h-5 w-5" />
+            </button>
+          )}
+        </div>
+        <div className="space-y-4">
+          <p className="text-gray-600 dark:text-gray-400">
+            Category-specific filters for {category} coming soon...
+          </p>
+        </div>
+      </div>
+    );
+  }
   const [expandedSections, setExpandedSections] = useState<Set<string>>(
     new Set(["categories", "brands", "price", "material"])
   );
