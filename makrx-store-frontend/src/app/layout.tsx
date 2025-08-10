@@ -8,6 +8,18 @@ import { Header } from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import ToastNotifications from "@/components/ToastNotifications";
 
+// Global error handler for development
+if (typeof window !== "undefined" && process.env.NODE_ENV === "development") {
+  window.addEventListener("unhandledrejection", (event) => {
+    if (event.reason && event.reason.message &&
+        (event.reason.message.includes("NetworkError") ||
+         event.reason.message.includes("Failed to fetch"))) {
+      console.warn("Suppressed network error in development mode:", event.reason.message);
+      event.preventDefault();
+    }
+  });
+}
+
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
