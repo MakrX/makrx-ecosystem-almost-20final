@@ -50,7 +50,6 @@ export default function DevErrorHandler() {
     return () => {
       window.removeEventListener('unhandledrejection', handleUnhandledRejection);
       window.removeEventListener('error', handleError);
-      window.fetch = originalFetch;
     };
   }, []);
 
