@@ -106,7 +106,7 @@ export default function ProductPage() {
             currentPath += (currentPath ? "/" : "") + part;
             const name = part
               .replace(/-/g, " ")
-              .replace(/\b\w/g, (l) => l.toUpperCase());
+              .replace(/\b\w/g, (l: string) => l.toUpperCase());
             crumbs.push({ name, href: `/c/${currentPath}` });
           }
         }
