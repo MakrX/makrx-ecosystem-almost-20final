@@ -168,14 +168,39 @@ export default function Header() {
                   </Link>
                 );
               })}
-              <Link
-                to="/profile"
-                onClick={() => setIsMenuOpen(false)}
-                className="flex items-center gap-3 px-4 py-3 makrx-btn-primary mt-4"
-              >
-                <User className="w-5 h-5" />
-                Profile
-              </Link>
+              {isAuthenticated ? (
+                <Link
+                  to="/profile"
+                  onClick={() => setIsMenuOpen(false)}
+                  className="flex items-center gap-3 px-4 py-3 text-white/80 hover:text-white hover:bg-white/10 rounded-lg"
+                >
+                  <User className="w-5 h-5" />
+                  Profile
+                </Link>
+              ) : (
+                <a
+                  href="#"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    setIsMenuOpen(false);
+                    // Store current page for redirect after login
+                    sessionStorage.setItem('makrx_redirect_url', window.location.href);
+                    // Redirect to SSO
+                    const params = new URLSearchParams({
+                      client_id: 'makrx-gateway',
+                      redirect_uri: window.location.origin + '/auth/callback',
+                      response_type: 'code',
+                      scope: 'openid email profile',
+                      state: Math.random().toString(36).substring(2)
+                    });
+                    window.location.href = `https://auth.makrx.org/realms/makrx/protocol/openid-connect/auth?${params}`;
+                  }}
+                  className="flex items-center gap-3 px-4 py-3 makrx-btn-primary mt-4"
+                >
+                  <User className="w-5 h-5" />
+                  Sign In
+                </a>
+              )}
             </nav>
           </div>
         )}
