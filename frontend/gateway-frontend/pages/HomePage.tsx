@@ -524,6 +524,12 @@ export default function HomePage() {
           </div>
         </div>
       </section>
+
+      {/* App Launcher Modal */}
+      <AppLauncher
+        isOpen={isLauncherOpen}
+        onClose={() => setIsLauncherOpen(false)}
+      />
     </div>
   );
 }
