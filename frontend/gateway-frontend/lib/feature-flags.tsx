@@ -32,12 +32,17 @@ export function FeatureFlagProvider({ children }: { children: React.ReactNode })
 
 export function useBooleanFlag(flag: string, defaultValue: boolean = false): boolean {
   const context = useContext(FeatureFlagContext);
-  
+
   if (!context) {
     return defaultValue;
   }
 
   return context.flags[flag] ?? defaultValue;
+}
+
+export function useIsInternalUser(): boolean {
+  // Simple mock implementation for internal user detection
+  return localStorage.getItem('makrx-internal-user') === 'true';
 }
 
 interface FlagGuardProps {
