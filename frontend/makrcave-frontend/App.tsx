@@ -33,6 +33,7 @@ import AdminMakerspaces from "./pages/admin/Makerspaces";
 import AdminFeatureFlags from "./pages/admin/FeatureFlags";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
+import AuthCallback from "./pages/AuthCallback";
 import ForgotPassword from "./pages/ForgotPassword";
 import SystemHealth from "./pages/SystemHealth";
 import ErrorLogs from "./pages/ErrorLogs";
