@@ -239,32 +239,6 @@ export default function ProductPage() {
               </p>
             )}
 
-            {/* Price */}
-            <div className="space-y-2">
-              <div className="flex items-center gap-3">
-                <span className="text-3xl font-bold text-gray-900 dark:text-white">
-                  {product.currency === "INR" ? "₹" : "$"}
-                  {effectivePrice.toLocaleString()}
-                </span>
-                {isOnSale && (
-                  <span className="text-xl text-gray-500 dark:text-gray-400 line-through">
-                    {product.currency === "INR" ? "₹" : "$"}
-                    {originalPrice.toLocaleString()}
-                  </span>
-                )}
-                {isOnSale && (
-                  <span className="px-2 py-1 bg-red-100 dark:bg-red-900 text-red-800 dark:text-red-200 text-sm font-semibold rounded">
-                    Save {savingsPercentage}%
-                  </span>
-                )}
-              </div>
-              {isOnSale && (
-                <p className="text-sm text-green-600 dark:text-green-400">
-                  You save {product.currency === "INR" ? "₹" : "$"}
-                  {savingsAmount.toLocaleString()}!
-                </p>
-              )}
-            </div>
 
             {/* Stock Status */}
             <div className="flex items-center gap-4">
