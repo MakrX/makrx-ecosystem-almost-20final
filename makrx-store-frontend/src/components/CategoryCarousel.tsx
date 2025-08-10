@@ -56,7 +56,7 @@ export default function CategoryCarousel({
   const scrollRight = () => {
     if (canScrollRight && !isScrolling) {
       setIsScrolling(true);
-      setCurrentIndex(Math.min(categories.length - visibleCount, currentIndex + 1));
+      setCurrentIndex(Math.min(displayCategories.length - visibleCount, currentIndex + 1));
       setTimeout(() => setIsScrolling(false), 300);
     }
   };
