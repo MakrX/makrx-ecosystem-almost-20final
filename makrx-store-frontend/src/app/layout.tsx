@@ -80,14 +80,26 @@ if (typeof window !== "undefined" && process.env.NODE_ENV === "development") {
     }
   };
 
-  // Add global image error handler
+  // Add global resource error handler
   document.addEventListener("error", (event) => {
-    const target = event.target as HTMLImageElement;
+    const target = event.target as HTMLElement;
+
     if (target && target.tagName === "IMG") {
+      const imgTarget = target as HTMLImageElement;
       // Replace broken images with placeholder
-      if (target.src.includes("/api/placeholder") || !target.src.startsWith("http")) {
-        target.src = "https://via.placeholder.com/400x300/3B82F6/FFFFFF?text=Image";
-        console.warn("Replaced broken image:", target.src);
+      if (imgTarget.src.includes("/api/placeholder") || !imgTarget.src.startsWith("http")) {
+        imgTarget.src = "https://via.placeholder.com/400x300/3B82F6/FFFFFF?text=Image";
+        console.warn("Replaced broken image:", imgTarget.src);
+        event.preventDefault();
+        return;
+      }
+    }
+
+    // Handle other resource loading errors
+    if (target && (target.tagName === "SCRIPT" || target.tagName === "LINK")) {
+      const src = (target as any).src || (target as any).href;
+      if (src && (src.includes("/api/") || src.includes("localhost:8003"))) {
+        console.warn("Suppressed resource loading error in development:", src);
         event.preventDefault();
       }
     }
