@@ -271,19 +271,53 @@ const materialsFilters: CategoryFilter[] = [
   }
 ];
 
-// Kits & Components Specific Filters
+// Kits & Bundles Specific Filters
 const kitsFilters: CategoryFilter[] = [
   {
     id: 'kit-type',
     name: 'Kit Type',
     type: 'checkbox',
+    required: true,
     options: [
-      { value: 'starter', label: 'Starter Kits', count: 45 },
+      { value: 'starter', label: 'Starter Kits', count: 67 },
       { value: 'project', label: 'Project Kits', count: 89 },
-      { value: 'educational', label: 'Educational Kits', count: 67 },
-      { value: 'robotics', label: 'Robotics Kits', count: 34 },
-      { value: 'iot', label: 'IoT Kits', count: 23 },
-      { value: 'upgrade', label: 'Upgrade Kits', count: 56 }
+      { value: 'educational', label: 'Educational Kits', count: 78 },
+      { value: 'robotics', label: 'Robotics Kits', count: 45 },
+      { value: 'iot', label: 'IoT Kits', count: 34 },
+      { value: 'upgrade', label: 'Upgrade Kits', count: 56 },
+      { value: '3d-printing', label: '3D Printing Kits', count: 23 },
+      { value: 'electronics', label: 'Electronics Kits', count: 123 },
+      { value: 'programming', label: 'Programming Kits', count: 45 },
+      { value: 'science', label: 'Science Kits', count: 34 },
+      { value: 'engineering', label: 'Engineering Kits', count: 29 },
+      { value: 'maker', label: 'Maker Bundles', count: 67 }
+    ]
+  },
+  {
+    id: 'platform',
+    name: 'Platform/System',
+    type: 'checkbox',
+    options: [
+      { value: 'arduino', label: 'Arduino Based', count: 156 },
+      { value: 'raspberry-pi', label: 'Raspberry Pi', count: 89 },
+      { value: 'esp32', label: 'ESP32/IoT', count: 67 },
+      { value: 'micro-bit', label: 'BBC Micro:bit', count: 45 },
+      { value: 'jetson', label: 'NVIDIA Jetson', count: 12 },
+      { value: 'fpga', label: 'FPGA', count: 8 },
+      { value: 'standalone', label: 'Standalone/No Platform', count: 78 },
+      { value: 'multiple', label: 'Multi-Platform', count: 34 }
+    ]
+  },
+  {
+    id: 'skill-level',
+    name: 'Skill Level',
+    type: 'select',
+    options: [
+      { value: 'beginner', label: 'Beginner (No Experience)', count: 89 },
+      { value: 'novice', label: 'Novice (Some Experience)', count: 67 },
+      { value: 'intermediate', label: 'Intermediate (1+ Years)', count: 78 },
+      { value: 'advanced', label: 'Advanced (3+ Years)', count: 45 },
+      { value: 'expert', label: 'Expert (5+ Years)', count: 23 }
     ]
   },
   {
@@ -291,34 +325,168 @@ const kitsFilters: CategoryFilter[] = [
     name: 'Age Group',
     type: 'checkbox',
     options: [
-      { value: 'kids-8-12', label: 'Kids (8-12)', count: 34 },
-      { value: 'teens-13-17', label: 'Teens (13-17)', count: 56 },
-      { value: 'adults-18+', label: 'Adults (18+)', count: 123 },
-      { value: 'all-ages', label: 'All Ages', count: 67 }
+      { value: 'kids-6-9', label: 'Kids (6-9)', count: 23 },
+      { value: 'kids-10-12', label: 'Kids (10-12)', count: 45 },
+      { value: 'teens-13-15', label: 'Teens (13-15)', count: 56 },
+      { value: 'teens-16-18', label: 'Teens (16-18)', count: 67 },
+      { value: 'adults-18+', label: 'Adults (18+)', count: 234 },
+      { value: 'all-ages', label: 'All Ages', count: 89 }
     ]
   },
   {
     id: 'complexity',
-    name: 'Complexity Level',
+    name: 'Build Complexity',
     type: 'select',
+    helpText: 'Estimated build time and difficulty',
     options: [
-      { value: 'basic', label: 'Basic (1-2 hours)', count: 67 },
-      { value: 'intermediate', label: 'Intermediate (2-6 hours)', count: 89 },
-      { value: 'advanced', label: 'Advanced (6+ hours)', count: 45 },
-      { value: 'expert', label: 'Expert (Multi-day)', count: 23 }
+      { value: 'quick', label: 'Quick Build (30min-1hr)', count: 34 },
+      { value: 'basic', label: 'Basic (1-3 hours)', count: 78 },
+      { value: 'intermediate', label: 'Intermediate (3-8 hours)', count: 89 },
+      { value: 'advanced', label: 'Advanced (8-20 hours)', count: 56 },
+      { value: 'expert', label: 'Expert (20+ hours)', count: 23 },
+      { value: 'multi-day', label: 'Multi-day Project', count: 12 }
     ]
   },
   {
-    id: 'includes',
-    name: 'Kit Includes',
+    id: 'components-included',
+    name: 'Components Included',
     type: 'checkbox',
     options: [
-      { value: 'components', label: 'Electronic Components', count: 167 },
-      { value: 'tools', label: 'Tools Included', count: 89 },
-      { value: 'manual', label: 'Detailed Manual', count: 234 },
-      { value: 'online-course', label: 'Online Course', count: 45 },
-      { value: 'software', label: 'Software/Code', count: 123 },
-      { value: 'video-tutorials', label: 'Video Tutorials', count: 67 }
+      { value: 'microcontroller', label: 'Microcontroller Board', count: 145 },
+      { value: 'sensors', label: 'Sensors', count: 167 },
+      { value: 'actuators', label: 'Motors/Actuators', count: 89 },
+      { value: 'display', label: 'Display/Screen', count: 67 },
+      { value: 'power-supply', label: 'Power Supply', count: 78 },
+      { value: 'breadboard', label: 'Breadboard', count: 123 },
+      { value: 'jumper-wires', label: 'Jumper Wires', count: 189 },
+      { value: 'resistors', label: 'Resistors', count: 156 },
+      { value: 'capacitors', label: 'Capacitors', count: 134 },
+      { value: 'leds', label: 'LEDs', count: 178 },
+      { value: 'buttons', label: 'Buttons/Switches', count: 145 },
+      { value: 'enclosure', label: 'Enclosure/Case', count: 45 }
+    ]
+  },
+  {
+    id: 'tools-included',
+    name: 'Tools Included',
+    type: 'checkbox',
+    options: [
+      { value: 'soldering-iron', label: 'Soldering Iron', count: 23 },
+      { value: 'screwdrivers', label: 'Screwdrivers', count: 67 },
+      { value: 'pliers', label: 'Pliers', count: 45 },
+      { value: 'multimeter', label: 'Multimeter', count: 34 },
+      { value: 'wire-strippers', label: 'Wire Strippers', count: 29 },
+      { value: 'hex-keys', label: 'Hex Keys', count: 56 },
+      { value: 'no-tools', label: 'No Tools Required', count: 89 },
+      { value: 'basic-tools', label: 'Basic Tool Set', count: 78 }
+    ]
+  },
+  {
+    id: 'learning-resources',
+    name: 'Learning Resources',
+    type: 'checkbox',
+    options: [
+      { value: 'printed-manual', label: 'Printed Manual', count: 234 },
+      { value: 'online-tutorials', label: 'Online Tutorials', count: 156 },
+      { value: 'video-course', label: 'Video Course', count: 89 },
+      { value: 'interactive-lessons', label: 'Interactive Lessons', count: 67 },
+      { value: 'community-support', label: 'Community Support', count: 123 },
+      { value: 'instructor-support', label: 'Instructor Support', count: 34 },
+      { value: 'quick-start', label: 'Quick Start Guide', count: 178 },
+      { value: 'troubleshooting', label: 'Troubleshooting Guide', count: 145 }
+    ]
+  },
+  {
+    id: 'project-category',
+    name: 'Project Category',
+    type: 'checkbox',
+    options: [
+      { value: 'automation', label: 'Home Automation', count: 67 },
+      { value: 'monitoring', label: 'Environmental Monitoring', count: 45 },
+      { value: 'communication', label: 'Communication Systems', count: 34 },
+      { value: 'robotics', label: 'Robotics & Movement', count: 78 },
+      { value: 'gaming', label: 'Gaming & Entertainment', count: 56 },
+      { value: 'wearables', label: 'Wearable Tech', count: 23 },
+      { value: 'art-music', label: 'Art & Music', count: 29 },
+      { value: 'security', label: 'Security Systems', count: 34 },
+      { value: 'transportation', label: 'Transportation', count: 19 },
+      { value: 'health-fitness', label: 'Health & Fitness', count: 25 },
+      { value: 'education', label: 'Educational Tools', count: 89 },
+      { value: 'productivity', label: 'Productivity Tools', count: 45 }
+    ]
+  },
+  {
+    id: 'programming-language',
+    name: 'Programming Language',
+    type: 'checkbox',
+    helpText: 'Primary programming language used',
+    options: [
+      { value: 'c-cpp', label: 'C/C++', count: 156 },
+      { value: 'python', label: 'Python', count: 123 },
+      { value: 'javascript', label: 'JavaScript', count: 67 },
+      { value: 'micropython', label: 'MicroPython', count: 89 },
+      { value: 'scratch', label: 'Scratch/Block-based', count: 78 },
+      { value: 'java', label: 'Java', count: 34 },
+      { value: 'makecode', label: 'MakeCode', count: 45 },
+      { value: 'ladder-logic', label: 'Ladder Logic', count: 12 },
+      { value: 'no-programming', label: 'No Programming Required', count: 56 }
+    ]
+  },
+  {
+    id: 'connectivity',
+    name: 'Connectivity Features',
+    type: 'checkbox',
+    options: [
+      { value: 'wifi', label: 'WiFi', count: 89 },
+      { value: 'bluetooth', label: 'Bluetooth', count: 78 },
+      { value: 'ethernet', label: 'Ethernet', count: 34 },
+      { value: 'lora', label: 'LoRa/Long Range', count: 23 },
+      { value: 'zigbee', label: 'Zigbee', count: 19 },
+      { value: 'cellular', label: 'Cellular/GSM', count: 15 },
+      { value: 'nfc', label: 'NFC', count: 12 },
+      { value: 'ir', label: 'Infrared', count: 45 },
+      { value: 'serial', label: 'Serial/UART', count: 156 },
+      { value: 'usb', label: 'USB', count: 134 }
+    ]
+  },
+  {
+    id: 'power-source',
+    name: 'Power Source',
+    type: 'checkbox',
+    options: [
+      { value: 'usb', label: 'USB Powered', count: 156 },
+      { value: 'battery', label: 'Battery Powered', count: 123 },
+      { value: 'wall-adapter', label: 'Wall Adapter', count: 89 },
+      { value: 'solar', label: 'Solar Powered', count: 23 },
+      { value: 'rechargeable', label: 'Rechargeable Battery', count: 67 },
+      { value: 'multiple', label: 'Multiple Options', count: 45 }
+    ]
+  },
+  {
+    id: 'bundle-size',
+    name: 'Bundle Size',
+    type: 'select',
+    helpText: 'Number of components in the kit',
+    options: [
+      { value: 'mini', label: 'Mini Kit (5-15 items)', count: 45 },
+      { value: 'standard', label: 'Standard Kit (16-50 items)', count: 89 },
+      { value: 'deluxe', label: 'Deluxe Kit (51-100 items)', count: 67 },
+      { value: 'ultimate', label: 'Ultimate Kit (100+ items)', count: 34 },
+      { value: 'mega', label: 'Mega Kit (200+ items)', count: 12 }
+    ]
+  },
+  {
+    id: 'certification',
+    name: 'Educational Certification',
+    type: 'checkbox',
+    helpText: 'Recognized educational standards',
+    options: [
+      { value: 'stem-approved', label: 'STEM Approved', count: 78 },
+      { value: 'classroom-ready', label: 'Classroom Ready', count: 89 },
+      { value: 'curriculum-aligned', label: 'Curriculum Aligned', count: 67 },
+      { value: 'teacher-resources', label: 'Teacher Resources', count: 56 },
+      { value: 'assessment-tools', label: 'Assessment Tools', count: 34 },
+      { value: 'no-certification', label: 'No Certification', count: 123 }
     ]
   }
 ];
