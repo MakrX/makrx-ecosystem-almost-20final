@@ -1199,6 +1199,10 @@ export function getProductsByCategory(categoryId: string): Product[] {
   return products.filter(product => product.category === categoryId)
 }
 
+export function getKitProducts(): Product[] {
+  return products.filter(product => product.category === 'kits')
+}
+
 export function getProductById(id: string): Product | undefined {
   return products.find(product => product.id === id)
 }
@@ -1242,6 +1246,32 @@ export function filterProducts(products: Product[], filters: { [key: string]: an
     if (filters.availability && filters.availability.length > 0) {
       if (filters.availability.includes('in-stock') && !product.inStock) return false
       if (filters.availability.includes('on-sale') && !product.onSale) return false
+      if (filters.availability.includes('pre-order') && product.inStock) return false
+      if (filters.availability.includes('backorder') && (product.inStock || product.stockCount > 0)) return false
+    }
+
+    // Kit-specific filters
+    if (filters['kit-type'] && filters['kit-type'].length > 0) {
+      const hasKitType = filters['kit-type'].some((type: string) =>
+        product.tags.some(tag => tag.includes(type))
+      )
+      if (!hasKitType) return false
+    }
+
+    if (filters.platform && filters.platform.length > 0) {
+      const hasPlatform = filters.platform.some((platform: string) =>
+        product.tags.some(tag => tag.includes(platform)) ||
+        product.description.toLowerCase().includes(platform)
+      )
+      if (!hasPlatform) return false
+    }
+
+    if (filters['skill-level'] && filters['skill-level'].length > 0) {
+      const hasSkillLevel = filters['skill-level'].some((level: string) =>
+        product.tags.some(tag => tag.includes(level)) ||
+        product.description.toLowerCase().includes(level)
+      )
+      if (!hasSkillLevel) return false
     }
 
     // Compatibility filter
