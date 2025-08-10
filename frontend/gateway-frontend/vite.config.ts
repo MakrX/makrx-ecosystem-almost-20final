@@ -5,10 +5,7 @@ import { resolve } from 'path';
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [
-    react({
-      // Include specific packages if needed
-      include: "**/*.{jsx,tsx}",
-    }),
+    react(),
   ],
   resolve: {
     alias: {
