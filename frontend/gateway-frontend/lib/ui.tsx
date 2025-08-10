@@ -96,10 +96,10 @@ export function ThemeProvider({
     // Listen for system theme changes
     mediaQuery.addEventListener('change', handleSystemThemeChange);
 
-    // Force a reapply after a short delay to ensure it sticks
-    const forceApply = setTimeout(() => {
-      applyTheme(theme);
-    }, 100);
+    // Force multiple reapplies to ensure it sticks
+    const forceApply1 = setTimeout(() => applyTheme(theme), 50);
+    const forceApply2 = setTimeout(() => applyTheme(theme), 100);
+    const forceApply3 = setTimeout(() => applyTheme(theme), 200);
 
     return () => {
       mediaQuery.removeEventListener('change', handleSystemThemeChange);
