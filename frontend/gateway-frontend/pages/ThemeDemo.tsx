@@ -8,7 +8,7 @@ import { ThemeToggle, useTheme } from '../lib/theme';
 import { PrimaryIcon, AccentIcon, MutedIcon, InteractiveIcon } from '../components/ThemeAwareIcon';
 
 export default function ThemeDemo() {
-  const { theme, actualTheme } = useTheme();
+  const { theme, resolvedTheme } = useTheme();
   const [selectedTab, setSelectedTab] = useState('components');
   const [formData, setFormData] = useState({
     name: '',
