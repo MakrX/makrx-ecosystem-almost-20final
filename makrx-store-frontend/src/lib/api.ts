@@ -1033,8 +1033,8 @@ class ApiClient {
         compatibility: product.compatibility || [],
         images:
           product.images && product.images.length > 0
-            ? product.images
-            : ["https://via.placeholder.com/400x300/3B82F6/FFFFFF?text=Product"],
+            ? product.images.map(img => img.includes('placeholder.com') ? '/placeholder.svg' : img)
+            : ["/placeholder.svg"],
         videos: [],
         meta_title: product.name || `Product ${index + 1}`,
         meta_description: product.shortDescription || product.description || "",
