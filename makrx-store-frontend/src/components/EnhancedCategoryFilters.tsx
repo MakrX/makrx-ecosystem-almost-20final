@@ -45,19 +45,19 @@ function CategoryBasedFilters({
   const [activeFilters, setActiveFilters] = useState<Record<string, string[]>>({});
   const [expandedSections, setExpandedSections] = useState<Set<string>>(new Set());
 
-  // Load filters for the category
-  const categoryFilters = getAllFiltersForCategory(category);
+  // Memoize filters for the category to prevent infinite loops
+  const categoryFilters = useMemo(() => getAllFiltersForCategory(category), [category]);
 
-  // Initialize expanded sections
+  // Initialize expanded sections only once when filters are loaded
   useEffect(() => {
-    if (categoryFilters.length > 0) {
+    if (categoryFilters.length > 0 && expandedSections.size === 0) {
       // Expand first 3 filters by default
       const defaultExpanded = new Set(
         categoryFilters.slice(0, 3).map(filter => filter.id)
       );
       setExpandedSections(defaultExpanded);
     }
-  }, [categoryFilters]);
+  }, [categoryFilters, expandedSections.size]);
 
   const toggleSection = (sectionId: string) => {
     const newExpanded = new Set(expandedSections);
