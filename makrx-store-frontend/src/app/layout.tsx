@@ -58,6 +58,12 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
+        {/* Early fetch protection - runs before any external scripts */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(function(){try{const f=fetch;Object.defineProperty(window,'fetch',{value:f,writable:false,configurable:false});}catch(e){}})();`
+          }}
+        />
         <script
           dangerouslySetInnerHTML={{
             __html: `
