@@ -171,9 +171,9 @@ export default function CategoryCarousel({
                       <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 transition-all duration-200" />
                       
                       {/* Product Count Badge */}
-                      {category.product_count > 0 && (
+                      {(category.product_count || (category as any).productCount) > 0 && (
                         <div className="absolute top-2 right-2 bg-blue-600 text-white text-xs font-medium px-2 py-1 rounded-full">
-                          {category.product_count}
+                          {category.product_count || (category as any).productCount}
                         </div>
                       )}
                     </div>
