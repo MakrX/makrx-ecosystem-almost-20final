@@ -189,7 +189,7 @@ export function ThemeToggle({
               <button
                 key={t}
                 onClick={() => setTheme(t)}
-                className={`w-full flex items-center gap-2 px-3 py-2 text-sm rounded hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors ${
+                className={`w-full flex items-center gap-2 px-3 py-2 text-sm rounded hover:bg-gray-100 dark:hover:bg-slate-900 transition-colors ${
                   theme === t ? 'bg-makrx-blue text-white' : 'text-gray-700 dark:text-gray-200'
                 }`}
               >
