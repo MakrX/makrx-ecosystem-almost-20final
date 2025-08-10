@@ -6,10 +6,6 @@ import { resolve } from 'path';
 export default defineConfig({
   plugins: [
     react({
-      // Enable fast refresh
-      fastRefresh: true,
-      // Exclude node_modules from fast refresh
-      exclude: [/node_modules/],
       // Include specific packages if needed
       include: "**/*.{jsx,tsx}",
     }),
