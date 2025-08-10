@@ -70,21 +70,35 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   // Track the resolved theme (light or dark) that gets applied to UI
   const [effectiveTheme, setEffectiveTheme] = useState<'light' | 'dark'>('light');
 
+  // Effect to determine and monitor the effective theme
   useEffect(() => {
+    /**
+     * Updates the effective theme based on current theme setting
+     * - If theme is 'system': detects OS preference using media query
+     * - If theme is 'light' or 'dark': uses that value directly
+     */
     const updateEffectiveTheme = () => {
       if (theme === 'system') {
+        // Use CSS media query to detect OS/browser theme preference
         const systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
         setEffectiveTheme(systemTheme);
       } else {
+        // Use explicit theme setting
         setEffectiveTheme(theme);
       }
     };
 
+    // Initial theme calculation
     updateEffectiveTheme();
 
+    // Set up listener for system theme changes (only when using 'system' mode)
     if (theme === 'system') {
       const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+
+      // Listen for OS theme changes and update accordingly
       mediaQuery.addEventListener('change', updateEffectiveTheme);
+
+      // Cleanup listener when component unmounts or theme changes
       return () => mediaQuery.removeEventListener('change', updateEffectiveTheme);
     }
   }, [theme]);
