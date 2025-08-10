@@ -211,10 +211,10 @@ export default function CategoryCarousel({
         </div>
 
         {/* Scroll Indicators */}
-        {categories.length > visibleCount && (
+        {displayCategories.length > visibleCount && (
           <div className="flex justify-center mt-4 space-x-2">
             {Array.from(
-              { length: Math.ceil(categories.length / visibleCount) },
+              { length: Math.ceil(displayCategories.length / visibleCount) },
               (_, index) => (
                 <button
                   key={index}
