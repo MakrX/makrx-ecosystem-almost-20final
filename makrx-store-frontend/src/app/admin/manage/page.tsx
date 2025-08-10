@@ -648,7 +648,8 @@ function AdminManagementPage() {
             {[
               { id: 'categories', label: 'Categories', icon: FolderPlus },
               { id: 'filters', label: 'Filters', icon: Filter },
-              { id: 'products', label: 'Products', icon: Package }
+              { id: 'products', label: 'Products', icon: Package },
+              { id: 'qrcodes', label: 'QR Codes', icon: QrCode }
             ].map(tab => {
               const Icon = tab.icon;
               return (
