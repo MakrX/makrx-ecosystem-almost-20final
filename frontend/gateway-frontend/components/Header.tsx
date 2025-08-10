@@ -193,7 +193,7 @@ export default function Header() {
                         <div className="text-sm font-medium text-gray-900 dark:text-gray-100">{app.name}</div>
                         <div className="text-xs text-gray-500 dark:text-gray-300">{app.description}</div>
                       </div>
-                      <ExternalLink className="w-4 h-4 text-gray-400 dark:text-gray-500 ml-auto" />
+                      <ExternalLink className="w-4 h-4 text-gray-400 dark:text-gray-300 ml-auto" />
                     </a>
                   ))}
                 </div>
