@@ -1,7 +1,7 @@
 import { Link, useLocation } from "react-router-dom";
 import { useState } from "react";
 import { useAuth } from "../contexts/AuthContext";
-import { ThemeToggle } from "@makrx/ui";
+import { ThemeToggle } from "../lib/ui";
 import {
   Bot,
   Menu,
@@ -25,8 +25,7 @@ import {
 } from "lucide-react";
 
 // Import feature flag components
-import { NavLinkGuard, FlagGuard } from "@makrx/feature-flags";
-import { useBooleanFlag, useIsInternalUser } from "@makrx/feature-flags";
+import { NavLinkGuard, FlagGuard, useBooleanFlag } from "../lib/feature-flags";
 
 export default function EnhancedHeader() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
