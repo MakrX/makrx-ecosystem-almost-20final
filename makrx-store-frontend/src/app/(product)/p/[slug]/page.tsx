@@ -351,45 +351,7 @@ export default function ProductPage() {
       </div>
 
       {/* Structured Data for SEO */}
-      {typeof window !== 'undefined' && (
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{
-            __html: JSON.stringify({
-              "@context": "https://schema.org/",
-              "@type": "Product",
-              name: product.name,
-              description: product.short_description || product.description,
-              brand: {
-                "@type": "Brand",
-                name: product.brand,
-              },
-              image: product.images,
-              offers: {
-                "@type": "Offer",
-                url: `${window.location.origin}/p/${product.slug}`,
-                priceCurrency: product.currency,
-                price: effectivePrice,
-                availability:
-                  product.stock_qty > 0
-                    ? "https://schema.org/InStock"
-                    : "https://schema.org/OutOfStock",
-                seller: {
-                  "@type": "Organization",
-                  name: "MakrX Store",
-                },
-              },
-              aggregateRating: product.rating
-                ? {
-                    "@type": "AggregateRating",
-                    ratingValue: product.rating.average,
-                    reviewCount: product.rating.count,
-                  }
-                : undefined,
-            }),
-          }}
-        />
-      )}
+      <ProductStructuredDataClient product={product} effectivePrice={effectivePrice} />
     </div>
   );
 }
