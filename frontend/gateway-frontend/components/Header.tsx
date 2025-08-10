@@ -104,8 +104,8 @@ export default function Header() {
                         rel="noopener noreferrer"
                         className="p-3 rounded-lg border border-gray-200 dark:border-gray-600 hover:border-gray-300 dark:hover:border-gray-500 hover:shadow-sm dark:hover:bg-gray-700 transition-all group"
                       >
-                        <div className={`w-8 h-8 bg-${app.color}-100 rounded-lg flex items-center justify-center mb-2`}>
-                          <div className={`w-4 h-4 bg-${app.color}-500 rounded`}></div>
+                        <div className={`w-8 h-8 ${app.bgColor} rounded-lg flex items-center justify-center mb-2 transition-colors`}>
+                          <div className={`w-4 h-4 ${app.iconColor} rounded transition-colors`}></div>
                         </div>
                         <div className="text-sm font-medium text-gray-900 dark:text-white group-hover:text-makrx-blue dark:group-hover:text-makrx-blue transition-colors">
                           {app.name}
