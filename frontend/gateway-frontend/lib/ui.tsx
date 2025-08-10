@@ -58,6 +58,14 @@ export function ThemeProvider({
       // Force style recalculation
       root.style.colorScheme = resolvedTheme;
 
+      // Debug logging
+      console.log('Theme applied:', {
+        newTheme,
+        resolvedTheme,
+        rootClasses: root.className,
+        dataTheme: root.getAttribute('data-theme')
+      });
+
       // Update meta theme-color for mobile browsers
       const metaThemeColor = document.querySelector('meta[name="theme-color"]:not([media])');
       const metaThemeColorDark = document.querySelector('meta[name="theme-color"][media="(prefers-color-scheme: dark)"]');
