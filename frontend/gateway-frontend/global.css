@@ -183,6 +183,10 @@ html {
   font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
   font-variant-ligatures: contextual;
   font-variation-settings: normal;
+
+  /* Theme transition support */
+  transition: background-color 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+              color 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 body {
