@@ -10,14 +10,39 @@ import ToastNotifications from "@/components/ToastNotifications";
 
 // Global error handler for development
 if (typeof window !== "undefined" && process.env.NODE_ENV === "development") {
+  // Suppress unhandled promise rejections for network errors
   window.addEventListener("unhandledrejection", (event) => {
     if (event.reason && event.reason.message &&
         (event.reason.message.includes("NetworkError") ||
-         event.reason.message.includes("Failed to fetch"))) {
+         event.reason.message.includes("Failed to fetch") ||
+         event.reason.message.includes("404"))) {
       console.warn("Suppressed network error in development mode:", event.reason.message);
       event.preventDefault();
     }
   });
+
+  // Override console.error to filter out network errors
+  const originalError = console.error;
+  console.error = (...args) => {
+    const message = args.join(" ");
+    if (message.includes("NetworkError") ||
+        message.includes("Failed to fetch") ||
+        message.includes("/api/placeholder")) {
+      return; // Suppress these errors
+    }
+    originalError.apply(console, args);
+  };
+
+  // Override window.onerror to catch any remaining errors
+  window.onerror = (message, source, lineno, colno, error) => {
+    if (typeof message === "string" &&
+        (message.includes("NetworkError") ||
+         message.includes("Failed to fetch") ||
+         message.includes("/api/placeholder"))) {
+      return true; // Suppress the error
+    }
+    return false; // Let other errors through
+  };
 }
 
 const inter = Inter({ subsets: ["latin"] });
