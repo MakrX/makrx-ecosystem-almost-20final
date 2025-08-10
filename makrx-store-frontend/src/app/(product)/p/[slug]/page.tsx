@@ -546,7 +546,7 @@ export default function ProductPage() {
                     </div>
                     {/* Individual Reviews */}
                     <div className="space-y-6">
-                      {generateMockReviews(product).map((review, index) => (
+                      {displayedReviews.map((review, index) => (
                         <div key={index} className="border-b border-gray-200 dark:border-gray-700 pb-6 last:border-b-0">
                           <div className="flex items-start justify-between mb-3">
                             <div className="flex items-center gap-3">
