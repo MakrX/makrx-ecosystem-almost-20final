@@ -1,8 +1,8 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { 
-  Home, ArrowLeft, Search, Building2, ShoppingCart, 
-  GraduationCap, AlertTriangle, Compass, LifeBuoy 
+import {
+  Home, ArrowLeft, Search, Building2, ShoppingCart,
+  GraduationCap, AlertTriangle, Compass, LifeBuoy, Star
 } from 'lucide-react';
 
 interface QuickLinkProps {
