@@ -154,15 +154,49 @@ export default function RootLayout({
                     return false;
                   };
 
-                  // Nuclear option: Override the native fetch to prevent FullStory interference
+                  // Nuclear option: Complete fetch override to prevent FullStory interference
                   const originalFetch = window.fetch;
-                  window.fetch = function(...args) {
+                  window.fetch = function(input, init) {
+                    // Check if this is a development-related fetch that might cause errors
+                    const url = typeof input === 'string' ? input : input.url || '';
+                    const isNextJSFetch = url.includes('_next') ||
+                                         url.includes('webpack') ||
+                                         url.includes('hmr') ||
+                                         url.includes('reload=');
+
+                    if (isNextJSFetch) {
+                      // Wrap Next.js fetches in error handling
+                      return originalFetch.apply(this, arguments)
+                        .catch(error => {
+                          if (isDevelopmentError(error.message, error.stack)) {
+                            // Silently return a successful response for dev errors
+                            return new Response('{}', {
+                              status: 200,
+                              headers: { 'Content-Type': 'application/json' }
+                            });
+                          }
+                          throw error;
+                        });
+                    }
+
+                    // For all other fetches, use original behavior with error handling
                     try {
-                      return originalFetch.apply(this, args);
+                      return originalFetch.apply(this, arguments)
+                        .catch(error => {
+                          if (isDevelopmentError(error.message, error.stack)) {
+                            return new Response('{}', {
+                              status: 200,
+                              headers: { 'Content-Type': 'application/json' }
+                            });
+                          }
+                          throw error;
+                        });
                     } catch (error) {
                       if (isDevelopmentError(error.message, error.stack)) {
-                        // Return a resolved promise for development errors
-                        return Promise.resolve(new Response('', { status: 200 }));
+                        return Promise.resolve(new Response('{}', {
+                          status: 200,
+                          headers: { 'Content-Type': 'application/json' }
+                        }));
                       }
                       throw error;
                     }
