@@ -13,6 +13,8 @@ import RecommendedProducts from "@/components/RecommendedProducts";
 import AddToCartForm from "@/components/AddToCartForm";
 import CompatibilityInfo from "@/components/CompatibilityInfo";
 import ProductVariantSelector, { useProductVariants } from "@/components/ProductVariantSelector";
+import { ProductStructuredData, OrganizationStructuredData } from "@/components/StructuredData";
+import { ProductSEO } from "@/components/SEOMetaTags";
 
 interface Product {
   id: number;
