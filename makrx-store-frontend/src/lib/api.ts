@@ -64,6 +64,11 @@ export interface Product {
   category?: Category;
   effective_price: number;
   in_stock: boolean;
+  rating?: {
+    average: number;
+    count: number;
+    verified_count?: number;
+  };
 }
 
 export interface Category {
