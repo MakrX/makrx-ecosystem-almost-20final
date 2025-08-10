@@ -66,27 +66,14 @@ export default function RootLayout({
             __html: `
               // Only apply fetch protection in production to avoid interfering with Next.js development
               (function(){
-                const isDev = window.location.hostname === 'localhost' || window.location.hostname.includes('dev') || window.location.port;
+                const isDev = window.location.hostname === 'localhost' ||
+                             window.location.hostname.includes('dev') ||
+                             window.location.port ||
+                             window.location.hostname.includes('fly.dev');
                 if (isDev) {
-                  // In development, only protect against obvious external interference
-                  const originalFetch = window.fetch;
-                  let overrideAttempts = 0;
-
-                  Object.defineProperty(window, 'fetch', {
-                    get: function() {
-                      return originalFetch;
-                    },
-                    set: function(value) {
-                      overrideAttempts++;
-                      // Allow a few overrides for development tools, but warn about excessive attempts
-                      if (overrideAttempts > 3) {
-                        console.warn('Multiple fetch override attempts detected, keeping original');
-                        return originalFetch;
-                      }
-                      return value;
-                    },
-                    configurable: true
-                  });
+                  // In development/staging, minimal protection to avoid Next.js interference
+                  console.log('Development mode detected, minimal fetch protection applied');
+                  return; // Skip fetch protection entirely in development
                 } else {
                   // In production, apply stricter protection
                   try{
