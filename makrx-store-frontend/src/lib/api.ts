@@ -1004,8 +1004,7 @@ class ApiClient {
         slug: product.id || `product-${index + 1}`,
         name: product.name || `Product ${index + 1}`,
         description: product.description || "",
-        short_description:
-          product.shortDescription || product.description || "",
+        short_description: product.shortDescription || product.description || "",
         brand: product.brand || "",
         category_id: categoryId,
         category: {
