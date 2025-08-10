@@ -126,6 +126,35 @@ colors: {
 }
 ```
 
+### Dark/Light Mode System
+Comprehensive theme support with automatic system preference detection:
+
+```typescript
+// Theme usage in components
+import { ThemeToggle, useTheme } from '../lib/ui';
+
+function MyComponent() {
+  const { theme, setTheme, actualTheme } = useTheme();
+
+  return (
+    <div className="bg-white dark:bg-gray-800 transition-colors">
+      <ThemeToggle variant="compact" />
+      <p className="text-gray-900 dark:text-white">
+        Current theme: {actualTheme}
+      </p>
+    </div>
+  );
+}
+```
+
+**Features:**
+- Light, Dark, and System theme options
+- Persistent theme storage in localStorage
+- Automatic OS preference detection
+- Mobile browser status bar integration
+- WCAG 2.1 AA compliant contrast ratios
+- Smooth transitions between themes
+
 ### External App Integration
 The Gateway provides direct navigation to external MakrX ecosystem applications:
 
