@@ -48,7 +48,7 @@ frontend/gateway-frontend/
 │   ├── Docs.tsx         # Documentation portal
 │   ├── Careers.tsx      # Career opportunities
 │   ├── Press.tsx        # Press and media
-│   ├── Contact.tsx      # Contact information
+│   ���── Contact.tsx      # Contact information
 │   ├── Support.tsx      # Support and help
 │   ├── Status.tsx       # System status
 │   ├── PrivacyPolicy.tsx # DPDP Act 2023 compliant
@@ -210,43 +210,49 @@ npm run build
 # Preview build locally
 npm run preview
 
-# Build size analysis
-npm run analyze
+# Build size analysis (optional)
+npm run build:analyze
+
+# Type checking
+npm run typecheck
+
+# Linting
+npm run lint
 ```
 
 ### Required Changes for Production
 
 #### 1. Environment Variables
-Replace all development environment variables with production values:
+Replace all placeholder environment variables with production values:
 
 ```env
 # Update these for production
-VITE_KEYCLOAK_URL=https://auth.makrx.org  # Your production Keycloak
-VITE_API_BASE_URL=https://api.makrx.org   # Your production API
+VITE_MAKRCAVE_URL=https://makrcave.com    # Your actual MakrCave domain
+VITE_STORE_URL=https://makrx.store        # Your actual Store domain
+VITE_3D_STORE_URL=https://3d.makrx.store  # Your actual 3D Store domain
 VITE_GA_TRACKING_ID=G-XXXXXXXXXX         # Your Google Analytics ID
 ```
 
 #### 2. Company Information
-Update company details in `components/Footer.tsx`:
+Update company details using environment variables (see `.env.example`):
 
-```typescript
-// Update with your actual company information
-const companyInfo = {
-  name: "Your Company Name",
-  cin: "YOUR_ACTUAL_CIN_NUMBER",
-  address: "Your actual registered address",
-  phone: "Your actual phone number",
-  email: "Your actual support email"
-};
+```env
+# Company Information (MUST UPDATE FOR PRODUCTION)
+VITE_COMPANY_NAME="Your Company Name"
+VITE_COMPANY_LEGAL_NAME="Your Company Legal Name Pvt Ltd"
+VITE_COMPANY_CIN="U72900XX2024PTC123456"
+VITE_COMPANY_ADDRESS="Your complete registered office address"
+VITE_SUPPORT_EMAIL="support@yourdomain.com"
+VITE_SUPPORT_PHONE="+91 XXXX XXXXXX"
+VITE_PRIVACY_OFFICER_EMAIL="privacy@yourdomain.com"
 ```
 
 #### 3. Legal Policies
 Review and customize legal policy pages:
 - `pages/PrivacyPolicy.tsx` - Update contact information and data handling practices
 - `pages/TermsOfService.tsx` - Update jurisdiction and company details
-- `pages/CookiePolicy.tsx` - Configure cookie preferences
-- `pages/AccessibilityStatement.tsx` - Update contact information
-- `pages/ReturnsPolicy.tsx` - Update return policies for your business
+- Legal pages automatically use environment variables for company information
+- Ensure all placeholder text is customized for your business context
 
 #### 4. Analytics & Monitoring
 Configure production monitoring:
@@ -270,32 +276,75 @@ Deploy to Netlify, Vercel, or AWS S3:
 npm run build
 
 # Deploy dist/ folder to your hosting provider
+# The build outputs to 'dist/' directory
+```
+
+**Netlify:**
+```bash
+npm run build
+netlify deploy --prod --dir=dist
+```
+
+**Vercel:**
+```bash
+npm run build
+vercel --prod
 ```
 
 #### Option 2: Docker Deployment
-```dockerfile
-FROM nginx:alpine
-COPY dist/ /usr/share/nginx/html/
-COPY nginx.conf /etc/nginx/nginx.conf
-EXPOSE 80
-CMD ["nginx", "-g", "daemon off;"]
+Use the included Dockerfile for containerized deployment:
+
+```bash
+# Build Docker image
+npm run build:docker
+# or
+docker build -t makrx-gateway .
+
+# Run container
+npm run docker:run
+# or
+docker run -p 8080:8080 makrx-gateway
+
+# Docker Compose
+npm run docker:compose
 ```
+
+The Dockerfile includes:
+- Multi-stage build for optimization
+- Security hardening (non-root user)
+- Health checks
+- Nginx configuration for SPA routing
 
 #### Option 3: CDN Integration
 Configure your CDN to serve the built assets with proper caching headers.
 
 ### Performance Optimization
 
-Current build metrics:
-- **Main Bundle**: 722KB (107KB gzipped)
-- **CSS Bundle**: 122KB (19KB gzipped)
-- **Lighthouse Score**: 90+ across all metrics
+The Gateway is optimized for performance:
+- **Code Splitting**: Automatic chunk splitting configured in Vite
+- **Tree Shaking**: Dead code elimination enabled
+- **Asset Optimization**: Images and assets optimized during build
+- **Modern Bundle**: Targets modern browsers for optimal size
+
+Build configuration includes:
+```typescript
+// vite.config.ts
+rollupOptions: {
+  output: {
+    manualChunks: {
+      vendor: ['react', 'react-dom'],
+      router: ['react-router-dom'],
+      utils: ['lucide-react', '@tanstack/react-query'],
+    }
+  }
+}
+```
 
 For further optimization:
-1. Enable code splitting for large components
-2. Implement service worker for caching
-3. Configure CDN for static assets
-4. Enable compression at server level
+1. CDN configuration for static assets
+2. Server-level compression (gzip/brotli)
+3. Caching headers configuration
+4. Image optimization and WebP format
 
 ## 🔐 Security
 
@@ -312,10 +361,11 @@ Content-Security-Policy: default-src 'self';
 ```
 
 ### Environment Security
-- Never commit `.env` files to version control
+- Never commit `.env.local` files to version control (already in .gitignore)
 - Use secure environment variable management in production
-- Rotate API keys and secrets regularly
-- Enable HTTPS enforcement
+- All external links use HTTPS
+- No sensitive API keys stored (public gateway only)
+- Enable HTTPS enforcement and security headers
 
 ## 📊 Monitoring & Analytics
 
@@ -326,10 +376,11 @@ Content-Security-Policy: default-src 'self';
 - **Heatmaps**: Hotjar for user interaction insights
 
 ### Health Checks
-The application includes built-in health monitoring:
-- API connectivity checks
-- Authentication service status
-- Feature flag service availability
+The Docker container includes health monitoring:
+- HTTP health check endpoint at `/health`
+- Nginx status monitoring
+- Container readiness and liveness probes
+- Static asset serving verification
 
 ## 🧪 Testing
 
@@ -366,10 +417,10 @@ npm run test:lighthouse
 - Clear `node_modules` and reinstall dependencies
 - Check TypeScript compilation errors
 
-**Authentication Issues**:
-- Verify Keycloak configuration
-- Check redirect URI configuration
-- Ensure CORS settings allow your domain
+**External Link Issues**:
+- Verify external domain URLs are correct
+- Check HTTPS certificate validity for external apps
+- Ensure external apps handle cross-origin requests properly
 
 **Performance Issues**:
 - Analyze bundle size with `npm run analyze`
@@ -386,9 +437,10 @@ npm run test:lighthouse
 ### Planned Features
 - [ ] Progressive Web App (PWA) support
 - [ ] Multi-language support (i18n)
-- [ ] Advanced analytics dashboard
-- [ ] Real-time notifications
+- [ ] Enhanced SEO with dynamic sitemaps
+- [ ] Performance monitoring dashboard
 - [ ] Enhanced accessibility features
+- [ ] Content management integration
 
 ### Contributing
 See [CONTRIBUTING.md](../../docs/CONTRIBUTING.md) for development guidelines and contribution process.
