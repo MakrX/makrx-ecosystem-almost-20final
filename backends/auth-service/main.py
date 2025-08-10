@@ -26,7 +26,9 @@ logger = logging.getLogger(__name__)
 KEYCLOAK_URL = os.getenv("KEYCLOAK_URL", "http://keycloak:8080")
 KEYCLOAK_REALM = os.getenv("KEYCLOAK_REALM", "makrx")
 KEYCLOAK_CLIENT_ID = os.getenv("KEYCLOAK_CLIENT_ID", "auth-service")
-KEYCLOAK_CLIENT_SECRET = os.getenv("KEYCLOAK_CLIENT_SECRET", "makrx-auth-service-secret-2024")
+KEYCLOAK_CLIENT_SECRET = os.getenv("KEYCLOAK_CLIENT_SECRET")
+if not KEYCLOAK_CLIENT_SECRET:
+    raise ValueError("KEYCLOAK_CLIENT_SECRET environment variable is required")
 
 # Services URLs
 MAKRCAVE_API_URL = os.getenv("MAKRCAVE_API_URL", "http://makrcave-backend:8000")
@@ -101,30 +103,100 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# Global JWKS cache
+jwks_cache = {}
+jwks_cache_time = None
+JWKS_CACHE_DURATION = 3600  # 1 hour
+
+async def get_jwks_key(token: str) -> str:
+    """Get the appropriate public key from Keycloak JWKS endpoint"""
+    global jwks_cache, jwks_cache_time
+
+    # Check cache validity
+    if jwks_cache_time and (datetime.utcnow() - jwks_cache_time).seconds < JWKS_CACHE_DURATION:
+        jwks = jwks_cache
+    else:
+        # Fetch JWKS from Keycloak
+        keycloak_config_url = f"{KEYCLOAK_URL}/realms/{KEYCLOAK_REALM}/.well-known/openid_configuration"
+
+        async with http_client.get(keycloak_config_url) as config_response:
+            if config_response.status_code != 200:
+                raise HTTPException(status_code=401, detail="Cannot fetch Keycloak configuration")
+
+            config = config_response.json()
+            jwks_uri = config["jwks_uri"]
+
+        async with http_client.get(jwks_uri) as jwks_response:
+            if jwks_response.status_code != 200:
+                raise HTTPException(status_code=401, detail="Cannot fetch JWKS")
+
+            jwks = jwks_response.json()
+            jwks_cache = jwks
+            jwks_cache_time = datetime.utcnow()
+
+    # Decode token header to get key ID
+    unverified_header = jwt.get_unverified_header(token)
+    kid = unverified_header.get("kid")
+
+    if not kid:
+        raise HTTPException(status_code=401, detail="Token missing key ID")
+
+    # Find matching key
+    for key in jwks["keys"]:
+        if key["kid"] == kid:
+            # Convert JWK to PEM format
+            from cryptography.hazmat.primitives import serialization
+            from cryptography.hazmat.primitives.asymmetric import rsa
+            import base64
+
+            # Extract RSA components
+            n = base64.urlsafe_b64decode(key["n"] + "====")
+            e = base64.urlsafe_b64decode(key["e"] + "====")
+
+            # Create RSA public key
+            public_numbers = rsa.RSAPublicNumbers(
+                int.from_bytes(e, 'big'),
+                int.from_bytes(n, 'big')
+            )
+            public_key = public_numbers.public_key()
+
+            # Convert to PEM
+            pem = public_key.public_bytes(
+                encoding=serialization.Encoding.PEM,
+                format=serialization.PublicFormat.SubjectPublicKeyInfo
+            )
+            return pem.decode('utf-8')
+
+    raise HTTPException(status_code=401, detail="Unable to find appropriate key")
+
 # Authentication Dependencies
 async def verify_token(credentials: HTTPAuthorizationCredentials = Depends(security)) -> Dict[str, Any]:
-    """Verify JWT token with Keycloak"""
+    """Verify JWT token with Keycloak using proper signature validation"""
     try:
         token = credentials.credentials
-        
-        # Get Keycloak public key and verify token
-        keycloak_config_url = f"{KEYCLOAK_URL}/realms/{KEYCLOAK_REALM}/.well-known/openid_configuration"
-        
-        async with http_client.get(keycloak_config_url) as response:
-            if response.status_code != 200:
-                raise HTTPException(status_code=401, detail="Cannot verify token")
-            
-            config = response.json()
-            jwks_uri = config["jwks_uri"]
-        
-        # For now, decode without verification in development
-        # In production, implement proper JWT verification with JWKS
-        try:
-            payload = jwt.decode(token, options={"verify_signature": False})
-            return payload
-        except jwt.InvalidTokenError:
-            raise HTTPException(status_code=401, detail="Invalid token")
-            
+
+        # Get public key for verification
+        public_key = await get_jwks_key(token)
+
+        # Verify token with proper signature validation
+        payload = jwt.decode(
+            token,
+            key=public_key,
+            algorithms=["RS256"],
+            audience=["account", KEYCLOAK_CLIENT_ID],
+            issuer=f"{KEYCLOAK_URL}/realms/{KEYCLOAK_REALM}"
+        )
+
+        return payload
+
+    except jwt.ExpiredSignatureError:
+        raise HTTPException(status_code=401, detail="Token has expired")
+    except jwt.InvalidAudienceError:
+        raise HTTPException(status_code=401, detail="Invalid token audience")
+    except jwt.InvalidIssuerError:
+        raise HTTPException(status_code=401, detail="Invalid token issuer")
+    except jwt.InvalidTokenError as e:
+        raise HTTPException(status_code=401, detail=f"Invalid token: {str(e)}")
     except Exception as e:
         logger.error(f"Token verification error: {e}")
         raise HTTPException(status_code=401, detail="Token verification failed")
@@ -246,7 +318,9 @@ async def generate_portal_token(user_id: str, portal: str) -> str:
     }
     
     # Use a service secret for signing
-    secret = os.getenv("JWT_SECRET", "makrx-service-secret-2024")
+    secret = os.getenv("JWT_SECRET")
+    if not secret:
+        raise ValueError("JWT_SECRET environment variable is required")
     return jwt.encode(payload, secret, algorithm="HS256")
 
 async def get_user_from_service(service: str, user_id: str) -> Optional[Dict[str, Any]]:
