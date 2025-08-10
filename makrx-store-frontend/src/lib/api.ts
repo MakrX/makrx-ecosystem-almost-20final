@@ -8,6 +8,7 @@ import {
   products as mockProducts,
   categories as mockCategories,
 } from "@/data/products";
+import { adminDataService } from "./adminData";
 
 // API Configuration
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8003";
