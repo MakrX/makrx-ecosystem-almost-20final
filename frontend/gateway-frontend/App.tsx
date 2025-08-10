@@ -18,6 +18,11 @@ import MakrCave from "./pages/MakrCave";
 import Store from "./pages/Store";
 import Learn from "./pages/Learn";
 import Contact from "./pages/Contact";
+import Ecosystem from "./pages/Ecosystem";
+import Events from "./pages/Events";
+import Docs from "./pages/Docs";
+import Support from "./pages/Support";
+import Status from "./pages/Status";
 import Profile from "./pages/Profile";
 import ProfilePage from "./pages/ProfilePage";
 import FeatureFlagsAdmin from "./pages/admin/FeatureFlags";
@@ -71,22 +76,34 @@ const App = () => {
                     <Routes>
                       <Route path="/" element={<HomePage />} />
                       <Route path="/about" element={<About />} />
-                      <Route path="/login" element={<Login />} />
-                      <Route path="/register" element={<Register />} />
-                      <Route path="/auth/callback" element={<AuthCallback />} />
+                      <Route path="/ecosystem" element={<Ecosystem />} />
+                      <Route path="/events" element={<Events />} />
+                      <Route path="/docs" element={<Docs />} />
+                      <Route path="/support" element={<Support />} />
+                      <Route path="/status" element={<Status />} />
+                      <Route path="/contact" element={<Contact />} />
+
+                      {/* App Pages */}
                       <Route path="/makrcave" element={<MakrCave />} />
                       <Route path="/store" element={<Store />} />
                       <Route path="/learn" element={<Learn />} />
+
+                      {/* Auth Pages */}
+                      <Route path="/login" element={<Login />} />
+                      <Route path="/register" element={<Register />} />
+                      <Route path="/auth/callback" element={<AuthCallback />} />
+
+                      {/* User Pages */}
                       <Route path="/profile" element={<ProfilePage />} />
+
+                      {/* Admin Pages */}
                       <Route path="/admin/feature-flags" element={<FeatureFlagsAdmin />} />
-                      
-                      {/* Additional important pages */}
-                      <Route path="/contact" element={<Contact />} />
-                      <Route path="/help" element={<div className="min-h-screen flex items-center justify-center"><div className="text-center"><h1 className="text-3xl font-bold mb-4">Help Center</h1><p>Find answers to common questions</p></div></div>} />
-                      <Route path="/privacy" element={<div className="min-h-screen flex items-center justify-center"><div className="text-center"><h1 className="text-3xl font-bold mb-4">Privacy Policy</h1><p>Your privacy is important to us</p></div></div>} />
-                      <Route path="/terms" element={<div className="min-h-screen flex items-center justify-center"><div className="text-center"><h1 className="text-3xl font-bold mb-4">Terms of Service</h1><p>Terms and conditions for using MakrX</p></div></div>} />
-                      <Route path="/safety" element={<div className="min-h-screen flex items-center justify-center"><div className="text-center"><h1 className="text-3xl font-bold mb-4">Safety Guidelines</h1><p>Safety first in all makerspaces</p></div></div>} />
-                      
+
+                      {/* Legal & Policy Pages */}
+                      <Route path="/privacy" element={<div className="pt-16 min-h-screen flex items-center justify-center"><div className="text-center"><h1 className="text-3xl font-bold mb-4">Privacy Policy</h1><p>Your privacy is important to us</p></div></div>} />
+                      <Route path="/terms" element={<div className="pt-16 min-h-screen flex items-center justify-center"><div className="text-center"><h1 className="text-3xl font-bold mb-4">Terms of Service</h1><p>Terms and conditions for using MakrX</p></div></div>} />
+                      <Route path="/safety" element={<div className="pt-16 min-h-screen flex items-center justify-center"><div className="text-center"><h1 className="text-3xl font-bold mb-4">Safety Guidelines</h1><p>Safety first in all makerspaces</p></div></div>} />
+
                       {/* Catch-all route for 404 - MUST be last */}
                       <Route path="*" element={<NotFound />} />
                     </Routes>
