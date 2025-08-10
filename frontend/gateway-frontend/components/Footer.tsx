@@ -264,7 +264,7 @@ export default function Footer() {
         </div>
 
         {/* Trust Indicators */}
-        <div className="border-t border-gray-800 pt-8 mt-8">
+        <div className="border-t border-gray-800 dark:border-gray-700 pt-8 mt-8">
           <div className="flex flex-col sm:flex-row items-center justify-center gap-8 text-xs text-gray-500">
             <div className="flex items-center gap-2">
               <div className="w-3 h-3 bg-green-500 rounded-full"></div>
