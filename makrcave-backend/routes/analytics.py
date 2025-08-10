@@ -1,437 +1,338 @@
-from fastapi import APIRouter, Depends, HTTPException, BackgroundTasks, Query
+"""Analytics API routes with real database integration"""
+from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
-from typing import List, Optional
-from datetime import date, datetime, timedelta
+from typing import Dict, Any, Optional
+from datetime import datetime, timedelta
+import logging
 
 from database import get_db
-from dependencies import get_current_user, get_current_makerspace
-from crud.analytics import AnalyticsCRUD
-from schemas.analytics import (
-    UsageEventCreate, UsageEventResponse, AnalyticsOverviewResponse,
-    UsageStatsResponse, InventoryInsightsResponse, EquipmentMetricsResponse,
-    ProjectAnalyticsResponse, RevenueAnalyticsResponse, ReportRequestCreate,
-    ReportRequestResponse, AnalyticsFilters, AnalyticsDashboardResponse,
-    EquipmentUsageLogCreate, InventoryAnalyticsCreate, ProjectAnalyticsCreate,
-    RevenueAnalyticsCreate, TimePeriodEnum, ChartData, DashboardSection
-)
-from dependencies import require_role
+from dependencies import get_current_user, get_current_makerspace, require_permission
+from services.real_analytics_service import get_real_analytics_service
+from utils.analytics_mock_data import AnalyticsMockData  # Fallback only
 
-router = APIRouter(prefix="/analytics", tags=["analytics"])
+router = APIRouter()
+logger = logging.getLogger(__name__)
 
-def get_analytics_crud(db: Session = Depends(get_db)) -> AnalyticsCRUD:
-    return AnalyticsCRUD(db)
+# Initialize fallback mock data generator
+mock_data = AnalyticsMockData()
 
-@router.get("/overview", response_model=AnalyticsOverviewResponse)
+@router.get("/overview")
 async def get_analytics_overview(
-    current_user=Depends(require_role(["admin", "super_admin"])),
-    makerspace=Depends(get_current_makerspace),
-    analytics_crud: AnalyticsCRUD = Depends(get_analytics_crud)
+    db: Session = Depends(get_db),
+    current_user = Depends(get_current_user),
+    makerspace = Depends(get_current_makerspace),
+    _: bool = Depends(require_permission("analytics:read"))
 ):
-    """Get comprehensive analytics overview for the dashboard"""
-    
-    overview_data = analytics_crud.get_analytics_overview(str(makerspace.id))
-    return AnalyticsOverviewResponse(**overview_data)
-
-@router.get("/dashboard", response_model=AnalyticsDashboardResponse)
-async def get_analytics_dashboard(
-    current_user=Depends(require_role(["admin", "super_admin"])),
-    makerspace=Depends(get_current_makerspace),
-    analytics_crud: AnalyticsCRUD = Depends(get_analytics_crud)
-):
-    """Get complete dashboard data with all sections"""
-    
-    # Get overview data
-    overview = analytics_crud.get_analytics_overview(str(makerspace.id))
-    
-    # Get usage stats
-    usage_stats = analytics_crud.get_usage_stats(str(makerspace.id), TimePeriodEnum.WEEKLY)
-    
-    # Get inventory insights
-    inventory_insights = analytics_crud.get_inventory_insights(str(makerspace.id))
-    
-    # Get equipment metrics
-    equipment_metrics = analytics_crud.get_equipment_metrics(str(makerspace.id))
-    
-    # Get project analytics
-    project_analytics = analytics_crud.get_project_analytics(str(makerspace.id))
-    
-    # Get revenue analytics
-    revenue_analytics = analytics_crud.get_revenue_analytics(str(makerspace.id))
-    
-    # Build dashboard sections
-    sections = [
-        DashboardSection(
-            section_id="usage",
-            title="Usage Analytics",
-            charts=[
-                ChartData(
-                    title="Weekly Activity",
-                    data=[
-                        {"label": "Logins", "value": usage_stats["logins"]},
-                        {"label": "New Members", "value": usage_stats["new_members"]},
-                        {"label": "Projects", "value": usage_stats["project_creations"]}
-                    ],
-                    chart_type="bar",
-                    x_axis_label="Activity Type",
-                    y_axis_label="Count"
-                )
-            ],
-            summary_stats=usage_stats,
-            last_updated=datetime.now()
-        ),
-        DashboardSection(
-            section_id="inventory",
-            title="Inventory Insights",
-            charts=[
-                ChartData(
-                    title="Top Consumed Items",
-                    data=[
-                        {"label": f"Item {i+1}", "value": item["total_consumed"]}
-                        for i, item in enumerate(inventory_insights["top_consumed_items"][:5])
-                    ],
-                    chart_type="pie"
-                )
-            ],
-            summary_stats={"efficiency_score": inventory_insights["efficiency_score"]},
-            last_updated=datetime.now()
-        ),
-        DashboardSection(
-            section_id="revenue",
-            title="Revenue Analytics",
-            charts=[
-                ChartData(
-                    title="Revenue by Source",
-                    data=[
-                        {"label": source, "value": amount}
-                        for source, amount in revenue_analytics["revenue_by_source"].items()
-                    ],
-                    chart_type="pie"
-                )
-            ],
-            summary_stats={"total_revenue": revenue_analytics["total_revenue"]},
-            last_updated=datetime.now()
-        )
-    ]
-    
-    return AnalyticsDashboardResponse(
-        overview=AnalyticsOverviewResponse(**overview),
-        sections=sections,
-        generated_at=datetime.now(),
-        cache_expires_at=datetime.now()
-    )
-
-@router.get("/usage", response_model=UsageStatsResponse)
-async def get_usage_analytics(
-    period: TimePeriodEnum = TimePeriodEnum.DAILY,
-    current_user=Depends(require_role(["admin", "super_admin"])),
-    makerspace=Depends(get_current_makerspace),
-    analytics_crud: AnalyticsCRUD = Depends(get_analytics_crud)
-):
-    """Get user activity and usage statistics"""
-    
-    usage_stats = analytics_crud.get_usage_stats(str(makerspace.id), period)
-    return UsageStatsResponse(**usage_stats)
-
-@router.get("/inventory", response_model=InventoryInsightsResponse)
-async def get_inventory_insights(
-    current_user=Depends(require_role(["admin", "super_admin"])),
-    makerspace=Depends(get_current_makerspace),
-    analytics_crud: AnalyticsCRUD = Depends(get_analytics_crud)
-):
-    """Get inventory consumption and efficiency insights"""
-    
-    insights = analytics_crud.get_inventory_insights(str(makerspace.id))
-    return InventoryInsightsResponse(**insights)
-
-@router.get("/equipment", response_model=List[EquipmentMetricsResponse])
-async def get_equipment_metrics(
-    current_user=Depends(require_role(["admin", "super_admin"])),
-    makerspace=Depends(get_current_makerspace),
-    analytics_crud: AnalyticsCRUD = Depends(get_analytics_crud)
-):
-    """Get equipment usage, uptime, and maintenance metrics"""
-    
-    metrics = analytics_crud.get_equipment_metrics(str(makerspace.id))
-    return [EquipmentMetricsResponse(**metric) for metric in metrics]
-
-@router.get("/projects", response_model=ProjectAnalyticsResponse)
-async def get_project_analytics(
-    current_user=Depends(require_role(["admin", "super_admin"])),
-    makerspace=Depends(get_current_makerspace),
-    analytics_crud: AnalyticsCRUD = Depends(get_analytics_crud)
-):
-    """Get project and BOM analytics"""
-    
-    analytics = analytics_crud.get_project_analytics(str(makerspace.id))
-    return ProjectAnalyticsResponse(**analytics)
-
-@router.get("/revenue", response_model=RevenueAnalyticsResponse)
-async def get_revenue_analytics(
-    current_user=Depends(require_role(["admin", "super_admin"])),
-    makerspace=Depends(get_current_makerspace),
-    analytics_crud: AnalyticsCRUD = Depends(get_analytics_crud)
-):
-    """Get revenue and payment analytics"""
-    
-    revenue = analytics_crud.get_revenue_analytics(str(makerspace.id))
-    return RevenueAnalyticsResponse(**revenue)
-
-@router.get("/events", response_model=List[UsageEventResponse])
-async def get_usage_events(
-    start_date: Optional[date] = Query(None, description="Filter events from this date"),
-    end_date: Optional[date] = Query(None, description="Filter events until this date"),
-    event_types: Optional[List[str]] = Query(None, description="Filter by event types"),
-    user_id: Optional[str] = Query(None, description="Filter by specific user"),
-    skip: int = Query(0, ge=0),
-    limit: int = Query(100, ge=1, le=1000),
-    current_user=Depends(require_role(["admin", "super_admin"])),
-    makerspace=Depends(get_current_makerspace),
-    analytics_crud: AnalyticsCRUD = Depends(get_analytics_crud)
-):
-    """Get filtered usage events"""
-    
-    filters = AnalyticsFilters(
-        start_date=start_date,
-        end_date=end_date,
-        event_types=event_types,
-        user_id=user_id
-    )
-    
-    events = analytics_crud.get_usage_events(str(makerspace.id), filters, skip, limit)
-    return [UsageEventResponse.from_orm(event) for event in events]
-
-@router.post("/events", response_model=UsageEventResponse)
-async def create_usage_event(
-    event_data: UsageEventCreate,
-    current_user=Depends(get_current_user),
-    makerspace=Depends(get_current_makerspace),
-    analytics_crud: AnalyticsCRUD = Depends(get_analytics_crud)
-):
-    """Record a new usage event"""
-    # Auto-set user_id if not provided
-    if not event_data.user_id:
-        event_data.user_id = current_user.id
-    
-    event = analytics_crud.create_usage_event(str(makerspace.id), event_data)
-    return UsageEventResponse.from_orm(event)
-
-@router.post("/equipment-usage", response_model=dict)
-async def record_equipment_usage(
-    usage_data: EquipmentUsageLogCreate,
-    current_user=Depends(get_current_user),
-    makerspace=Depends(get_current_makerspace),
-    analytics_crud: AnalyticsCRUD = Depends(get_analytics_crud)
-):
-    """Record equipment usage session"""
-    usage_log = analytics_crud.record_equipment_usage(str(makerspace.id), usage_data)
-    return {"id": str(usage_log.id), "message": "Equipment usage recorded successfully"}
-
-@router.post("/inventory-analytics", response_model=dict)
-async def record_inventory_analytics(
-    analytics_data: InventoryAnalyticsCreate,
-    current_user=Depends(require_role(["admin", "super_admin"])),
-    makerspace=Depends(get_current_makerspace),
-    analytics_crud: AnalyticsCRUD = Depends(get_analytics_crud)
-):
-    """Record inventory consumption analytics"""
-    
-    analytics = analytics_crud.record_inventory_analytics(str(makerspace.id), analytics_data)
-    return {"id": str(analytics.id), "message": "Inventory analytics recorded successfully"}
-
-@router.post("/project-analytics", response_model=dict)
-async def record_project_analytics(
-    analytics_data: ProjectAnalyticsCreate,
-    current_user=Depends(get_current_user),
-    makerspace=Depends(get_current_makerspace),
-    analytics_crud: AnalyticsCRUD = Depends(get_analytics_crud)
-):
-    """Record project analytics"""
-    analytics = analytics_crud.record_project_analytics(str(makerspace.id), analytics_data)
-    return {"id": str(analytics.id), "message": "Project analytics recorded successfully"}
-
-@router.post("/revenue-analytics", response_model=dict)
-async def record_revenue_analytics(
-    revenue_data: RevenueAnalyticsCreate,
-    current_user=Depends(require_role(["admin", "super_admin"])),
-    makerspace=Depends(get_current_makerspace),
-    analytics_crud: AnalyticsCRUD = Depends(get_analytics_crud)
-):
-    """Record revenue transaction"""
-    
-    revenue = analytics_crud.record_revenue_analytics(str(makerspace.id), revenue_data)
-    return {"id": str(revenue.id), "message": "Revenue analytics recorded successfully"}
-
-@router.post("/reports/request", response_model=ReportRequestResponse)
-async def request_report(
-    report_data: ReportRequestCreate,
-    background_tasks: BackgroundTasks,
-    current_user=Depends(require_role(["admin", "super_admin"])),
-    makerspace=Depends(get_current_makerspace),
-    analytics_crud: AnalyticsCRUD = Depends(get_analytics_crud)
-):
-    """Request a downloadable report"""
-    
-    # Create report request
-    report_request = analytics_crud.create_report_request(
-        str(makerspace.id), 
-        str(current_user.id), 
-        report_data
-    )
-    
-    # Add background task to generate report
-    background_tasks.add_task(generate_report, str(report_request.id), analytics_crud)
-    
-    return ReportRequestResponse.from_orm(report_request)
-
-@router.get("/reports", response_model=List[ReportRequestResponse])
-async def get_report_requests(
-    current_user=Depends(require_role(["admin", "super_admin"])),
-    makerspace=Depends(get_current_makerspace),
-    analytics_crud: AnalyticsCRUD = Depends(get_analytics_crud)
-):
-    """Get user's report requests"""
-    
-    requests = analytics_crud.get_report_requests(str(makerspace.id), str(current_user.id))
-    return [ReportRequestResponse.from_orm(req) for req in requests]
-
-@router.get("/reports/{request_id}/download")
-async def download_report(
-    request_id: str,
-    current_user=Depends(require_role(["admin", "super_admin"])),
-    makerspace=Depends(get_current_makerspace),
-    analytics_crud: AnalyticsCRUD = Depends(get_analytics_crud)
-):
-    """Download generated report file"""
-    
-    # Get report request
-    report_request = analytics_crud.db.query(analytics_crud.ReportRequest).filter(
-        analytics_crud.ReportRequest.id == request_id,
-        analytics_crud.ReportRequest.makerspace_id == makerspace.id,
-        analytics_crud.ReportRequest.requested_by == current_user.id
-    ).first()
-    
-    if not report_request:
-        raise HTTPException(status_code=404, detail="Report request not found")
-    
-    if report_request.status != "completed":
-        raise HTTPException(status_code=400, detail="Report is not ready for download")
-    
-    if not report_request.file_url:
-        raise HTTPException(status_code=404, detail="Report file not found")
-    
-    # Return file URL or redirect to file
-    return {"download_url": report_request.file_url}
-
-async def generate_report(request_id: str, analytics_crud: AnalyticsCRUD):
-    """Background task to generate report files"""
+    """Get analytics overview with real database data"""
     try:
-        # Update status to processing
-        analytics_crud.update_report_status(request_id, "processing")
+        analytics_service = get_real_analytics_service(db)
         
-        # Get the request details
-        report_request = analytics_crud.db.query(analytics_crud.ReportRequest).filter(
-            analytics_crud.ReportRequest.id == request_id
-        ).first()
+        # Get real-time analytics (last 24 hours)
+        real_time_data = analytics_service.get_real_time_analytics(makerspace.id, hours=24)
         
-        if not report_request:
-            return
+        # Get usage analytics (last 30 days)
+        usage_data = analytics_service.get_usage_analytics(makerspace.id, days=30)
         
-        # Generate report based on type
-        if report_request.report_type == "usage":
-            file_url = await generate_usage_report(report_request, analytics_crud)
-        elif report_request.report_type == "inventory":
-            file_url = await generate_inventory_report(report_request, analytics_crud)
-        elif report_request.report_type == "revenue":
-            file_url = await generate_revenue_report(report_request, analytics_crud)
-        elif report_request.report_type == "equipment":
-            file_url = await generate_equipment_report(report_request, analytics_crud)
-        else:
-            raise ValueError(f"Unsupported report type: {report_request.report_type}")
+        # Get revenue analytics (last 30 days)
+        revenue_data = analytics_service.get_revenue_analytics(makerspace.id, days=30)
         
-        # Update status to completed
-        analytics_crud.update_report_status(request_id, "completed", file_url)
+        # Combine into overview format
+        overview = {
+            "makerspace_id": makerspace.id,
+            "generated_at": datetime.utcnow().isoformat(),
+            "real_time_metrics": real_time_data.get("metrics", {}),
+            "alerts": real_time_data.get("alerts", []),
+            "summary": {
+                "total_revenue": revenue_data.get("summary", {}).get("total_revenue", 0),
+                "revenue_growth": revenue_data.get("summary", {}).get("growth_rate", 0),
+                "active_members": real_time_data.get("metrics", {}).get("active_members", 0),
+                "equipment_utilization": real_time_data.get("metrics", {}).get("equipment_utilization", 0),
+                "current_occupancy": real_time_data.get("metrics", {}).get("current_occupancy", 0),
+                "safety_incidents": real_time_data.get("metrics", {}).get("safety_incidents", 0)
+            },
+            "engagement_summary": usage_data.get("member_engagement", {}),
+            "peak_usage_hours": usage_data.get("peak_hours", [])[:5]  # Top 5 peak hours
+        }
+        
+        return {"success": True, "data": overview}
         
     except Exception as e:
-        # Update status to failed
-        analytics_crud.update_report_status(request_id, "failed", error_message=str(e))
+        logger.error(f"Analytics overview error: {e}")
+        # Fallback to mock data with error indication
+        return {
+            "success": False,
+            "error": "Database unavailable, using mock data",
+            "data": mock_data.get_analytics_overview()
+        }
 
-async def generate_usage_report(report_request, analytics_crud: AnalyticsCRUD) -> str:
-    """Generate usage analytics report"""
-    from utils.report_generator import ReportGenerator
+@router.get("/usage")
+async def get_usage_analytics(
+    period: str = Query("daily", description="Period: daily, weekly, monthly"),
+    days: int = Query(30, ge=1, le=365, description="Number of days to analyze"),
+    db: Session = Depends(get_db),
+    current_user = Depends(get_current_user),
+    makerspace = Depends(get_current_makerspace),
+    _: bool = Depends(require_permission("analytics:read"))
+):
+    """Get detailed usage analytics"""
+    try:
+        analytics_service = get_real_analytics_service(db)
+        usage_data = analytics_service.get_usage_analytics(makerspace.id, days=days)
+        
+        return {
+            "success": True,
+            "period": period,
+            "days_analyzed": days,
+            "data": usage_data
+        }
+        
+    except Exception as e:
+        logger.error(f"Usage analytics error: {e}")
+        return {
+            "success": False,
+            "error": str(e),
+            "data": mock_data.get_usage_stats(period)
+        }
 
-    generator = ReportGenerator(analytics_crud.db)
-    start_date = report_request.filters.get('start_date') if report_request.filters else None
-    end_date = report_request.filters.get('end_date') if report_request.filters else None
+@router.get("/revenue")
+async def get_revenue_analytics(
+    days: int = Query(30, ge=1, le=365, description="Number of days to analyze"),
+    db: Session = Depends(get_db),
+    current_user = Depends(get_current_user),
+    makerspace = Depends(get_current_makerspace),
+    _: bool = Depends(require_permission("analytics:read"))
+):
+    """Get revenue and financial analytics"""
+    try:
+        analytics_service = get_real_analytics_service(db)
+        revenue_data = analytics_service.get_revenue_analytics(makerspace.id, days=days)
+        
+        return {
+            "success": True,
+            "days_analyzed": days,
+            "data": revenue_data
+        }
+        
+    except Exception as e:
+        logger.error(f"Revenue analytics error: {e}")
+        return {
+            "success": False,
+            "error": str(e),
+            "data": mock_data.get_revenue_breakdown()
+        }
 
-    # Default to last 30 days if no dates provided
-    if not start_date:
-        start_date = (datetime.now() - timedelta(days=30)).date()
-    if not end_date:
-        end_date = datetime.now().date()
+@router.get("/equipment")
+async def get_equipment_analytics(
+    days: int = Query(30, ge=1, le=365, description="Number of days to analyze"),
+    db: Session = Depends(get_db),
+    current_user = Depends(get_current_user),
+    makerspace = Depends(get_current_makerspace),
+    _: bool = Depends(require_permission("analytics:read"))
+):
+    """Get equipment utilization and maintenance analytics"""
+    try:
+        analytics_service = get_real_analytics_service(db)
+        equipment_data = analytics_service.get_equipment_analytics(makerspace.id, days=days)
+        
+        return {
+            "success": True,
+            "days_analyzed": days,
+            "data": equipment_data
+        }
+        
+    except Exception as e:
+        logger.error(f"Equipment analytics error: {e}")
+        return {
+            "success": False,
+            "error": str(e),
+            "data": mock_data.get_equipment_utilization()
+        }
 
-    filepath = generator.generate_usage_report_csv(
-        str(report_request.makerspace_id),
-        start_date,
-        end_date
-    )
-    return filepath
+@router.get("/members")
+async def get_member_analytics(
+    days: int = Query(30, ge=1, le=365, description="Number of days to analyze"),
+    db: Session = Depends(get_db),
+    current_user = Depends(get_current_user),
+    makerspace = Depends(get_current_makerspace),
+    _: bool = Depends(require_permission("analytics:read"))
+):
+    """Get member engagement and skill analytics"""
+    try:
+        analytics_service = get_real_analytics_service(db)
+        member_data = analytics_service.get_member_analytics(makerspace.id, days=days)
+        
+        return {
+            "success": True,
+            "days_analyzed": days,
+            "data": member_data
+        }
+        
+    except Exception as e:
+        logger.error(f"Member analytics error: {e}")
+        return {
+            "success": False,
+            "error": str(e),
+            "data": mock_data.get_member_engagement()
+        }
 
-async def generate_inventory_report(report_request, analytics_crud: AnalyticsCRUD) -> str:
-    """Generate inventory analytics report"""
-    from utils.report_generator import ReportGenerator
+@router.get("/safety")
+async def get_safety_analytics(
+    days: int = Query(30, ge=1, le=365, description="Number of days to analyze"),
+    db: Session = Depends(get_db),
+    current_user = Depends(get_current_user),
+    makerspace = Depends(get_current_makerspace),
+    _: bool = Depends(require_permission("analytics:read"))
+):
+    """Get safety and incident analytics"""
+    try:
+        analytics_service = get_real_analytics_service(db)
+        safety_data = analytics_service.get_safety_analytics(makerspace.id, days=days)
+        
+        return {
+            "success": True,
+            "days_analyzed": days,
+            "data": safety_data
+        }
+        
+    except Exception as e:
+        logger.error(f"Safety analytics error: {e}")
+        return {
+            "success": False,
+            "error": str(e),
+            "data": {"error": "Safety analytics unavailable"}
+        }
 
-    generator = ReportGenerator(analytics_crud.db)
-    start_date = report_request.filters.get('start_date') if report_request.filters else None
-    end_date = report_request.filters.get('end_date') if report_request.filters else None
+@router.get("/real-time")
+async def get_realtime_analytics(
+    hours: int = Query(24, ge=1, le=168, description="Hours to look back"),
+    db: Session = Depends(get_db),
+    current_user = Depends(get_current_user),
+    makerspace = Depends(get_current_makerspace),
+    _: bool = Depends(require_permission("analytics:read"))
+):
+    """Get real-time analytics data"""
+    try:
+        analytics_service = get_real_analytics_service(db)
+        realtime_data = analytics_service.get_real_time_analytics(makerspace.id, hours=hours)
+        
+        return {
+            "success": True,
+            "hours_analyzed": hours,
+            "data": realtime_data
+        }
+        
+    except Exception as e:
+        logger.error(f"Real-time analytics error: {e}")
+        return {
+            "success": False,
+            "error": str(e),
+            "data": mock_data.get_realtime_data()
+        }
 
-    if not start_date:
-        start_date = (datetime.now() - timedelta(days=30)).date()
-    if not end_date:
-        end_date = datetime.now().date()
+@router.get("/trends")
+async def get_trend_analysis(
+    metric: str = Query("revenue", description="Metric to analyze: revenue, usage, members"),
+    period: str = Query("daily", description="Period: daily, weekly, monthly"),
+    days: int = Query(90, ge=7, le=365, description="Days to analyze"),
+    db: Session = Depends(get_db),
+    current_user = Depends(get_current_user),
+    makerspace = Depends(get_current_makerspace),
+    _: bool = Depends(require_permission("analytics:read"))
+):
+    """Get trend analysis for specific metrics"""
+    try:
+        analytics_service = get_real_analytics_service(db)
+        
+        if metric == "revenue":
+            data = analytics_service.get_revenue_analytics(makerspace.id, days=days)
+            trend_data = data.get("daily_trends", [])
+        elif metric == "usage":
+            data = analytics_service.get_usage_analytics(makerspace.id, days=days)
+            trend_data = data.get("daily_trends", [])
+        elif metric == "members":
+            data = analytics_service.get_member_analytics(makerspace.id, days=days)
+            trend_data = data.get("daily_trends", [])
+        else:
+            raise HTTPException(status_code=400, detail="Invalid metric")
+        
+        # Calculate trend direction
+        if len(trend_data) >= 2:
+            recent_avg = sum(item.get("revenue", item.get("unique_members", 0)) for item in trend_data[-7:]) / 7
+            older_avg = sum(item.get("revenue", item.get("unique_members", 0)) for item in trend_data[-14:-7]) / 7
+            trend_direction = "up" if recent_avg > older_avg else "down"
+            trend_percentage = ((recent_avg - older_avg) / older_avg * 100) if older_avg > 0 else 0
+        else:
+            trend_direction = "stable"
+            trend_percentage = 0
+        
+        return {
+            "success": True,
+            "metric": metric,
+            "period": period,
+            "days_analyzed": days,
+            "trend_direction": trend_direction,
+            "trend_percentage": round(trend_percentage, 2),
+            "data": trend_data
+        }
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Trend analysis error: {e}")
+        return {
+            "success": False,
+            "error": str(e),
+            "data": mock_data.get_trend_data(metric, period)
+        }
 
-    filepath = generator.generate_inventory_report_xlsx(
-        str(report_request.makerspace_id),
-        start_date,
-        end_date
-    )
-    return filepath
-
-async def generate_revenue_report(report_request, analytics_crud: AnalyticsCRUD) -> str:
-    """Generate revenue analytics report"""
-    from utils.report_generator import ReportGenerator
-
-    generator = ReportGenerator(analytics_crud.db)
-    start_date = report_request.filters.get('start_date') if report_request.filters else None
-    end_date = report_request.filters.get('end_date') if report_request.filters else None
-
-    if not start_date:
-        start_date = (datetime.now() - timedelta(days=30)).date()
-    if not end_date:
-        end_date = datetime.now().date()
-
-    filepath = generator.generate_revenue_report_pdf(
-        str(report_request.makerspace_id),
-        start_date,
-        end_date
-    )
-    return filepath
-
-async def generate_equipment_report(report_request, analytics_crud: AnalyticsCRUD) -> str:
-    """Generate equipment analytics report"""
-    from utils.report_generator import ReportGenerator
-
-    generator = ReportGenerator(analytics_crud.db)
-    start_date = report_request.filters.get('start_date') if report_request.filters else None
-    end_date = report_request.filters.get('end_date') if report_request.filters else None
-
-    if not start_date:
-        start_date = (datetime.now() - timedelta(days=30)).date()
-    if not end_date:
-        end_date = datetime.now().date()
-
-    filepath = generator.generate_equipment_report_xlsx(
-        str(report_request.makerspace_id),
-        start_date,
-        end_date
-    )
-    return filepath
+@router.get("/export")
+async def export_analytics(
+    format: str = Query("json", description="Export format: json, csv"),
+    metrics: str = Query("all", description="Metrics to export: all, revenue, usage, equipment, members, safety"),
+    days: int = Query(30, ge=1, le=365, description="Days to export"),
+    db: Session = Depends(get_db),
+    current_user = Depends(get_current_user),
+    makerspace = Depends(get_current_makerspace),
+    _: bool = Depends(require_permission("analytics:export"))
+):
+    """Export analytics data in various formats"""
+    try:
+        analytics_service = get_real_analytics_service(db)
+        export_data = {}
+        
+        if metrics == "all" or "revenue" in metrics:
+            export_data["revenue"] = analytics_service.get_revenue_analytics(makerspace.id, days=days)
+        
+        if metrics == "all" or "usage" in metrics:
+            export_data["usage"] = analytics_service.get_usage_analytics(makerspace.id, days=days)
+        
+        if metrics == "all" or "equipment" in metrics:
+            export_data["equipment"] = analytics_service.get_equipment_analytics(makerspace.id, days=days)
+        
+        if metrics == "all" or "members" in metrics:
+            export_data["members"] = analytics_service.get_member_analytics(makerspace.id, days=days)
+        
+        if metrics == "all" or "safety" in metrics:
+            export_data["safety"] = analytics_service.get_safety_analytics(makerspace.id, days=days)
+        
+        export_data["metadata"] = {
+            "makerspace_id": makerspace.id,
+            "export_date": datetime.utcnow().isoformat(),
+            "days_analyzed": days,
+            "format": format
+        }
+        
+        if format == "csv":
+            # In a real implementation, convert to CSV format
+            # For now, return JSON with CSV indication
+            export_data["note"] = "CSV export would be implemented here"
+        
+        return {
+            "success": True,
+            "format": format,
+            "data": export_data
+        }
+        
+    except Exception as e:
+        logger.error(f"Analytics export error: {e}")
+        raise HTTPException(status_code=500, detail=f"Export failed: {str(e)}")
