@@ -49,13 +49,27 @@ export default function DevErrorHandler() {
     // Also handle regular errors that might be related to RSC
     const handleError = (event: ErrorEvent) => {
       const error = event.error;
-      if (error && error.stack && (
-          (error.message?.includes('Failed to fetch') &&
-           error.stack.includes('fetchServerResponse')) ||
-          error.message?.includes('RSC payload'))) {
-        console.warn('Development: Next.js RSC-related error caught and suppressed');
-        event.preventDefault();
-        return false;
+
+      if (error && (error.message || error.stack)) {
+        const errorMessage = error.message || '';
+        const errorStack = error.stack || '';
+
+        // Development-related error patterns
+        const isDevelopmentError = (
+          errorMessage.includes('Failed to fetch') ||
+          errorMessage.includes('RSC payload') ||
+          errorStack.includes('fetchServerResponse') ||
+          errorStack.includes('fastRefreshReducerImpl') ||
+          errorStack.includes('webpack') ||
+          errorStack.includes('fullstory.com') ||
+          errorStack.includes('hot-reloader-client')
+        );
+
+        if (isDevelopmentError) {
+          console.warn('Development: Error caught and suppressed:', errorMessage);
+          event.preventDefault();
+          return false;
+        }
       }
     };
 
