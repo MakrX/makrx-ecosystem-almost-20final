@@ -18,6 +18,13 @@ from pydantic import BaseModel, Field
 import asyncio
 from contextlib import asynccontextmanager
 
+# Import security middleware
+from security_middleware import (
+    RateLimitMiddleware,
+    SecurityHeadersMiddleware,
+    InputValidationMiddleware
+)
+
 # Configure logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
