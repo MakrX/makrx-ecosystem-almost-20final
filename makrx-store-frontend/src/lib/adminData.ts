@@ -1,5 +1,6 @@
 // Admin Data Service - Manages dynamic categories, filters, and products
 
+import React from "react";
 import { categories as defaultCategories, products as defaultProducts } from "@/data/products";
 import { categoryFilterSets as defaultFilters } from "@/data/categoryFilters";
 
