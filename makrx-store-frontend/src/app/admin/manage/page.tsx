@@ -103,6 +103,7 @@ function AdminManagementPage() {
   const [categories, setCategories] = useState<AdminCategory[]>([]);
   const [filters, setFilters] = useState<AdminFilter[]>([]);
   const [products, setProducts] = useState<AdminProduct[]>([]);
+  const [qrCodes, setQrCodes] = useState<QRCodeData[]>([]);
   const [loading, setLoading] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
 
