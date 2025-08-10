@@ -375,7 +375,7 @@ export default function CartPage() {
               <div className="space-y-3 mb-6">
                 <div className="flex justify-between">
                   <span className="text-gray-600">Subtotal</span>
-                  <span className="font-medium">{formatPrice(subtotal, cart.currency)}</span>
+                  <span className="font-medium">{formatPrice(cartSubtotal, cart.currency)}</span>
                 </div>
 
                 {discountAmount > 0 && (
