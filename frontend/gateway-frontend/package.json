@@ -3,9 +3,9 @@
   "private": true,
   "type": "module",
   "version": "1.0.0",
-  "description": "MakrX Gateway Frontend - Landing page and SSO navigation",
+  "description": "MakrX Gateway Frontend - Landing page and ecosystem navigation",
   "scripts": {
-    "dev": "vite",
+    "dev": "vite --port 8080",
     "build": "vite build",
     "preview": "vite preview",
     "typecheck": "tsc --noEmit"
@@ -14,12 +14,16 @@
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-router-dom": "^6.26.2",
+    "react-helmet-async": "^2.0.4",
     "@makrx/ui": "workspace:*",
     "@makrx/types": "workspace:*",
     "@makrx/utils": "workspace:*",
     "@makrx/feature-flags": "workspace:*",
     "@tanstack/react-query": "^5.0.0",
-    "lucide-react": "^0.400.0"
+    "lucide-react": "^0.400.0",
+    "class-variance-authority": "^0.7.0",
+    "clsx": "^2.0.0",
+    "tailwind-merge": "^2.0.0"
   },
   "devDependencies": {
     "@types/react": "^18.3.3",
