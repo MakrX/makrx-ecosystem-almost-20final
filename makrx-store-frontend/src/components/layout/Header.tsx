@@ -124,11 +124,11 @@ export function Header() {
                 </svg>
               </button>
 
-              <div className="absolute left-0 mt-2 w-64 bg-popover border border-border shadow-lg rounded-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
+              <div className="absolute left-0 mt-2 w-64 bg-popover border border-border shadow-xl rounded-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 transform scale-95 group-hover:scale-100 z-50 backdrop-blur-sm bg-white/95 dark:bg-gray-900/95">
                 <div className="p-4 space-y-2">
                   <a
                     href="https://makrx.org"
-                    className="block p-2 hover:bg-accent hover:text-accent-foreground rounded-md"
+                    className="block p-3 hover:bg-gradient-to-r hover:from-blue-50 hover:to-indigo-50 dark:hover:from-blue-900/20 dark:hover:to-indigo-900/20 hover:shadow-md transition-all duration-200 rounded-lg"
                   >
                     <div className="font-medium text-popover-foreground">
                       MakrX.org
