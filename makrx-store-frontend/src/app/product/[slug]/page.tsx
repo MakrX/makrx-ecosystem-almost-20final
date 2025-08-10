@@ -212,7 +212,7 @@ export default function ProductPage() {
               )}
 
               {/* Image Navigation */}
-              {product.images.length > 1 && (
+              {product.images && product.images.length > 1 && (
                 <>
                   <button
                     onClick={() =>
