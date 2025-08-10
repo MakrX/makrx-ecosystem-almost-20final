@@ -265,7 +265,7 @@ export default function CategoryCarousel({
       </div>
 
       {/* Featured Categories Quick Access */}
-      <div className="mt-6 pt-6 border-t border-gray-100">
+      <div className="mt-4 pt-4 border-t border-gray-100">
         <div className="flex flex-wrap gap-2 justify-center">
           {displayCategories.slice(0, 9).map((category) => (
             <button
