@@ -822,18 +822,78 @@ class ApiClient {
   }
 
   // Mock data methods for fallback when backend is unavailable
-  private getMockProducts() {
+  private getMockProducts(searchParams?: URLSearchParams) {
     // Transform mock data to match API response format
-    const transformedProducts = this.transformMockProducts();
+    let transformedProducts = this.transformMockProducts();
+
+    // Apply filters if search params are provided
+    if (searchParams) {
+      const category = searchParams.get('category');
+      const categoryId = searchParams.get('category_id');
+      const brand = searchParams.get('brand');
+      const inStock = searchParams.get('in_stock');
+      const isFeatured = searchParams.get('is_featured');
+      const query = searchParams.get('q');
+
+      // Filter by category slug (like "electronics", "3d-printers", etc.)
+      if (category) {
+        transformedProducts = transformedProducts.filter(product =>
+          product.category?.slug === category || product.slug.includes(category)
+        );
+      }
+
+      // Filter by category ID
+      if (categoryId) {
+        const catId = parseInt(categoryId);
+        transformedProducts = transformedProducts.filter(product =>
+          product.category_id === catId
+        );
+      }
+
+      // Filter by brand
+      if (brand) {
+        transformedProducts = transformedProducts.filter(product =>
+          product.brand?.toLowerCase().includes(brand.toLowerCase())
+        );
+      }
+
+      // Filter by stock status
+      if (inStock === 'true') {
+        transformedProducts = transformedProducts.filter(product => product.in_stock);
+      }
+
+      // Filter by featured status
+      if (isFeatured === 'true') {
+        transformedProducts = transformedProducts.filter(product => product.is_featured);
+      }
+
+      // Search filter
+      if (query) {
+        const searchTerm = query.toLowerCase();
+        transformedProducts = transformedProducts.filter(product =>
+          product.name.toLowerCase().includes(searchTerm) ||
+          product.description.toLowerCase().includes(searchTerm) ||
+          product.short_description?.toLowerCase().includes(searchTerm) ||
+          product.brand?.toLowerCase().includes(searchTerm) ||
+          product.tags.some(tag => tag.toLowerCase().includes(searchTerm))
+        );
+      }
+    }
+
+    const page = searchParams ? parseInt(searchParams.get('page') || '1') : 1;
+    const perPage = searchParams ? parseInt(searchParams.get('per_page') || '20') : 20;
+    const startIndex = (page - 1) * perPage;
+    const endIndex = startIndex + perPage;
+    const paginatedProducts = transformedProducts.slice(startIndex, endIndex);
 
     return {
-      products: transformedProducts,
+      products: paginatedProducts,
       total: transformedProducts.length,
-      page: 1,
-      per_page: 20,
-      pages: Math.ceil(transformedProducts.length / 20),
-      has_next: false,
-      has_prev: false,
+      page: page,
+      per_page: perPage,
+      pages: Math.ceil(transformedProducts.length / perPage),
+      has_next: endIndex < transformedProducts.length,
+      has_prev: page > 1,
     };
   }
 
