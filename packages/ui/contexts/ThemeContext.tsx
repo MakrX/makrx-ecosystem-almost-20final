@@ -123,10 +123,11 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     localStorage.setItem('makrx-theme', theme);
   }, [theme, effectiveTheme]);
 
+  // Create context value object
   const value: ThemeContextType = {
-    theme,
-    setTheme,
-    effectiveTheme
+    theme,           // User's theme choice ('light', 'dark', 'system')
+    setTheme,        // Function to update theme choice
+    effectiveTheme   // Resolved theme that's actually applied ('light' or 'dark')
   };
 
   return (
@@ -136,10 +137,36 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   );
 }
 
+/**
+ * Hook to access theme context in components
+ *
+ * Provides access to:
+ * - theme: Current user theme setting
+ * - setTheme: Function to change theme
+ * - effectiveTheme: Resolved theme being applied
+ *
+ * @throws Error if used outside of ThemeProvider
+ *
+ * @example
+ * ```tsx
+ * function MyComponent() {
+ *   const { theme, setTheme, effectiveTheme } = useTheme();
+ *
+ *   return (
+ *     <div className={effectiveTheme === 'dark' ? 'dark-bg' : 'light-bg'}>
+ *       <button onClick={() => setTheme('dark')}>Dark Mode</button>
+ *     </div>
+ *   );
+ * }
+ * ```
+ */
 export function useTheme() {
   const context = useContext(ThemeContext);
+
+  // Enforce provider usage - prevents runtime errors from missing context
   if (context === undefined) {
     throw new Error('useTheme must be used within a ThemeProvider');
   }
+
   return context;
 }
