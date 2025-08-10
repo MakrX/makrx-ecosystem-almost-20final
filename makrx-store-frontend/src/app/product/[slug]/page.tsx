@@ -213,6 +213,9 @@ export default function ProductPage() {
                   fill
                   className="object-cover"
                   priority
+                  onError={(e) => {
+                    e.currentTarget.src = '/placeholder.svg';
+                  }}
                 />
               ) : (
                 <div className="flex items-center justify-center h-full text-gray-400">
