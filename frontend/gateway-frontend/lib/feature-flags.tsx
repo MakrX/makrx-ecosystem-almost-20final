@@ -7,7 +7,7 @@ interface FeatureFlagContextType {
 
 const FeatureFlagContext = createContext<FeatureFlagContextType | undefined>(undefined);
 
-export function FeatureFlagProvider({ children }: { children: React.ReactNode }) {
+export function FeatureFlagProvider({ children, initialContext }: { children: React.ReactNode; initialContext?: any }) {
   const [flags, setFlags] = useState<Record<string, boolean>>({
     'org.homepage.stats': true,
     'org.homepage.testimonials': true,
@@ -46,24 +46,26 @@ export function useIsInternalUser(): boolean {
 }
 
 interface FlagGuardProps {
-  flag: string;
+  flagKey?: string;
+  flag?: string;
   children: React.ReactNode;
   fallback?: React.ReactNode;
 }
 
-export function FlagGuard({ flag, children, fallback = null }: FlagGuardProps) {
-  const isEnabled = useBooleanFlag(flag);
-  
+export function FlagGuard({ flagKey, flag, children, fallback = null }: FlagGuardProps) {
+  const isEnabled = useBooleanFlag(flagKey || flag || '');
+
   return isEnabled ? <>{children}</> : <>{fallback}</>;
 }
 
 interface NavLinkGuardProps {
-  flag: string;
+  flagKey?: string;
+  flag?: string;
   children: React.ReactNode;
 }
 
-export function NavLinkGuard({ flag, children }: NavLinkGuardProps) {
-  const isEnabled = useBooleanFlag(flag);
-  
+export function NavLinkGuard({ flagKey, flag, children }: NavLinkGuardProps) {
+  const isEnabled = useBooleanFlag(flagKey || flag || '');
+
   return isEnabled ? <>{children}</> : null;
 }
