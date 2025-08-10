@@ -292,6 +292,14 @@ export default function ProductPage() {
     fetchProductData();
   }, [slug]);
 
+  // Cleanup effect to prevent state updates on unmounted component
+  useEffect(() => {
+    isMountedRef.current = true;
+    return () => {
+      isMountedRef.current = false;
+    };
+  }, []);
+
   if (loading) {
     return <ProductPageSkeleton />;
   }
