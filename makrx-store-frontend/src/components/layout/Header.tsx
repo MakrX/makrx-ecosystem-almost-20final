@@ -105,10 +105,12 @@ export function Header() {
           <nav className="hidden md:flex items-center space-x-6 lg:space-x-8">
             {/* Ecosystem Links */}
             <div className="relative group">
-              <button className="text-foreground hover:text-blue-600 dark:hover:text-blue-400 transition-colors flex items-center">
-                MakrX Ecosystem
+              <button className="relative px-4 py-2 text-foreground hover:text-blue-600 dark:hover:text-blue-400 transition-all duration-300 flex items-center rounded-lg hover:bg-gradient-to-r hover:from-blue-50 hover:to-indigo-50 dark:hover:from-blue-900/20 dark:hover:to-indigo-900/20 hover:shadow-md hover:scale-105 font-medium group-hover:ring-2 group-hover:ring-blue-200 dark:group-hover:ring-blue-800/30">
+                <span className="bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent dark:from-blue-400 dark:to-indigo-400 font-semibold">
+                  MakrX Ecosystem
+                </span>
                 <svg
-                  className="ml-1 h-4 w-4"
+                  className="ml-2 h-4 w-4 transition-transform duration-300 group-hover:rotate-180 text-blue-500"
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke="currentColor"
