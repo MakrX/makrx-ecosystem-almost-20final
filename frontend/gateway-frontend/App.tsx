@@ -30,6 +30,7 @@ import NotFound from "./pages/NotFound";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import TermsOfService from "./pages/TermsOfService";
 import CookiePolicy from "./pages/CookiePolicy";
+import AccessibilityStatement from "./pages/AccessibilityStatement";
 import { Helmet } from "react-helmet-async";
 
 const queryClient = new QueryClient();
