@@ -318,23 +318,34 @@ class ApiClient {
       try {
         // Quick connectivity check - if this fails, go straight to mock data
         const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 100); // 100ms timeout
+        const timeoutId = setTimeout(() => controller.abort(), 300); // Increased timeout to 300ms
 
         await fetch(this.baseURL + "/health", {
           signal: controller.signal,
           mode: 'no-cors'
-        }).catch(() => {
-          throw new Error("Backend not available");
         });
 
         clearTimeout(timeoutId);
       } catch (error) {
-        // Backend is not available, use mock data immediately
-        if (typeof window !== "undefined" && !sessionStorage.getItem("mock-data-notice-shown")) {
-          sessionStorage.setItem("mock-data-notice-shown", "true");
-          console.info("🔧 Development Mode: Backend server not available, using mock data for demo purposes.");
+        // Handle both network errors and AbortError gracefully
+        const isAbortError = error instanceof Error && error.name === 'AbortError';
+        const isNetworkError = error instanceof Error && (
+          error.message.includes('Failed to fetch') ||
+          error.message.includes('NetworkError') ||
+          error.message.includes('ERR_NETWORK')
+        );
+
+        if (isAbortError || isNetworkError || error instanceof TypeError) {
+          // Backend is not available, use mock data immediately
+          if (typeof window !== "undefined" && !sessionStorage.getItem("mock-data-notice-shown")) {
+            sessionStorage.setItem("mock-data-notice-shown", "true");
+            console.info("🔧 Development Mode: Backend server not available, using mock data for demo purposes.");
+          }
+          return this.getMockData<T>(endpoint);
         }
-        return this.getMockData<T>(endpoint);
+
+        // Re-throw other unexpected errors
+        throw error;
       }
     }
     const url = `${this.baseURL}${endpoint}`;
