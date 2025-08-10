@@ -161,11 +161,7 @@ export default function ProductPage() {
   const effectivePrice = currentPrice || product.sale_price || product.price;
   const originalPrice = selectedVariant?.price || product.price;
 
-  const savingsAmount = originalPrice - effectivePrice;
-  const savingsPercentage =
-    savingsAmount > 0 ? Math.round((savingsAmount / originalPrice) * 100) : 0;
-
-  const isOnSale = savingsAmount > 0;
+  const isOnSale = product.sale_price && product.sale_price < product.price;
   const stockStatus = product.stock_qty > 0 ? "In Stock" : "Out of Stock";
   const estimatedDelivery =
     product.stock_qty > 0 ? "2-3 business days" : "Backordered - 1-2 weeks";
