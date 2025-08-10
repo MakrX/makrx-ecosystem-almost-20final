@@ -1,39 +1,138 @@
-import { defineConfig, Plugin } from "vite";
-import react from "@vitejs/plugin-react-swc";
-import path from "path";
-import { createServer } from "../../server";
+import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react';
+import { resolve } from 'path';
 
 // https://vitejs.dev/config/
-export default defineConfig(({ mode }) => ({
-  server: {
-    host: "::",
-    port: 8080,
-    fs: {
-      allow: [".", "../../packages"],
-      deny: [".env", ".env.*", "*.{crt,pem}", "**/.git/**", "../../server/**"],
+export default defineConfig({
+  plugins: [
+    react({
+      // Enable fast refresh
+      fastRefresh: true,
+      // Exclude node_modules from fast refresh
+      exclude: [/node_modules/],
+      // Include specific packages if needed
+      include: "**/*.{jsx,tsx}",
+    }),
+  ],
+  resolve: {
+    alias: {
+      '@': resolve(__dirname, './src'),
+      '@components': resolve(__dirname, './components'),
+      '@pages': resolve(__dirname, './pages'),
+      '@lib': resolve(__dirname, './lib'),
+      '@contexts': resolve(__dirname, './contexts'),
+      '@hooks': resolve(__dirname, './hooks'),
     },
   },
   build: {
-    outDir: "dist/spa",
+    // Generate sourcemaps for production debugging
+    sourcemap: false,
+    // Optimize bundle size
+    minify: 'terser',
+    terserOptions: {
+      compress: {
+        drop_console: true,
+        drop_debugger: true,
+        pure_funcs: ['console.log', 'console.info', 'console.debug', 'console.trace'],
+      },
+      mangle: {
+        safari10: true,
+      },
+      format: {
+        comments: false,
+      },
+    },
+    // Code splitting configuration
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          // Vendor chunk for large dependencies
+          vendor: ['react', 'react-dom'],
+          // Router chunk
+          router: ['react-router-dom'],
+          // Utils chunk for utility libraries
+          utils: ['lucide-react', '@tanstack/react-query'],
+          // UI chunk for UI components
+          ui: ['@radix-ui/react-dialog', '@radix-ui/react-dropdown-menu'],
+        },
+        // Optimize chunk file names
+        chunkFileNames: (chunkInfo) => {
+          const facadeModuleId = chunkInfo.facadeModuleId
+            ? chunkInfo.facadeModuleId.split('/').pop()?.replace(/\.[^/.]+$/, '')
+            : 'chunk';
+          return `assets/${facadeModuleId}-[hash].js`;
+        },
+      },
+    },
+    // Increase chunk size warning limit for large bundles
+    chunkSizeWarningLimit: 600,
+    // Optimize asset handling
+    assetsInlineLimit: 4096,
+    // Target modern browsers for better optimization
+    target: ['es2020', 'edge88', 'firefox78', 'chrome87', 'safari13.1'],
   },
-  plugins: [react(), expressPlugin()],
-  resolve: {
-    alias: {
-      "@": path.resolve(__dirname, "."),
-      "@shared": path.resolve(__dirname, "../../packages/types"),
+  server: {
+    // Development server configuration
+    host: true,
+    port: 3000,
+    open: false,
+    cors: true,
+    // Enable HMR
+    hmr: {
+      overlay: true,
     },
   },
-}));
-
-function expressPlugin(): Plugin {
-  return {
-    name: "express-plugin",
-    apply: "serve", // Only apply during development (serve mode)
-    configureServer(server) {
-      const app = createServer();
-
-      // Add Express app as middleware to Vite dev server
-      server.middlewares.use(app);
+  preview: {
+    // Preview server configuration
+    host: true,
+    port: 3000,
+    cors: true,
+  },
+  // Optimize dependencies
+  optimizeDeps: {
+    include: [
+      'react',
+      'react-dom',
+      'react-router-dom',
+      'lucide-react',
+      '@tanstack/react-query',
+    ],
+    exclude: [
+      // Exclude any problematic dependencies
+    ],
+  },
+  // Define global constants
+  define: {
+    __APP_VERSION__: JSON.stringify(process.env.npm_package_version || '1.0.0'),
+    __BUILD_TIME__: JSON.stringify(new Date().toISOString()),
+  },
+  // CSS configuration
+  css: {
+    // Enable CSS modules if needed
+    modules: {
+      localsConvention: 'camelCase',
     },
-  };
-}
+    // PostCSS configuration
+    postcss: './postcss.config.js',
+    // Optimize CSS in production
+    devSourcemap: true,
+  },
+  // JSON configuration
+  json: {
+    namedExports: true,
+    stringify: false,
+  },
+  // Worker configuration
+  worker: {
+    format: 'es',
+  },
+  // Environment variables
+  envPrefix: ['VITE_', 'REACT_APP_'],
+  // Enable esbuild optimizations
+  esbuild: {
+    // Remove console logs in production
+    drop: process.env.NODE_ENV === 'production' ? ['console', 'debugger'] : [],
+    // Enable legal comments removal
+    legalComments: 'none',
+  },
+});
