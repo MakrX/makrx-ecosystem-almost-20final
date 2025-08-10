@@ -77,19 +77,16 @@ export function ErrorSuppression() {
         }));
       }
 
-      // Block requests to backend API in development if they're failing
-      if (url && url.includes("localhost:8003")) {
-        console.warn("Intercepted API request in development mode:", url);
-        // Return a mock response that will trigger the fallback logic
-        return Promise.reject(new TypeError("Failed to fetch"));
-      }
-
       try {
-        // Allow other requests to proceed
+        // Allow all requests to proceed normally
         return await originalFetch(input, init);
       } catch (error) {
-        // Suppress network errors in development
-        console.warn("Network request failed (suppressed in dev):", url, error);
+        // Only suppress logging for specific backend API errors, but don't block requests
+        if (url && url.includes("localhost:8003")) {
+          console.warn("Backend API request failed (expected in development):", url);
+        } else {
+          console.warn("Network request failed:", url, error);
+        }
         throw error; // Re-throw to maintain API client fallback logic
       }
     };
