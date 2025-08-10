@@ -356,7 +356,7 @@ export default function CartPage() {
                     onClick={() => {
                       // Simulate coupon application
                       if (couponCode.toLowerCase() === 'save10') {
-                        handleDiscountChange(subtotal * 0.1);
+                        handleDiscountChange(cartSubtotal * 0.1);
                       } else {
                         handleDiscountChange(0);
                       }
