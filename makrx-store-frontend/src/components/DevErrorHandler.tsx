@@ -11,19 +11,35 @@ export default function DevErrorHandler() {
     const handleUnhandledRejection = (event: PromiseRejectionEvent) => {
       const error = event.reason;
 
-      // Be more specific about RSC errors - only handle development-specific Next.js errors
-      if (error && error.stack && (
-          (error.message?.includes('Failed to fetch') &&
-           (error.stack.includes('fetchServerResponse') ||
-            error.stack.includes('fastRefreshReducerImpl') ||
-            error.stack.includes('router-reducer'))) ||
-          error.message?.includes('RSC payload'))) {
+      // Check for various development-related error patterns
+      if (error && (error.message || error.stack)) {
+        const errorMessage = error.message || '';
+        const errorStack = error.stack || '';
 
-        // Only suppress these specific Next.js development errors
-        console.warn('Development: Next.js RSC fetch error suppressed for better development experience');
-        event.preventDefault();
+        // Next.js development errors
+        const isNextJSDevError = errorMessage.includes('Failed to fetch') && (
+          errorStack.includes('fetchServerResponse') ||
+          errorStack.includes('fastRefreshReducerImpl') ||
+          errorStack.includes('router-reducer') ||
+          errorStack.includes('app-router') ||
+          errorStack.includes('hot-reloader-client') ||
+          errorStack.includes('webpack') ||
+          errorStack.includes('hmrM')
+        );
 
-        return; // Exit early to prevent further processing
+        // FullStory/third-party errors
+        const isThirdPartyError = errorStack.includes('fullstory.com') ||
+                                 errorStack.includes('fs.js');
+
+        // RSC payload errors
+        const isRSCError = errorMessage.includes('RSC payload') ||
+                          errorMessage.includes('Failed to fetch RSC');
+
+        if (isNextJSDevError || isThirdPartyError || isRSCError) {
+          console.warn('Development: Error suppressed for better development experience:', errorMessage);
+          event.preventDefault();
+          return;
+        }
       }
     };
 
