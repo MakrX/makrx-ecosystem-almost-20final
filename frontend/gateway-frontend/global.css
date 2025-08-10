@@ -113,8 +113,18 @@
 }
 
 /* Dark mode support with enhanced colors */
+.dark {
+  --makrx-blue: #3b82f6;
+  --makrx-blue-dark: #2563eb;
+  --makrx-blue-light: #60a5fa;
+  --makrx-yellow: #fcd34d;
+  --makrx-yellow-dark: #fbbf24;
+  --makrx-yellow-light: #fde68a;
+}
+
+/* System dark mode fallback */
 @media (prefers-color-scheme: dark) {
-  :root {
+  :root:not(.light) {
     --makrx-blue: #3b82f6;
     --makrx-blue-dark: #2563eb;
     --makrx-blue-light: #60a5fa;
