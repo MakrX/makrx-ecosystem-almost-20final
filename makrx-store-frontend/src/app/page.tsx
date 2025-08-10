@@ -5,7 +5,6 @@ import Link from "next/link";
 import Image from "next/image";
 import { ArrowRight, Star, Users, Package, Truck, Clock } from "lucide-react";
 import { api, type Product, type Category, formatPrice } from "@/lib/api";
-import { DarkModeDemo } from "@/components/DarkModeDemo";
 
 export default function HomePage() {
   const [featuredProducts, setFeaturedProducts] = useState<Product[]>([]);
@@ -329,20 +328,6 @@ export default function HomePage() {
               </div>
             </div>
           </div>
-        </div>
-      </section>
-
-      {/* Dark Mode Demo Section */}
-      <section className="py-16 bg-muted/50">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-3xl font-bold text-foreground mb-4">
-            🌙 NEW: Dark Mode Support!
-          </h2>
-          <p className="text-lg text-muted-foreground mb-8">
-            Experience our enhanced interface with light, dark, and system theme
-            options. Try the theme toggle in the header or use the demo below!
-          </p>
-          <DarkModeDemo />
         </div>
       </section>
 
