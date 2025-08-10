@@ -27,7 +27,11 @@ if (typeof window !== "undefined" && process.env.NODE_ENV === "development") {
     const message = args.join(" ");
     if (message.includes("NetworkError") ||
         message.includes("Failed to fetch") ||
-        message.includes("/api/placeholder")) {
+        message.includes("/api/placeholder") ||
+        message.includes("ERR_NETWORK") ||
+        message.includes("ERR_INTERNET_DISCONNECTED") ||
+        message.includes("localhost:8003") ||
+        message.includes("ECONNREFUSED")) {
       return; // Suppress these errors
     }
     originalError.apply(console, args);
