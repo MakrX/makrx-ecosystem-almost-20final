@@ -61,8 +61,31 @@ export default function RootLayout({
         <script
           dangerouslySetInnerHTML={{
             __html: `
-              // Prevent browser extension hydration issues
+              // Protect fetch from external interference and prevent hydration issues
               (function() {
+                // Store original fetch before any external tools can override it
+                const originalFetch = window.fetch;
+                let fetchProtected = false;
+
+                // Protect fetch from being overridden
+                Object.defineProperty(window, 'fetch', {
+                  get: function() {
+                    return originalFetch;
+                  },
+                  set: function(value) {
+                    // Only allow setting fetch once during initialization
+                    if (!fetchProtected) {
+                      fetchProtected = true;
+                      return originalFetch;
+                    }
+                    // Ignore subsequent attempts to override fetch
+                    console.warn('Prevented external tool from overriding fetch');
+                    return originalFetch;
+                  },
+                  configurable: false
+                });
+
+                // Prevent browser extension hydration issues
                 const originalConsoleError = console.error;
                 console.error = function(...args) {
                   const message = args.join(' ');
