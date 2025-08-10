@@ -838,18 +838,11 @@ class ApiClient {
 
       // Filter by category slug (like "electronics", "3d-printers", etc.)
       if (category) {
-        console.log(`Filtering by category: ${category}`);
-        console.log(`Available products before filter: ${transformedProducts.length}`);
         transformedProducts = transformedProducts.filter(product => {
-          const matches = product.category?.slug === category ||
-                         product.category?.name.toLowerCase().includes(category.toLowerCase()) ||
-                         product.slug.includes(category);
-          if (matches && transformedProducts.indexOf(product) < 5) {
-            console.log(`Product ${product.name} matches category ${category}: ${product.category?.slug}`);
-          }
-          return matches;
+          return product.category?.slug === category ||
+                 product.category?.name.toLowerCase().includes(category.toLowerCase()) ||
+                 product.slug.includes(category);
         });
-        console.log(`Products after category filter: ${transformedProducts.length}`);
       }
 
       // Filter by category ID
