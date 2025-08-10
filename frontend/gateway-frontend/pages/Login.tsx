@@ -26,8 +26,8 @@ export default function Login() {
       <div className="absolute inset-0 makrx-circuit-bg opacity-20" />
 
       <div className="w-full max-w-md relative">
-        {/* Login Card */}
-        <div className="backdrop-blur-md border border-white/20 rounded-2xl p-8 bg-white/10">
+        {/* Loading Card */}
+        <div className="backdrop-blur-md border border-white/20 rounded-2xl p-8 bg-white/10 text-center">
           {/* Header */}
           <div className="text-center mb-8">
             <div className="flex justify-center mb-4">
