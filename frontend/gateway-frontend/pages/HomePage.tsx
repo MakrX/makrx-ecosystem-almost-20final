@@ -354,10 +354,10 @@ export default function HomePage() {
 
       {/* Testimonials Section */}
       {showTestimonials && (
-        <section className="py-24 bg-gray-50">
-          <div className="max-w-7xl mx-auto px-6">
-            <div className="text-center mb-20">
-              <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
+        <section className="py-24 sm:py-28 lg:py-36 bg-gray-50 border-t border-gray-200">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="text-center mb-16 sm:mb-20">
+              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 mb-4 sm:mb-6">
                 Loved by Makers
               </h2>
               <p className="text-lg sm:text-xl text-gray-600 max-w-3xl mx-auto px-4">
@@ -365,7 +365,7 @@ export default function HomePage() {
               </p>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
               <Testimonial
                 quote="MakrX transformed my startup journey. Access to professional 3D printers and laser cutters helped us prototype faster than ever."
                 author="Priya Sharma"
@@ -390,17 +390,17 @@ export default function HomePage() {
       )}
 
       {/* CTA Section */}
-      <section className="py-24 bg-gradient-to-r from-makrx-blue to-purple-700">
-        <div className="max-w-4xl mx-auto px-6 text-center">
-          <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
+      <section className="py-24 sm:py-28 lg:py-36 bg-gradient-to-r from-makrx-blue to-purple-700 border-t border-makrx-blue-700">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-4 sm:mb-6">
             Ready to Start Creating?
           </h2>
-          <p className="text-xl text-white/90 mb-12 leading-relaxed">
+          <p className="text-lg sm:text-xl text-white/90 mb-8 sm:mb-12 leading-relaxed px-4">
             Join thousands of makers who are already bringing their ideas to life with MakrX. 
             Your creative journey starts here.
           </p>
           
-          <div className="flex flex-col sm:flex-row gap-6 justify-center">
+          <div className="flex flex-col sm:flex-row gap-4 sm:gap-6 justify-center">
             <Link 
               to="/register" 
               className="inline-flex items-center justify-center px-8 py-4 text-lg font-semibold rounded-2xl bg-makrx-yellow text-makrx-blue hover:bg-yellow-300 transition-all duration-300 hover:scale-105 hover:shadow-2xl"
