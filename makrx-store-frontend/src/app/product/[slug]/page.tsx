@@ -270,11 +270,14 @@ export default function ProductPage() {
                     }`}
                   >
                     <Image
-                      src={image}
+                      src={image || '/placeholder.svg'}
                       alt={`${product.name} ${index + 1}`}
                       width={80}
                       height={80}
                       className="object-cover w-full h-full"
+                      onError={(e) => {
+                        e.currentTarget.src = '/placeholder.svg';
+                      }}
                     />
                   </button>
                 ))}
