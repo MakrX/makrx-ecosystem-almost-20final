@@ -83,7 +83,7 @@ export default function AccountOrdersPage() {
         {
           id: "2",
           name: "3D Printing Service - custom-bracket.stl",
-          image: "/api/placeholder/100/100",
+          image: "https://via.placeholder.com/100x100/3B82F6/FFFFFF?text=Service",
           quantity: 1,
           price: 45.99,
         },
@@ -149,7 +149,7 @@ export default function AccountOrdersPage() {
         {
           id: "6",
           name: "CNC Machining Service - aluminum-part.step",
-          image: "/api/placeholder/100/100",
+          image: "https://via.placeholder.com/100x100/3B82F6/FFFFFF?text=Service",
           quantity: 1,
           price: 125.0,
         },
