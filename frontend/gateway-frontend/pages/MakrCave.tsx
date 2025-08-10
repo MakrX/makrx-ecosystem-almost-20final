@@ -317,7 +317,7 @@ export default function MakrCave() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
             <FeatureCard
-              icon={<Tool className="w-8 h-8 text-makrx-blue" />}
+              icon={<Wrench className="w-8 h-8 text-makrx-blue" />}
               title="Professional Equipment"
               description="Access high-end 3D printers, laser cutters, CNC machines, and specialized tools maintained to industry standards."
             />
