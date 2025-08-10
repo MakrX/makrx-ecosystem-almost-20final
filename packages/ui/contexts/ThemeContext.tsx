@@ -1,13 +1,47 @@
+/**
+ * @fileoverview MakrX Theme Management System
+ *
+ * This module provides a comprehensive theme management solution for the MakrX ecosystem.
+ * It supports light/dark themes with automatic system theme detection and persistence.
+ *
+ * Features:
+ * - Light, dark, and system theme modes
+ * - Automatic system preference detection
+ * - localStorage persistence across sessions
+ * - Real-time theme switching
+ * - SSR-compatible initialization
+ * - CSS class and data-attribute support
+ *
+ * Storage: Theme preference is stored in localStorage as 'makrx-theme'
+ * CSS Integration: Applies 'light'/'dark' classes to document root
+ */
+
 import React, { createContext, useContext, useEffect, useState } from 'react';
 
+/**
+ * Available theme options
+ * - 'light': Force light theme
+ * - 'dark': Force dark theme
+ * - 'system': Use OS/browser preference
+ */
 type Theme = 'light' | 'dark' | 'system';
 
+/**
+ * Theme context interface providing theme state and controls
+ */
 interface ThemeContextType {
+  /** Current theme setting (user's choice) */
   theme: Theme;
+  /** Function to change theme setting */
   setTheme: (theme: Theme) => void;
+  /** Resolved theme (what's actually applied) */
   effectiveTheme: 'light' | 'dark';
 }
 
+/**
+ * React context for theme management
+ * Undefined by default to enforce provider usage
+ */
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
