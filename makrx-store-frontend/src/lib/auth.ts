@@ -208,6 +208,15 @@ export const hasScope = (scope: string): boolean => {
 export const login = (redirectUri?: string): void => {
   if (!isClient) return;
 
+  // Store the current location for post-login redirect
+  setStoredItem(
+    "makrx_pre_login_url",
+    window.location.pathname + window.location.search,
+  );
+
+  // Store original URL in session storage for SSO consistency
+  sessionStorage.setItem('makrx_redirect_url', window.location.href);
+
   const params = new URLSearchParams({
     client_id: CLIENT_ID,
     redirect_uri: redirectUri || window.location.origin + "/auth/callback",
@@ -216,12 +225,7 @@ export const login = (redirectUri?: string): void => {
     state: generateState(),
   });
 
-  // Store the current location for post-login redirect
-  setStoredItem(
-    "makrx_pre_login_url",
-    window.location.pathname + window.location.search,
-  );
-
+  // Redirect to auth.makrx.org (centralized SSO)
   window.location.href = `${KEYCLOAK_URL}/realms/${REALM}/protocol/openid-connect/auth?${params}`;
 };
 
