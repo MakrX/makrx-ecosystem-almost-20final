@@ -215,36 +215,36 @@ export default function ProductPage() {
   };
 
   const loadMoreReviews = async () => {
-    if (isLoadingMoreReviews) return;
+    if (isLoadingMoreReviews || !isMountedRef.current) return;
 
-    setIsLoadingMoreReviews(true);
+    if (isMountedRef.current) {
+      setIsLoadingMoreReviews(true);
+    }
 
     try {
-      // Simulate API call delay with AbortController for cleanup
-      await new Promise((resolve, reject) => {
+      // Simulate API call delay
+      await new Promise((resolve) => {
         const timeoutId = setTimeout(resolve, 1500);
-
-        // Cleanup function to prevent memory leaks
-        return () => {
-          clearTimeout(timeoutId);
-          reject(new Error('Operation cancelled'));
-        };
+        // Store timeout ID for potential cleanup
+        return timeoutId;
       });
 
-      // Load 6 more reviews
-      const newCount = Math.min(
-        displayedReviewsCount + 6,
-        product?.rating?.count || 0
-      );
+      // Only update state if component is still mounted
+      if (isMountedRef.current) {
+        const newCount = Math.min(
+          displayedReviewsCount + 6,
+          product?.rating?.count || 0
+        );
 
-      setDisplayedReviewsCount(newCount);
-    } catch (error) {
-      // Silently handle cancellation errors
-      if (error instanceof Error && error.message !== 'Operation cancelled') {
-        console.warn('Error loading more reviews:', error);
+        setDisplayedReviewsCount(newCount);
       }
+    } catch (error) {
+      // Silently handle any errors (including abort errors)
+      console.warn('Error loading more reviews:', error);
     } finally {
-      setIsLoadingMoreReviews(false);
+      if (isMountedRef.current) {
+        setIsLoadingMoreReviews(false);
+      }
     }
   };
 
