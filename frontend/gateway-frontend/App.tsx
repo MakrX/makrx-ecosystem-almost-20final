@@ -23,6 +23,7 @@ import Contact from "./pages/Contact";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import TermsOfService from "./pages/TermsOfService";
 import NotFound from "./pages/NotFound";
+import ThemeDemo from "./pages/ThemeDemo";
 import { Helmet } from "react-helmet-async";
 
 const App = () => {
