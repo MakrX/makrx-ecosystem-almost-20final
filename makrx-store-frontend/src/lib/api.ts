@@ -819,7 +819,7 @@ class ApiClient {
         images:
           product.images && product.images.length > 0
             ? product.images
-            : ["/api/placeholder/400/300"],
+            : ["https://via.placeholder.com/400x300/3B82F6/FFFFFF?text=Product"],
         videos: [],
         meta_title: product.name || `Product ${index + 1}`,
         meta_description: product.shortDescription || product.description || "",
