@@ -177,6 +177,10 @@ export default function CatalogPage() {
     }
   };
 
+  const handleCategorySelect = (categoryId: number) => {
+    handleFilterChange("category_id", categoryId);
+  };
+
   const getCategoryName = (categoryId?: number) => {
     const category = categories.find((c) => c.id === categoryId);
     return category?.name || "All Categories";
