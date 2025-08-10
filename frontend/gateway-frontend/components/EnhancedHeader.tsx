@@ -210,6 +210,15 @@ export default function EnhancedHeader() {
               </button>
             )}
 
+            {/* App Launcher */}
+            <button
+              onClick={() => setIsLauncherOpen(true)}
+              className="p-2 rounded-lg text-white/80 hover:text-white hover:bg-white/10 transition-colors"
+              aria-label="Launch Apps"
+            >
+              <Grid3X3 className="w-4 h-4" />
+            </button>
+
             {/* Theme Toggle */}
             <ThemeToggle variant="icon-only" className="bg-white/10 hover:bg-white/20 border-white/20" />
 
