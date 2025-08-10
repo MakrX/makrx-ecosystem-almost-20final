@@ -81,7 +81,6 @@ export default function RootLayout({
       </head>
       <body className={inter.className} suppressHydrationWarning>
         <HydrationFix />
-        <ErrorSuppression />
         <ThemeProvider>
           <AuthProvider>
             <NotificationProvider>
