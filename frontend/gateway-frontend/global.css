@@ -112,7 +112,7 @@
   --z-auto: auto;
 }
 
-/* Dark mode support with enhanced colors */
+/* Dark mode support with enhanced colors - Much darker theme */
 .dark {
   --makrx-blue: #3b82f6;
   --makrx-blue-dark: #2563eb;
@@ -120,6 +120,16 @@
   --makrx-yellow: #fcd34d;
   --makrx-yellow-dark: #fbbf24;
   --makrx-yellow-light: #fde68a;
+
+  /* Dark theme specific variables */
+  --dark-bg-primary: #0a0a0a;
+  --dark-bg-secondary: #1a1a1a;
+  --dark-bg-tertiary: #2a2a2a;
+  --dark-border: #2a2a2a;
+  --dark-border-light: #404040;
+  --dark-text-primary: #e2e8f0;
+  --dark-text-secondary: #cbd5e1;
+  --dark-text-muted: #94a3b8;
 }
 
 /* System dark mode fallback */
