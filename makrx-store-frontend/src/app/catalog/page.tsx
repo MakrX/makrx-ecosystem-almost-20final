@@ -597,6 +597,158 @@ export default function CatalogPage() {
             )}
           </div>
         </div>
+
+        {/* Mobile Filter Overlay */}
+        {showFilters && (
+          <div className="fixed inset-0 z-50 md:hidden">
+            <div className="absolute inset-0 bg-black bg-opacity-50" onClick={() => setShowFilters(false)} />
+            <div className="absolute inset-y-0 right-0 w-80 max-w-full bg-white shadow-xl">
+              <div className="h-full overflow-y-auto">
+                <div className="p-6">
+                  <div className="flex items-center justify-between mb-4">
+                    <h3 className="font-semibold text-gray-900">Filters</h3>
+                    <div className="flex items-center gap-2">
+                      {activeFiltersCount > 0 && (
+                        <button
+                          onClick={clearFilters}
+                          className="text-sm text-blue-600 hover:text-blue-700"
+                        >
+                          Clear All
+                        </button>
+                      )}
+                      <button
+                        onClick={() => setShowFilters(false)}
+                        className="p-1 hover:bg-gray-100 rounded"
+                      >
+                        <X className="h-5 w-5" />
+                      </button>
+                    </div>
+                  </div>
+
+                  <div className="space-y-6">
+                    {/* Category Filter */}
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Category
+                      </label>
+                      <select
+                        value={filters.category_id || ""}
+                        onChange={(e) =>
+                          handleFilterChange(
+                            "category_id",
+                            e.target.value ? parseInt(e.target.value) : undefined,
+                          )
+                        }
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      >
+                        <option value="">All Categories</option>
+                        {categories.map((category) => (
+                          <option key={category.id} value={category.id}>
+                            {category.name}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+
+                    {/* Brand Filter */}
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Brand
+                      </label>
+                      <select
+                        value={filters.brand || ""}
+                        onChange={(e) =>
+                          handleFilterChange("brand", e.target.value || undefined)
+                        }
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      >
+                        <option value="">All Brands</option>
+                        {brands.map((brand) => (
+                          <option key={brand} value={brand}>
+                            {brand}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+
+                    {/* Price Range */}
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Price Range
+                      </label>
+                      <div className="flex gap-2">
+                        <input
+                          type="number"
+                          placeholder="Min"
+                          value={filters.price_min || ""}
+                          onChange={(e) =>
+                            handleFilterChange(
+                              "price_min",
+                              e.target.value
+                                ? parseFloat(e.target.value)
+                                : undefined,
+                            )
+                          }
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        />
+                        <input
+                          type="number"
+                          placeholder="Max"
+                          value={filters.price_max || ""}
+                          onChange={(e) =>
+                            handleFilterChange(
+                              "price_max",
+                              e.target.value
+                                ? parseFloat(e.target.value)
+                                : undefined,
+                            )
+                          }
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        />
+                      </div>
+                    </div>
+
+                    {/* Stock Filter */}
+                    <div>
+                      <label className="flex items-center">
+                        <input
+                          type="checkbox"
+                          checked={filters.in_stock === true}
+                          onChange={(e) =>
+                            handleFilterChange(
+                              "in_stock",
+                              e.target.checked ? true : undefined,
+                            )
+                          }
+                          className="rounded border-gray-300 mr-2"
+                        />
+                        <span className="text-sm text-gray-700">In Stock Only</span>
+                      </label>
+                    </div>
+
+                    {/* Featured Filter */}
+                    <div>
+                      <label className="flex items-center">
+                        <input
+                          type="checkbox"
+                          checked={filters.is_featured === true}
+                          onChange={(e) =>
+                            handleFilterChange(
+                              "is_featured",
+                              e.target.checked ? true : undefined,
+                            )
+                          }
+                          className="rounded border-gray-300 mr-2"
+                        />
+                        <span className="text-sm text-gray-700">Featured Only</span>
+                      </label>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
