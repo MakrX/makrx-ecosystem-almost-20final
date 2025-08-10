@@ -832,6 +832,26 @@ class ApiClient {
   }
 
   // Mock data methods for fallback when backend is unavailable
+  private getMockProductBySlug(slug: string) {
+    const transformedProducts = this.transformMockProducts();
+    const product = transformedProducts.find(p => p.slug === slug);
+
+    if (!product) {
+      throw new Error("Product not found");
+    }
+
+    // Add some mock rating data if not present
+    if (!product.rating) {
+      product.rating = {
+        average: 4.2 + Math.random() * 0.8, // Random rating between 4.2-5.0
+        count: Math.floor(Math.random() * 200) + 50, // Random count between 50-250
+        verified_count: Math.floor(Math.random() * 100) + 25
+      };
+    }
+
+    return product;
+  }
+
   private getMockProducts(searchParams?: URLSearchParams) {
     // Transform mock data to match API response format
     let transformedProducts = this.transformMockProducts();
