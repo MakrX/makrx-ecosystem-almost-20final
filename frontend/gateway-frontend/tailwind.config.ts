@@ -404,7 +404,7 @@ const config: Config = {
       addUtilities(performanceUtilities);
     },
   ],
-  darkMode: 'class',
+  darkMode: 'class', // Enable JS-controlled dark mode
   future: {
     hoverOnlyWhenSupported: true,
   },
