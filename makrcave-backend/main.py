@@ -74,6 +74,9 @@ app.add_middleware(
     ],
 )
 
+# Add security middleware (after CORS)
+add_security_middleware(app)
+
 # Global exception handler
 @app.exception_handler(Exception)
 async def global_exception_handler(request, exc):
