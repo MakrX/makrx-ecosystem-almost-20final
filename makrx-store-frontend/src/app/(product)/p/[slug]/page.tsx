@@ -216,17 +216,33 @@ export default function ProductPage() {
 
     setIsLoadingMoreReviews(true);
 
-    // Simulate API call delay
-    await new Promise(resolve => setTimeout(resolve, 1500));
+    try {
+      // Simulate API call delay with AbortController for cleanup
+      await new Promise((resolve, reject) => {
+        const timeoutId = setTimeout(resolve, 1500);
 
-    // Load 6 more reviews
-    const newCount = Math.min(
-      displayedReviewsCount + 6,
-      product?.rating?.count || 0
-    );
+        // Cleanup function to prevent memory leaks
+        return () => {
+          clearTimeout(timeoutId);
+          reject(new Error('Operation cancelled'));
+        };
+      });
 
-    setDisplayedReviewsCount(newCount);
-    setIsLoadingMoreReviews(false);
+      // Load 6 more reviews
+      const newCount = Math.min(
+        displayedReviewsCount + 6,
+        product?.rating?.count || 0
+      );
+
+      setDisplayedReviewsCount(newCount);
+    } catch (error) {
+      // Silently handle cancellation errors
+      if (error instanceof Error && error.message !== 'Operation cancelled') {
+        console.warn('Error loading more reviews:', error);
+      }
+    } finally {
+      setIsLoadingMoreReviews(false);
+    }
   };
 
   const displayedReviews = product ? generateAllMockReviews(product).slice(0, displayedReviewsCount) : [];
