@@ -46,6 +46,7 @@ export default function CartPage() {
       try {
         const cartData = await api.getCart();
         setCart(cartData);
+        setSubtotal(cartData.subtotal);
       } catch (error) {
         console.error('Failed to load cart:', error);
       } finally {
