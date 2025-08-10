@@ -316,26 +316,26 @@ class ApiClient {
     // In development, if backend is definitely not available, skip network request entirely
     if (process.env.NODE_ENV === "development" && this.baseURL.includes("localhost:8003")) {
       try {
-        // Quick connectivity check - if this fails, go straight to mock data
-        const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 300); // Increased timeout to 300ms
+        // Quick connectivity check using Promise.race to avoid AbortController
+        const timeoutPromise = new Promise((_, reject) =>
+          setTimeout(() => reject(new Error('Connection timeout')), 300)
+        );
 
-        await fetch(this.baseURL + "/health", {
-          signal: controller.signal,
+        const fetchPromise = fetch(this.baseURL + "/health", {
           mode: 'no-cors'
         });
 
-        clearTimeout(timeoutId);
+        await Promise.race([fetchPromise, timeoutPromise]);
       } catch (error) {
-        // Handle both network errors and AbortError gracefully
-        const isAbortError = error instanceof Error && error.name === 'AbortError';
+        // Handle both network errors and timeout gracefully
+        const isTimeoutError = error instanceof Error && error.message === 'Connection timeout';
         const isNetworkError = error instanceof Error && (
           error.message.includes('Failed to fetch') ||
           error.message.includes('NetworkError') ||
           error.message.includes('ERR_NETWORK')
         );
 
-        if (isAbortError || isNetworkError || error instanceof TypeError) {
+        if (isTimeoutError || isNetworkError || error instanceof TypeError) {
           // Backend is not available, use mock data immediately
           if (typeof window !== "undefined" && !sessionStorage.getItem("mock-data-notice-shown")) {
             sessionStorage.setItem("mock-data-notice-shown", "true");
