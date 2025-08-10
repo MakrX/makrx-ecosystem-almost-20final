@@ -186,8 +186,8 @@ export default function Header() {
                       rel="noopener noreferrer"
                       className="flex items-center gap-3 p-2 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
                     >
-                      <div className={`w-6 h-6 bg-${app.color}-100 rounded flex items-center justify-center`}>
-                        <div className={`w-3 h-3 bg-${app.color}-500 rounded`}></div>
+                      <div className={`w-6 h-6 ${app.bgColor} rounded flex items-center justify-center transition-colors`}>
+                        <div className={`w-3 h-3 ${app.iconColor} rounded transition-colors`}></div>
                       </div>
                       <div>
                         <div className="text-sm font-medium text-gray-900 dark:text-white">{app.name}</div>
