@@ -9,6 +9,7 @@ import Footer from "@/components/layout/Footer";
 import ToastNotifications from "@/components/ToastNotifications";
 import { HydrationFix } from "@/components/HydrationFix";
 import DevErrorHandler from "@/components/DevErrorHandler";
+import ErrorBoundary from "@/components/ErrorBoundary";
 
 const inter = Inter({ subsets: ["latin"] });
 
