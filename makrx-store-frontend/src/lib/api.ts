@@ -785,11 +785,8 @@ class ApiClient {
 
   private transformMockProducts() {
     return mockProducts.map((product, index) => {
-      // Generate a unique numeric ID
-      const numericId =
-        typeof product.id === "string"
-          ? parseInt(product.id.replace(/\D/g, "")) || index + 1
-          : index + 1;
+      // Generate a unique numeric ID based on index to avoid conflicts
+      const numericId = index + 1000; // Start from 1000 to avoid low number conflicts
 
       return {
         id: numericId,
