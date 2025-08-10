@@ -245,7 +245,7 @@ export default function CategoryCarousel({
               key={`quick-${category.id}`}
               onClick={() => handleCategoryClick(category)}
               className={`px-3 py-1 text-xs font-medium rounded-full transition-all duration-200 ${
-                selectedCategoryId === category.id
+                (selectedCategoryId === category.id) || (selectedCategoryId === undefined && category.id === 0)
                   ? "bg-blue-600 text-white"
                   : "bg-gray-100 text-gray-700 hover:bg-gray-200"
               }`}
