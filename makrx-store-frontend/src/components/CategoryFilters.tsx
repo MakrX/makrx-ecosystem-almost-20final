@@ -1,7 +1,6 @@
 'use client';
 
 import { useState } from 'react';
-import { ChevronDownIcon, ChevronUpIcon, XMarkIcon } from '@heroicons/react/24/outline';
 
 interface CategoryFiltersProps {
   facets: any[];
@@ -72,7 +71,9 @@ export default function CategoryFilters({ facets, activeFilters, onFilterChange 
                       onClick={() => removeFilter(key, v)}
                       className="hover:bg-blue-200 dark:hover:bg-blue-800 rounded-full p-0.5"
                     >
-                      <XMarkIcon className="h-3 w-3" />
+                      <svg className="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                      </svg>
                     </button>
                   </span>
                 ));
@@ -87,7 +88,9 @@ export default function CategoryFilters({ facets, activeFilters, onFilterChange 
                       onClick={() => removeFilter(key)}
                       className="hover:bg-blue-200 dark:hover:bg-blue-800 rounded-full p-0.5"
                     >
-                      <XMarkIcon className="h-3 w-3" />
+                      <svg className="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                      </svg>
                     </button>
                   </span>
                 );
@@ -116,9 +119,13 @@ export default function CategoryFilters({ facets, activeFilters, onFilterChange 
                 {facet.name.replace('_', ' ')}
               </span>
               {expandedSections.has(facet.name) ? (
-                <ChevronUpIcon className="h-4 w-4 text-gray-500" />
+                <svg className="h-4 w-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 15l7-7 7 7" />
+                </svg>
               ) : (
-                <ChevronDownIcon className="h-4 w-4 text-gray-500" />
+                <svg className="h-4 w-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                </svg>
               )}
             </button>
 
