@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { ArrowRight, Star, Users, Package, Truck, Clock } from "lucide-react";
+import { ArrowRight, Star, Users, Package, Truck, Clock, QrCode } from "lucide-react";
 import { api, type Product, type Category, formatPrice } from "@/lib/api";
 
 export default function HomePage() {
