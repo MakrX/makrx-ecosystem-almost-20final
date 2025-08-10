@@ -40,6 +40,23 @@ export default function CategoryPage() {
   const [sortBy, setSortBy] = useState(searchParams.get('sort') || 'relevance')
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid')
   const [showFilters, setShowFilters] = useState(false)
+  const [isMobile, setIsMobile] = useState(false)
+
+  // Handle responsive design for filters
+  useEffect(() => {
+    const checkScreenSize = () => {
+      const mobile = window.innerWidth < 1024; // lg breakpoint
+      setIsMobile(mobile);
+      // On desktop, show filters by default; on mobile, keep them hidden
+      if (!mobile && !showFilters) {
+        setShowFilters(true);
+      }
+    };
+
+    checkScreenSize();
+    window.addEventListener('resize', checkScreenSize);
+    return () => window.removeEventListener('resize', checkScreenSize);
+  }, [])
   const [compareList, setCompareList] = useState<string[]>([])
 
   const [filteredProducts, setFilteredProducts] = useState<Product[]>([])
