@@ -155,6 +155,11 @@ export default function HomePage() {
 
   return (
     <div className="min-h-screen">
+      {/* SEO Structured Data */}
+      <SEOStructuredData type="organization" />
+      <SEOStructuredData type="website" />
+      <SEOStructuredData type="product" />
+
       {/* Hero Section */}
       <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-to-br from-makrx-blue via-makrx-blue/90 to-purple-900 px-4 sm:px-6 pt-8 sm:pt-12">
         {/* Background Pattern */}
