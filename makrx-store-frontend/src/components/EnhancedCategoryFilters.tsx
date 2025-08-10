@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { X, Filter, ChevronDown, ChevronUp, SlidersHorizontal } from "lucide-react";
+import { getAllFiltersForCategory, type CategoryFilter } from "@/data/categoryFilters";
 
 interface FilterFacet {
   name: string;
