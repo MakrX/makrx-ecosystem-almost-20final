@@ -145,12 +145,12 @@ export default function MaterialsPage() {
 
         <div className="flex gap-8">
           {/* Filters Sidebar */}
-          <div className={`${showFilters ? "block" : "hidden"} md:block w-full md:w-80 flex-shrink-0`}>
-            <EnhancedCategoryFilters 
-              category="materials" 
+          <div className={`${isFiltersOpen ? "block" : "hidden"} lg:block w-full lg:w-80 flex-shrink-0`}>
+            <EnhancedCategoryFilters
+              category="materials"
               onFiltersChange={handleFilterChange}
-              isOpen={showFilters}
-              onClose={() => setShowFilters(false)}
+              isOpen={isFiltersOpen}
+              onClose={closeFilters}
             />
           </div>
 
