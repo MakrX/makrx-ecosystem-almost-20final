@@ -102,7 +102,7 @@ export function Header() {
           </div>
 
           {/* Desktop Navigation */}
-          <nav className="hidden md:flex items-center space-x-8">
+          <nav className="hidden md:flex items-center space-x-6 lg:space-x-8">
             {/* Ecosystem Links */}
             <div className="relative group">
               <button className="text-foreground hover:text-blue-600 dark:hover:text-blue-400 transition-colors flex items-center">
