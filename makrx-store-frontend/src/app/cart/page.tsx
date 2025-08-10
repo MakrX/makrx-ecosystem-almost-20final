@@ -126,7 +126,7 @@ export default function CartPage() {
     try {
       // In a real implementation, this would validate the coupon via API
       // For now, we'll simulate a 10% discount
-      const discount = cart.subtotal * 0.1;
+      const discount = cartSubtotal * 0.1;
       setCouponDiscount(discount);
       alert('Coupon applied successfully!');
     } catch (error) {
