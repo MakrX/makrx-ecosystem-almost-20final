@@ -61,12 +61,12 @@ export function ErrorSuppression() {
       return false; // Let other errors through
     };
 
-    // Intercept fetch requests to block placeholder URLs and handle API errors
+    // Only intercept very specific problematic requests in development
     const originalFetch = window.fetch;
     const interceptedFetch = async (input: RequestInfo | URL, init?: RequestInit) => {
       const url = typeof input === "string" ? input : input.toString();
 
-      // Block requests to placeholder URLs
+      // Only block explicit placeholder URLs that we know are problematic
       if (url && url.includes("/api/placeholder")) {
         console.warn("Blocked placeholder request:", url);
         // Return a resolved promise with a mock response
@@ -77,18 +77,8 @@ export function ErrorSuppression() {
         }));
       }
 
-      try {
-        // Allow all requests to proceed normally
-        return await originalFetch(input, init);
-      } catch (error) {
-        // Only suppress logging for specific backend API errors, but don't block requests
-        if (url && url.includes("localhost:8003")) {
-          console.warn("Backend API request failed (expected in development):", url);
-        } else {
-          console.warn("Network request failed:", url, error);
-        }
-        throw error; // Re-throw to maintain API client fallback logic
-      }
+      // For all other requests, use original fetch without any interception
+      return originalFetch(input, init);
     };
 
     // Add global resource error handler
