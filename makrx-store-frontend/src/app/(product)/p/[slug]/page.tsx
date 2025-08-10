@@ -283,9 +283,10 @@ export default function ProductPage() {
           crumbs.push({ name: productData.name, href: `/p/${productData.slug}` });
           setBreadcrumbs(crumbs);
 
-          // For now, set empty related products since we don't have recommendation API
-          // TODO: Implement recommendation system
-          setRelatedProducts([]);
+          // Use recommendation system to get related products
+          const allProducts = await api.getProducts();
+          const recommendations = getRelatedProducts(product, allProducts, 6);
+          setRelatedProducts(recommendations);
           setComplementaryProducts([]);
         }
       } catch (error) {
