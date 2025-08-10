@@ -125,7 +125,7 @@ export default function ProductPage() {
         content: "Overall a solid choice. The performance is good and it does what it promises. Could use better documentation for advanced features, but the basics are well covered.",
         author: "Emma Davis",
         date: "2023-12-28",
-        verified: false,
+        verified: true,
         helpful: 6
       },
       {
