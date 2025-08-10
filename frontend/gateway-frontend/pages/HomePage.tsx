@@ -117,20 +117,20 @@ interface TestimonialProps {
 }
 
 const Testimonial: React.FC<TestimonialProps> = ({ quote, author, role, company }) => (
-  <div className="bg-white rounded-2xl p-8 shadow-lg hover:shadow-xl transition-shadow">
+  <div className="bg-white dark:bg-gray-800 rounded-2xl p-8 shadow-lg hover:shadow-xl transition-shadow border border-gray-100 dark:border-gray-700">
     <div className="flex items-center mb-4">
       {[...Array(5)].map((_, i) => (
         <Star key={i} className="w-5 h-5 text-makrx-yellow fill-current" />
       ))}
     </div>
-    <p className="text-gray-700 mb-6 italic">"{quote}"</p>
+    <p className="text-gray-700 dark:text-gray-300 mb-6 italic">"{quote}"</p>
     <div className="flex items-center">
-      <div className="w-12 h-12 bg-makrx-blue rounded-full flex items-center justify-center text-white font-bold mr-4">
+      <div className="w-12 h-12 bg-makrx-blue dark:bg-makrx-yellow rounded-full flex items-center justify-center text-white dark:text-makrx-blue font-bold mr-4">
         {author.charAt(0)}
       </div>
       <div>
-        <div className="font-semibold text-gray-900">{author}</div>
-        <div className="text-gray-600 text-sm">{role}, {company}</div>
+        <div className="font-semibold text-gray-900 dark:text-white">{author}</div>
+        <div className="text-gray-600 dark:text-gray-400 text-sm">{role}, {company}</div>
       </div>
     </div>
   </div>
@@ -379,7 +379,7 @@ export default function HomePage() {
       </section>
 
       {/* Benefits Section */}
-      <section className="py-24 sm:py-28 lg:py-36 bg-gradient-to-br from-gray-900 to-makrx-blue border-t border-gray-700">
+      <section className="py-24 sm:py-28 lg:py-36 bg-gradient-to-br from-gray-900 to-makrx-blue dark:from-gray-950 dark:to-makrx-blue-900 border-t border-gray-700 dark:border-gray-600">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-20">
             <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
@@ -463,7 +463,7 @@ export default function HomePage() {
       )}
 
       {/* CTA Section */}
-      <section className="py-24 sm:py-28 lg:py-36 bg-gradient-to-r from-makrx-blue to-purple-700 border-t border-makrx-blue-700">
+      <section className="py-24 sm:py-28 lg:py-36 bg-gradient-to-r from-makrx-blue to-purple-700 dark:from-makrx-blue-900 dark:to-purple-800 border-t border-makrx-blue-700 dark:border-makrx-blue-600">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-4 sm:mb-6">
             Ready to Start Creating?
