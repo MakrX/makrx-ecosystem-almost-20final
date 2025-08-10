@@ -625,7 +625,7 @@ export default function EnhancedHeader() {
       </div>
 
       {/* Feature Flag Debug Panel (Development Only) */}
-      {isInternal && process.env.NODE_ENV === 'development' && (
+      {isInternal && import.meta.env.MODE === 'development' && (
         <FeatureFlagDebugBanner />
       )}
 
