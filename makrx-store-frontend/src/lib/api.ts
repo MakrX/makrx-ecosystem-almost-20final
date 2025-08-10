@@ -309,7 +309,10 @@ class ApiClient {
       if (error instanceof TypeError &&
           (error.message === "Failed to fetch" ||
            error.message.includes("NetworkError") ||
-           error.message.includes("fetch"))) {
+           error.message.includes("ERR_NETWORK") ||
+           error.message.includes("ERR_INTERNET_DISCONNECTED") ||
+           error.message.includes("fetch") ||
+           error.name === "NetworkError")) {
 
         // In development, use mock data instead of showing errors
         if (process.env.NODE_ENV === "development" || process.env.NEXT_PUBLIC_ENV !== "production") {
