@@ -278,6 +278,8 @@ export interface NotificationSettings {
   marketing_emails: boolean;
   order_updates: boolean;
   product_updates: boolean;
+  security_alerts?: boolean;
+  processing_updates?: boolean;
 }
 
 // API Client Class
