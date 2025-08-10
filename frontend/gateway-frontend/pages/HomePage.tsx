@@ -254,7 +254,7 @@ export default function HomePage() {
             </div>
           </div>
 
-          <p className="text-lg sm:text-xl md:text-2xl text-white/90 mb-8 sm:mb-12 max-w-4xl mx-auto leading-relaxed px-4">
+          <p className="text-lg sm:text-xl md:text-2xl text-white/90 mb-6 sm:mb-12 max-w-4xl mx-auto leading-relaxed px-4">
             Access world-class makerspaces, shop cutting-edge tools, learn new skills, and bring your ideas to life.
             Join thousands of makers, innovators, and creators in the MakrX ecosystem.
           </p>
