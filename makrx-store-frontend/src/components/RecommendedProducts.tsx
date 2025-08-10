@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import Image from 'next/image';
-import { ShoppingCartIcon } from '@heroicons/react/24/outline';
+// Using inline SVGs instead of Heroicons
 
 interface RecommendedProduct {
   id: number;
