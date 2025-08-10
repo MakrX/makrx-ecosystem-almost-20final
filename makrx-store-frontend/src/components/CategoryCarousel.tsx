@@ -61,11 +61,22 @@ export default function CategoryCarousel({
     }
   };
 
-  const handleCategoryClick = (category: Category) => {
+  const handleCategoryClick = (category: Category | { id: number; name: string; description: string; image?: string }) => {
     if (onCategorySelect) {
       onCategorySelect(category.id);
     }
   };
+
+  // Add "All Categories" option at the beginning
+  const allCategoriesOption = {
+    id: 0,
+    name: "All Categories",
+    description: "Browse all products",
+    image: undefined,
+    product_count: 0
+  };
+
+  const displayCategories = [allCategoriesOption, ...categories] as any[];
 
   if (categories.length === 0) {
     return null;
