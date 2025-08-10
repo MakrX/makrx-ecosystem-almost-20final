@@ -182,10 +182,15 @@ export default function EnhancedHeader() {
                       </div>
                       {item.dropdown.map((dropdownItem) => {
                         const DropdownIcon = dropdownItem.icon;
+                        const LinkComponent = dropdownItem.isExternal ? 'a' : Link;
+                        const linkProps = dropdownItem.isExternal
+                          ? { href: dropdownItem.href, target: "_blank", rel: "noopener noreferrer" }
+                          : { to: dropdownItem.href };
+
                         return (
-                          <Link
+                          <LinkComponent
                             key={dropdownItem.href}
-                            to={dropdownItem.href}
+                            {...linkProps}
                             className="flex items-center gap-3 px-4 py-3 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors group"
                           >
                             <div className="w-8 h-8 bg-gray-100 dark:bg-gray-700 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform">
@@ -198,15 +203,15 @@ export default function EnhancedHeader() {
                                  dropdownItem.name === 'Find Spaces' ? 'Discover locations' :
                                  dropdownItem.name === 'Projects' ? 'Browse projects' :
                                  dropdownItem.name === 'Shop' ? 'Browse products' :
+                                 dropdownItem.name === 'Custom Print' ? '3D printing & fabrication' :
                                  dropdownItem.name === 'Services' ? 'Custom orders' :
-                                 dropdownItem.name === 'Upload Design' ? 'Get it made' :
                                  dropdownItem.name === 'Courses' ? 'Learn skills' :
                                  dropdownItem.name === 'Skill Badges' ? 'Earn badges' :
                                  dropdownItem.name === 'Certifications' ? 'Get certified' :
                                  'Explore more'}
                               </p>
                             </div>
-                          </Link>
+                          </LinkComponent>
                         );
                       })}
                     </div>
