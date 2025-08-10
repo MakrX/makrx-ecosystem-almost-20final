@@ -85,8 +85,9 @@ export default function DevErrorHandler() {
     return () => {
       window.removeEventListener('unhandledrejection', handleUnhandledRejection);
       window.removeEventListener('error', handleError);
-      // Restore original console.error
+      // Restore original console methods
       console.error = originalConsoleError;
+      console.warn = originalConsoleWarn;
     };
   }, []);
 
