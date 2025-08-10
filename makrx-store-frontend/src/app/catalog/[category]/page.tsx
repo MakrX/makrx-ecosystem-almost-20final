@@ -603,7 +603,7 @@ export default function CategoryPage() {
                                   <button className="p-2 bg-gray-100 rounded text-gray-600 hover:text-red-500">
                                     <Heart className="h-4 w-4" />
                                   </button>
-                                  <Link href={`/product/${product.id}`}>
+                                  <Link href={`/p/${product.id}`}>
                                     <Button variant="outline" size="sm">
                                       View Details
                                     </Button>
