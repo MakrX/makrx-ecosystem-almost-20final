@@ -765,12 +765,12 @@ class ApiClient {
         featuredProducts = featuredProducts.slice(0, limit);
       }
 
-      // Ensure all products have valid IDs
+      // Ensure all products have valid unique IDs
       featuredProducts = featuredProducts.map((product, index) => ({
         ...product,
-        id: product.id || index + 1,
-        slug: product.slug || `product-${index + 1}`,
-        name: product.name || `Product ${index + 1}`,
+        id: product.id || (2000 + index), // Use 2000+ range for featured products
+        slug: product.slug || `featured-product-${index + 1}`,
+        name: product.name || `Featured Product ${index + 1}`,
         images: product.images || ["https://via.placeholder.com/400x300/3B82F6/FFFFFF?text=Product"],
         tags: product.tags || [],
         currency: product.currency || "INR",
