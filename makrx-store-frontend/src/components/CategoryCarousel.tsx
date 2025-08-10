@@ -160,7 +160,11 @@ export default function CategoryCarousel({
                         : "group-hover:shadow-md"
                     }`}
                   >
-                    <div className="aspect-square bg-gradient-to-br from-gray-100 to-gray-200 relative">
+                    <div className={`aspect-square relative ${
+                      category.id === 0
+                        ? "bg-gradient-to-br from-blue-500 to-blue-600"
+                        : "bg-gradient-to-br from-gray-100 to-gray-200"
+                    }`}>
                       {category.image ? (
                         <Image
                           src={category.image}
@@ -170,11 +174,19 @@ export default function CategoryCarousel({
                         />
                       ) : (
                         <div className="absolute inset-0 flex items-center justify-center">
-                          <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
-                            <span className="text-blue-600 font-bold text-lg">
-                              {category.name.charAt(0)}
-                            </span>
-                          </div>
+                          {category.id === 0 ? (
+                            <div className="text-white">
+                              <svg className="w-8 h-8" fill="currentColor" viewBox="0 0 20 20">
+                                <path fillRule="evenodd" d="M3 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zm0 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V8zm0 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1v-2z" clipRule="evenodd" />
+                              </svg>
+                            </div>
+                          ) : (
+                            <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
+                              <span className="text-blue-600 font-bold text-lg">
+                                {category.name.charAt(0)}
+                              </span>
+                            </div>
+                          )}
                         </div>
                       )}
                       
