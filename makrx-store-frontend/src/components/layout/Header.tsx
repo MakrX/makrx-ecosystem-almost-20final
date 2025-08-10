@@ -93,21 +93,21 @@ export function Header() {
         <div className="flex items-center justify-between h-16 gap-4">
           {/* Logo */}
           <div className="flex items-center">
-            <Link href="/" className="flex items-center space-x-2">
-              <div className="text-2xl font-bold text-blue-600 dark:text-blue-400">
+            <Link href="/" className="flex items-center space-x-1">
+              <div className="text-xl font-bold text-blue-600 dark:text-blue-400">
                 MakrX
               </div>
-              <span className="text-muted-foreground">Store</span>
+              <span className="text-sm text-muted-foreground">Store</span>
             </Link>
           </div>
 
           {/* Desktop Navigation */}
-          <nav className="hidden md:flex items-center space-x-6 lg:space-x-8">
+          <nav className="hidden md:flex items-center space-x-3 lg:space-x-4">
             {/* Ecosystem Links */}
             <div className="relative group">
-              <button className="relative px-4 py-2 text-foreground hover:text-blue-600 dark:hover:text-blue-400 transition-all duration-300 flex items-center rounded-lg hover:bg-gradient-to-r hover:from-blue-50 hover:to-indigo-50 dark:hover:from-blue-900/20 dark:hover:to-indigo-900/20 hover:shadow-md hover:scale-105 font-medium group-hover:ring-2 group-hover:ring-blue-200 dark:group-hover:ring-blue-800/30">
-                <span className="bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent dark:from-blue-400 dark:to-indigo-400 font-semibold">
-                  MakrX Ecosystem
+              <button className="relative px-3 py-2 text-foreground hover:text-blue-600 dark:hover:text-blue-400 transition-all duration-300 flex items-center rounded-lg hover:bg-gradient-to-r hover:from-blue-50 hover:to-indigo-50 dark:hover:from-blue-900/20 dark:hover:to-indigo-900/20 hover:shadow-md hover:scale-105 font-medium group-hover:ring-2 group-hover:ring-blue-200 dark:group-hover:ring-blue-800/30">
+                <span className="bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent dark:from-blue-400 dark:to-indigo-400 font-semibold text-sm whitespace-nowrap">
+                  Ecosystem
                 </span>
                 <svg
                   className="ml-2 h-4 w-4 transition-transform duration-300 group-hover:rotate-180 text-blue-500"
