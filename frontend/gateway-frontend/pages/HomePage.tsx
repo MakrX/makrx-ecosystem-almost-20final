@@ -113,55 +113,44 @@ export default function HomePage() {
                   <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-6 md:gap-8">
                     {/* Dream word with enhanced animations */}
                     <div className="dream-word inline-block animate-slide-in-left cursor-default relative group" style={{animationDelay: '0.2s'}}>
-                      <span className="relative z-10 bg-gradient-to-r from-white via-white/90 to-white/80 bg-clip-text text-transparent font-medium animate-dream-glow highlight-word">
+                      <span className="relative z-10 bg-gradient-to-r from-white via-white/90 to-white/80 bg-clip-text text-transparent font-medium">
                         Dream.
                       </span>
-                      <div className="absolute inset-0 bg-gradient-to-r from-makrx-yellow/20 via-makrx-yellow/30 to-makrx-yellow/20 rounded-xl blur-lg opacity-0 group-hover:opacity-100 transition-all duration-700 -z-10 scale-110"></div>
-                      <div className="absolute -inset-2 bg-gradient-to-r from-transparent via-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-xl animate-shimmer"></div>
+                      <div className="absolute inset-0 bg-gradient-to-r from-makrx-yellow/20 via-makrx-yellow/30 to-makrx-yellow/20 rounded-xl blur-lg opacity-0 group-hover:opacity-100 transition-all duration-300 -z-10"></div>
                     </div>
 
-                    {/* Animated separator */}
-                    <div className="hidden sm:block w-2 h-2 rounded-full bg-makrx-yellow/60 animate-pulse" style={{animationDelay: '0.7s'}}></div>
+                    {/* Separator */}
+                    <div className="hidden sm:block w-2 h-2 rounded-full bg-makrx-yellow/60" style={{opacity: '0', animation: 'fadeIn 0.6s ease-out 0.7s forwards'}}></div>
 
                     {/* Make word - central focus with enhanced styling */}
                     <div className="make-word inline-block animate-slide-in-right cursor-default relative group" style={{animationDelay: '0.5s'}}>
-                      <span className="relative z-10 bg-gradient-to-r from-makrx-yellow via-yellow-300 to-makrx-yellow bg-clip-text text-transparent font-bold text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl animate-make-glow animate-gradient-shift highlight-word">
+                      <span className="relative z-10 bg-gradient-to-r from-makrx-yellow via-yellow-300 to-makrx-yellow bg-clip-text text-transparent font-bold text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl">
                         Make.
                       </span>
-                      <div className="absolute inset-0 bg-gradient-to-r from-makrx-yellow/40 via-makrx-yellow/60 to-makrx-yellow/40 rounded-xl blur-xl opacity-70 group-hover:opacity-100 transition-all duration-700 -z-10 scale-125"></div>
-                      <div className="absolute -inset-3 bg-gradient-to-r from-transparent via-makrx-yellow/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-xl animate-shimmer"></div>
-                      {/* Glowing particles effect */}
-                      <div className="absolute -top-2 -left-2 w-1 h-1 bg-makrx-yellow rounded-full animate-ping" style={{animationDelay: '1s'}}></div>
-                      <div className="absolute -bottom-2 -right-2 w-1 h-1 bg-makrx-yellow rounded-full animate-ping" style={{animationDelay: '1.5s'}}></div>
+                      <div className="absolute inset-0 bg-gradient-to-r from-makrx-yellow/20 via-makrx-yellow/30 to-makrx-yellow/20 rounded-xl blur-lg opacity-0 group-hover:opacity-100 transition-all duration-300 -z-10"></div>
                     </div>
 
-                    {/* Animated separator */}
-                    <div className="hidden sm:block w-2 h-2 rounded-full bg-makrx-yellow/60 animate-pulse" style={{animationDelay: '1.2s'}}></div>
+                    {/* Separator */}
+                    <div className="hidden sm:block w-2 h-2 rounded-full bg-makrx-yellow/60" style={{opacity: '0', animation: 'fadeIn 0.6s ease-out 1.2s forwards'}}></div>
 
                     {/* Share word with enhanced animations */}
                     <div className="share-word inline-block animate-slide-in-left cursor-default relative group" style={{animationDelay: '0.8s'}}>
-                      <span className="relative z-10 bg-gradient-to-r from-white via-white/90 to-white/80 bg-clip-text text-transparent font-medium animate-share-glow highlight-word">
+                      <span className="relative z-10 bg-gradient-to-r from-white via-white/90 to-white/80 bg-clip-text text-transparent font-medium">
                         Share.
                       </span>
-                      <div className="absolute inset-0 bg-gradient-to-r from-makrx-yellow/20 via-makrx-yellow/30 to-makrx-yellow/20 rounded-xl blur-lg opacity-0 group-hover:opacity-100 transition-all duration-700 -z-10 scale-110"></div>
-                      <div className="absolute -inset-2 bg-gradient-to-r from-transparent via-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-xl animate-shimmer"></div>
+                      <div className="absolute inset-0 bg-gradient-to-r from-makrx-yellow/20 via-makrx-yellow/30 to-makrx-yellow/20 rounded-xl blur-lg opacity-0 group-hover:opacity-100 transition-all duration-300 -z-10"></div>
                     </div>
                   </div>
                 </div>
 
-                {/* Enhanced animated underline with flowing effect */}
+                {/* Simple animated underline */}
                 <div className="flex justify-center mb-4">
-                  <div className="relative w-32 sm:w-40 md:w-48 h-1">
-                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-makrx-yellow/40 to-transparent rounded-full"></div>
-                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-makrx-yellow to-transparent rounded-full animate-pulse-slow"></div>
-                    <div className="absolute inset-0 bg-gradient-to-r from-makrx-yellow/60 to-transparent rounded-full w-0 animate-[slideRight_3s_ease-in-out_infinite]" style={{animationDelay: '1s'}}></div>
-                  </div>
+                  <div className="w-24 sm:w-32 md:w-40 h-1 bg-gradient-to-r from-transparent via-makrx-yellow to-transparent rounded-full" style={{opacity: '0', animation: 'fadeIn 0.8s ease-out 1.5s forwards'}}></div>
                 </div>
 
-                {/* Floating inspiration particles */}
-                <div className="absolute -top-4 left-1/4 w-1 h-1 bg-makrx-yellow/40 rounded-full animate-float" style={{animationDelay: '2s'}}></div>
-                <div className="absolute -top-2 right-1/3 w-1.5 h-1.5 bg-white/30 rounded-full animate-pulse" style={{animationDelay: '2.5s'}}></div>
-                <div className="absolute top-2 left-1/3 w-1 h-1 bg-makrx-yellow/50 rounded-full animate-bounce-gentle" style={{animationDelay: '3s'}}></div>
+                {/* Static decoration particles */}
+                <div className="absolute -top-4 left-1/4 w-1 h-1 bg-makrx-yellow/40 rounded-full" style={{opacity: '0', animation: 'fadeIn 0.6s ease-out 2s forwards'}}></div>
+                <div className="absolute -top-2 right-1/3 w-1.5 h-1.5 bg-white/30 rounded-full" style={{opacity: '0', animation: 'fadeIn 0.6s ease-out 2.5s forwards'}}></div>
               </div>
             </div>
 
@@ -210,12 +199,10 @@ export default function HomePage() {
           )}
         </div>
 
-        {/* Enhanced Floating Elements */}
-        <div className="absolute top-20 left-10 w-20 h-20 bg-makrx-yellow/20 rounded-full animate-float" style={{ animationDelay: '0s' }} />
-        <div className="absolute bottom-20 right-10 w-16 h-16 bg-purple-400/20 rounded-full animate-float" style={{ animationDelay: '1s' }} />
-        <div className="absolute top-1/3 right-20 w-12 h-12 bg-white/10 rounded-full animate-float" style={{ animationDelay: '2s' }} />
-        <div className="absolute top-1/2 left-1/4 w-8 h-8 bg-makrx-blue/20 rounded-full animate-pulse-slow" style={{ animationDelay: '3s' }} />
-        <div className="absolute bottom-1/3 left-1/3 w-6 h-6 bg-white/15 rounded-full animate-bounce-gentle" style={{ animationDelay: '4s' }} />
+        {/* Static Background Elements */}
+        <div className="absolute top-20 left-10 w-20 h-20 bg-makrx-yellow/10 rounded-full" style={{opacity: '0', animation: 'fadeIn 1s ease-out 2s forwards'}} />
+        <div className="absolute bottom-20 right-10 w-16 h-16 bg-purple-400/10 rounded-full" style={{opacity: '0', animation: 'fadeIn 1s ease-out 3s forwards'}} />
+        <div className="absolute top-1/3 right-20 w-12 h-12 bg-white/5 rounded-full" style={{opacity: '0', animation: 'fadeIn 1s ease-out 4s forwards'}} />
       </section>
 
       {/* Stats Section */}
