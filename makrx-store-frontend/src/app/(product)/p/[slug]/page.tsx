@@ -93,8 +93,8 @@ export default function ProductPage() {
   const [displayedReviewsCount, setDisplayedReviewsCount] = useState(6);
   const [isLoadingMoreReviews, setIsLoadingMoreReviews] = useState(false);
 
-  // Generate mock reviews based on product
-  const generateMockReviews = (product: Product) => {
+  // Generate mock reviews based on product with pagination support
+  const generateAllMockReviews = (product: Product) => {
     const reviewTemplates = [
       {
         rating: 5,
@@ -149,13 +149,87 @@ export default function ProductPage() {
         date: "2023-12-15",
         verified: true,
         helpful: 3
+      },
+      {
+        rating: 5,
+        title: "Outstanding performance for the price",
+        content: "I've been using this for 3 months now and it's been absolutely reliable. The documentation is clear and the community is very helpful. Delivery was fast too.",
+        author: "James Thompson",
+        date: "2023-12-10",
+        verified: true,
+        helpful: 18
+      },
+      {
+        rating: 4,
+        title: "Solid choice for beginners",
+        content: "As someone new to this, I found it very beginner-friendly. The setup process was smooth and there are lots of tutorials available online. Definitely recommend for starting out.",
+        author: "Maria Garcia",
+        date: "2023-12-05",
+        verified: true,
+        helpful: 11
+      },
+      {
+        rating: 5,
+        title: "Best purchase I've made this year",
+        content: "This product has completely transformed my workflow. The build quality is exceptional and it handles everything I throw at it. Customer service is also top-notch.",
+        author: "Robert Wilson",
+        date: "2023-11-28",
+        verified: true,
+        helpful: 25
+      },
+      {
+        rating: 4,
+        title: "Good but could be better",
+        content: "It does what it's supposed to do and the price is reasonable. The only complaint is that some features could be more intuitive. Overall, happy with the purchase.",
+        author: "Jennifer Lee",
+        date: "2023-11-20",
+        verified: true,
+        helpful: 7
+      },
+      {
+        rating: 5,
+        title: "Exceeded expectations in every way",
+        content: "I was skeptical at first but this product has blown me away. The performance is incredible and it's so easy to use. I've already recommended it to several friends.",
+        author: "Michael Brown",
+        date: "2023-11-15",
+        verified: true,
+        helpful: 22
+      },
+      {
+        rating: 4,
+        title: "Reliable and well-built",
+        content: "Been using this daily for work and it's never let me down. The construction feels premium and it's clear a lot of thought went into the design. Worth every penny.",
+        author: "Amanda Taylor",
+        date: "2023-11-08",
+        verified: true,
+        helpful: 14
       }
     ];
 
-    // Return appropriate number of reviews based on rating count
-    const reviewCount = Math.min(product.rating?.count || 0, reviewTemplates.length);
-    return reviewTemplates.slice(0, reviewCount);
+    // Return all available reviews up to the actual rating count
+    const maxReviews = Math.min(product.rating?.count || 0, reviewTemplates.length);
+    return reviewTemplates.slice(0, maxReviews);
   };
+
+  const loadMoreReviews = async () => {
+    if (isLoadingMoreReviews) return;
+
+    setIsLoadingMoreReviews(true);
+
+    // Simulate API call delay
+    await new Promise(resolve => setTimeout(resolve, 1500));
+
+    // Load 6 more reviews
+    const newCount = Math.min(
+      displayedReviewsCount + 6,
+      product?.rating?.count || 0
+    );
+
+    setDisplayedReviewsCount(newCount);
+    setIsLoadingMoreReviews(false);
+  };
+
+  const displayedReviews = product ? generateAllMockReviews(product).slice(0, displayedReviewsCount) : [];
 
   // Enhanced variant handling
   const {
