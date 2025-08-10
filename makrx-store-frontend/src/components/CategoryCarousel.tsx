@@ -98,9 +98,9 @@ export default function CategoryCarousel({
   }
 
   return (
-    <div className="relative bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-8">
-      <div className="flex items-center justify-between mb-6">
-        <h2 className="text-xl font-bold text-gray-900">Shop by Category</h2>
+    <div className="relative bg-white rounded-lg shadow-sm border border-gray-200 p-4 mb-6">
+      <div className="flex items-center justify-between mb-4">
+        <h2 className="text-lg font-bold text-gray-900">Shop by Category</h2>
         <Link
           href="/catalog"
           className="text-sm text-blue-600 hover:text-blue-700 font-medium"
