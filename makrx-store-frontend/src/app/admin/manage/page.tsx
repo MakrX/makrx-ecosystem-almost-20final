@@ -889,6 +889,94 @@ function AdminManagementPage() {
             </div>
           </div>
         )}
+
+        {/* QR Codes Tab */}
+        {activeTab === 'qrcodes' && (
+          <div className="bg-white rounded-xl shadow-sm border border-gray-200">
+            <div className="p-6 border-b border-gray-200">
+              <h2 className="text-xl font-semibold text-gray-900">QR Codes</h2>
+              <p className="text-gray-600 mt-1">Generate QR codes for products, categories, and projects</p>
+            </div>
+            <div className="overflow-x-auto">
+              <table className="w-full">
+                <thead className="bg-gray-50">
+                  <tr>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">QR Code</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Title</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Type</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Created</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Expires</th>
+                    <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                  </tr>
+                </thead>
+                <tbody className="bg-white divide-y divide-gray-200">
+                  {filteredQRCodes.map((qrCode) => (
+                    <tr key={qrCode.id} className="hover:bg-gray-50">
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <img
+                          src={qrCode.qrCodeUrl}
+                          alt="QR Code"
+                          className="h-12 w-12 rounded border"
+                        />
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div className="text-sm font-medium text-gray-900">{qrCode.title}</div>
+                        <div className="text-sm text-gray-500">ID: {qrCode.id}</div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
+                          qrCode.type === 'product' ? 'bg-blue-100 text-blue-800' :
+                          qrCode.type === 'category' ? 'bg-green-100 text-green-800' :
+                          'bg-purple-100 text-purple-800'
+                        }`}>
+                          {qrCode.type.charAt(0).toUpperCase() + qrCode.type.slice(1)}
+                        </span>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                        {new Date(qrCode.createdAt).toLocaleDateString()}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                        {qrCode.expiresAt ? new Date(qrCode.expiresAt).toLocaleDateString() : 'Never'}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                        <div className="flex items-center justify-end space-x-2">
+                          <button
+                            onClick={() => downloadQRCode(qrCode)}
+                            className="text-green-600 hover:text-green-900"
+                            title="Download QR Code"
+                          >
+                            <Download className="h-4 w-4" />
+                          </button>
+                          <button
+                            onClick={() => copyQRData(qrCode)}
+                            className="text-blue-600 hover:text-blue-900"
+                            title="Copy QR Data"
+                          >
+                            <Copy className="h-4 w-4" />
+                          </button>
+                          <button
+                            onClick={() => handleDeleteQRCode(qrCode.id)}
+                            className="text-red-600 hover:text-red-900"
+                            title="Delete QR Code"
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+              {filteredQRCodes.length === 0 && (
+                <div className="text-center py-12">
+                  <QrCode className="h-12 w-12 mx-auto text-gray-400 mb-4" />
+                  <p className="text-gray-600">No QR codes generated yet</p>
+                  <p className="text-sm text-gray-500">Click "Generate QR Code" to create your first QR code</p>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Category Form Modal */}
