@@ -1,40 +1,24 @@
-import { useState, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { Bot, Eye, EyeOff, Lock, Mail, AlertCircle } from "lucide-react";
-import { useAuth } from "../contexts/AuthContext";
+import { useEffect } from "react";
+import { Bot } from "lucide-react";
 
 export default function Login() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [showPassword, setShowPassword] = useState(false);
-  const navigate = useNavigate();
-  const { login, isLoading, error, clearError, isAuthenticated } = useAuth();
-
-  // Redirect if already authenticated
+  // Redirect immediately to SSO
   useEffect(() => {
-    if (isAuthenticated) {
-      navigate("/");
-    }
-  }, [isAuthenticated, navigate]);
+    // Store referrer for redirect after login
+    const referrer = document.referrer || window.location.origin;
+    sessionStorage.setItem('makrx_redirect_url', referrer);
 
-  // Clear error when user starts typing
-  useEffect(() => {
-    if (error) {
-      clearError();
-    }
-  }, [email, password, clearError]);
+    // Redirect to auth.makrx.org
+    const params = new URLSearchParams({
+      client_id: 'makrx-gateway',
+      redirect_uri: window.location.origin + '/auth/callback',
+      response_type: 'code',
+      scope: 'openid email profile',
+      state: Math.random().toString(36).substring(2)
+    });
 
-  const handleLogin = async (e: React.FormEvent) => {
-    e.preventDefault();
-
-    try {
-      await login(email, password);
-      navigate("/");
-    } catch (err) {
-      // Error is handled by AuthContext
-      console.error("Login failed:", err);
-    }
-  };
+    window.location.href = `https://auth.makrx.org/realms/makrx/protocol/openid-connect/auth?${params}`;
+  }, []);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-makrx-blue via-makrx-blue/95 to-makrx-blue/90 flex items-center justify-center p-6">
