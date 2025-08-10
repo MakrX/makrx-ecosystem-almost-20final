@@ -505,7 +505,7 @@ export default function HomePage() {
       )}
 
       {/* CTA Section */}
-      <section className="py-24 sm:py-28 lg:py-36 bg-gradient-to-r from-makrx-blue to-purple-700 dark:from-makrx-blue-900 dark:to-purple-800 border-t border-makrx-blue-700 dark:border-makrx-blue-600">
+      <section className="py-24 sm:py-28 lg:py-36 bg-gradient-to-r from-makrx-blue to-purple-700 dark:from-makrx-blue-800 dark:to-purple-900 border-t border-makrx-blue-700 dark:border-makrx-blue-600">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-4 sm:mb-6">
             Ready to Start Creating?
