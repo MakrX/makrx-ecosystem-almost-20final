@@ -58,6 +58,28 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" suppressHydrationWarning>
+      <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              // Prevent browser extension hydration issues
+              (function() {
+                const originalConsoleError = console.error;
+                console.error = function(...args) {
+                  const message = args.join(' ');
+                  if (message.includes('Extra attributes from the server') ||
+                      message.includes('data-new-gr-c-s-check-loaded') ||
+                      message.includes('data-gr-ext-installed') ||
+                      message.includes('Hydration failed')) {
+                    return;
+                  }
+                  originalConsoleError.apply(console, args);
+                };
+              })();
+            `,
+          }}
+        />
+      </head>
       <body className={inter.className} suppressHydrationWarning>
         <HydrationFix />
         <ErrorSuppression />
