@@ -105,6 +105,84 @@ export default function AddItemModal({ isOpen, onClose, editItem, onSubmit }: Ad
     }
   };
 
+  const checkForDuplicates = async (name: string, sku: string) => {
+    if (!name.trim()) {
+      setDuplicateWarning('');
+      return;
+    }
+
+    try {
+      // Check against existing inventory items using the context
+      const { inventoryItems } = useMakerspace();
+
+      // Check for exact name match
+      const nameMatch = inventoryItems.find(item =>
+        item.name.toLowerCase() === name.toLowerCase() &&
+        (!editItem || item.id !== editItem.id)
+      );
+
+      // Check for SKU match if SKU is provided
+      const skuMatch = sku && inventoryItems.find(item =>
+        item.sku && item.sku.toLowerCase() === sku.toLowerCase() &&
+        (!editItem || item.id !== editItem.id)
+      );
+
+      if (nameMatch && skuMatch) {
+        setDuplicateWarning('Both name and SKU already exist in inventory');
+      } else if (nameMatch) {
+        setDuplicateWarning('An item with this name already exists');
+      } else if (skuMatch) {
+        setDuplicateWarning('An item with this SKU already exists');
+      } else {
+        // Check for similar names (fuzzy matching)
+        const similarItems = inventoryItems.filter(item => {
+          if (editItem && item.id === editItem.id) return false;
+
+          const similarity = calculateSimilarity(name.toLowerCase(), item.name.toLowerCase());
+          return similarity > 0.7; // 70% similarity threshold
+        });
+
+        if (similarItems.length > 0) {
+          setDuplicateWarning(`Similar items found: ${similarItems.map(item => item.name).join(', ')}`);
+        } else {
+          setDuplicateWarning('');
+        }
+      }
+    } catch (error) {
+      console.error('Error checking for duplicates:', error);
+      setDuplicateWarning('');
+    }
+  };
+
+  const calculateSimilarity = (str1: string, str2: string): number => {
+    // Simple Levenshtein distance based similarity
+    const maxLength = Math.max(str1.length, str2.length);
+    if (maxLength === 0) return 1;
+
+    const distance = levenshteinDistance(str1, str2);
+    return (maxLength - distance) / maxLength;
+  };
+
+  const levenshteinDistance = (str1: string, str2: string): number => {
+    const matrix = Array(str2.length + 1).fill(null).map(() => Array(str1.length + 1).fill(null));
+
+    for (let i = 0; i <= str1.length; i++) matrix[0][i] = i;
+    for (let j = 0; j <= str2.length; j++) matrix[j][0] = j;
+
+    for (let j = 1; j <= str2.length; j++) {
+      for (let i = 1; i <= str1.length; i++) {
+        const indicator = str1[i - 1] === str2[j - 1] ? 0 : 1;
+        matrix[j][i] = Math.min(
+          matrix[j][i - 1] + 1, // deletion
+          matrix[j - 1][i] + 1, // insertion
+          matrix[j - 1][i - 1] + indicator // substitution
+        );
+      }
+    }
+
+    return matrix[str2.length][str1.length];
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
