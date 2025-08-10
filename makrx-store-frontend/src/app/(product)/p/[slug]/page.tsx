@@ -10,6 +10,7 @@ import ProductGallery from "@/components/ProductGallery";
 import ProductSpecs from "@/components/ProductSpecs";
 import ProductReviews from "@/components/ProductReviews";
 import RecommendedProducts from "@/components/RecommendedProducts";
+import FrequentlyBoughtTogether from "@/components/FrequentlyBoughtTogether";
 import AddToCartForm from "@/components/AddToCartForm";
 import CompatibilityInfo from "@/components/CompatibilityInfo";
 import ProductVariantSelector, { useProductVariants } from "@/components/ProductVariantSelector";
