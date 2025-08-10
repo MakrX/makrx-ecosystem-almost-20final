@@ -40,8 +40,7 @@ const App = () => {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <TooltipProvider>
-        <ThemeProvider>
+      <ThemeProvider>
           <FeatureFlagProvider initialContext={flagContext}>
             <AuthProvider>
               <Helmet>
@@ -63,8 +62,6 @@ const App = () => {
                 <meta name="viewport" content="width=device-width, initial-scale=1" />
               </Helmet>
               
-              <Toaster />
-              <Sonner />
               
               <BrowserRouter>
                 <div className="min-h-screen flex flex-col">
@@ -100,8 +97,7 @@ const App = () => {
               </BrowserRouter>
             </AuthProvider>
           </FeatureFlagProvider>
-        </ThemeProvider>
-      </TooltipProvider>
+      </ThemeProvider>
     </QueryClientProvider>
   );
 };
