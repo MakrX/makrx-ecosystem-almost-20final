@@ -89,6 +89,10 @@ export default function ProductPage() {
     Array<{ name: string; href: string }>
   >([]);
 
+  // Reviews pagination state
+  const [displayedReviewsCount, setDisplayedReviewsCount] = useState(6);
+  const [isLoadingMoreReviews, setIsLoadingMoreReviews] = useState(false);
+
   // Generate mock reviews based on product
   const generateMockReviews = (product: Product) => {
     const reviewTemplates = [
