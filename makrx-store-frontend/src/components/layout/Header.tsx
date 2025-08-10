@@ -298,7 +298,7 @@ export function Header() {
             </div>
 
             {/* Theme Toggle */}
-            <ThemeToggle variant="icon-only" className="" />
+            <ThemeToggle variant="icon-only" className="text-foreground hover:text-blue-600 dark:hover:text-blue-400" />
 
             {/* Cart */}
             <Link
