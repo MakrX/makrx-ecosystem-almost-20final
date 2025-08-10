@@ -5,7 +5,7 @@ import {
   GraduationCap, Zap, Shield, Globe, CheckCircle, 
   ChevronRight, Award, TrendingUp, Heart
 } from 'lucide-react';
-import { useBooleanFlag } from '@makrx/feature-flags';
+import { useBooleanFlag } from '../lib/feature-flags';
 
 interface StatCardProps {
   number: string;
