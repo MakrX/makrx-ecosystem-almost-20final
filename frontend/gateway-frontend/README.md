@@ -7,6 +7,7 @@ The **MakrX Gateway Frontend** is the primary landing page and entry point for t
 The Gateway Frontend is designed as a **simplified public gateway** that serves as the first touchpoint for visitors discovering the MakrX ecosystem. It provides:
 
 - **Public Gateway**: Clean, informational landing page without authentication complexity
+- **Dark/Light Mode Support**: Comprehensive theme system with system preference detection
 - **External App Launcher**: Direct links to external MakrX ecosystem domains
 - **Ecosystem Overview**: Comprehensive introduction to MakrX services and applications
 - **Legal Compliance**: Full DPDP Act 2023 and Indian regulatory compliance
@@ -48,7 +49,7 @@ frontend/gateway-frontend/
 │   ├── Docs.tsx         # Documentation portal
 │   ├── Careers.tsx      # Career opportunities
 │   ├── Press.tsx        # Press and media
-│   ���── Contact.tsx      # Contact information
+│   ├── Contact.tsx      # Contact information
 │   ├── Support.tsx      # Support and help
 │   ├── Status.tsx       # System status
 │   ├── PrivacyPolicy.tsx # DPDP Act 2023 compliant
