@@ -166,6 +166,13 @@ body {
   color: var(--gray-900);
   font-size: 16px;
   letter-spacing: -0.011em;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Dark mode body styles */
+.dark body {
+  background-color: var(--gray-900);
+  color: var(--gray-100);
 }
 
 /* Enhanced focus styles for accessibility */
@@ -777,20 +784,72 @@ input::placeholder, textarea::placeholder {
   transform: translateY(-4px);
 }
 
-/* Dark mode utilities */
+/* Enhanced dark mode support */
+.dark {
+  color-scheme: dark;
+}
+
+.dark .card {
+  background: var(--gray-800);
+  border-color: var(--gray-700);
+}
+
+.dark .backdrop-blur-glass {
+  background-color: rgba(17, 24, 39, 0.85);
+}
+
+.dark input,
+.dark textarea,
+.dark select {
+  background-color: var(--gray-800);
+  border-color: var(--gray-600);
+  color: var(--gray-100);
+}
+
+.dark input:focus,
+.dark textarea:focus,
+.dark select:focus {
+  background-color: var(--gray-700);
+  border-color: var(--makrx-blue);
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.dark input::placeholder,
+.dark textarea::placeholder {
+  color: var(--gray-500);
+}
+
+.dark .makrx-btn-ghost {
+  color: var(--gray-300);
+}
+
+.dark .makrx-btn-ghost:hover {
+  background: var(--gray-800);
+  color: var(--gray-100);
+}
+
+.dark :::-webkit-scrollbar-track {
+  background: var(--gray-800);
+}
+
+.dark :::-webkit-scrollbar-thumb {
+  background: var(--gray-600);
+  border-color: var(--gray-800);
+}
+
+.dark :::-webkit-scrollbar-thumb:hover {
+  background: var(--gray-500);
+}
+
+/* Dark mode system preference support */
 @media (prefers-color-scheme: dark) {
-  body {
+  :root:not(.light) {
+    color-scheme: dark;
+  }
+
+  :root:not(.light) body {
     background-color: var(--gray-900);
     color: var(--gray-100);
-  }
-  
-  .card {
-    background: var(--gray-800);
-    border-color: var(--gray-700);
-  }
-  
-  .backdrop-blur-glass {
-    background-color: rgba(17, 24, 39, 0.85);
   }
 }
 
