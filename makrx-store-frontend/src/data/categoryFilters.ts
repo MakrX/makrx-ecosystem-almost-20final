@@ -329,11 +329,23 @@ const componentsFilters: CategoryFilter[] = [
     id: 'component-category',
     name: 'Component Category',
     type: 'checkbox',
+    required: true,
     options: [
-      { value: 'passive', label: 'Passive Components', count: 234 },
-      { value: 'active', label: 'Active Components', count: 189 },
-      { value: 'mechanical', label: 'Mechanical Parts', count: 156 },
+      { value: 'resistors', label: 'Resistors', count: 156 },
+      { value: 'capacitors', label: 'Capacitors', count: 134 },
+      { value: 'inductors', label: 'Inductors & Coils', count: 78 },
+      { value: 'diodes', label: 'Diodes', count: 89 },
+      { value: 'transistors', label: 'Transistors', count: 112 },
+      { value: 'ics', label: 'Integrated Circuits', count: 234 },
+      { value: 'microcontrollers', label: 'Microcontrollers', count: 67 },
+      { value: 'sensors', label: 'Sensors', count: 145 },
       { value: 'connectors', label: 'Connectors', count: 123 },
+      { value: 'switches', label: 'Switches & Buttons', count: 89 },
+      { value: 'leds', label: 'LEDs & Displays', count: 156 },
+      { value: 'crystals', label: 'Crystals & Oscillators', count: 45 },
+      { value: 'transformers', label: 'Transformers', count: 34 },
+      { value: 'relays', label: 'Relays', count: 56 },
+      { value: 'fuses', label: 'Fuses & Protection', count: 67 },
       { value: 'cables', label: 'Cables & Wires', count: 89 },
       { value: 'enclosures', label: 'Enclosures', count: 67 }
     ]
@@ -343,10 +355,147 @@ const componentsFilters: CategoryFilter[] = [
     name: 'Package Type',
     type: 'checkbox',
     options: [
-      { value: 'through-hole', label: 'Through-Hole', count: 234 },
+      { value: 'through-hole', label: 'Through-Hole (THT)', count: 234 },
       { value: 'smd', label: 'Surface Mount (SMD)', count: 189 },
+      { value: 'sot', label: 'SOT (Small Outline)', count: 78 },
+      { value: 'soic', label: 'SOIC', count: 67 },
+      { value: 'qfp', label: 'QFP', count: 45 },
+      { value: 'bga', label: 'BGA', count: 23 },
+      { value: 'dip', label: 'DIP', count: 156 },
       { value: 'breadboard', label: 'Breadboard Friendly', count: 156 },
       { value: 'module', label: 'Module/Breakout', count: 89 }
+    ]
+  },
+  {
+    id: 'voltage-rating',
+    name: 'Voltage Rating',
+    type: 'checkbox',
+    helpText: 'Maximum operating voltage',
+    options: [
+      { value: '3v3', label: '3.3V Logic', count: 145 },
+      { value: '5v', label: '5V Logic', count: 167 },
+      { value: '12v', label: '12V', count: 89 },
+      { value: '24v', label: '24V', count: 67 },
+      { value: '48v', label: '48V', count: 34 },
+      { value: '100v', label: '100V+', count: 78 },
+      { value: '250v', label: '250V+', count: 45 },
+      { value: '500v', label: '500V+', count: 23 }
+    ]
+  },
+  {
+    id: 'power-rating',
+    name: 'Power Rating',
+    type: 'checkbox',
+    helpText: 'Maximum power dissipation',
+    options: [
+      { value: '0.125w', label: '1/8W (0.125W)', count: 89 },
+      { value: '0.25w', label: '1/4W (0.25W)', count: 156 },
+      { value: '0.5w', label: '1/2W (0.5W)', count: 123 },
+      { value: '1w', label: '1W', count: 78 },
+      { value: '2w', label: '2W', count: 45 },
+      { value: '5w', label: '5W+', count: 34 }
+    ]
+  },
+  {
+    id: 'tolerance',
+    name: 'Tolerance',
+    type: 'checkbox',
+    helpText: 'Component value tolerance',
+    options: [
+      { value: '1%', label: '1% (Precision)', count: 67 },
+      { value: '2%', label: '2%', count: 45 },
+      { value: '5%', label: '5% (Standard)', count: 156 },
+      { value: '10%', label: '10%', count: 89 },
+      { value: '20%', label: '20%', count: 34 }
+    ]
+  },
+  {
+    id: 'operating-temp',
+    name: 'Operating Temperature',
+    type: 'checkbox',
+    helpText: 'Temperature range',
+    options: [
+      { value: 'commercial', label: 'Commercial (0°C to 70°C)', count: 234 },
+      { value: 'industrial', label: 'Industrial (-40°C to 85°C)', count: 145 },
+      { value: 'automotive', label: 'Automotive (-40°C to 125°C)', count: 67 },
+      { value: 'military', label: 'Military (-55°C to 125°C)', count: 23 }
+    ]
+  },
+  {
+    id: 'manufacturer',
+    name: 'Manufacturer',
+    type: 'checkbox',
+    options: [
+      { value: 'texas-instruments', label: 'Texas Instruments', count: 89 },
+      { value: 'analog-devices', label: 'Analog Devices', count: 67 },
+      { value: 'microchip', label: 'Microchip', count: 78 },
+      { value: 'st-micro', label: 'STMicroelectronics', count: 156 },
+      { value: 'infineon', label: 'Infineon', count: 45 },
+      { value: 'vishay', label: 'Vishay', count: 123 },
+      { value: 'murata', label: 'Murata', count: 89 },
+      { value: 'yageo', label: 'Yageo', count: 67 },
+      { value: 'kemet', label: 'KEMET', count: 34 },
+      { value: 'nichicon', label: 'Nichicon', count: 23 }
+    ]
+  },
+  {
+    id: 'mounting-style',
+    name: 'Mounting Style',
+    type: 'checkbox',
+    options: [
+      { value: 'pcb-mount', label: 'PCB Mount', count: 345 },
+      { value: 'panel-mount', label: 'Panel Mount', count: 123 },
+      { value: 'wire-mount', label: 'Wire Mount', count: 89 },
+      { value: 'chassis-mount', label: 'Chassis Mount', count: 67 },
+      { value: 'socket-mount', label: 'Socket Mount', count: 45 }
+    ]
+  },
+  {
+    id: 'pin-count',
+    name: 'Pin Count',
+    type: 'select',
+    helpText: 'Number of pins/connections',
+    options: [
+      { value: '2-pin', label: '2 Pin', count: 234 },
+      { value: '3-pin', label: '3 Pin', count: 89 },
+      { value: '4-pin', label: '4 Pin', count: 67 },
+      { value: '6-pin', label: '6 Pin', count: 45 },
+      { value: '8-pin', label: '8 Pin', count: 78 },
+      { value: '14-pin', label: '14 Pin', count: 56 },
+      { value: '16-pin', label: '16 Pin', count: 67 },
+      { value: '20-pin', label: '20 Pin', count: 34 },
+      { value: '28-pin', label: '28 Pin', count: 23 },
+      { value: '40-pin', label: '40+ Pin', count: 45 }
+    ]
+  },
+  {
+    id: 'interface',
+    name: 'Interface/Protocol',
+    type: 'checkbox',
+    helpText: 'Communication interface',
+    options: [
+      { value: 'i2c', label: 'I²C', count: 89 },
+      { value: 'spi', label: 'SPI', count: 78 },
+      { value: 'uart', label: 'UART/Serial', count: 67 },
+      { value: 'usb', label: 'USB', count: 45 },
+      { value: 'ethernet', label: 'Ethernet', count: 23 },
+      { value: 'wifi', label: 'WiFi', count: 34 },
+      { value: 'bluetooth', label: 'Bluetooth', count: 56 },
+      { value: 'analog', label: 'Analog', count: 156 },
+      { value: 'digital', label: 'Digital I/O', count: 123 }
+    ]
+  },
+  {
+    id: 'frequency',
+    name: 'Frequency Range',
+    type: 'checkbox',
+    helpText: 'Operating frequency',
+    options: [
+      { value: 'dc', label: 'DC', count: 234 },
+      { value: 'low-freq', label: 'Low Freq (<1kHz)', count: 89 },
+      { value: 'audio', label: 'Audio (1kHz-20kHz)', count: 67 },
+      { value: 'rf', label: 'RF (1MHz-1GHz)', count: 45 },
+      { value: 'microwave', label: 'Microwave (>1GHz)', count: 23 }
     ]
   },
   {
@@ -355,11 +504,26 @@ const componentsFilters: CategoryFilter[] = [
     type: 'select',
     options: [
       { value: 'single', label: 'Single Unit', count: 123 },
+      { value: 'pack-5', label: '5-Pack', count: 89 },
       { value: 'pack-10', label: '10-Pack', count: 89 },
       { value: 'pack-25', label: '25-Pack', count: 67 },
+      { value: 'pack-50', label: '50-Pack', count: 56 },
       { value: 'pack-100', label: '100-Pack', count: 45 },
-      { value: 'bulk', label: 'Bulk (500+)', count: 23 }
+      { value: 'pack-500', label: '500-Pack', count: 34 },
+      { value: 'bulk', label: 'Bulk (1000+)', count: 23 }
     ]
+  },
+  {
+    id: 'rohs-compliant',
+    name: 'RoHS Compliant',
+    type: 'toggle',
+    helpText: 'Lead-free and environmentally friendly'
+  },
+  {
+    id: 'development-friendly',
+    name: 'Development Friendly',
+    type: 'toggle',
+    helpText: 'Suitable for prototyping and development'
   }
 ];
 
