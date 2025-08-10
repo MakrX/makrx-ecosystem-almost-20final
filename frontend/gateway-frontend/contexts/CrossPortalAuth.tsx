@@ -24,12 +24,12 @@ const CrossPortalAuthContext = createContext<
 >(undefined);
 
 const AUTH_SERVICE_URL =
-  process.env.NEXT_PUBLIC_AUTH_SERVICE_URL || "http://localhost:8001";
+  import.meta.env.VITE_AUTH_SERVICE_URL || "http://localhost:8001";
 
 const PORTAL_URLS = {
-  gateway: process.env.NEXT_PUBLIC_GATEWAY_URL || "http://localhost:3000",
-  makrcave: process.env.NEXT_PUBLIC_MAKRCAVE_URL || "http://localhost:3001",
-  store: process.env.NEXT_PUBLIC_STORE_URL || "http://localhost:3003",
+  gateway: import.meta.env.VITE_GATEWAY_URL || "http://localhost:3000",
+  makrcave: import.meta.env.VITE_MAKRCAVE_URL || "http://localhost:3001",
+  store: import.meta.env.VITE_STORE_URL || "http://localhost:3003",
 };
 
 export function CrossPortalAuthProvider({
