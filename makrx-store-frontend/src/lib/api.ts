@@ -254,6 +254,7 @@ export interface AdminStats {
   total_revenue: number;
   total_products: number;
   total_users: number;
+  total_customers: number;
   pending_orders: number;
   active_orders: number;
   low_stock_products: number;
