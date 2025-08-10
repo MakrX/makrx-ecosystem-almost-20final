@@ -155,7 +155,7 @@ export default function CategoryCarousel({
                 >
                   <div
                     className={`relative rounded-lg overflow-hidden mb-3 ${
-                      selectedCategoryId === category.id
+                      (selectedCategoryId === category.id) || (selectedCategoryId === undefined && category.id === 0)
                         ? "ring-2 ring-blue-500 shadow-lg"
                         : "group-hover:shadow-md"
                     }`}
