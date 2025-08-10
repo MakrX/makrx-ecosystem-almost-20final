@@ -491,8 +491,8 @@ const kitsFilters: CategoryFilter[] = [
   }
 ];
 
-// Components Specific Filters
-const componentsFilters: CategoryFilter[] = [
+// Electronic Components Specific Filters (moved to electronics category)
+const electronicComponentsFilters: CategoryFilter[] = [
   {
     id: 'component-category',
     name: 'Component Category',
@@ -695,6 +695,219 @@ const componentsFilters: CategoryFilter[] = [
   }
 ];
 
+// Mechanical Components Specific Filters
+const mechanicalComponentsFilters: CategoryFilter[] = [
+  {
+    id: 'component-type',
+    name: 'Component Type',
+    type: 'checkbox',
+    required: true,
+    options: [
+      { value: 'fasteners', label: 'Fasteners', count: 234 },
+      { value: 'bearings', label: 'Bearings', count: 156 },
+      { value: 'linear-motion', label: 'Linear Motion', count: 123 },
+      { value: 'rotary-motion', label: 'Rotary Motion', count: 89 },
+      { value: 'structural', label: 'Structural Components', count: 178 },
+      { value: 'power-transmission', label: 'Power Transmission', count: 67 },
+      { value: 'seals-gaskets', label: 'Seals & Gaskets', count: 45 },
+      { value: 'springs', label: 'Springs', count: 78 },
+      { value: 'couplings', label: 'Couplings & Connectors', count: 56 },
+      { value: 'hardware', label: 'General Hardware', count: 134 }
+    ]
+  },
+  {
+    id: 'material',
+    name: 'Material',
+    type: 'checkbox',
+    options: [
+      { value: 'stainless-steel', label: 'Stainless Steel', count: 289 },
+      { value: 'carbon-steel', label: 'Carbon Steel', count: 234 },
+      { value: 'aluminum', label: 'Aluminum', count: 178 },
+      { value: 'brass', label: 'Brass', count: 89 },
+      { value: 'bronze', label: 'Bronze', count: 67 },
+      { value: 'plastic', label: 'Plastic/Polymer', count: 145 },
+      { value: 'nylon', label: 'Nylon', count: 78 },
+      { value: 'delrin', label: 'Delrin (POM)', count: 56 },
+      { value: 'titanium', label: 'Titanium', count: 23 },
+      { value: 'rubber', label: 'Rubber/Elastomer', count: 45 }
+    ]
+  },
+  {
+    id: 'thread-standard',
+    name: 'Thread Standard',
+    type: 'checkbox',
+    helpText: 'Thread type and pitch standard',
+    options: [
+      { value: 'metric', label: 'Metric (M)', count: 234 },
+      { value: 'imperial', label: 'Imperial/UNC', count: 156 },
+      { value: 'unf', label: 'UNF (Fine)', count: 89 },
+      { value: 'bsw', label: 'BSW (Whitworth)', count: 45 },
+      { value: 'npt', label: 'NPT (Pipe)', count: 34 },
+      { value: 'acme', label: 'ACME', count: 23 },
+      { value: 'trapezoidal', label: 'Trapezoidal', count: 19 },
+      { value: 'no-thread', label: 'No Thread', count: 67 }
+    ]
+  },
+  {
+    id: 'size-range',
+    name: 'Size Range',
+    type: 'checkbox',
+    helpText: 'Diameter or primary dimension',
+    options: [
+      { value: 'micro', label: 'Micro (< 2mm)', count: 45 },
+      { value: 'small', label: 'Small (2-6mm)', count: 178 },
+      { value: 'medium', label: 'Medium (6-12mm)', count: 234 },
+      { value: 'large', label: 'Large (12-25mm)', count: 156 },
+      { value: 'xl', label: 'XL (25-50mm)', count: 89 },
+      { value: 'xxl', label: 'XXL (> 50mm)', count: 67 }
+    ]
+  },
+  {
+    id: 'length',
+    name: 'Length Range',
+    type: 'select',
+    helpText: 'Overall length dimension',
+    options: [
+      { value: 'short', label: 'Short (< 10mm)', count: 89 },
+      { value: 'standard', label: 'Standard (10-30mm)', count: 234 },
+      { value: 'long', label: 'Long (30-100mm)', count: 156 },
+      { value: 'extra-long', label: 'Extra Long (> 100mm)', count: 78 },
+      { value: 'custom', label: 'Custom Length', count: 45 }
+    ]
+  },
+  {
+    id: 'load-capacity',
+    name: 'Load Capacity',
+    type: 'checkbox',
+    helpText: 'Maximum load rating',
+    options: [
+      { value: 'light', label: 'Light (< 10kg)', count: 123 },
+      { value: 'medium', label: 'Medium (10-50kg)', count: 156 },
+      { value: 'heavy', label: 'Heavy (50-200kg)', count: 89 },
+      { value: 'industrial', label: 'Industrial (> 200kg)', count: 67 },
+      { value: 'not-applicable', label: 'Not Applicable', count: 234 }
+    ]
+  },
+  {
+    id: 'precision-grade',
+    name: 'Precision Grade',
+    type: 'select',
+    helpText: 'Manufacturing tolerance class',
+    options: [
+      { value: 'standard', label: 'Standard (±0.1mm)', count: 234 },
+      { value: 'precision', label: 'Precision (±0.05mm)', count: 156 },
+      { value: 'high-precision', label: 'High Precision (±0.02mm)', count: 89 },
+      { value: 'ultra-precision', label: 'Ultra Precision (±0.01mm)', count: 45 },
+      { value: 'custom', label: 'Custom Tolerance', count: 23 }
+    ]
+  },
+  {
+    id: 'finish',
+    name: 'Surface Finish',
+    type: 'checkbox',
+    options: [
+      { value: 'unfinished', label: 'Unfinished/Raw', count: 178 },
+      { value: 'zinc-plated', label: 'Zinc Plated', count: 234 },
+      { value: 'chrome-plated', label: 'Chrome Plated', count: 123 },
+      { value: 'anodized', label: 'Anodized', count: 156 },
+      { value: 'black-oxide', label: 'Black Oxide', count: 89 },
+      { value: 'passivated', label: 'Passivated', count: 67 },
+      { value: 'galvanized', label: 'Galvanized', count: 78 },
+      { value: 'painted', label: 'Painted/Powder Coated', count: 45 },
+      { value: 'polished', label: 'Polished', count: 56 }
+    ]
+  },
+  {
+    id: 'application',
+    name: 'Application',
+    type: 'checkbox',
+    helpText: 'Primary use case',
+    options: [
+      { value: '3d-printer', label: '3D Printer Build', count: 123 },
+      { value: 'cnc-machine', label: 'CNC Machine', count: 89 },
+      { value: 'robotics', label: 'Robotics', count: 156 },
+      { value: 'automation', label: 'Automation', count: 78 },
+      { value: 'furniture', label: 'Furniture Assembly', count: 134 },
+      { value: 'automotive', label: 'Automotive', count: 67 },
+      { value: 'aerospace', label: 'Aerospace', count: 23 },
+      { value: 'marine', label: 'Marine', count: 34 },
+      { value: 'general', label: 'General Purpose', count: 234 }
+    ]
+  },
+  {
+    id: 'standards',
+    name: 'Standards Compliance',
+    type: 'checkbox',
+    helpText: 'International standards',
+    options: [
+      { value: 'din', label: 'DIN (German)', count: 234 },
+      { value: 'iso', label: 'ISO International', count: 289 },
+      { value: 'ansi', label: 'ANSI (American)', count: 156 },
+      { value: 'jis', label: 'JIS (Japanese)', count: 78 },
+      { value: 'bs', label: 'BS (British)', count: 67 },
+      { value: 'astm', label: 'ASTM', count: 89 },
+      { value: 'mil-spec', label: 'MIL-SPEC', count: 23 },
+      { value: 'custom', label: 'Custom/Proprietary', count: 45 }
+    ]
+  },
+  {
+    id: 'temperature-range',
+    name: 'Operating Temperature',
+    type: 'checkbox',
+    helpText: 'Temperature range capability',
+    options: [
+      { value: 'cryogenic', label: 'Cryogenic (< -50°C)', count: 12 },
+      { value: 'low-temp', label: 'Low Temp (-50°C to 0°C)', count: 34 },
+      { value: 'standard', label: 'Standard (0°C to 80°C)', count: 234 },
+      { value: 'elevated', label: 'Elevated (80°C to 200°C)', count: 123 },
+      { value: 'high-temp', label: 'High Temp (200°C to 500°C)', count: 67 },
+      { value: 'extreme', label: 'Extreme (> 500°C)', count: 23 }
+    ]
+  },
+  {
+    id: 'corrosion-resistance',
+    name: 'Corrosion Resistance',
+    type: 'select',
+    helpText: 'Environmental protection level',
+    options: [
+      { value: 'none', label: 'No Protection', count: 123 },
+      { value: 'basic', label: 'Basic (Indoor)', count: 178 },
+      { value: 'moderate', label: 'Moderate (Outdoor)', count: 156 },
+      { value: 'high', label: 'High (Marine/Chemical)', count: 89 },
+      { value: 'extreme', label: 'Extreme (Industrial)', count: 67 }
+    ]
+  },
+  {
+    id: 'package-quantity',
+    name: 'Package Quantity',
+    type: 'select',
+    options: [
+      { value: 'single', label: 'Single Unit', count: 89 },
+      { value: 'pack-5', label: '5-Pack', count: 123 },
+      { value: 'pack-10', label: '10-Pack', count: 156 },
+      { value: 'pack-25', label: '25-Pack', count: 134 },
+      { value: 'pack-50', label: '50-Pack', count: 89 },
+      { value: 'pack-100', label: '100-Pack', count: 78 },
+      { value: 'bulk', label: 'Bulk (500+)', count: 67 }
+    ]
+  },
+  {
+    id: 'installation',
+    name: 'Installation Method',
+    type: 'checkbox',
+    options: [
+      { value: 'threaded', label: 'Threaded/Screwed', count: 234 },
+      { value: 'press-fit', label: 'Press Fit', count: 123 },
+      { value: 'snap-fit', label: 'Snap Fit', count: 89 },
+      { value: 'welded', label: 'Welded', count: 67 },
+      { value: 'bolted', label: 'Bolted', count: 156 },
+      { value: 'adhesive', label: 'Adhesive/Bonded', count: 45 },
+      { value: 'magnetic', label: 'Magnetic', count: 23 },
+      { value: 'clamp', label: 'Clamped', count: 78 }
+    ]
+  }
+];
+
 // Export category filter sets
 export const categoryFilterSets: CategoryFilterSet[] = [
   { category: '3d-printers', filters: printerFilters },
@@ -702,7 +915,7 @@ export const categoryFilterSets: CategoryFilterSet[] = [
   { category: 'tools', filters: toolsFilters },
   { category: 'materials', filters: materialsFilters },
   { category: 'kits', filters: kitsFilters },
-  { category: 'components', filters: componentsFilters }
+  { category: 'components', filters: mechanicalComponentsFilters }
 ];
 
 // Helper function to get filters for a specific category
