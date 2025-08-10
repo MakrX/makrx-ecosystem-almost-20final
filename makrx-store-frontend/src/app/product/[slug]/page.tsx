@@ -370,7 +370,7 @@ export default function ProductPage() {
                   Key Features
                 </h3>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                  {Object.entries(product.attributes)
+                  {Object.entries(product.attributes || {})
                     .slice(0, 4)
                     .map(([key, value]) => (
                       <div
