@@ -74,7 +74,7 @@ function AdminPortal() {
     }
   };
 
-  const handleDeleteProduct = async (productId: string) => {
+  const handleDeleteProduct = async (productId: number) => {
     if (!confirm("Are you sure you want to delete this product?")) {
       return;
     }
