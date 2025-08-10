@@ -204,7 +204,7 @@ export default function HomePage() {
               Everything You Need to 
               <span className="text-makrx-blue"> Create</span>
             </h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+            <p className="text-lg sm:text-xl text-gray-600 max-w-3xl mx-auto px-4">
               From idea to reality, MakrX provides the tools, space, knowledge, and community to bring your vision to life.
             </p>
           </div>
@@ -244,7 +244,7 @@ export default function HomePage() {
             <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
               How MakrX Works
             </h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+            <p className="text-lg sm:text-xl text-gray-600 max-w-3xl mx-auto px-4">
               Simple steps to transform your ideas into reality
             </p>
           </div>
@@ -338,7 +338,7 @@ export default function HomePage() {
               <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
                 Loved by Makers
               </h2>
-              <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+              <p className="text-lg sm:text-xl text-gray-600 max-w-3xl mx-auto px-4">
                 Hear from the amazing creators who are already part of the MakrX family
               </p>
             </div>
