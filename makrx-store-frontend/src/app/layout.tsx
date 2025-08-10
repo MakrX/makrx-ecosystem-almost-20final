@@ -79,6 +79,19 @@ if (typeof window !== "undefined" && process.env.NODE_ENV === "development") {
       throw error;
     }
   };
+
+  // Add global image error handler
+  document.addEventListener("error", (event) => {
+    const target = event.target as HTMLImageElement;
+    if (target && target.tagName === "IMG") {
+      // Replace broken images with placeholder
+      if (target.src.includes("/api/placeholder") || !target.src.startsWith("http")) {
+        target.src = "https://via.placeholder.com/400x300/3B82F6/FFFFFF?text=Image";
+        console.warn("Replaced broken image:", target.src);
+        event.preventDefault();
+      }
+    }
+  }, true);
 }
 
 const inter = Inter({ subsets: ["latin"] });
