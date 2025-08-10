@@ -7,6 +7,7 @@ import {
 } from 'lucide-react';
 import { useBooleanFlag } from '../lib/feature-flags';
 import SEOStructuredData from '../components/SEOStructuredData';
+import AppLauncher from '../components/AppLauncher';
 
 interface StatCardProps {
   number: string;
