@@ -89,6 +89,70 @@ export default function ProductPage() {
     Array<{ name: string; href: string }>
   >([]);
 
+  // Generate mock reviews based on product
+  const generateMockReviews = (product: Product) => {
+    const reviewTemplates = [
+      {
+        rating: 5,
+        title: "Excellent product, exactly as described",
+        content: "This product exceeded my expectations. Great build quality and works perfectly out of the box. Highly recommended for both beginners and experienced users.",
+        author: "Alex Chen",
+        date: "2024-01-15",
+        verified: true,
+        helpful: 12
+      },
+      {
+        rating: 4,
+        title: "Great value for money",
+        content: "Really solid product for the price point. Setup was straightforward and documentation is comprehensive. Only minor issue is the shipping took a bit longer than expected.",
+        author: "Sarah Johnson",
+        date: "2024-01-10",
+        verified: true,
+        helpful: 8
+      },
+      {
+        rating: 5,
+        title: "Perfect for my project needs",
+        content: "Been using this for my IoT project and it's been rock solid. The built-in features work great and the community support is fantastic. Would definitely buy again.",
+        author: "Mike Rodriguez",
+        date: "2024-01-05",
+        verified: true,
+        helpful: 15
+      },
+      {
+        rating: 4,
+        title: "Good product with room for improvement",
+        content: "Overall a solid choice. The performance is good and it does what it promises. Could use better documentation for advanced features, but the basics are well covered.",
+        author: "Emma Davis",
+        date: "2023-12-28",
+        verified: false,
+        helpful: 6
+      },
+      {
+        rating: 5,
+        title: "Fantastic upgrade from the previous version",
+        content: "The improvements in this version are noticeable. Better connectivity, more reliable, and the new features are actually useful. Worth the investment.",
+        author: "David Kim",
+        date: "2023-12-20",
+        verified: true,
+        helpful: 20
+      },
+      {
+        rating: 3,
+        title: "Decent but had some issues",
+        content: "Product works as advertised but I had some compatibility issues with my setup. Customer support was helpful in resolving them. Average experience overall.",
+        author: "Lisa Wang",
+        date: "2023-12-15",
+        verified: true,
+        helpful: 3
+      }
+    ];
+
+    // Return appropriate number of reviews based on rating count
+    const reviewCount = Math.min(product.rating?.count || 0, reviewTemplates.length);
+    return reviewTemplates.slice(0, reviewCount);
+  };
+
   // Enhanced variant handling
   const {
     selectedVariant,
