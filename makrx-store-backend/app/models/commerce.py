@@ -58,7 +58,8 @@ class Product(Base):
     name = Column(String(255), nullable=False, index=True)
     description = Column(Text)
     short_description = Column(String(500))
-    brand = Column(String(100), index=True)
+    brand = Column(String(100), index=True)  # Legacy brand name field
+    brand_id = Column(Integer, ForeignKey("brands.id"), nullable=True, index=True)  # New brand reference
     category_id = Column(Integer, ForeignKey("categories.id"), nullable=False)
     
     # Pricing
