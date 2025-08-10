@@ -7,7 +7,7 @@ import {
   useNotifications,
   requestNotificationPermission,
 } from "@/contexts/NotificationContext";
-import { api } from "@/lib/api";
+import { api, type NotificationSettings } from "@/lib/api";
 import {
   Bell,
   BellOff,
