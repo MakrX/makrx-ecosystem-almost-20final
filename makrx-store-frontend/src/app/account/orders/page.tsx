@@ -62,6 +62,32 @@ export default function AccountOrdersPage() {
   // Track submitted reviews (in real app, this would be stored in database)
   const [submittedReviews, setSubmittedReviews] = useState<Set<string>>(new Set());
 
+  // Handle review submission
+  const handleReviewSubmit = async (reviewData: ReviewData) => {
+    // In real app, this would submit to API
+    console.log("Submitting review:", reviewData);
+
+    // Add to submitted reviews set
+    const reviewKey = `${reviewData.orderId}-${reviewData.itemId}`;
+    setSubmittedReviews(prev => new Set([...prev, reviewKey]));
+
+    // Close modal
+    setIsReviewModalOpen(false);
+    setSelectedReviewItem(null);
+
+    // Here you would typically make an API call to submit the review
+    // await api.submitReview(reviewData);
+  };
+
+  const openReviewModal = (item: Order['items'][0], orderId: string) => {
+    setSelectedReviewItem({ item, orderId });
+    setIsReviewModalOpen(true);
+  };
+
+  const hasUserReviewed = (orderId: string, itemId: string) => {
+    return submittedReviews.has(`${orderId}-${itemId}`);
+  };
+
   // Mock orders data - mix of product and service orders
   const allOrders: Order[] = [
     {
