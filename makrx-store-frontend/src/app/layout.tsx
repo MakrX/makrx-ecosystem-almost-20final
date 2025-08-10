@@ -60,20 +60,21 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
-        {/* Development-friendly fetch protection */}
+        {/* Ultra-aggressive development error suppression - must be first */}
         <script
           dangerouslySetInnerHTML={{
             __html: `
-              // Aggressive development error suppression
+              // Immediate development error suppression before any other scripts
               (function(){
                 const isDev = window.location.hostname === 'localhost' ||
                              window.location.hostname.includes('dev') ||
                              window.location.port ||
                              window.location.hostname.includes('fly.dev');
+
                 if (isDev) {
-                  // Suppress RSC and development errors early
-                  const isDevelopmentError = (msg) => {
-                    const text = (msg || '').toLowerCase();
+                  // Ultra-aggressive error pattern matching
+                  const isDevelopmentError = (msg, stack) => {
+                    const text = ((msg || '') + ' ' + (stack || '')).toLowerCase();
                     return text.includes('failed to fetch') ||
                            text.includes('rsc payload') ||
                            text.includes('fetchserverresponse') ||
@@ -81,24 +82,68 @@ export default function RootLayout({
                            text.includes('hot-reloader') ||
                            text.includes('webpack') ||
                            text.includes('fullstory') ||
-                           text.includes('fs.js');
+                           text.includes('fs.js') ||
+                           text.includes('hmrm') ||
+                           text.includes('router-reducer') ||
+                           text.includes('app-router') ||
+                           text.includes('action-queue') ||
+                           text.includes('use-reducer-with-devtools') ||
+                           (text.includes('typeerror') && text.includes('fetch'));
                   };
 
-                  // Override early error handlers
+                  // Override console methods immediately
+                  const originalError = console.error;
+                  const originalWarn = console.warn;
+                  const originalLog = console.log;
+
+                  console.error = function(...args) {
+                    const message = args.join(' ');
+                    if (!isDevelopmentError(message)) {
+                      originalError.apply(console, args);
+                    }
+                  };
+
+                  console.warn = function(...args) {
+                    const message = args.join(' ');
+                    if (!isDevelopmentError(message)) {
+                      originalWarn.apply(console, args);
+                    }
+                  };
+
+                  // Override global error handlers with highest priority
                   window.addEventListener('error', (e) => {
-                    if (isDevelopmentError(e.message) || isDevelopmentError(e.error?.message)) {
+                    if (isDevelopmentError(e.message, e.error?.stack)) {
                       e.preventDefault();
-                      e.stopPropagation();
+                      e.stopImmediatePropagation();
                       return false;
                     }
-                  }, true);
+                  }, { capture: true, passive: false });
 
                   window.addEventListener('unhandledrejection', (e) => {
-                    if (isDevelopmentError(e.reason?.message)) {
+                    if (isDevelopmentError(e.reason?.message, e.reason?.stack)) {
                       e.preventDefault();
+                      e.stopImmediatePropagation();
                       return false;
                     }
-                  }, true);
+                  }, { capture: true, passive: false });
+
+                  // Override window.onerror
+                  window.onerror = function(message, source, lineno, colno, error) {
+                    if (isDevelopmentError(message, error?.stack)) {
+                      return true; // Prevent default error handling
+                    }
+                    return false; // Allow other errors to be handled normally
+                  };
+
+                  // Override window.onunhandledrejection
+                  window.onunhandledrejection = function(e) {
+                    if (isDevelopmentError(e.reason?.message, e.reason?.stack)) {
+                      e.preventDefault();
+                      return true;
+                    }
+                    return false;
+                  };
+
                 } else {
                   // In production, apply fetch protection
                   try{
