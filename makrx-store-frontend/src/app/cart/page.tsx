@@ -205,12 +205,12 @@ export default function CartPage() {
     );
   }
 
-  const subtotal = cart.subtotal;
+  const cartSubtotal = cart?.subtotal || 0;
   const freeShippingThreshold = 75;
-  const qualifiesForFreeShipping = subtotal >= freeShippingThreshold;
+  const qualifiesForFreeShipping = cartSubtotal >= freeShippingThreshold;
   const finalShippingCost = qualifiesForFreeShipping ? 0 : shippingCost;
-  const tax = subtotal * 0.08; // 8% tax
-  const total = subtotal - couponDiscount + finalShippingCost + tax;
+  const tax = cartSubtotal * 0.08; // 8% tax
+  const cartTotal = cartSubtotal - couponDiscount + finalShippingCost + tax;
 
   return (
     <div className="min-h-screen bg-gray-50">
