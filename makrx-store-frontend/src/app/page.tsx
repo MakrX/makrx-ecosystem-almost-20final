@@ -45,7 +45,7 @@ export default function HomePage() {
   };
 
   const handleProductClick = (product: Product) => {
-    window.location.href = `/product/${product.slug}`;
+    window.location.href = `/p/${product.slug}`;
   };
 
   if (loading) {
