@@ -3,137 +3,114 @@
 import { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { handleAuthCallback } from "@/lib/auth";
+import { Loader2, CheckCircle, XCircle } from "lucide-react";
 
-export default function AuthCallback() {
+export default function AuthCallbackPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const [status, setStatus] = useState<"processing" | "success" | "error">(
-    "processing",
-  );
-  const [message, setMessage] = useState("Processing authentication...");
+  const [status, setStatus] = useState<'loading' | 'success' | 'error'>('loading');
+  const [error, setError] = useState<string>('');
 
   useEffect(() => {
     const processCallback = async () => {
-      const code = searchParams.get("code");
-      const state = searchParams.get("state");
-      const error = searchParams.get("error");
-      const errorDescription = searchParams.get("error_description");
-
-      if (error) {
-        setStatus("error");
-        setMessage(errorDescription || "Authentication failed");
-        return;
-      }
-
-      if (!code || !state) {
-        setStatus("error");
-        setMessage("Invalid authentication response");
-        return;
-      }
-
       try {
+        const code = searchParams.get('code');
+        const state = searchParams.get('state');
+        const error = searchParams.get('error');
+
+        if (error) {
+          throw new Error(error);
+        }
+
+        if (!code || !state) {
+          throw new Error('Missing authentication parameters');
+        }
+
+        // Process the auth callback
         const success = await handleAuthCallback(code, state);
-
+        
         if (success) {
-          setStatus("success");
-          setMessage("Authentication successful! Redirecting...");
-
-          // Get the pre-login URL or default to home
-          const preLoginUrl =
-            localStorage.getItem("makrx_pre_login_url") || "/";
-          localStorage.removeItem("makrx_pre_login_url");
-
-          // Redirect after a short delay
+          setStatus('success');
+          
+          // Get stored redirect URL or default to home
+          const redirectUrl = sessionStorage.getItem('makrx_redirect_url') || 
+                            localStorage.getItem('makrx_pre_login_url') || 
+                            '/';
+          
+          // Clear stored URLs
+          sessionStorage.removeItem('makrx_redirect_url');
+          localStorage.removeItem('makrx_pre_login_url');
+          
+          // Small delay for better UX
           setTimeout(() => {
-            router.push(preLoginUrl);
+            router.push(redirectUrl);
           }, 1500);
         } else {
-          setStatus("error");
-          setMessage("Authentication failed. Please try again.");
+          throw new Error('Authentication failed');
         }
-      } catch (error) {
-        console.error("Auth callback error:", error);
-        setStatus("error");
-        setMessage("An error occurred during authentication");
+      } catch (err) {
+        console.error('Auth callback error:', err);
+        setError(err instanceof Error ? err.message : 'Authentication failed');
+        setStatus('error');
+        
+        // Redirect to login after error
+        setTimeout(() => {
+          router.push('/');
+        }, 3000);
       }
     };
 
     processCallback();
   }, [searchParams, router]);
 
-  const handleRetry = () => {
-    router.push("/");
-  };
-
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
-      <div className="sm:mx-auto sm:w-full sm:max-w-md">
-        <div className="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
-          <div className="text-center">
-            {status === "processing" && (
-              <>
-                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
-                <h2 className="mt-6 text-xl font-medium text-gray-900">
-                  Processing Authentication
-                </h2>
-                <p className="mt-2 text-sm text-gray-600">{message}</p>
-              </>
-            )}
+    <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900">
+      <div className="max-w-md w-full mx-auto">
+        <div className="bg-white dark:bg-gray-800 shadow-lg rounded-lg p-8 text-center">
+          {status === 'loading' && (
+            <>
+              <div className="flex justify-center mb-4">
+                <Loader2 className="h-12 w-12 text-blue-600 animate-spin" />
+              </div>
+              <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
+                Completing Sign In
+              </h2>
+              <p className="text-gray-600 dark:text-gray-400">
+                Please wait while we authenticate you...
+              </p>
+            </>
+          )}
 
-            {status === "success" && (
-              <>
-                <div className="rounded-full h-12 w-12 bg-green-100 mx-auto flex items-center justify-center">
-                  <svg
-                    className="h-6 w-6 text-green-600"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M5 13l4 4L19 7"
-                    />
-                  </svg>
-                </div>
-                <h2 className="mt-6 text-xl font-medium text-gray-900">
-                  Authentication Successful
-                </h2>
-                <p className="mt-2 text-sm text-gray-600">{message}</p>
-              </>
-            )}
+          {status === 'success' && (
+            <>
+              <div className="flex justify-center mb-4">
+                <CheckCircle className="h-12 w-12 text-green-600" />
+              </div>
+              <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
+                Sign In Successful!
+              </h2>
+              <p className="text-gray-600 dark:text-gray-400">
+                Redirecting you to your destination...
+              </p>
+            </>
+          )}
 
-            {status === "error" && (
-              <>
-                <div className="rounded-full h-12 w-12 bg-red-100 mx-auto flex items-center justify-center">
-                  <svg
-                    className="h-6 w-6 text-red-600"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M6 18L18 6M6 6l12 12"
-                    />
-                  </svg>
-                </div>
-                <h2 className="mt-6 text-xl font-medium text-gray-900">
-                  Authentication Failed
-                </h2>
-                <p className="mt-2 text-sm text-gray-600">{message}</p>
-                <button
-                  onClick={handleRetry}
-                  className="mt-4 w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-                >
-                  Return to Home
-                </button>
-              </>
-            )}
-          </div>
+          {status === 'error' && (
+            <>
+              <div className="flex justify-center mb-4">
+                <XCircle className="h-12 w-12 text-red-600" />
+              </div>
+              <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
+                Sign In Failed
+              </h2>
+              <p className="text-gray-600 dark:text-gray-400 mb-4">
+                {error || 'An error occurred during authentication'}
+              </p>
+              <p className="text-sm text-gray-500 dark:text-gray-400">
+                Redirecting to home page...
+              </p>
+            </>
+          )}
         </div>
       </div>
     </div>
