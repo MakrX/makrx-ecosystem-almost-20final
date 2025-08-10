@@ -1,8 +1,8 @@
-import React from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { Link } from 'react-router-dom';
-import { 
-  ArrowRight, Play, Star, Users, Building2, ShoppingCart, 
-  GraduationCap, Zap, Shield, Globe, CheckCircle, 
+import {
+  ArrowRight, Play, Star, Users, Building2, ShoppingCart,
+  GraduationCap, Zap, Shield, Globe, CheckCircle,
   ChevronRight, Award, TrendingUp, Heart
 } from 'lucide-react';
 import { useBooleanFlag } from '../lib/feature-flags';
@@ -13,17 +13,63 @@ interface StatCardProps {
   icon: React.ReactNode;
 }
 
-const StatCard: React.FC<StatCardProps> = ({ number, label, icon }) => (
-  <div className="text-center group">
-    <div className="flex justify-center mb-4">
-      <div className="w-16 h-16 bg-makrx-yellow/20 rounded-2xl flex items-center justify-center group-hover:bg-makrx-yellow/30 transition-colors">
-        {icon}
+const StatCard: React.FC<StatCardProps> = ({ number, label, icon }) => {
+  const [displayNumber, setDisplayNumber] = useState(0);
+  const [isVisible, setIsVisible] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+
+  // Extract the numeric part from the string (e.g., "50+" -> 50)
+  const targetNumber = parseInt(number.replace(/\D/g, '')) || 0;
+  const suffix = number.replace(/\d/g, '');
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting && !isVisible) {
+          setIsVisible(true);
+
+          // Animate the number counting up
+          const duration = 2000; // 2 seconds
+          const steps = 60;
+          const stepDuration = duration / steps;
+          const increment = targetNumber / steps;
+
+          let currentNumber = 0;
+          const timer = setInterval(() => {
+            currentNumber += increment;
+            if (currentNumber >= targetNumber) {
+              setDisplayNumber(targetNumber);
+              clearInterval(timer);
+            } else {
+              setDisplayNumber(Math.floor(currentNumber));
+            }
+          }, stepDuration);
+        }
+      },
+      { threshold: 0.5 }
+    );
+
+    if (ref.current) {
+      observer.observe(ref.current);
+    }
+
+    return () => observer.disconnect();
+  }, [targetNumber, isVisible]);
+
+  return (
+    <div ref={ref} className="text-center group">
+      <div className="flex justify-center mb-4">
+        <div className="w-16 h-16 bg-makrx-yellow/20 rounded-2xl flex items-center justify-center group-hover:bg-makrx-yellow/30 transition-colors duration-300">
+          {icon}
+        </div>
       </div>
+      <div className="text-3xl font-bold text-white mb-2">
+        {displayNumber}{suffix}
+      </div>
+      <div className="text-white/80">{label}</div>
     </div>
-    <div className="text-3xl font-bold text-white mb-2">{number}</div>
-    <div className="text-white/80">{label}</div>
-  </div>
-);
+  );
+};
 
 interface FeatureCardProps {
   title: string;
@@ -210,25 +256,25 @@ export default function HomePage() {
         <section className="py-20 sm:py-24 lg:py-32 bg-makrx-blue border-t border-makrx-blue-700">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-8 sm:gap-12">
-              <StatCard 
-                number="50+" 
-                label="Makerspaces" 
-                icon={<Building2 className="w-8 h-8 text-makrx-yellow" />} 
+              <StatCard
+                number="50+"
+                label="Makerspaces"
+                icon={<Building2 className="w-8 h-8 text-makrx-yellow" />}
               />
-              <StatCard 
-                number="10K+" 
-                label="Active Makers" 
-                icon={<Users className="w-8 h-8 text-makrx-yellow" />} 
+              <StatCard
+                number="10000+"
+                label="Active Makers"
+                icon={<Users className="w-8 h-8 text-makrx-yellow" />}
               />
-              <StatCard 
-                number="1M+" 
-                label="Projects Created" 
-                icon={<Award className="w-8 h-8 text-makrx-yellow" />} 
+              <StatCard
+                number="1000000+"
+                label="Projects Created"
+                icon={<Award className="w-8 h-8 text-makrx-yellow" />}
               />
-              <StatCard 
-                number="25+" 
-                label="Cities" 
-                icon={<Globe className="w-8 h-8 text-makrx-yellow" />} 
+              <StatCard
+                number="25+"
+                label="Cities"
+                icon={<Globe className="w-8 h-8 text-makrx-yellow" />}
               />
             </div>
           </div>
