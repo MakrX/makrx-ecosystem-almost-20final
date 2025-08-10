@@ -191,9 +191,9 @@ export default function HomePage() {
         </div>
 
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <div className="mb-8">
+          <div className="mb-6 sm:mb-8">
             {/* Animated Logo/Brand */}
-            <div className="mb-8 sm:mb-12">
+            <div className="mb-6 sm:mb-12">
               <div className="relative group mb-6 sm:mb-8">
                 <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-display font-bold leading-none relative z-10">
                   <span className="text-white hover:text-makrx-yellow transition-colors duration-500 cursor-default block sm:inline">MakrX</span>
