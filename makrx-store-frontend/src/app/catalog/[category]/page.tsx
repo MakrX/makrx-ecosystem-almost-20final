@@ -228,7 +228,7 @@ export default function CategoryPage() {
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-4">
                 <p className="text-store-text-light">
-                  <span className="font-semibold text-store-text">{filteredProducts.length}</span> of {categoryProducts.length} products
+                  <span className="font-semibold text-store-text">{filteredProducts.length}</span> of {categoryProductsCount} products
                   {searchQuery && <span> matching "{searchQuery}"</span>}
                 </p>
                 
