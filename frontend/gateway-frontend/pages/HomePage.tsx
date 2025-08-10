@@ -1,924 +1,389 @@
-import { Link } from "react-router-dom";
-import { useAuth } from "../contexts/AuthContext";
+import React from 'react';
+import { Link } from 'react-router-dom';
 import { 
-  Bot, 
-  Zap, 
-  Users, 
-  Cog, 
-  ShoppingCart, 
-  GraduationCap,
-  ArrowRight,
-  Sparkles,
-  Cpu,
-  Wrench,
-  Building2,
-  Package,
-  MapPin,
-  Calendar,
-  Star,
-  Globe,
-  Settings,
-  BarChart3,
-  Search,
-  MessageCircle,
-  BookOpen,
-  Trophy,
-  Bell,
-  Activity
-} from "lucide-react";
+  ArrowRight, Play, Star, Users, Building2, ShoppingCart, 
+  GraduationCap, Zap, Shield, Globe, CheckCircle, 
+  ChevronRight, Award, TrendingUp, Heart
+} from 'lucide-react';
+import { useBooleanFlag } from '@makrx/feature-flags';
 
-// Import feature flag components
-import {
-  FlagGuard,
-  NavLinkGuard,
-  ModuleGuard
-} from "../../../packages/feature-flags/src/components/FlagGuard";
+interface StatCardProps {
+  number: string;
+  label: string;
+  icon: React.ReactNode;
+}
 
-import {
-  useBooleanFlag,
-  useIsInternalUser
-} from "../../../packages/feature-flags/src/hooks/useFeatureFlags";
-
-export default function EnhancedIndex() {
-  const { user, isAuthenticated } = useAuth();
-  const isInternal = useIsInternalUser();
-  
-  // Feature flags for navigation
-  const showStore = useBooleanFlag('org.links.store', true);
-  const showMakrCave = useBooleanFlag('org.links.makrcave', true);
-  const showForum = useBooleanFlag('org.forum.enabled', false);
-  const showStatus = useBooleanFlag('org.status.enabled', false);
-  
-  return (
-    <div className="min-h-screen bg-background">
-      {/* Hero Section - Enhanced for Different User Types */}
-      <section className="relative overflow-hidden bg-gradient-to-br from-makrx-blue via-makrx-blue/95 to-makrx-blue/90">
-        <div className="absolute inset-0 makrx-circuit-bg opacity-20" />
-        
-        {/* Floating Elements */}
-        <div className="absolute top-20 left-10 makrx-float opacity-30">
-          <Cog className="w-16 h-16 text-white" />
-        </div>
-        <div className="absolute top-40 right-20 makrx-float-delay opacity-30">
-          <Cpu className="w-12 h-12 text-makrx-yellow" />
-        </div>
-        <div className="absolute bottom-40 left-20 makrx-float opacity-30">
-          <Wrench className="w-14 h-14 text-white" />
-        </div>
-        
-        <div className="relative container mx-auto px-6 py-24 lg:py-32">
-          <div className="max-w-4xl mx-auto text-center">
-            {/* MakrBot Mascot */}
-            <div className="flex justify-center mb-8">
-              <div className="relative">
-                <img 
-                  src="https://cdn.builder.io/api/v1/assets/f367f5e46f75423a83d3f29fae529dbb/botlogofinal-c921e6?format=webp&width=800" 
-                  alt="MakrBot Mascot" 
-                  className="w-32 h-32 makrx-float"
-                />
-                <div className="absolute inset-0 bg-makrx-yellow/20 rounded-full blur-xl" />
-              </div>
-            </div>
-
-            {/* Hero Title - Personalized */}
-            <h1 className="text-5xl lg:text-7xl font-display font-black mb-6 text-balance">
-              <span className="text-white">
-                {isAuthenticated ? `Welcome back, ${user?.firstName}!` : 'Welcome to '}
-              </span>
-              <br />
-              <span className="text-white">Makr</span>
-              <span className="text-makrx-yellow makrx-glow-text">X</span>
-              <br />
-              <span className="text-2xl lg:text-4xl font-light text-white/90">
-                {isAuthenticated ? 'Your Maker Hub Awaits' : 'The Maker Ecosystem Hub'}
-              </span>
-            </h1>
-
-            {/* Hero Description */}
-            <p className="text-xl lg:text-2xl text-white/80 mb-12 max-w-3xl mx-auto text-balance">
-              {isAuthenticated
-                ? `Continue where you left off. Access your projects, orders, and makerspace communities.`
-                : `A unified, modular platform connecting makers, inventors, and creative communities with the tools, spaces, and resources they need to design, prototype, and manufacture anything — efficiently, collaboratively, and at scale.`
-              }
-            </p>
-
-            {/* Role-Based Quick Entry Buttons */}
-            <RoleBasedQuickActions user={user} isAuthenticated={isAuthenticated} />
-
-            {/* Feature Highlights */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto mt-16">
-              <div className="makrx-glass-card text-center group">
-                <div className="w-16 h-16 mx-auto mb-4 bg-makrx-yellow/20 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform">
-                  <Zap className="w-8 h-8 text-makrx-yellow" />
-                </div>
-                <h3 className="text-xl font-semibold mb-2 text-white">Lightning Fast</h3>
-                <p className="text-white/80">Built for speed with modern tech stack</p>
-              </div>
-
-              <div className="makrx-glass-card text-center group">
-                <div className="w-16 h-16 mx-auto mb-4 bg-white/20 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform">
-                  <Users className="w-8 h-8 text-white" />
-                </div>
-                <h3 className="text-xl font-semibold mb-2 text-white">Community Driven</h3>
-                <p className="text-white/80">Built by makers, for makers worldwide</p>
-              </div>
-
-              <div className="makrx-glass-card text-center group">
-                <div className="w-16 h-16 mx-auto mb-4 bg-makrx-yellow/20 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform">
-                  <Sparkles className="w-8 h-8 text-makrx-yellow" />
-                </div>
-                <h3 className="text-xl font-semibold mb-2 text-white">Modular Design</h3>
-                <p className="text-white/80">Enable only what you need</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Personalized Dashboard Section (for logged-in users) */}
-      {isAuthenticated && <PersonalizedDashboard user={user} />}
-
-      {/* Ecosystem Overview */}
-      <section className="py-24 lg:py-32">
-        <div className="container mx-auto px-6">
-          <div className="max-w-6xl mx-auto">
-            <div className="text-center mb-16">
-              <h2 className="text-4xl lg:text-5xl font-display font-bold mb-6">
-                The Complete <span className="text-makrx-yellow">Maker Ecosystem</span>
-              </h2>
-              <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-                Everything you need to bring ideas to life, build and manage makerspaces,
-                and connect with a global community of creators. From empty room to thriving hub — we provide end-to-end support.
-              </p>
-            </div>
-
-            {/* Ecosystem Cards with Feature Flags */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-16">
-              {/* MakrCave */}
-              <NavLinkGuard flagKey="org.links.makrcave">
-                <Link to="/makrcave" className="group">
-                  <div className="makrx-glass-card h-full group-hover:border-makrx-blue/50 transition-all duration-300">
-                    <div className="flex items-start gap-4 mb-6">
-                      <div className="w-16 h-16 bg-makrx-blue/20 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
-                        <Building2 className="w-8 h-8 text-makrx-blue" />
-                      </div>
-                      <div>
-                        <h3 className="text-2xl font-bold mb-2">MakrCave</h3>
-                        <p className="text-makrx-blue font-semibold">Makerspace Management Portal</p>
-                      </div>
-                    </div>
-                    <p className="text-muted-foreground mb-6">
-                      Comprehensive makerspace & service provider platform: inventory management, equipment booking,
-                      skill-gated access, service order processing, project collaboration, and community building.
-                    </p>
-                    <div className="flex flex-wrap gap-2">
-                      <span className="bg-makrx-blue/10 text-makrx-blue px-3 py-1 rounded-full text-sm">Space Management</span>
-                      <span className="bg-makrx-blue/10 text-makrx-blue px-3 py-1 rounded-full text-sm">Service Orders</span>
-                      <span className="bg-makrx-blue/10 text-makrx-blue px-3 py-1 rounded-full text-sm">Community</span>
-                    </div>
-                  </div>
-                </Link>
-              </NavLinkGuard>
-
-              {/* MakrX Store */}
-              <NavLinkGuard flagKey="org.links.store">
-                <Link to="/store" className="group">
-                  <div className="makrx-glass-card h-full group-hover:border-makrx-yellow/50 transition-all duration-300">
-                    <div className="flex items-start gap-4 mb-6">
-                      <div className="w-16 h-16 bg-makrx-yellow/20 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
-                        <Package className="w-8 h-8 text-makrx-yellow" />
-                      </div>
-                      <div>
-                        <h3 className="text-2xl font-bold mb-2">MakrX Store</h3>
-                        <p className="text-makrx-yellow font-semibold">3D Printing & Commerce Hub</p>
-                      </div>
-                    </div>
-                    <p className="text-muted-foreground mb-6">
-                      Maker-focused e-commerce: tools, materials, services, custom fabrication orders with instant quotes,
-                      and seamless integration with MakrCave for quick reorders and job materials.
-                    </p>
-                    <div className="flex flex-wrap gap-2">
-                      <span className="bg-makrx-yellow/10 text-makrx-yellow px-3 py-1 rounded-full text-sm">Custom Orders</span>
-                      <span className="bg-makrx-yellow/10 text-makrx-yellow px-3 py-1 rounded-full text-sm">Quick Reorders</span>
-                      <span className="bg-makrx-yellow/10 text-makrx-yellow px-3 py-1 rounded-full text-sm">Instant Quotes</span>
-                    </div>
-                  </div>
-                </Link>
-              </NavLinkGuard>
-
-              {/* Community Forum (Feature Flagged) */}
-              <FlagGuard flagKey="org.forum.enabled" showComingSoon={true}>
-                <Link to="/forum" className="group">
-                  <div className="makrx-glass-card h-full group-hover:border-makrx-yellow/50 transition-all duration-300">
-                    <div className="flex items-start gap-4 mb-6">
-                      <div className="w-16 h-16 bg-green-500/20 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
-                        <MessageCircle className="w-8 h-8 text-green-500" />
-                      </div>
-                      <div>
-                        <h3 className="text-2xl font-bold mb-2">Community Forum</h3>
-                        <p className="text-green-500 font-semibold">Connect & Collaborate</p>
-                      </div>
-                    </div>
-                    <p className="text-muted-foreground mb-6">
-                      Join discussions, share projects, ask questions, and connect with 
-                      makers from around the world in our vibrant community.
-                    </p>
-                    <div className="flex flex-wrap gap-2">
-                      <span className="bg-green-500/10 text-green-500 px-3 py-1 rounded-full text-sm">Discussions</span>
-                      <span className="bg-green-500/10 text-green-500 px-3 py-1 rounded-full text-sm">Projects</span>
-                      <span className="bg-green-500/10 text-green-500 px-3 py-1 rounded-full text-sm">Q&A</span>
-                    </div>
-                  </div>
-                </Link>
-              </FlagGuard>
-
-              {/* Learning Hub */}
-              <div className="makrx-glass-card">
-                <div className="flex items-start gap-4 mb-6">
-                  <div className="w-16 h-16 bg-makrx-yellow/20 rounded-xl flex items-center justify-center">
-                    <GraduationCap className="w-8 h-8 text-makrx-yellow" />
-                  </div>
-                  <div>
-                    <h3 className="text-2xl font-bold mb-2">Learning Hub</h3>
-                    <p className="text-makrx-yellow font-semibold">Skills & Certification Platform</p>
-                  </div>
-                </div>
-                <p className="text-muted-foreground mb-6">
-                  Interactive courses, skill badges, and certification paths for everything 
-                  from basic electronics to advanced manufacturing techniques.
-                </p>
-                <div className="flex flex-wrap gap-2">
-                  <span className="bg-makrx-yellow/10 text-makrx-yellow px-3 py-1 rounded-full text-sm">Courses</span>
-                  <span className="bg-makrx-yellow/10 text-makrx-yellow px-3 py-1 rounded-full text-sm">Badges</span>
-                  <span className="bg-makrx-yellow/10 text-makrx-yellow px-3 py-1 rounded-full text-sm">Certification</span>
-                </div>
-              </div>
-            </div>
-
-            {/* Find Makerspace Section */}
-            <FindMakerspaceSection />
-
-            {/* Architecture Highlight */}
-            <div className="text-center">
-              <div className="makrx-glass-card max-w-4xl mx-auto">
-                <h3 className="text-2xl font-bold mb-4">
-                  <span className="text-makrx-blue">Open Source</span> · 
-                  <span className="text-makrx-yellow"> Self-Hostable</span> · 
-                  <span className="text-makrx-brown"> Modular</span>
-                </h3>
-                <p className="text-lg text-muted-foreground mb-6">
-                  Built with modern microservices architecture. Docker-ready, Kubernetes-native, 
-                  and designed to scale from single maker to global makerspace networks.
-                </p>
-                <div className="flex flex-wrap justify-center gap-3">
-                  <span className="bg-makrx-blue/10 text-makrx-blue px-4 py-2 rounded-full">React + TypeScript</span>
-                  <span className="bg-makrx-yellow/10 text-makrx-yellow px-4 py-2 rounded-full">FastAPI</span>
-                  <span className="bg-makrx-brown/10 text-makrx-brown px-4 py-2 rounded-full">Keycloak</span>
-                  <span className="bg-makrx-blue/10 text-makrx-blue px-4 py-2 rounded-full">PostgreSQL</span>
-                  <span className="bg-makrx-yellow/10 text-makrx-yellow px-4 py-2 rounded-full">Docker</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Makerspace Building Services */}
-      <section className="py-24 bg-gradient-to-br from-makrx-blue/5 to-makrx-yellow/5">
-        <div className="container mx-auto px-6">
-          <div className="max-w-6xl mx-auto">
-            <div className="text-center mb-16">
-              <h2 className="text-4xl lg:text-5xl font-display font-bold mb-6">
-                <span className="text-makrx-blue">Build</span> Your <span className="text-makrx-yellow">Makerspace</span>
-              </h2>
-              <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-                From empty room to thriving hub — we provide end-to-end support to turn your vision into a collaborative, profitable makerspace.
-              </p>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {/* Consultation & Planning */}
-              <div className="makrx-glass-card text-center group">
-                <div className="w-16 h-16 mx-auto mb-4 bg-makrx-blue/20 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform">
-                  <Search className="w-8 h-8 text-makrx-blue" />
-                </div>
-                <h3 className="text-xl font-semibold mb-3 text-makrx-blue">Consultation & Planning</h3>
-                <p className="text-muted-foreground mb-4">
-                  Understanding needs, target audience, space layout, and creating a roadmap for success.
-                </p>
-                <div className="space-y-2 text-sm">
-                  <div className="flex items-center justify-center gap-2">
-                    <div className="w-2 h-2 bg-makrx-blue rounded-full"></div>
-                    <span>Needs Assessment</span>
-                  </div>
-                  <div className="flex items-center justify-center gap-2">
-                    <div className="w-2 h-2 bg-makrx-blue rounded-full"></div>
-                    <span>Space Planning</span>
-                  </div>
-                  <div className="flex items-center justify-center gap-2">
-                    <div className="w-2 h-2 bg-makrx-blue rounded-full"></div>
-                    <span>Business Model Design</span>
-                  </div>
-                </div>
-              </div>
-
-              {/* Equipment Selection */}
-              <div className="makrx-glass-card text-center group">
-                <div className="w-16 h-16 mx-auto mb-4 bg-makrx-yellow/20 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform">
-                  <Wrench className="w-8 h-8 text-makrx-yellow" />
-                </div>
-                <h3 className="text-xl font-semibold mb-3 text-makrx-yellow">Equipment Selection</h3>
-                <p className="text-muted-foreground mb-4">
-                  Helping choose the right mix of tools, machines, and consumables for your community.
-                </p>
-                <div className="space-y-2 text-sm">
-                  <div className="flex items-center justify-center gap-2">
-                    <div className="w-2 h-2 bg-makrx-yellow rounded-full"></div>
-                    <span>Technology Selection</span>
-                  </div>
-                  <div className="flex items-center justify-center gap-2">
-                    <div className="w-2 h-2 bg-makrx-yellow rounded-full"></div>
-                    <span>Vendor Relations</span>
-                  </div>
-                  <div className="flex items-center justify-center gap-2">
-                    <div className="w-2 h-2 bg-makrx-yellow rounded-full"></div>
-                    <span>Cost Optimization</span>
-                  </div>
-                </div>
-              </div>
-
-              {/* Installation & Setup */}
-              <div className="makrx-glass-card text-center group">
-                <div className="w-16 h-16 mx-auto mb-4 bg-makrx-brown/20 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform">
-                  <Settings className="w-8 h-8 text-makrx-brown" />
-                </div>
-                <h3 className="text-xl font-semibold mb-3 text-makrx-brown">Installation & Setup</h3>
-                <p className="text-muted-foreground mb-4">
-                  Full hardware + software deployment including MakrX systems integration.
-                </p>
-                <div className="space-y-2 text-sm">
-                  <div className="flex items-center justify-center gap-2">
-                    <div className="w-2 h-2 bg-makrx-brown rounded-full"></div>
-                    <span>Hardware Installation</span>
-                  </div>
-                  <div className="flex items-center justify-center gap-2">
-                    <div className="w-2 h-2 bg-makrx-brown rounded-full"></div>
-                    <span>Software Configuration</span>
-                  </div>
-                  <div className="flex items-center justify-center gap-2">
-                    <div className="w-2 h-2 bg-makrx-brown rounded-full"></div>
-                    <span>System Integration</span>
-                  </div>
-                </div>
-              </div>
-
-              {/* Training & Operations */}
-              <div className="makrx-glass-card text-center group">
-                <div className="w-16 h-16 mx-auto mb-4 bg-green-500/20 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform">
-                  <GraduationCap className="w-8 h-8 text-green-500" />
-                </div>
-                <h3 className="text-xl font-semibold mb-3 text-green-500">Training & Operations</h3>
-                <p className="text-muted-foreground mb-4">
-                  Helping staff & members use the space effectively and build a thriving community.
-                </p>
-                <div className="space-y-2 text-sm">
-                  <div className="flex items-center justify-center gap-2">
-                    <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                    <span>Staff Training</span>
-                  </div>
-                  <div className="flex items-center justify-center gap-2">
-                    <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                    <span>Member Onboarding</span>
-                  </div>
-                  <div className="flex items-center justify-center gap-2">
-                    <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                    <span>Operations Manual</span>
-                  </div>
-                </div>
-              </div>
-
-              {/* Ongoing Support */}
-              <div className="makrx-glass-card text-center group">
-                <div className="w-16 h-16 mx-auto mb-4 bg-purple-500/20 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform">
-                  <Activity className="w-8 h-8 text-purple-500" />
-                </div>
-                <h3 className="text-xl font-semibold mb-3 text-purple-500">Ongoing Support</h3>
-                <p className="text-muted-foreground mb-4">
-                  Maintenance, upgrades, and scaling support to help your makerspace grow.
-                </p>
-                <div className="space-y-2 text-sm">
-                  <div className="flex items-center justify-center gap-2">
-                    <div className="w-2 h-2 bg-purple-500 rounded-full"></div>
-                    <span>24/7 Support</span>
-                  </div>
-                  <div className="flex items-center justify-center gap-2">
-                    <div className="w-2 h-2 bg-purple-500 rounded-full"></div>
-                    <span>Regular Updates</span>
-                  </div>
-                  <div className="flex items-center justify-center gap-2">
-                    <div className="w-2 h-2 bg-purple-500 rounded-full"></div>
-                    <span>Scaling Assistance</span>
-                  </div>
-                </div>
-              </div>
-
-              {/* Global Network */}
-              <div className="makrx-glass-card text-center group">
-                <div className="w-16 h-16 mx-auto mb-4 bg-makrx-blue/20 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform">
-                  <Globe className="w-8 h-8 text-makrx-blue" />
-                </div>
-                <h3 className="text-xl font-semibold mb-3 text-makrx-blue">Global Network</h3>
-                <p className="text-muted-foreground mb-4">
-                  Connect with a worldwide network of makerspaces and service providers.
-                </p>
-                <div className="space-y-2 text-sm">
-                  <div className="flex items-center justify-center gap-2">
-                    <div className="w-2 h-2 bg-makrx-blue rounded-full"></div>
-                    <span>Network Access</span>
-                  </div>
-                  <div className="flex items-center justify-center gap-2">
-                    <div className="w-2 h-2 bg-makrx-blue rounded-full"></div>
-                    <span>Best Practices</span>
-                  </div>
-                  <div className="flex items-center justify-center gap-2">
-                    <div className="w-2 h-2 bg-makrx-blue rounded-full"></div>
-                    <span>Collaboration</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Call-to-Action for Makerspace Building */}
-            <div className="text-center mt-16">
-              <div className="makrx-glass-card max-w-2xl mx-auto">
-                <h3 className="text-2xl font-bold mb-4">
-                  Ready to Build Your <span className="text-makrx-yellow">Makerspace</span>?
-                </h3>
-                <p className="text-lg text-muted-foreground mb-6">
-                  From consultation to launch, we’ll help you create a sustainable,
-                  collaborative hub that empowers your community to make anything.
-                </p>
-                <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                  <button className="makrx-btn-primary text-lg flex items-center gap-2 justify-center">
-                    <Calendar className="w-5 h-5" />
-                    Schedule Consultation
-                  </button>
-                  <button className="makrx-btn-secondary text-lg flex items-center gap-2 justify-center">
-                    <BookOpen className="w-5 h-5" />
-                    Download Guide
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Featured Stories & Community */}
-      <FeaturedStoriesSection />
-
-      {/* Call to Action */}
-      <section className="py-24 bg-gradient-to-r from-makrx-blue to-makrx-yellow relative overflow-hidden">
-        <div className="absolute inset-0 opacity-10">
-          <div className="absolute top-10 left-10 makrx-float">
-            <Cog className="w-24 h-24 text-white" />
-          </div>
-          <div className="absolute bottom-10 right-10 makrx-float-delay">
-            <Bot className="w-32 h-32 text-white" />
-          </div>
-        </div>
-        
-        <div className="container mx-auto px-6 text-center relative">
-          <h2 className="text-4xl lg:text-5xl font-display font-bold text-white mb-6">
-            {isAuthenticated ? 'Continue Your Journey' : 'Ready to Start Making?'}
-          </h2>
-          <p className="text-xl text-white/90 mb-12 max-w-2xl mx-auto">
-            {isAuthenticated 
-              ? 'Your maker ecosystem is just a click away. Jump back into your projects and community.'
-              : 'Join thousands of makers worldwide who are building the future with MakrX.'
-            }
-          </p>
-          <div className="flex flex-col sm:flex-row gap-6 justify-center">
-            <NavLinkGuard flagKey="org.links.makrcave">
-              <Link 
-                to="/makrcave" 
-                className="bg-white text-makrx-blue font-semibold px-8 py-4 rounded-lg text-lg hover:bg-white/90 transition-all duration-300 flex items-center gap-2 justify-center hover:shadow-2xl hover:scale-105"
-              >
-                <Building2 className="w-5 h-5" />
-                {isAuthenticated ? 'Go to MakrCave' : 'Start with MakrCave'}
-              </Link>
-            </NavLinkGuard>
-            <NavLinkGuard flagKey="org.links.store">
-              <Link 
-                to="/store" 
-                className="bg-makrx-blue/20 backdrop-blur-sm text-white font-semibold px-8 py-4 rounded-lg text-lg hover:bg-makrx-blue/30 transition-all duration-300 flex items-center gap-2 justify-center border border-white/20 hover:shadow-2xl hover:scale-105"
-              >
-                <Package className="w-5 h-5" />
-                {isAuthenticated ? 'Browse Store' : 'Explore Store'}
-              </Link>
-            </NavLinkGuard>
-          </div>
-        </div>
-      </section>
-
-      {/* Personalized Dashboard for authenticated users */}
-      {isAuthenticated && <PersonalizedDashboard user={user} />}
-
-      {/* Role-based Quick Actions */}
-      <section className="py-16">
-        <div className="container mx-auto px-6">
-          <RoleBasedQuickActions user={user} isAuthenticated={isAuthenticated} />
-        </div>
-      </section>
-
-      {/* Find Makerspace Section */}
-      <section className="py-16 bg-gray-50 dark:bg-gray-900/50">
-        <div className="container mx-auto px-6">
-          <FindMakerspaceSection />
-        </div>
-      </section>
-
-      {/* Featured Stories */}
-      <FeaturedStoriesSection />
-
-      {/* Footer */}
-      <footer className="py-16 bg-gray-900 dark:bg-black text-white">
-        <div className="container mx-auto px-6">
-          <div className="text-center mb-8">
-            <div className="flex items-center justify-center gap-2 mb-4">
-              <div className="w-8 h-8 bg-gradient-to-br from-makrx-blue to-makrx-yellow rounded-lg flex items-center justify-center">
-                <span className="text-white font-bold text-sm">M</span>
-              </div>
-              <span className="text-2xl font-bold">MakrX</span>
-            </div>
-            <p className="text-gray-300 mb-4">
-              A unified, modular platform connecting makers, inventors, and creative communities worldwide.
-            </p>
-            <p className="text-gray-500 text-sm">
-              MakrX is an initiative by Botness Technologies Pvt. Ltd.
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
-            <div className="text-center">
-              <h4 className="font-semibold mb-3">MakrX.org</h4>
-              <p className="text-gray-400 text-sm">
-                Gateway hub for the global maker ecosystem
-              </p>
-            </div>
-            <div className="text-center">
-              <h4 className="font-semibold mb-3">MakrCave</h4>
-              <p className="text-gray-400 text-sm">
-                Comprehensive makerspace management platform
-              </p>
-            </div>
-            <div className="text-center">
-              <h4 className="font-semibold mb-3">MakrX.Store</h4>
-              <p className="text-gray-400 text-sm">
-                Maker-focused e-commerce and fabrication hub
-              </p>
-            </div>
-          </div>
-
-          <div className="border-t border-gray-800 pt-8 text-center">
-            <p className="text-gray-500 text-sm">
-              © 2024 MakrX by Botness Technologies Pvt. Ltd. All rights reserved.
-            </p>
-          </div>
-        </div>
-      </footer>
+const StatCard: React.FC<StatCardProps> = ({ number, label, icon }) => (
+  <div className="text-center group">
+    <div className="flex justify-center mb-4">
+      <div className="w-16 h-16 bg-makrx-yellow/20 rounded-2xl flex items-center justify-center group-hover:bg-makrx-yellow/30 transition-colors">
+        {icon}
+      </div>
     </div>
-  );
+    <div className="text-3xl font-bold text-white mb-2">{number}</div>
+    <div className="text-white/80">{label}</div>
+  </div>
+);
+
+interface FeatureCardProps {
+  title: string;
+  description: string;
+  icon: React.ReactNode;
+  href: string;
+  gradient: string;
 }
 
-// Role-based quick actions component
-function RoleBasedQuickActions({ user, isAuthenticated }: { user: any; isAuthenticated: boolean }) {
-  if (!isAuthenticated) {
-    return (
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-16">
-        <NavLinkGuard flagKey="org.links.makrcave">
-          <Link to="/makrcave" className="makrx-btn-secondary text-lg flex items-center gap-2 justify-center">
-            <MapPin className="w-5 h-5" />
-            Find a Makerspace
-          </Link>
-        </NavLinkGuard>
-        <NavLinkGuard flagKey="org.links.store">
-          <Link to="/store" className="makrx-btn-secondary text-lg flex items-center gap-2 justify-center">
-            <ShoppingCart className="w-5 h-5" />
-            Shop Maker Gear
-          </Link>
-        </NavLinkGuard>
-        <Link to="/learn" className="makrx-btn-secondary text-lg flex items-center gap-2 justify-center">
-          <GraduationCap className="w-5 h-5" />
-          Start Learning
-        </Link>
-        <Link to="/register" className="makrx-btn-primary text-lg flex items-center gap-2 justify-center">
-          <ArrowRight className="w-5 h-5" />
-          Join Community
-        </Link>
+const FeatureCard: React.FC<FeatureCardProps> = ({ title, description, icon, href, gradient }) => (
+  <Link to={href} className="group block">
+    <div className={`relative overflow-hidden rounded-2xl bg-gradient-to-br ${gradient} p-8 h-full transition-all duration-300 group-hover:scale-105 group-hover:shadow-2xl`}>
+      <div className="relative z-10">
+        <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center mb-6 group-hover:bg-white/30 transition-colors">
+          {icon}
+        </div>
+        <h3 className="text-xl font-bold text-white mb-3">{title}</h3>
+        <p className="text-white/90 mb-4 leading-relaxed">{description}</p>
+        <div className="flex items-center text-white font-medium group-hover:text-makrx-yellow transition-colors">
+          Explore <ArrowRight className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" />
+        </div>
       </div>
-    );
-  }
+      <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -translate-y-16 translate-x-16 group-hover:scale-150 transition-transform duration-500"></div>
+    </div>
+  </Link>
+);
 
-  // Role-based actions for authenticated users
-  const role = user?.role || 'maker';
-  
-  switch (role) {
-    case 'super_admin':
-      return (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-16">
-          <Link to="/admin/feature-flags" className="makrx-btn-primary text-lg flex items-center gap-2 justify-center">
-            <Settings className="w-5 h-5" />
-            Feature Flags
-          </Link>
-          <Link to="/admin/analytics" className="makrx-btn-secondary text-lg flex items-center gap-2 justify-center">
-            <BarChart3 className="w-5 h-5" />
-            System Analytics
-          </Link>
-          <NavLinkGuard flagKey="org.links.makrcave">
-            <Link to="/makrcave" className="makrx-btn-secondary text-lg flex items-center gap-2 justify-center">
-              <Building2 className="w-5 h-5" />
-              Manage Spaces
-            </Link>
-          </NavLinkGuard>
-          <NavLinkGuard flagKey="org.links.store">
-            <Link to="/store" className="makrx-btn-secondary text-lg flex items-center gap-2 justify-center">
-              <Package className="w-5 h-5" />
-              Store Admin
-            </Link>
-          </NavLinkGuard>
-        </div>
-      );
-    
-    case 'makerspace_admin':
-      return (
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-16">
-          <Link to="/makrcave" className="makrx-btn-primary text-lg flex items-center gap-2 justify-center">
-            <Building2 className="w-5 h-5" />
-            Manage Makerspace
-          </Link>
-          <Link to="/makrcave/members" className="makrx-btn-secondary text-lg flex items-center gap-2 justify-center">
-            <Users className="w-5 h-5" />
-            Manage Members
-          </Link>
-          <Link to="/makrcave/analytics" className="makrx-btn-secondary text-lg flex items-center gap-2 justify-center">
-            <BarChart3 className="w-5 h-5" />
-            View Analytics
-          </Link>
-        </div>
-      );
-    
-    case 'service_provider':
-      return (
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-16">
-          <Link to="/makrcave/jobs" className="makrx-btn-primary text-lg flex items-center gap-2 justify-center">
-            <Activity className="w-5 h-5" />
-            Available Jobs
-          </Link>
-          <Link to="/makrcave/provider" className="makrx-btn-secondary text-lg flex items-center gap-2 justify-center">
-            <Settings className="w-5 h-5" />
-            Provider Portal
-          </Link>
-          <NavLinkGuard flagKey="org.links.store">
-            <Link to="/store" className="makrx-btn-secondary text-lg flex items-center gap-2 justify-center">
-              <Package className="w-5 h-5" />
-              Browse Store
-            </Link>
-          </NavLinkGuard>
-        </div>
-      );
-    
-    default: // General makers/students
-      return (
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-16">
-          <Link to="/profile/projects" className="makrx-btn-primary text-lg flex items-center gap-2 justify-center">
-            <Star className="w-5 h-5" />
-            My Projects
-          </Link>
-          <NavLinkGuard flagKey="org.links.makrcave">
-            <Link to="/makrcave" className="makrx-btn-secondary text-lg flex items-center gap-2 justify-center">
-              <Building2 className="w-5 h-5" />
-              My Makerspaces
-            </Link>
-          </NavLinkGuard>
-          <NavLinkGuard flagKey="org.links.store">
-            <Link to="/store/orders" className="makrx-btn-secondary text-lg flex items-center gap-2 justify-center">
-              <Package className="w-5 h-5" />
-              My Orders
-            </Link>
-          </NavLinkGuard>
-        </div>
-      );
-  }
+interface TestimonialProps {
+  quote: string;
+  author: string;
+  role: string;
+  company: string;
 }
 
-// Personalized dashboard for logged-in users
-function PersonalizedDashboard({ user }: { user: any }) {
+const Testimonial: React.FC<TestimonialProps> = ({ quote, author, role, company }) => (
+  <div className="bg-white rounded-2xl p-8 shadow-lg hover:shadow-xl transition-shadow">
+    <div className="flex items-center mb-4">
+      {[...Array(5)].map((_, i) => (
+        <Star key={i} className="w-5 h-5 text-makrx-yellow fill-current" />
+      ))}
+    </div>
+    <p className="text-gray-700 mb-6 italic">"{quote}"</p>
+    <div className="flex items-center">
+      <div className="w-12 h-12 bg-makrx-blue rounded-full flex items-center justify-center text-white font-bold mr-4">
+        {author.charAt(0)}
+      </div>
+      <div>
+        <div className="font-semibold text-gray-900">{author}</div>
+        <div className="text-gray-600 text-sm">{role}, {company}</div>
+      </div>
+    </div>
+  </div>
+);
+
+export default function HomePage() {
+  const showStats = useBooleanFlag('org.homepage.stats', true);
+  const showTestimonials = useBooleanFlag('org.homepage.testimonials', true);
+  const showVideo = useBooleanFlag('org.homepage.video', true);
+
   return (
-    <section className="py-16 bg-gray-50 dark:bg-gray-900/50">
-      <div className="container mx-auto px-6">
-        <div className="max-w-6xl mx-auto">
-          <h2 className="text-3xl font-bold mb-8">Your Maker Dashboard</h2>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {/* Active Projects */}
-            <div className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-sm">
-              <div className="flex items-center gap-3 mb-4">
-                <div className="w-10 h-10 bg-makrx-blue/20 rounded-lg flex items-center justify-center">
-                  <Star className="w-5 h-5 text-makrx-blue" />
-                </div>
-                <div>
-                  <h3 className="font-semibold">Active Projects</h3>
-                  <p className="text-2xl font-bold text-makrx-blue">3</p>
-                </div>
-              </div>
-              <Link to="/profile/projects" className="text-sm text-makrx-blue hover:underline">
-                View all projects ��
-              </Link>
-            </div>
+    <div className="min-h-screen">
+      {/* Hero Section */}
+      <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-to-br from-makrx-blue via-makrx-blue/90 to-purple-900">
+        {/* Background Pattern */}
+        <div className="absolute inset-0 opacity-10">
+          <div className="absolute inset-0" style={{
+            backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.4'%3E%3Ccircle cx='30' cy='30' r='2'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
+          }} />
+        </div>
 
-            {/* Pending Orders */}
-            <div className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-sm">
-              <div className="flex items-center gap-3 mb-4">
-                <div className="w-10 h-10 bg-makrx-yellow/20 rounded-lg flex items-center justify-center">
-                  <Package className="w-5 h-5 text-makrx-yellow" />
-                </div>
-                <div>
-                  <h3 className="font-semibold">Pending Orders</h3>
-                  <p className="text-2xl font-bold text-makrx-yellow">2</p>
-                </div>
-              </div>
-              <Link to="/store/orders" className="text-sm text-makrx-yellow hover:underline">
-                Track orders →
-              </Link>
-            </div>
-
-            {/* Upcoming Events */}
-            <div className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-sm">
-              <div className="flex items-center gap-3 mb-4">
-                <div className="w-10 h-10 bg-green-500/20 rounded-lg flex items-center justify-center">
-                  <Calendar className="w-5 h-5 text-green-500" />
-                </div>
-                <div>
-                  <h3 className="font-semibold">Upcoming Events</h3>
-                  <p className="text-2xl font-bold text-green-500">1</p>
-                </div>
-              </div>
-              <Link to="/events" className="text-sm text-green-500 hover:underline">
-                View calendar →
-              </Link>
-            </div>
-
-            {/* Notifications */}
-            <div className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-sm">
-              <div className="flex items-center gap-3 mb-4">
-                <div className="w-10 h-10 bg-red-500/20 rounded-lg flex items-center justify-center">
-                  <Bell className="w-5 h-5 text-red-500" />
-                </div>
-                <div>
-                  <h3 className="font-semibold">Notifications</h3>
-                  <p className="text-2xl font-bold text-red-500">5</p>
-                </div>
-              </div>
-              <Link to="/notifications" className="text-sm text-red-500 hover:underline">
-                View all →
-              </Link>
+        <div className="relative z-10 max-w-7xl mx-auto px-6 text-center">
+          <div className="mb-8">
+            <div className="inline-flex items-center px-4 py-2 rounded-full bg-makrx-yellow/20 text-makrx-yellow text-sm font-medium mb-6">
+              <Zap className="w-4 h-4 mr-2" />
+              Welcome to the Future of Making
             </div>
           </div>
-        </div>
-      </div>
-    </section>
-  );
-}
 
-// Find Makerspace section
-function FindMakerspaceSection() {
-  return (
-    <div className="makrx-glass-card mb-16">
-      <div className="flex flex-col lg:flex-row items-center gap-8">
-        <div className="flex-1">
-          <h3 className="text-3xl font-bold mb-4">Find Your Local Makerspace</h3>
-          <p className="text-muted-foreground mb-6">
-            Connect with maker communities near you. Over 500+ makerspaces worldwide 
-            use MakrX to manage their operations and connect with members.
+          <h1 className="text-5xl md:text-7xl font-bold text-white mb-6 leading-tight">
+            Your Creative
+            <span className="block bg-gradient-to-r from-makrx-yellow to-yellow-300 bg-clip-text text-transparent">
+              Ecosystem
+            </span>
+            Awaits
+          </h1>
+
+          <p className="text-xl md:text-2xl text-white/90 mb-12 max-w-4xl mx-auto leading-relaxed">
+            Access world-class makerspaces, shop cutting-edge tools, learn new skills, and bring your ideas to life. 
+            Join thousands of makers, innovators, and creators in the MakrX community.
           </p>
-          <div className="flex flex-col sm:flex-row gap-4">
-            <div className="flex-1 relative">
-              <MapPin className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
-              <input 
-                type="text" 
-                placeholder="Enter your city or ZIP code"
-                className="w-full pl-10 pr-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-makrx-blue focus:border-transparent"
+
+          <div className="flex flex-col sm:flex-row gap-6 justify-center mb-16">
+            <Link 
+              to="/makrcave" 
+              className="group inline-flex items-center justify-center px-8 py-4 text-lg font-semibold rounded-2xl bg-makrx-yellow text-makrx-blue hover:bg-yellow-300 transition-all duration-300 hover:scale-105 hover:shadow-2xl"
+            >
+              Explore Makerspaces
+              <Building2 className="ml-3 w-5 h-5 group-hover:translate-x-1 transition-transform" />
+            </Link>
+            
+            <Link 
+              to="/store" 
+              className="group inline-flex items-center justify-center px-8 py-4 text-lg font-semibold rounded-2xl bg-white/10 text-white border-2 border-white/20 hover:bg-white/20 hover:border-white/40 transition-all duration-300 hover:scale-105"
+            >
+              Shop Tools & Materials
+              <ShoppingCart className="ml-3 w-5 h-5 group-hover:translate-x-1 transition-transform" />
+            </Link>
+          </div>
+
+          {showVideo && (
+            <div className="relative max-w-4xl mx-auto">
+              <div className="aspect-video bg-black/20 rounded-2xl overflow-hidden backdrop-blur border border-white/20">
+                <div className="w-full h-full flex items-center justify-center">
+                  <button className="w-20 h-20 bg-makrx-yellow rounded-full flex items-center justify-center hover:bg-yellow-300 transition-colors group">
+                    <Play className="w-8 h-8 text-makrx-blue ml-1 group-hover:scale-110 transition-transform" />
+                  </button>
+                </div>
+              </div>
+              <p className="text-white/70 mt-4">Watch how MakrX is transforming the maker ecosystem</p>
+            </div>
+          )}
+        </div>
+
+        {/* Floating Elements */}
+        <div className="absolute top-20 left-10 w-20 h-20 bg-makrx-yellow/20 rounded-full animate-pulse" />
+        <div className="absolute bottom-20 right-10 w-16 h-16 bg-purple-400/20 rounded-full animate-pulse" style={{ animationDelay: '1s' }} />
+        <div className="absolute top-1/3 right-20 w-12 h-12 bg-white/10 rounded-full animate-pulse" style={{ animationDelay: '2s' }} />
+      </section>
+
+      {/* Stats Section */}
+      {showStats && (
+        <section className="py-20 bg-makrx-blue">
+          <div className="max-w-7xl mx-auto px-6">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-12">
+              <StatCard 
+                number="50+" 
+                label="Makerspaces" 
+                icon={<Building2 className="w-8 h-8 text-makrx-yellow" />} 
+              />
+              <StatCard 
+                number="10K+" 
+                label="Active Makers" 
+                icon={<Users className="w-8 h-8 text-makrx-yellow" />} 
+              />
+              <StatCard 
+                number="1M+" 
+                label="Projects Created" 
+                icon={<Award className="w-8 h-8 text-makrx-yellow" />} 
+              />
+              <StatCard 
+                number="25+" 
+                label="Cities" 
+                icon={<Globe className="w-8 h-8 text-makrx-yellow" />} 
               />
             </div>
-            <button className="makrx-btn-primary flex items-center gap-2">
-              <Search className="w-4 h-4" />
-              Find Spaces
-            </button>
           </div>
-        </div>
-        <div className="w-full lg:w-96 h-64 bg-gray-200 rounded-lg flex items-center justify-center">
-          <div className="text-center">
-            <Globe className="w-12 h-12 text-makrx-blue mx-auto mb-2" />
-            <p className="text-muted-foreground">Interactive Map</p>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
+        </section>
+      )}
 
-// Featured stories section
-function FeaturedStoriesSection() {
-  return (
-    <section className="py-24 bg-gray-50 dark:bg-gray-900/50">
-      <div className="container mx-auto px-6">
-        <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold mb-6">Featured Maker Stories</h2>
-            <p className="text-xl text-muted-foreground">
-              See what amazing things makers are creating with MakrX
+      {/* Features Section */}
+      <section className="py-24 bg-gray-50">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="text-center mb-20">
+            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
+              Everything You Need to 
+              <span className="text-makrx-blue"> Create</span>
+            </h2>
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+              From idea to reality, MakrX provides the tools, space, knowledge, and community to bring your vision to life.
             </p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {/* Featured Story 1 */}
-            <div className="bg-white dark:bg-gray-800 rounded-lg overflow-hidden shadow-sm">
-              <div className="h-48 bg-gradient-to-br from-makrx-blue to-makrx-yellow"></div>
-              <div className="p-6">
-                <div className="flex items-center gap-2 mb-3">
-                  <Trophy className="w-4 h-4 text-makrx-yellow" />
-                  <span className="text-sm font-medium text-makrx-yellow">Featured Project</span>
-                </div>
-                <h3 className="text-xl font-bold mb-2">Robotic Arm Control System</h3>
-                <p className="text-muted-foreground mb-4">
-                  Built using components from MakrX Store and assembled at TechSpace Makerspace...
-                </p>
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <div className="w-6 h-6 bg-makrx-blue rounded-full"></div>
-                    <span className="text-sm">Alex Chen</span>
-                  </div>
-                  <span className="text-sm text-muted-foreground">2 days ago</span>
-                </div>
-              </div>
-            </div>
-
-            {/* Featured Story 2 */}
-            <div className="bg-white dark:bg-gray-800 rounded-lg overflow-hidden shadow-sm">
-              <div className="h-48 bg-gradient-to-br from-green-500 to-blue-500"></div>
-              <div className="p-6">
-                <div className="flex items-center gap-2 mb-3">
-                  <Users className="w-4 h-4 text-green-500" />
-                  <span className="text-sm font-medium text-green-500">Community</span>
-                </div>
-                <h3 className="text-xl font-bold mb-2">MakerSpace Network Launch</h3>
-                <p className="text-muted-foreground mb-4">
-                  50 new makerspaces joined the MakrX network this month, bringing innovative tools...
-                </p>
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <div className="w-6 h-6 bg-green-500 rounded-full"></div>
-                    <span className="text-sm">MakrX Team</span>
-                  </div>
-                  <span className="text-sm text-muted-foreground">1 week ago</span>
-                </div>
-              </div>
-            </div>
-
-            {/* Featured Story 3 */}
-            <div className="bg-white dark:bg-gray-800 rounded-lg overflow-hidden shadow-sm">
-              <div className="h-48 bg-gradient-to-br from-purple-500 to-pink-500"></div>
-              <div className="p-6">
-                <div className="flex items-center gap-2 mb-3">
-                  <BookOpen className="w-4 h-4 text-purple-500" />
-                  <span className="text-sm font-medium text-purple-500">Learning</span>
-                </div>
-                <h3 className="text-xl font-bold mb-2">3D Printing Mastery Course</h3>
-                <p className="text-muted-foreground mb-4">
-                  New comprehensive course covering everything from basics to advanced techniques...
-                </p>
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <div className="w-6 h-6 bg-purple-500 rounded-full"></div>
-                    <span className="text-sm">Sarah Kim</span>
-                  </div>
-                  <span className="text-sm text-muted-foreground">3 days ago</span>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div className="text-center mt-12">
-            <FlagGuard flagKey="org.forum.enabled" showComingSoon={true}>
-              <Link to="/forum" className="makrx-btn-secondary">
-                View All Stories
-                <ArrowRight className="w-4 h-4 ml-2" />
-              </Link>
-            </FlagGuard>
+            <FeatureCard
+              title="MakrCave"
+              description="Access premium makerspaces with professional-grade equipment, from 3D printers to laser cutters, all in collaborative environments."
+              icon={<Building2 className="w-6 h-6 text-white" />}
+              href="/makrcave"
+              gradient="from-blue-600 to-purple-700"
+            />
+            
+            <FeatureCard
+              title="MakrX Store"
+              description="Shop curated tools, materials, and components. Get custom 3D printing services and expert recommendations for your projects."
+              icon={<ShoppingCart className="w-6 h-6 text-white" />}
+              href="/store"
+              gradient="from-green-500 to-teal-600"
+            />
+            
+            <FeatureCard
+              title="Learn & Grow"
+              description="Master new skills with hands-on workshops, online courses, and mentorship from experienced makers and industry experts."
+              icon={<GraduationCap className="w-6 h-6 text-white" />}
+              href="/learn"
+              gradient="from-orange-500 to-red-600"
+            />
           </div>
         </div>
-      </div>
-    </section>
+      </section>
+
+      {/* How It Works Section */}
+      <section className="py-24 bg-white">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="text-center mb-20">
+            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
+              How MakrX Works
+            </h2>
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+              Simple steps to transform your ideas into reality
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
+            <div className="text-center group">
+              <div className="w-20 h-20 bg-makrx-blue rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:bg-makrx-yellow group-hover:scale-110 transition-all">
+                <span className="text-2xl font-bold text-white group-hover:text-makrx-blue">1</span>
+              </div>
+              <h3 className="text-xl font-bold text-gray-900 mb-4">Discover & Plan</h3>
+              <p className="text-gray-600 leading-relaxed">
+                Explore makerspaces near you, browse tools and materials, and plan your project with our expert community guidance.
+              </p>
+            </div>
+
+            <div className="text-center group">
+              <div className="w-20 h-20 bg-makrx-blue rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:bg-makrx-yellow group-hover:scale-110 transition-all">
+                <span className="text-2xl font-bold text-white group-hover:text-makrx-blue">2</span>
+              </div>
+              <h3 className="text-xl font-bold text-gray-900 mb-4">Create & Build</h3>
+              <p className="text-gray-600 leading-relaxed">
+                Access professional equipment, get materials delivered, and build with support from experienced makers and mentors.
+              </p>
+            </div>
+
+            <div className="text-center group">
+              <div className="w-20 h-20 bg-makrx-blue rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:bg-makrx-yellow group-hover:scale-110 transition-all">
+                <span className="text-2xl font-bold text-white group-hover:text-makrx-blue">3</span>
+              </div>
+              <h3 className="text-xl font-bold text-gray-900 mb-4">Share & Inspire</h3>
+              <p className="text-gray-600 leading-relaxed">
+                Showcase your creations, inspire others, and become part of a thriving community of makers and innovators.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Benefits Section */}
+      <section className="py-24 bg-gradient-to-br from-gray-900 to-makrx-blue">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="text-center mb-20">
+            <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
+              Why Choose MakrX?
+            </h2>
+            <p className="text-xl text-white/80 max-w-3xl mx-auto">
+              Join the largest maker ecosystem in India with unmatched benefits
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            {[
+              {
+                icon: <Shield className="w-8 h-8 text-makrx-yellow" />,
+                title: "Premium Quality",
+                description: "Professional-grade equipment and materials with quality assurance"
+              },
+              {
+                icon: <Users className="w-8 h-8 text-makrx-yellow" />,
+                title: "Expert Community",
+                description: "Learn from and collaborate with experienced makers and professionals"
+              },
+              {
+                icon: <Zap className="w-8 h-8 text-makrx-yellow" />,
+                title: "Fast & Reliable",
+                description: "Quick access to spaces, fast delivery, and reliable service"
+              },
+              {
+                icon: <Heart className="w-8 h-8 text-makrx-yellow" />,
+                title: "Passionate Support",
+                description: "Dedicated support team that understands and shares your passion"
+              }
+            ].map((benefit, index) => (
+              <div key={index} className="text-center group">
+                <div className="w-16 h-16 bg-white/10 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:bg-white/20 transition-colors">
+                  {benefit.icon}
+                </div>
+                <h3 className="text-xl font-bold text-white mb-4">{benefit.title}</h3>
+                <p className="text-white/80 leading-relaxed">{benefit.description}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Testimonials Section */}
+      {showTestimonials && (
+        <section className="py-24 bg-gray-50">
+          <div className="max-w-7xl mx-auto px-6">
+            <div className="text-center mb-20">
+              <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
+                Loved by Makers
+              </h2>
+              <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+                Hear from the amazing creators who are already part of the MakrX family
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              <Testimonial
+                quote="MakrX transformed my startup journey. Access to professional 3D printers and laser cutters helped us prototype faster than ever."
+                author="Priya Sharma"
+                role="Founder"
+                company="TechFlow Solutions"
+              />
+              <Testimonial
+                quote="The community at MakrCave is incredible. I've learned more in 3 months than I did in years trying to figure things out alone."
+                author="Rahul Mehta"
+                role="Product Designer"
+                company="Innovation Labs"
+              />
+              <Testimonial
+                quote="From ordering materials to getting expert advice, everything is seamless. MakrX Store is now my go-to for all project needs."
+                author="Anjali Gupta"
+                role="Architect"
+                company="Design Studio"
+              />
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* CTA Section */}
+      <section className="py-24 bg-gradient-to-r from-makrx-blue to-purple-700">
+        <div className="max-w-4xl mx-auto px-6 text-center">
+          <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
+            Ready to Start Creating?
+          </h2>
+          <p className="text-xl text-white/90 mb-12 leading-relaxed">
+            Join thousands of makers who are already bringing their ideas to life with MakrX. 
+            Your creative journey starts here.
+          </p>
+          
+          <div className="flex flex-col sm:flex-row gap-6 justify-center">
+            <Link 
+              to="/register" 
+              className="inline-flex items-center justify-center px-8 py-4 text-lg font-semibold rounded-2xl bg-makrx-yellow text-makrx-blue hover:bg-yellow-300 transition-all duration-300 hover:scale-105 hover:shadow-2xl"
+            >
+              Get Started Free
+              <ChevronRight className="ml-2 w-5 h-5" />
+            </Link>
+            
+            <Link 
+              to="/learn" 
+              className="inline-flex items-center justify-center px-8 py-4 text-lg font-semibold rounded-2xl bg-white/10 text-white border-2 border-white/20 hover:bg-white/20 hover:border-white/40 transition-all duration-300"
+            >
+              Explore Learning
+              <GraduationCap className="ml-2 w-5 h-5" />
+            </Link>
+          </div>
+        </div>
+      </section>
+    </div>
   );
 }
