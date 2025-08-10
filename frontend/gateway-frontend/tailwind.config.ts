@@ -306,7 +306,6 @@ const config: Config = {
     require('@tailwindcss/typography'),
     require('@tailwindcss/forms'),
     require('@tailwindcss/aspect-ratio'),
-    require('@tailwindcss/container-queries'),
     // Custom plugin for accessibility utilities
     function({ addUtilities, theme }: any) {
       const newUtilities = {
