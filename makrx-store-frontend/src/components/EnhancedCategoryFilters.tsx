@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { X, Filter, ChevronDown, ChevronUp, SlidersHorizontal } from "lucide-react";
 import { getAllFiltersForCategory, type CategoryFilter } from "@/data/categoryFilters";
 
