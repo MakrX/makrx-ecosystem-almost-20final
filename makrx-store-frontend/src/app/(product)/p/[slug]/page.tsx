@@ -15,6 +15,7 @@ import CompatibilityInfo from "@/components/CompatibilityInfo";
 import ProductVariantSelector, { useProductVariants } from "@/components/ProductVariantSelector";
 import { ProductStructuredData, OrganizationStructuredData } from "@/components/StructuredData";
 import { ProductSEO } from "@/components/SEOMetaTags";
+import { api } from "@/lib/api";
 
 interface Product {
   id: number;
