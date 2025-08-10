@@ -920,6 +920,20 @@ export const categoryFilterSets: CategoryFilterSet[] = [
 
 // Helper function to get filters for a specific category
 export function getFiltersForCategory(categorySlug: string): CategoryFilter[] {
+  // First try to get filters from admin data service if available
+  if (typeof window !== 'undefined') {
+    try {
+      const { adminDataService } = require('@/lib/adminData');
+      const adminFilters = adminDataService.getFiltersForCategory(categorySlug);
+      if (adminFilters.length > 0) {
+        return adminFilters;
+      }
+    } catch (error) {
+      // Fallback to static filters if admin service is not available
+    }
+  }
+
+  // Fallback to static filters
   const filterSet = categoryFilterSets.find(set => set.category === categorySlug);
   return filterSet ? filterSet.filters : [];
 }
