@@ -191,6 +191,7 @@ function AdminManagementPage() {
     const savedCategories = localStorage.getItem('admin_categories');
     const savedFilters = localStorage.getItem('admin_filters');
     const savedProducts = localStorage.getItem('admin_products');
+    const savedQRCodes = localStorage.getItem('admin_qrcodes');
 
     if (savedCategories) {
       setCategories(JSON.parse(savedCategories));
@@ -200,6 +201,9 @@ function AdminManagementPage() {
     }
     if (savedProducts) {
       setProducts(JSON.parse(savedProducts));
+    }
+    if (savedQRCodes) {
+      setQrCodes(JSON.parse(savedQRCodes));
     }
     setLoading(false);
   };
