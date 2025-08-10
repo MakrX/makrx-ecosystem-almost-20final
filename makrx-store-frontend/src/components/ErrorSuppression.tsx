@@ -93,7 +93,6 @@ export function ErrorSuppression() {
     window.addEventListener("unhandledrejection", handleUnhandledRejection);
     console.error = filteredError;
     window.onerror = handleWindowError;
-    window.fetch = interceptedFetch;
     document.addEventListener("error", handleResourceError, true);
 
     console.info("🔧 Development Mode: Network error suppression enabled");
@@ -103,7 +102,6 @@ export function ErrorSuppression() {
       window.removeEventListener("unhandledrejection", handleUnhandledRejection);
       console.error = originalError;
       window.onerror = null;
-      window.fetch = originalFetch;
       document.removeEventListener("error", handleResourceError, true);
     };
   }, []);
