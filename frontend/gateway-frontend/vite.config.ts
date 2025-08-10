@@ -28,20 +28,7 @@ export default defineConfig({
     // Generate sourcemaps for production debugging
     sourcemap: false,
     // Optimize bundle size
-    minify: 'terser',
-    terserOptions: {
-      compress: {
-        drop_console: true,
-        drop_debugger: true,
-        pure_funcs: ['console.log', 'console.info', 'console.debug', 'console.trace'],
-      },
-      mangle: {
-        safari10: true,
-      },
-      format: {
-        comments: false,
-      },
-    },
+    minify: 'esbuild',
     // Code splitting configuration
     rollupOptions: {
       output: {
