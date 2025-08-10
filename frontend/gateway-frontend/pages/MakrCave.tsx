@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { 
   Building2, MapPin, Star, Clock, Users, Wifi, Coffee, 
   Zap, Shield, Search, Filter, ChevronRight, ArrowRight,
-  Calendar, CheckCircle, Award, Tool, Lightbulb, Heart
+  Calendar, CheckCircle, Award, Wrench, Lightbulb, Heart
 } from 'lucide-react';
 
 interface MakerspaceCardProps {
