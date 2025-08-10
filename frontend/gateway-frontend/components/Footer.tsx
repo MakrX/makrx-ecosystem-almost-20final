@@ -7,6 +7,19 @@ import {
 
 export default function Footer() {
   const currentYear = new Date().getFullYear();
+  const [newsletterEmail, setNewsletterEmail] = useState('');
+  const [isSubscribed, setIsSubscribed] = useState(false);
+
+  const handleNewsletterSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (newsletterEmail.trim() && newsletterEmail.includes('@')) {
+      // In production, this would call an API
+      console.log('Newsletter subscription:', newsletterEmail);
+      setIsSubscribed(true);
+      setNewsletterEmail('');
+      setTimeout(() => setIsSubscribed(false), 3000);
+    }
+  };
 
   const footerSections = [
     {
