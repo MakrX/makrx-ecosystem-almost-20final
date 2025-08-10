@@ -56,7 +56,7 @@ const blogPosts: BlogPost[] = [
     category: "Industry Insights",
     tags: ["Manufacturing", "AI", "Trends", "Sustainability"],
     featured: true,
-    imageUrl: "/api/placeholder/800/400",
+    imageUrl: "https://via.placeholder.com/800x400/3B82F6/FFFFFF?text=Blog",
   },
   {
     id: "2",
@@ -75,7 +75,7 @@ const blogPosts: BlogPost[] = [
     category: "Design & Engineering",
     tags: ["DFM", "Cost Reduction", "Quality", "Best Practices"],
     featured: true,
-    imageUrl: "/api/placeholder/800/400",
+    imageUrl: "https://via.placeholder.com/800x400/3B82F6/FFFFFF?text=Blog",
   },
   {
     id: "3",
@@ -93,7 +93,7 @@ const blogPosts: BlogPost[] = [
     category: "Case Studies",
     tags: ["Startup", "Prototyping", "Cost Reduction", "Success Story"],
     featured: false,
-    imageUrl: "/api/placeholder/800/400",
+    imageUrl: "https://via.placeholder.com/800x400/3B82F6/FFFFFF?text=Blog",
   },
   {
     id: "4",
@@ -111,7 +111,7 @@ const blogPosts: BlogPost[] = [
     category: "Technical Guides",
     tags: ["Materials", "Properties", "Selection", "Engineering"],
     featured: false,
-    imageUrl: "/api/placeholder/800/400",
+    imageUrl: "https://via.placeholder.com/800x400/3B82F6/FFFFFF?text=Blog",
   },
   {
     id: "5",
@@ -134,7 +134,7 @@ const blogPosts: BlogPost[] = [
       "Green Manufacturing",
     ],
     featured: false,
-    imageUrl: "/api/placeholder/800/400",
+    imageUrl: "https://via.placeholder.com/800x400/3B82F6/FFFFFF?text=Blog",
   },
   {
     id: "6",
@@ -152,7 +152,7 @@ const blogPosts: BlogPost[] = [
     category: "Tutorials",
     tags: ["3D Printing", "Beginner", "Tutorial", "Getting Started"],
     featured: false,
-    imageUrl: "/api/placeholder/800/400",
+    imageUrl: "https://via.placeholder.com/800x400/3B82F6/FFFFFF?text=Blog",
   },
 ];
 
