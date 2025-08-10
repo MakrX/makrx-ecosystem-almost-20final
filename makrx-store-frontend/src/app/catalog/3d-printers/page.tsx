@@ -5,8 +5,9 @@ import Link from "next/link";
 import { ChevronRight, Grid, List, Filter } from "lucide-react";
 import { api, type Product } from "@/lib/api";
 import ProductGrid from "@/components/ProductGrid";
-import EnhancedCategoryFilters from "@/components/EnhancedCategoryFilters";
+import EnhancedCategoryFilters, { useFiltersToggle } from "@/components/EnhancedCategoryFilters";
 import SortSelect from "@/components/SortSelect";
+import { getAllFiltersForCategory } from "@/data/categoryFilters";
 
 export default function ThreeDPrintersPage() {
   const [products, setProducts] = useState<Product[]>([]);
