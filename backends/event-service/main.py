@@ -132,22 +132,47 @@ app = FastAPI(
     lifespan=lifespan
 )
 
-# CORS configuration
+# CORS configuration - Secure origins only
+production_origins = [
+    "https://makrx.org",
+    "https://makrcave.com",
+    "https://makrx.store",
+    "wss://makrx.org",
+    "wss://makrcave.com",
+    "wss://makrx.store"
+]
+
+development_origins = [
+    "http://localhost:3000",  # Gateway
+    "http://localhost:3001",  # MakrCave
+    "http://localhost:3002",  # Store
+    "http://localhost:3003",  # Store (current)
+    "ws://localhost:3000",
+    "ws://localhost:3001",
+    "ws://localhost:3002",
+    "ws://localhost:3003",
+    "http://gateway-frontend:3000",
+    "http://makrcave-frontend:3001",
+    "http://makrx-store-frontend:3002"
+]
+
+allowed_origins = production_origins.copy()
+if os.getenv("ENVIRONMENT") == "development":
+    allowed_origins.extend(development_origins)
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "http://localhost:3000",  # Gateway
-        "http://localhost:3001",  # MakrCave  
-        "http://localhost:3002",  # Store
-        "http://localhost:3003",  # Store (current)
-        "ws://localhost:3000",
-        "ws://localhost:3001",
-        "ws://localhost:3002",
-        "ws://localhost:3003"
-    ],
+    allow_origins=allowed_origins,
     allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allow_headers=[
+        "Accept",
+        "Accept-Language",
+        "Content-Language",
+        "Content-Type",
+        "Authorization",
+        "X-Requested-With"
+    ],
 )
 
 # Health Check
