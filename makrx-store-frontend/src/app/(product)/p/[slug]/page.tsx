@@ -12,6 +12,7 @@ import ProductReviews from "@/components/ProductReviews";
 import RecommendedProducts from "@/components/RecommendedProducts";
 import AddToCartForm from "@/components/AddToCartForm";
 import CompatibilityInfo from "@/components/CompatibilityInfo";
+import ProductVariantSelector, { useProductVariants } from "@/components/ProductVariantSelector";
 
 interface Product {
   id: number;
