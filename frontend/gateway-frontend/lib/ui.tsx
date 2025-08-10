@@ -103,7 +103,9 @@ export function ThemeProvider({
 
     return () => {
       mediaQuery.removeEventListener('change', handleSystemThemeChange);
-      clearTimeout(forceApply);
+      clearTimeout(forceApply1);
+      clearTimeout(forceApply2);
+      clearTimeout(forceApply3);
     };
   }, [theme]);
 
