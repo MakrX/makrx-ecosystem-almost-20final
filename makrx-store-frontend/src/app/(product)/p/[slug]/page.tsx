@@ -158,16 +158,8 @@ export default function ProductPage() {
     return <ProductNotFound />;
   }
 
-  const effectivePrice = selectedVariant
-    ? product.variants?.find((v) => v.id === selectedVariant)?.sale_price ||
-      product.variants?.find((v) => v.id === selectedVariant)?.price ||
-      product.price
-    : product.sale_price || product.price;
-
-  const originalPrice = selectedVariant
-    ? product.variants?.find((v) => v.id === selectedVariant)?.price ||
-      product.price
-    : product.price;
+  const effectivePrice = currentPrice || product.sale_price || product.price;
+  const originalPrice = selectedVariant?.price || product.price;
 
   const savingsAmount = originalPrice - effectivePrice;
   const savingsPercentage =
