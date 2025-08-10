@@ -285,7 +285,12 @@ export const handleAuthCallback = async (
 
     return true;
   } catch (error) {
-    console.error("Auth callback failed:", error);
+    // In development, silently handle auth errors
+    if (process.env.NODE_ENV === "development") {
+      console.warn("Auth service unavailable in development mode");
+    } else {
+      console.error("Auth callback failed:", error);
+    }
     clearTokens();
     return false;
   }
