@@ -102,7 +102,9 @@ export default function ProductPage() {
   };
 
   const handleImageChange = (index: number) => {
-    setSelectedImageIndex(index);
+    if (product?.images && index >= 0 && index < product.images.length) {
+      setSelectedImageIndex(index);
+    }
   };
 
   const handleShare = async () => {
