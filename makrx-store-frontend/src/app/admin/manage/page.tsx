@@ -1,12 +1,13 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { withAuth } from "@/contexts/AuthContext";
-import { 
-  Package, 
-  Plus, 
-  Edit3, 
-  Trash2, 
+import QRCode from 'qrcode';
+import {
+  Package,
+  Plus,
+  Edit3,
+  Trash2,
   Save,
   Settings,
   Filter,
@@ -16,7 +17,11 @@ import {
   Layers,
   X,
   Check,
-  AlertTriangle
+  AlertTriangle,
+  QrCode,
+  Download,
+  Eye,
+  Copy
 } from "lucide-react";
 
 // Types for our admin system
