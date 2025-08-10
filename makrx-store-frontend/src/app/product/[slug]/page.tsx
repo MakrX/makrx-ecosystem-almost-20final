@@ -364,7 +364,7 @@ export default function ProductPage() {
             )}
 
             {/* Quick Specifications */}
-            {Object.keys(product.attributes).length > 0 && (
+            {product.attributes && Object.keys(product.attributes).length > 0 && (
               <div>
                 <h3 className="font-semibold text-gray-900 mb-3">
                   Key Features
