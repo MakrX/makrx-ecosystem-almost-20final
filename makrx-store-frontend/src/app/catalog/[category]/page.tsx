@@ -40,15 +40,12 @@ export default function CategoryPage() {
   const [sortBy, setSortBy] = useState(searchParams.get('sort') || 'relevance')
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid')
   const [showFilters, setShowFilters] = useState(false)
-  const [isMobile, setIsMobile] = useState(false)
 
-  // Handle responsive design for filters
+  // Show filters by default on desktop, hide on mobile
   useEffect(() => {
     const checkScreenSize = () => {
-      const mobile = window.innerWidth < 1024; // lg breakpoint
-      setIsMobile(mobile);
-      // On desktop, show filters by default
-      setShowFilters(!mobile);
+      const isDesktop = window.innerWidth >= 1024; // lg breakpoint
+      setShowFilters(isDesktop);
     };
 
     checkScreenSize();
