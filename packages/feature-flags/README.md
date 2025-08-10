@@ -1,538 +1,389 @@
-# MakrX Feature Flags System
+# @makrx/feature-flags - Dynamic Feature Management
 
-A comprehensive feature flag system for the MakrX ecosystem implementing the complete specification with namespace-based organization, multiple rollout strategies, and full React/backend integration.
+This package provides a comprehensive feature flag system for the MakrX ecosystem, enabling controlled feature rollouts, A/B testing, and environment-specific functionality.
 
-## 🚀 Features
+## 📁 Directory Structure
 
-- **Consistent Naming**: `<namespace>.<area>.<feature>[.<variant>]` format
-- **Multiple Scopes**: global, role, audience, space, user targeting
-- **Multiple Types**: boolean, percentage, multivariate, config flags
-- **Rollout States**: off → internal → beta → on → remove lifecycle
-- **React Integration**: Hooks and components for UI control
-- **Backend Protection**: API guards and decorators
-- **Admin Interface**: Full-featured management UI
-- **Fail-Safe Defaults**: Always degrade gracefully
-
-## 📋 Quick Start
-
-### 1. Install the Package
-
-```bash
-npm install @makrx/feature-flags
+```
+packages/feature-flags/
+├── src/
+│   ├── components/           # React components for feature flags
+│   │   ├── FeatureFlagProvider.tsx  # Context provider
+│   │   └── FlagGuard.tsx           # Conditional rendering wrapper
+│   ├── core/                # Core feature flag logic
+│   │   └── FeatureFlagEngine.ts    # Flag evaluation engine
+│   ├── flags/               # Feature flag definitions
+│   │   └── index.ts         # Flag registry and configuration
+│   ├── hooks/               # React hooks
+│   │   └── useFeatureFlags.ts      # Hook for accessing flags
+│   └── index.ts             # Package exports
+├── package.json             # Package configuration
+└── README.md               # This documentation
 ```
 
-### 2. Setup React Provider
+## 🚩 Core Components
 
+### `FeatureFlagProvider.tsx`
+**Purpose**: React context provider that makes feature flags available throughout the application
+
+**Configuration**:
+```typescript
+interface FeatureFlagProviderProps {
+  children: React.ReactNode;
+  userId?: string;           // For user-specific targeting
+  environment?: string;      // Environment-based flags
+  customContext?: Record<string, any>; // Additional context
+}
+```
+
+**Key Parameters**:
+- `userId`: Enables user-specific feature targeting
+- `environment`: Allows different flags per environment (dev/staging/prod)
+- `customContext`: Additional data for complex flag logic
+
+**Impact**: Changes affect feature availability across the entire application
+
+**Usage**:
 ```tsx
 import { FeatureFlagProvider } from '@makrx/feature-flags';
 
 function App() {
-  const flagContext = {
-    userId: user?.id,
-    roles: user?.roles || [],
-    makerspaceId: currentSpace?.id,
-    environment: 'production'
-  };
-
   return (
-    <FeatureFlagProvider initialContext={flagContext}>
+    <FeatureFlagProvider userId="user123" environment="production">
       <YourApp />
     </FeatureFlagProvider>
   );
 }
 ```
 
-### 3. Use Flags in Components
+### `FlagGuard.tsx`
+**Purpose**: Conditional rendering component that shows/hides content based on feature flags
 
+**Props**:
+```typescript
+interface FlagGuardProps {
+  flag: string;              // Flag name to check
+  fallback?: React.ReactNode; // Content to show when flag is disabled
+  children: React.ReactNode;  // Content to show when flag is enabled
+  requireAll?: boolean;       // For multiple flags
+  flags?: string[];          // Multiple flags to check
+}
+```
+
+**Usage Examples**:
 ```tsx
-import { useBooleanFlag, FlagGuard, ModuleGuard } from '@makrx/feature-flags';
+import { FlagGuard } from '@makrx/feature-flags';
+
+// Simple flag check
+<FlagGuard flag="NEW_CHECKOUT_FLOW">
+  <NewCheckoutComponent />
+</FlagGuard>
+
+// With fallback content
+<FlagGuard 
+  flag="BETA_FEATURES" 
+  fallback={<div>Feature coming soon!</div>}
+>
+  <BetaFeatureComponent />
+</FlagGuard>
+
+// Multiple flags (all required)
+<FlagGuard 
+  flags={["USER_DASHBOARD", "ANALYTICS_MODULE"]} 
+  requireAll={true}
+>
+  <AdvancedDashboard />
+</FlagGuard>
+```
+
+### `FeatureFlagEngine.ts`
+**Purpose**: Core engine that evaluates feature flag conditions and rules
+
+**Key Methods**:
+```typescript
+class FeatureFlagEngine {
+  // Check if a single flag is enabled
+  isEnabled(flagName: string, context?: EvaluationContext): boolean;
+  
+  // Get flag value (for non-boolean flags)
+  getValue<T>(flagName: string, defaultValue: T, context?: EvaluationContext): T;
+  
+  // Batch check multiple flags
+  getFlags(flagNames: string[], context?: EvaluationContext): Record<string, boolean>;
+  
+  // Register new flag definitions
+  registerFlag(flag: FeatureFlag): void;
+  
+  // Update flag configuration
+  updateFlag(flagName: string, updates: Partial<FeatureFlag>): void;
+}
+```
+
+**Configuration Types**:
+```typescript
+interface FeatureFlag {
+  name: string;
+  enabled: boolean;
+  conditions?: FlagCondition[];
+  variants?: FlagVariant[];
+  rolloutPercentage?: number;
+  environments?: string[];
+  userTargeting?: UserTargeting;
+}
+
+interface FlagCondition {
+  type: 'user_id' | 'environment' | 'percentage' | 'custom';
+  operator: 'equals' | 'in' | 'greater_than' | 'less_than';
+  value: any;
+}
+```
+
+**Usage**:
+```typescript
+import { FeatureFlagEngine } from '@makrx/feature-flags';
+
+const engine = new FeatureFlagEngine();
+
+// Register a flag
+engine.registerFlag({
+  name: 'NEW_UI',
+  enabled: true,
+  environments: ['development', 'staging'],
+  rolloutPercentage: 25
+});
+
+// Check flag
+const showNewUI = engine.isEnabled('NEW_UI', { 
+  userId: 'user123',
+  environment: 'production'
+});
+```
+
+### `useFeatureFlags.ts`
+**Purpose**: React hook providing easy access to feature flags in components
+
+**Hook Interface**:
+```typescript
+interface UseFeatureFlagsReturn {
+  isEnabled: (flagName: string) => boolean;
+  getValue: <T>(flagName: string, defaultValue: T) => T;
+  flags: Record<string, boolean>;
+  loading: boolean;
+  error?: Error;
+}
+```
+
+**Usage Examples**:
+```tsx
+import { useFeatureFlags } from '@makrx/feature-flags';
 
 function MyComponent() {
-  // Simple boolean flag
-  const uploadsEnabled = useBooleanFlag('store.upload.enabled');
+  const { isEnabled, getValue, flags, loading } = useFeatureFlags();
+  
+  if (loading) return <div>Loading...</div>;
   
   return (
     <div>
-      {/* Hide/show based on flag */}
-      <FlagGuard flagKey="store.catalog.kits">
-        <ProductKitsSection />
-      </FlagGuard>
+      {isEnabled('NEW_HEADER') && <NewHeader />}
       
-      {/* Module with coming soon for internal users */}
-      <ModuleGuard 
-        flagKey="cave.analytics.enabled" 
-        moduleName="Analytics Dashboard"
-      >
-        <AnalyticsDashboard />
-      </ModuleGuard>
+      {getValue('BANNER_TEXT', 'Default banner')}
       
-      {/* Navigation link */}
-      <NavLinkGuard flagKey="org.links.store" href="/store">
-        Visit Store
-      </NavLinkGuard>
+      {flags.SHOW_ANALYTICS && <AnalyticsWidget />}
     </div>
   );
 }
 ```
 
-### 4. Protect Backend Routes
+## 🏁 Flag Definitions
 
-```python
-from app.core.feature_flags import require_flag, store_feature_required
+### `flags/index.ts`
+**Purpose**: Central registry of all feature flags used across the MakrX ecosystem
 
-@router.get("/catalog")
-@store_feature_required("store.catalog.enabled")
-async def get_catalog():
-    return {"products": [...]}
+**Flag Categories**:
 
-@router.post("/upload")
-@require_flag("store.upload.enabled")
-async def upload_file():
-    # Returns 404 if disabled, 503 if maintenance mode
-    return {"success": True}
-```
-
-## 🏗️ Architecture
-
-### Naming Convention
-
-All flags follow the pattern: `<namespace>.<area>.<feature>[.<variant>]`
-
-**Namespaces:**
-- `global` - Cross-cutting features
-- `org` - MakrX.org (gateway & profiles)
-- `cave` - MakrCave (makerspace portal)
-- `store` - MakrX.Store (e-commerce)
-
-**Examples:**
-```
-store.upload.enabled
-cave.inventory.low_stock_alerts
-org.forum.enabled
-global.announcements.banner
-```
-
-### Flag Types
-
-1. **Boolean** - Simple on/off switches
-2. **Percentage** - Gradual rollouts (0-100%)
-3. **Multivariate** - A/B testing with weighted variants
-4. **Config** - Typed configuration values
-
-### Scopes
-
-1. **Global** - All users
-2. **Role** - Specific user roles (admin, provider, etc.)
-3. **Audience** - Geographic or cohort targeting
-4. **Space** - Makerspace-specific features
-5. **User** - Individual user targeting
-
-### Rollout States
-
-1. **Off** - Feature disabled
-2. **Internal** - Only internal team (admins)
-3. **Beta** - Limited rollout (percentage/targeting)
-4. **On** - Fully enabled
-5. **Remove** - Marked for code cleanup
-
-## 📝 Flag Definitions
-
-### Org (MakrX.org) Flags
-
+#### UI/UX Flags
 ```typescript
-org.links.makrcave          // Show MakrCave link
-org.links.store            // Show Store link  
-org.profile.edit           // Profile edit access
-org.docs.public            // Public documentation
-org.status.enabled         // Status page
-org.forum.enabled          // Community forum
-org.billing.unified        // Central billing view
+export const UI_FLAGS = {
+  NEW_DASHBOARD: {
+    name: 'NEW_DASHBOARD',
+    enabled: false,
+    environments: ['development'],
+    description: 'Enable new dashboard design'
+  },
+  
+  THEME_CUSTOMIZATION: {
+    name: 'THEME_CUSTOMIZATION',
+    enabled: true,
+    description: 'Allow theme customization features'
+  }
+};
 ```
 
-### Cave (MakrCave) Flags
-
+#### Feature Flags
 ```typescript
-// Spaces & Membership
-cave.spaces.public_pages         // Public space profiles
-cave.memberships.invite_only     // Admin-only member additions
-cave.notifications.enabled      // Email/SMS notifications
-
-// Equipment & Reservations  
-cave.equipment.enabled           // Equipment module
-cave.reservations.enabled        // Booking system
-cave.reservations.paid_usage     // Paid reservations
-cave.reservations.approval_flow  // Manual approval
-cave.maintenance.enabled         // Maintenance tickets
-
-// Inventory & Projects
-cave.inventory.enabled           // Inventory tracking
-cave.projects.enabled           // Project management
-cave.bom.enabled                // BOM editor
-cave.skills.enabled             // Skills & badges
-
-// Providers & Jobs
-cave.providers.enabled          // Provider profiles
-cave.jobs.enabled              // Job board
-cave.analytics.enabled         // Analytics dashboard
+export const FEATURE_FLAGS = {
+  REAL_TIME_NOTIFICATIONS: {
+    name: 'REAL_TIME_NOTIFICATIONS',
+    enabled: true,
+    rolloutPercentage: 75,
+    description: 'Enable WebSocket notifications'
+  },
+  
+  ADVANCED_ANALYTICS: {
+    name: 'ADVANCED_ANALYTICS',
+    enabled: false,
+    userTargeting: {
+      includeUsers: ['premium-users'],
+      excludeUsers: ['basic-users']
+    }
+  }
+};
 ```
 
-### Store (MakrX.Store) Flags
-
+#### Integration Flags
 ```typescript
-// Catalog & Discovery
-store.catalog.enabled           // Product catalog
-store.catalog.compare_drawer    // Product comparison
-store.catalog.kits             // Curated kits
-store.reviews.enabled          // Product reviews
-
-// Cart & Checkout
-store.cart.enabled             // Shopping cart
-store.checkout.one_page        // One-page checkout
-store.checkout.cod             // Cash on delivery
-store.coupons.enabled          // Discount codes
-
-// Services (3D Printing)
-store.upload.enabled           // STL uploads (kill switch)
-store.upload.preview_3d        // 3D preview viewer
-store.quote.heuristic          // Quote engine
-store.service_orders.enabled   // Order creation
-
-// Account Features
-store.account.wishlist         // Wishlist feature
-store.account.subscriptions    // Subscription management
-store.admin.products           // Admin product management
-```
-
-### Global Flags
-
-```typescript
-global.announcements.banner    // Sitewide announcements
-global.search.unified         // Cross-site search
-global.chatbot.enabled        // Help widget
-global.auth.invite_only       // Registration control
+export const INTEGRATION_FLAGS = {
+  PAYMENT_GATEWAY_V2: {
+    name: 'PAYMENT_GATEWAY_V2',
+    enabled: false,
+    environments: ['staging', 'production'],
+    conditions: [
+      {
+        type: 'custom',
+        operator: 'equals',
+        value: { paymentEnabled: true }
+      }
+    ]
+  }
+};
 ```
 
 ## 🎯 Usage Patterns
 
-### Kill Switches (Ops Safety)
+### Environment-Based Flags
+```typescript
+// Show beta features only in development
+<FlagGuard flag="BETA_FEATURES">
+  <BetaComponent />
+</FlagGuard>
 
-```tsx
-// React Component
-function UploadForm() {
-  const { enabled, maintenance } = useKillSwitch('store.upload.enabled');
-  
-  if (maintenance) {
-    return <MaintenanceNotice message="Uploads temporarily disabled" />;
-  }
-  
-  return <FileUploadComponent />;
-}
+// Different behavior per environment
+const apiUrl = getValue('API_ENDPOINT', 
+  process.env.NODE_ENV === 'production' 
+    ? 'https://api.makrx.com'
+    : 'http://localhost:8000'
+);
 ```
 
-```python
-# Backend Route
-@router.post("/upload")
-async def upload_file(request: Request):
-    context = build_flag_context(request)
-    
-    if not KillSwitch.check_upload_enabled(context):
-        return feature_disabled_response("Upload", maintenance=True)
-    
-    # Process upload...
-```
+### User Targeting
+```typescript
+// Show feature to specific users
+const showPremiumFeatures = isEnabled('PREMIUM_FEATURES');
 
-### Gradual Rollouts
-
-```tsx
-// 25% rollout
-const compareEnabled = usePercentageFlag('store.catalog.compare_drawer');
-
-// Config-driven rollout
-const rolloutPercentage = useConfigFlag('store.checkout.rollout_percent', 50);
+// Percentage rollout
+const showNewCheckout = isEnabled('NEW_CHECKOUT'); // 25% of users
 ```
 
 ### A/B Testing
-
-```tsx
-function SearchResults() {
-  const { variant, trackExposure } = useExperiment('store.search.results_layout');
-  
-  useEffect(() => {
-    trackExposure(); // Analytics event
-  }, [trackExposure]);
-  
-  return (
-    <Experiment 
-      flagKey="store.search.results_layout"
-      variants={{
-        grid: <GridLayout />,
-        list: <ListLayout />
-      }}
-    />
-  );
-}
-```
-
-### Space-Specific Features
-
-```tsx
-function MakerspaceFeatures() {
-  const { enabled } = useSpaceFlag('cave.equipment.enabled', makerspaceId);
-  
-  return (
-    <ModuleGuard 
-      flagKey="cave.equipment.enabled"
-      moduleName="Equipment Management"
-    >
-      <EquipmentDashboard />
-    </ModuleGuard>
-  );
-}
-```
-
-### Geographic Targeting
-
-```tsx
-function PaymentOptions() {
-  const { enabled } = useGeoFlag('store.checkout.cod', 'IN', '110001');
-  
-  return (
-    <div>
-      <PaymentMethod type="card" />
-      <PaymentMethod type="upi" />
-      {enabled && <PaymentMethod type="cod" />}
-    </div>
-  );
-}
-```
-
-## 🛡️ Security & Best Practices
-
-### UI Rules
-
-1. **Hide when disabled** - Links/buttons disappear completely
-2. **Coming soon for internal** - Show placeholder for admin users
-3. **Graceful degradation** - Always provide fallbacks
-
-### API Rules
-
-1. **404 for public** - Pretend endpoints don't exist
-2. **403 for authenticated** - Clear permission denial
-3. **503 for maintenance** - Service temporarily unavailable
-4. **Never partial success** - All-or-nothing responses
-
-### Implementation Guidelines
-
-```tsx
-// ✅ Good - Hide completely when disabled
-<FlagGuard flagKey="store.wishlist.enabled">
-  <WishlistButton />
-</FlagGuard>
-
-// ❌ Bad - Showing disabled state
-<WishlistButton disabled={!wishlistEnabled} />
-
-// ✅ Good - Show coming soon for internal users
-<ModuleGuard 
-  flagKey="cave.analytics.enabled" 
-  moduleName="Analytics"
->
-  <AnalyticsDashboard />
-</ModuleGuard>
-
-// ✅ Good - Fail-safe defaults
-const uploadsEnabled = useBooleanFlag('store.upload.enabled', true);
-```
-
-## 🔧 Backend Integration
-
-### Route Protection
-
-```python
-# Simple feature guard
-@require_flag("store.catalog.enabled")
-async def get_catalog():
-    pass
-
-# Admin-only feature  
-@admin_feature_required("store.admin.reports")
-async def get_reports():
-    pass
-
-# Space-specific feature
-@require_space_flag("cave.equipment.enabled", makerspace_id)
-async def get_equipment():
-    pass
-```
-
-### Context Building
-
-```python
-def build_flag_context(request: Request, user_info: dict = None) -> FlagContext:
-    return FlagContext(
-        user_id=user_info.get("user_id") if user_info else None,
-        roles=user_info.get("roles", []) if user_info else [],
-        makerspace_id=user_info.get("makerspace_id"),
-        country=request.headers.get("X-Country"),
-        pincode=request.headers.get("X-Pincode"),
-        environment="production"
-    )
-```
-
-### Response Patterns
-
-```python
-# Feature disabled (public users)
-return JSONResponse(
-    status_code=404,
-    content={"error": "Not Found"}
-)
-
-# Feature not available (authenticated users)  
-return JSONResponse(
-    status_code=403,
-    content={
-        "error": "Feature Not Available",
-        "message": "This feature is not available for your account"
-    }
-)
-
-# Maintenance mode
-return JSONResponse(
-    status_code=503,
-    content={
-        "error": "Service Temporarily Unavailable",
-        "retry_after": 3600
-    }
-)
-```
-
-## 📊 Admin Interface
-
-Access the admin interface at `/admin/feature-flags` (superadmin only):
-
-- **Real-time flag management** - Toggle flags instantly
-- **Percentage rollouts** - Drag slider to adjust rollout
-- **Targeting controls** - Configure role/geo targeting  
-- **Audit trail** - See who changed what when
-- **Bulk operations** - Update multiple flags
-- **Search & filtering** - Find flags quickly
-
-## 🔄 Rollout Playbook
-
-### New Feature Launch
-
-1. **Off** - Develop and test with flag disabled
-2. **Internal** - Enable for team testing (1-2 days)  
-3. **Beta** - Gradual rollout (10% → 50% → 100%)
-4. **On** - Fully enabled for all users
-5. **Remove** - Clean up flag code after 2-4 weeks
-
-### Kill Switch Pattern
-
 ```typescript
-// Always keep kill switches for critical features
-store.upload.enabled        // File uploads
-store.payments.enabled      // Payment processing  
-cave.jobs.publish_enabled   // Job publishing
+// Variant testing
+const checkoutVariant = getValue('CHECKOUT_VARIANT', 'original');
+
+switch (checkoutVariant) {
+  case 'simplified':
+    return <SimplifiedCheckout />;
+  case 'enhanced':
+    return <EnhancedCheckout />;
+  default:
+    return <OriginalCheckout />;
+}
 ```
 
-### Experiments
+## 📊 Flag Management
 
+### Adding New Flags
+1. Define flag in `flags/index.ts`
+2. Add TypeScript types if needed
+3. Update flag documentation
+4. Test in development environment
+5. Configure rollout strategy
+
+### Flag Configuration Parameters
 ```typescript
-// Time-boxed experiments with clear success metrics
-store.search.results_layout     // Grid vs List (2 weeks)
-store.product.above_the_fold    // Brief vs Detailed (1 week)
-```
-
-## 🧪 Testing
-
-```tsx
-import { render } from '@testing-library/react';
-import { FeatureFlagProvider } from '@makrx/feature-flags';
-
-function renderWithFlags(component, flagOverrides = {}) {
-  const context = {
-    userId: 'test-user',
-    roles: ['user'],
-    environment: 'test',
-    ...flagOverrides
+interface FeatureFlag {
+  name: string;                    // Unique flag identifier
+  enabled: boolean;                // Default enabled state
+  description?: string;            // Flag description
+  environments?: string[];         // Target environments
+  rolloutPercentage?: number;      // Percentage of users (0-100)
+  userTargeting?: {               // User-specific targeting
+    includeUsers?: string[];
+    excludeUsers?: string[];
+    includeGroups?: string[];
+    excludeGroups?: string[];
   };
-
-  return render(
-    <FeatureFlagProvider initialContext={context}>
-      {component}
-    </FeatureFlagProvider>
-  );
+  conditions?: FlagCondition[];    // Complex evaluation rules
+  variants?: {                     // A/B testing variants
+    name: string;
+    weight: number;
+    value: any;
+  }[];
+  expiresAt?: Date;               // Automatic flag expiration
 }
-
-test('shows wishlist when enabled', () => {
-  const { getByText } = renderWithFlags(
-    <MyComponent />,
-    { customFlags: [{ key: 'store.wishlist.enabled', enabled: true }] }
-  );
-  
-  expect(getByText('Add to Wishlist')).toBeInTheDocument();
-});
 ```
 
-## 📈 Analytics Integration
+### Best Practices
 
-The system automatically tracks flag exposures for analytics:
+#### Naming Conventions
+- Use SCREAMING_SNAKE_CASE
+- Prefix with category: `UI_`, `FEATURE_`, `INTEGRATION_`
+- Be descriptive: `NEW_CHECKOUT_FLOW` not `NEW_FEATURE`
 
+#### Flag Lifecycle
+1. **Development**: Test with 0% rollout
+2. **Staging**: Gradually increase rollout
+3. **Production**: Monitor metrics and feedback
+4. **Cleanup**: Remove flags after full rollout
+
+#### Performance Considerations
+- Cache flag evaluations
+- Minimize flag checks in render loops
+- Use FlagGuard for conditional rendering
+- Batch flag requests when possible
+
+## 🔧 Configuration Examples
+
+### Development Setup
 ```typescript
-// Experiment exposure tracking
-const { variant, trackExposure } = useExperiment('my.experiment');
-
-useEffect(() => {
-  trackExposure(); // Sends analytics event
-}, [trackExposure]);
+// In development, enable most flags
+export const DEV_CONFIG = {
+  defaultEnabled: true,
+  environment: 'development',
+  overrides: {
+    'PRODUCTION_ONLY_FEATURE': false
+  }
+};
 ```
 
-Events emitted:
-- `Feature Flag Evaluated` - Every flag check
-- `Experiment Exposed` - A/B test assignments
-- `Flag Configuration Changed` - Admin updates
+### Production Setup
+```typescript
+// In production, use careful rollouts
+export const PROD_CONFIG = {
+  defaultEnabled: false,
+  environment: 'production',
+  rolloutStrategy: 'gradual',
+  monitoring: true
+};
+```
 
-## 🚀 Production Deployment
+### Testing Configuration
+```typescript
+// For tests, all flags disabled by default
+export const TEST_CONFIG = {
+  defaultEnabled: false,
+  environment: 'test',
+  overrides: {} // Set specific flags as needed
+};
+```
 
-1. **Environment Variables**
-   ```bash
-   FEATURE_FLAGS_REDIS_URL=redis://localhost:6379
-   FEATURE_FLAGS_CACHE_TTL=300
-   ```
-
-2. **Database Setup**
-   ```sql
-   CREATE TABLE feature_flags (
-     key VARCHAR(255) PRIMARY KEY,
-     definition JSONB NOT NULL,
-     created_at TIMESTAMP DEFAULT NOW(),
-     updated_at TIMESTAMP DEFAULT NOW()
-   );
-   ```
-
-3. **Monitoring**
-   - Flag evaluation performance
-   - Cache hit rates  
-   - Error rates by flag
-   - Rollout progression metrics
-
-## 📚 Additional Resources
-
-- [Feature Flag Best Practices](./docs/best-practices.md)
-- [Rollout Strategies Guide](./docs/rollout-strategies.md)
-- [Troubleshooting Guide](./docs/troubleshooting.md)
-- [API Reference](./docs/api-reference.md)
-
-## 🤝 Contributing
-
-1. Follow the naming convention: `namespace.area.feature[.variant]`
-2. Always provide fail-safe defaults
-3. Document rollout strategy and success criteria
-4. Include tests for both enabled/disabled states
-5. Update this README with new flags
-
-## 📄 License
-
-MIT © MakrX Team
+This feature flag system enables safe, controlled feature releases across the entire MakrX ecosystem while supporting complex targeting and rollout strategies.
