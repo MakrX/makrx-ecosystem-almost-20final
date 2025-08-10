@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import Link from "next/link";
 import Layout from "@/components/layout/Layout";
 import { Button } from "@/components/ui/Button";
+import WriteReviewModal, { ReviewData } from "@/components/WriteReviewModal";
 import {
   Package,
   Truck,
