@@ -25,9 +25,13 @@ export default function CompatibilityInfo({ compatibility, productId }: Compatib
           Compatibility
         </h3>
         {isExpanded ? (
-          <ChevronUpIcon className="h-5 w-5 text-gray-500" />
+          <svg className="h-5 w-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 15l7-7 7 7" />
+          </svg>
         ) : (
-          <ChevronDownIcon className="h-5 w-5 text-gray-500" />
+          <svg className="h-5 w-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+          </svg>
         )}
       </button>
 
