@@ -188,6 +188,12 @@ function AdminPortal() {
                 </p>
               </div>
               <div className="flex items-center space-x-4">
+                <Link href="/admin/manage">
+                  <Button variant="outline" size="sm">
+                    <Settings className="h-4 w-4 mr-2" />
+                    Manage Store
+                  </Button>
+                </Link>
                 <Link href="/admin/orders">
                   <Button variant="outline" size="sm">
                     <ShoppingCart className="h-4 w-4 mr-2" />
