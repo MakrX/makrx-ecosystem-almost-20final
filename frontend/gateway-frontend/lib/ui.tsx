@@ -55,14 +55,14 @@ export function ThemeProvider({
       const metaThemeColorDark = document.querySelector('meta[name="theme-color"][media="(prefers-color-scheme: dark)"]');
 
       if (metaThemeColor) {
-        metaThemeColor.setAttribute('content', resolvedTheme === 'dark' ? '#0f172a' : '#1e40af');
+        metaThemeColor.setAttribute('content', resolvedTheme === 'dark' ? '#0a0a0a' : '#1e40af');
       }
 
       // Ensure mobile browsers use the correct theme color
       if (resolvedTheme === 'dark' && !metaThemeColorDark) {
         const darkMeta = document.createElement('meta');
         darkMeta.name = 'theme-color';
-        darkMeta.content = '#0f172a';
+        darkMeta.content = '#0a0a0a';
         darkMeta.media = '(prefers-color-scheme: dark)';
         document.head.appendChild(darkMeta);
       }
