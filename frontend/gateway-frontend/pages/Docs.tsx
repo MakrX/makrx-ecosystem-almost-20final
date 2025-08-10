@@ -177,6 +177,43 @@ export default function Docs() {
           difficulty: 'Intermediate'
         }
       ]
+    },
+    {
+      id: 'theme-system',
+      title: 'Theme System',
+      description: 'Dark mode, customization, and design system',
+      icon: <Settings className="w-6 h-6 text-purple-600" />,
+      color: 'purple-600',
+      items: [
+        {
+          title: 'Theme Demo',
+          description: 'Interactive showcase of dark/light mode components',
+          type: 'example',
+          href: '/theme-demo',
+          difficulty: 'Beginner'
+        },
+        {
+          title: 'Theme Implementation',
+          description: 'How to implement dark mode in your applications',
+          type: 'guide',
+          href: '/docs/theming/implementation',
+          difficulty: 'Intermediate'
+        },
+        {
+          title: 'Design System',
+          description: 'MakrX color palette, typography, and component system',
+          type: 'guide',
+          href: '/docs/theming/design-system',
+          difficulty: 'Beginner'
+        },
+        {
+          title: 'Custom Themes',
+          description: 'Creating and deploying custom brand themes',
+          type: 'guide',
+          href: '/docs/theming/custom',
+          difficulty: 'Advanced'
+        }
+      ]
     }
   ];
 
