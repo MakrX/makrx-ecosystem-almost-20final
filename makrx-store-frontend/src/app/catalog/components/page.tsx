@@ -64,11 +64,11 @@ export default function ComponentsPage() {
         {/* Header */}
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-4">
-            Electronic Components
+            Mechanical Components
           </h1>
           <p className="text-lg text-gray-600 dark:text-gray-400 max-w-3xl">
-            Individual electronic components for custom projects, repairs, and prototyping. 
-            From basic resistors and capacitors to specialized ICs and connectors.
+            Mechanical parts, fasteners, and building components for construction, assembly, and manufacturing.
+            From basic screws and bolts to specialized bearings and motors.
           </p>
         </div>
 
@@ -76,26 +76,26 @@ export default function ComponentsPage() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
           <div className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-sm">
             <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2">
-              Passive Components
+              Fasteners & Hardware
             </h3>
             <p className="text-gray-600 dark:text-gray-400 text-sm">
-              Resistors, capacitors, inductors, and other passive electronic components in various packages.
+              Bolts, screws, nuts, washers, and specialty fasteners in various materials and sizes.
             </p>
           </div>
           <div className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-sm">
             <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2">
-              Active Components
+              Motion Components
             </h3>
             <p className="text-gray-600 dark:text-gray-400 text-sm">
-              Transistors, diodes, operational amplifiers, voltage regulators, and integrated circuits.
+              Bearings, linear guides, pulleys, belts, gears, and other motion transmission parts.
             </p>
           </div>
           <div className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-sm">
             <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2">
-              Connectors & Hardware
+              Structural Parts
             </h3>
             <p className="text-gray-600 dark:text-gray-400 text-sm">
-              Headers, sockets, terminals, switches, potentiometers, and mechanical components.
+              Aluminum extrusions, brackets, plates, shafts, and structural building components.
             </p>
           </div>
         </div>
@@ -179,7 +179,7 @@ export default function ComponentsPage() {
         {/* Category Info */}
         <div className="mt-16 bg-white dark:bg-gray-800 rounded-lg p-8 shadow-sm">
           <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-6">
-            Build Your Electronic Circuits
+            Build Your Mechanical Systems
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             <div>
@@ -187,10 +187,10 @@ export default function ComponentsPage() {
                 Essential Components
               </h3>
               <ul className="space-y-2 text-gray-600 dark:text-gray-400">
-                <li>• <strong>Resistors:</strong> Carbon film, metal film, precision, power resistors</li>
-                <li>• <strong>Capacitors:</strong> Ceramic, electrolytic, tantalum, film capacitors</li>
-                <li>• <strong>Semiconductors:</strong> BJT, MOSFET, diodes, Zener diodes</li>
-                <li>• <strong>ICs:</strong> Logic gates, timers, amplifiers, microcontrollers</li>
+                <li>• <strong>Fasteners:</strong> Metric and imperial bolts, screws, nuts, washers</li>
+                <li>• <strong>Bearings:</strong> Ball bearings, roller bearings, linear bearings</li>
+                <li>• <strong>Motion:</strong> Lead screws, pulleys, belts, gears, couplings</li>
+                <li>• <strong>Structure:</strong> Aluminum extrusions, brackets, plates, shafts</li>
               </ul>
             </div>
             <div>
@@ -198,10 +198,10 @@ export default function ComponentsPage() {
                 Quality Standards
               </h3>
               <ul className="space-y-2 text-gray-600 dark:text-gray-400">
-                <li>• <strong>Tested:</strong> All components tested for specifications</li>
-                <li>• <strong>Genuine:</strong> Original manufacturer components only</li>
-                <li>• <strong>Organized:</strong> Clearly labeled with part numbers</li>
-                <li>• <strong>Support:</strong> Datasheets and application notes available</li>
+                <li>• <strong>Precision:</strong> CNC machined components with tight tolerances</li>
+                <li>• <strong>Materials:</strong> High-grade steel, aluminum, and engineered plastics</li>
+                <li>• <strong>Standards:</strong> DIN, ISO, and ANSI compliant fasteners</li>
+                <li>• <strong>Compatibility:</strong> Designed for maker and industrial applications</li>
               </ul>
             </div>
           </div>
