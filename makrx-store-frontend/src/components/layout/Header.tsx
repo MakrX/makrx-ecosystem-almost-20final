@@ -17,7 +17,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { api, type Category, type Product } from "@/lib/api";
 import SmartSearch from "@/components/SmartSearch";
 import NotificationDropdown from "@/components/NotificationDropdown";
-import { ThemeToggle } from "@makrx/ui/components/ThemeToggle";
+import { ThemeToggle } from "@/components/ThemeToggle";
 
 export function Header() {
   const { user, isAuthenticated, login, logout } = useAuth();
