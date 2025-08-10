@@ -660,7 +660,7 @@ input::placeholder, textarea::placeholder {
   }
 }
 
-/* Reduced motion support */
+/* Reduced motion support - respects user accessibility preferences */
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
@@ -670,10 +670,37 @@ input::placeholder, textarea::placeholder {
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
   }
-  
+
   html {
     scroll-behavior: auto !important;
+    transition: none !important;
   }
+
+  /* Remove theme transitions for users who prefer reduced motion */
+  .theme-transition,
+  .transition-theme {
+    transition: none !important;
+  }
+}
+
+/* Enhanced theme transition support */
+.theme-transition {
+  transition: background-color 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+              border-color 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+              color 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+              box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Apply theme transitions to common elements */
+body,
+.card,
+header,
+nav,
+button,
+input,
+textarea,
+select {
+  @apply theme-transition;
 }
 
 /* Loading states */
