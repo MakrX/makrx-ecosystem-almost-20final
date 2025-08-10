@@ -81,6 +81,13 @@ export default function ProductPage() {
     }
   }, [slug]);
 
+  // Ensure selectedImageIndex is valid when product changes
+  useEffect(() => {
+    if (product?.images && selectedImageIndex >= product.images.length) {
+      setSelectedImageIndex(0);
+    }
+  }, [product, selectedImageIndex]);
+
   const handleAddToCart = async () => {
     if (!product) return;
 
