@@ -466,9 +466,83 @@ export default function ProductPage() {
                         Based on {product.rating.count} reviews
                       </span>
                     </div>
-                    <div className="text-center py-8 text-gray-500 dark:text-gray-400">
-                      <p>Individual reviews coming soon!</p>
-                      <p className="text-sm mt-2">We're working on implementing a full review system.</p>
+                    {/* Individual Reviews */}
+                    <div className="space-y-6">
+                      {generateMockReviews(product).map((review, index) => (
+                        <div key={index} className="border-b border-gray-200 dark:border-gray-700 pb-6 last:border-b-0">
+                          <div className="flex items-start justify-between mb-3">
+                            <div className="flex items-center gap-3">
+                              <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white font-semibold">
+                                {review.author.split(' ').map(n => n[0]).join('')}
+                              </div>
+                              <div>
+                                <h4 className="font-semibold text-gray-900 dark:text-white">
+                                  {review.author}
+                                  {review.verified && (
+                                    <span className="ml-2 inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200">
+                                      Verified Purchase
+                                    </span>
+                                  )}
+                                </h4>
+                                <div className="flex items-center gap-2">
+                                  <div className="flex items-center">
+                                    {[...Array(5)].map((_, i) => (
+                                      <svg
+                                        key={i}
+                                        className={`w-4 h-4 ${i < review.rating ? "text-yellow-400" : "text-gray-300"}`}
+                                        fill="currentColor"
+                                        viewBox="0 0 20 20"
+                                      >
+                                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                                      </svg>
+                                    ))}
+                                  </div>
+                                  <span className="text-sm text-gray-500 dark:text-gray-400">
+                                    {new Date(review.date).toLocaleDateString('en-US', {
+                                      year: 'numeric',
+                                      month: 'long',
+                                      day: 'numeric'
+                                    })}
+                                  </span>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+
+                          <div className="mb-4">
+                            <h5 className="font-medium text-gray-900 dark:text-white mb-2">
+                              {review.title}
+                            </h5>
+                            <p className="text-gray-700 dark:text-gray-300 leading-relaxed">
+                              {review.content}
+                            </p>
+                          </div>
+
+                          <div className="flex items-center gap-4">
+                            <button className="flex items-center gap-1 text-sm text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 transition-colors">
+                              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 10h4.764a2 2 0 011.789 2.894l-3.5 7A2 2 0 0115.263 21h-4.017c-.163 0-.326-.02-.485-.06L7 20m7-10V5a2 2 0 00-2-2h-.095c-.5 0-.905.405-.905.905 0 .714-.211 1.412-.608 2.006L9.5 7M7 20s-2-1-2-3V8a2 2 0 012-2h.326c.253 0 .503.058.735.17L11 7M7 20l-3-3v-7" />
+                              </svg>
+                              Helpful ({review.helpful})
+                            </button>
+                            <button className="text-sm text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 transition-colors">
+                              Reply
+                            </button>
+                            <button className="text-sm text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 transition-colors">
+                              Report
+                            </button>
+                          </div>
+                        </div>
+                      ))}
+
+                      {/* Load More Reviews Button */}
+                      {product.rating && product.rating.count > 6 && (
+                        <div className="text-center pt-6">
+                          <button className="px-6 py-2 border border-gray-300 dark:border-gray-600 rounded-md text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
+                            Load More Reviews ({product.rating.count - 6} remaining)
+                          </button>
+                        </div>
+                      )}
                     </div>
                   </>
                 ) : (
