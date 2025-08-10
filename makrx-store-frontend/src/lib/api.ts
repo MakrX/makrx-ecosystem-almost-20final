@@ -989,24 +989,15 @@ class ApiClient {
     });
 
     return adminProducts.map((product, index) => {
-      // Generate a unique numeric ID based on index to avoid conflicts
-      const numericId = index + 1000; // Start from 1000 to avoid low number conflicts
+      // Generate a unique numeric ID
+      const numericId = parseInt(product.id) || index + 1000;
 
       // Map product category to numeric ID
-      let categorySlug = product.category?.toLowerCase().replace(/\s+/g, '-').replace(/&/g, '');
-
-      // Handle common category name variations
-      if (categorySlug === 'filament-materials' || categorySlug === 'materials') {
-        categorySlug = 'filament';
-      }
-      if (categorySlug === 'tools-hardware' || categorySlug === 'hardware') {
-        categorySlug = 'tools';
-      }
-
+      const categorySlug = product.category;
       const categoryId = categoryMap[categorySlug] || 1;
 
-      // Find the matching category from our categories data
-      const categoryInfo = mockCategories.find(cat => cat.slug === categorySlug) || mockCategories[0];
+      // Find the matching category from admin categories
+      const categoryInfo = adminCategories.find(cat => cat.slug === categorySlug) || adminCategories[0];
 
       return {
         id: numericId,
