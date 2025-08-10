@@ -15,7 +15,11 @@ export default function ThreeDPrintersPage() {
   const [error, setError] = useState<string | null>(null);
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
   const [sortBy, setSortBy] = useState("featured");
-  const [showFilters, setShowFilters] = useState(false);
+  const [activeFilters, setActiveFilters] = useState<Record<string, string[]>>({});
+  const { isFiltersOpen, toggleFilters, closeFilters } = useFiltersToggle();
+
+  // Get category-specific filters
+  const categoryFilters = getAllFiltersForCategory('3d-printers');
 
   useEffect(() => {
     const loadProducts = async () => {
