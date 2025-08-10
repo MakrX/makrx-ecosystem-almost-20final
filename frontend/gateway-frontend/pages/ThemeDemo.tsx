@@ -44,7 +44,7 @@ export default function ThemeDemo() {
             </span>
             <span className="text-gray-400 dark:text-gray-500">|</span>
             <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
-              Resolved: <span className="font-bold text-makrx-blue">{actualTheme}</span>
+              Resolved: <span className="font-bold text-makrx-blue">{resolvedTheme}</span>
             </span>
             <ThemeToggle variant="compact" />
           </div>
