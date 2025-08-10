@@ -11,7 +11,7 @@ To democratize making by providing an integrated platform that bridges the gap b
 
 ## 🏗️ Ecosystem Architecture
 
-The MakrX ecosystem consists of three primary domains working in perfect harmony:
+The MakrX ecosystem consists of a **public gateway** connecting to external ecosystem applications:
 
 ```
 ┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
