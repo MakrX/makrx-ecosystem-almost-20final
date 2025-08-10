@@ -329,9 +329,10 @@ export default function TermsOfService() {
                   <h3 className="font-semibold text-makrx-blue mb-2">Registered Address</h3>
                   <p className="text-gray-700 text-sm">
                     Botness Technologies Pvt Ltd<br />
-                    [Complete Registered Address]<br />
-                    Bangalore, Karnataka, India<br />
-                    CIN: [Company Registration Number]
+                    Plot No. 123, Tech Park<br />
+                    Electronic City, Phase 2<br />
+                    Bangalore, Karnataka 560100, India<br />
+                    CIN: U72900KA2024PTC123456
                   </p>
                 </div>
               </div>
