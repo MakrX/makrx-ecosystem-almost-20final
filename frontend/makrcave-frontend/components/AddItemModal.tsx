@@ -465,10 +465,15 @@ export default function AddItemModal({ isOpen, onClose, editItem, onSubmit }: Ad
               {formData.supplierType === 'makrx' && (
                 <div>
                   <label className="block text-sm font-medium mb-2">MakrX Product Code</label>
-                  <input 
-                    type="text" 
+                  <input
+                    type="text"
                     value={formData.productCode}
-                    onChange={(e) => setFormData({...formData, productCode: e.target.value})}
+                    onChange={(e) => {
+                      const newCode = e.target.value;
+                      setFormData({...formData, productCode: newCode});
+                      // Check for duplicates when SKU changes
+                      checkForDuplicates(formData.name, newCode);
+                    }}
                     className="w-full px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-makrx-teal bg-gray-50"
                     placeholder="MKX-FIL-HAT-PLA001"
                     readOnly={isScannedItem}
