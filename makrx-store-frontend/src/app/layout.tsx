@@ -43,6 +43,26 @@ if (typeof window !== "undefined" && process.env.NODE_ENV === "development") {
     }
     return false; // Let other errors through
   };
+
+  // Intercept fetch requests to block placeholder URLs
+  const originalFetch = window.fetch;
+  window.fetch = async (input, init) => {
+    const url = typeof input === "string" ? input : input.url;
+
+    // Block requests to placeholder URLs
+    if (url && url.includes("/api/placeholder")) {
+      console.warn("Blocked placeholder request:", url);
+      // Return a resolved promise with a mock response
+      return Promise.resolve(new Response("", {
+        status: 200,
+        statusText: "OK",
+        headers: new Headers()
+      }));
+    }
+
+    // Allow other requests to proceed
+    return originalFetch(input, init);
+  };
 }
 
 const inter = Inter({ subsets: ["latin"] });
