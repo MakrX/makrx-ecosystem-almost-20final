@@ -467,6 +467,28 @@ export default function AccountOrdersPage() {
                             Qty: {item.quantity} × ${item.price.toFixed(2)}
                           </div>
                         </div>
+
+                        {/* Individual Review Button for Delivered Items */}
+                        {order.status === "delivered" && order.type === "product" && (
+                          <div className="flex-shrink-0">
+                            {hasUserReviewed(order.id, item.id) ? (
+                              <div className="flex items-center gap-1 text-xs text-green-600 bg-green-50 px-2 py-1 rounded">
+                                <Star className="h-3 w-3 fill-current" />
+                                Reviewed
+                              </div>
+                            ) : (
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() => openReviewModal(item, order.id)}
+                                className="text-xs px-2 py-1 h-auto"
+                              >
+                                <Star className="h-3 w-3 mr-1" />
+                                Review
+                              </Button>
+                            )}
+                          </div>
+                        )}
                       </div>
                     ))}
                   </div>
