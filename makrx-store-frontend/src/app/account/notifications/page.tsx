@@ -21,14 +21,6 @@ import {
   Info,
 } from "lucide-react";
 
-interface NotificationSettings {
-  email_notifications: boolean;
-  push_notifications: boolean;
-  order_updates: boolean;
-  marketing_emails: boolean;
-  security_alerts: boolean;
-  processing_updates: boolean;
-}
 
 function NotificationSettingsPage() {
   const { notifications, markAllAsRead, clearAll } = useNotifications();
