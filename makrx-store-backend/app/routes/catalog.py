@@ -63,6 +63,21 @@ async def get_category_by_slug(
         raise HTTPException(status_code=404, detail="Category not found")
     return category
 
+@router.get("/categories/by-path/{path:path}", response_model=Category)
+async def get_category_by_path(
+    path: str = Path(..., description="Category path (e.g., 3d-printing/materials/pla)"),
+    db: AsyncSession = Depends(get_db)
+):
+    """Get category by hierarchical path"""
+    try:
+        category = await category_crud.get_by_path(db, path)
+        if not category:
+            raise HTTPException(status_code=404, detail="Category not found")
+        return category
+    except Exception as e:
+        logger.error(f"Failed to get category by path {path}: {e}")
+        raise HTTPException(status_code=500, detail="Failed to retrieve category")
+
 # Product endpoints
 @router.get("/products", response_model=ProductList)
 async def get_products(
