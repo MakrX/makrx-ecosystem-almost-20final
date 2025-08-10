@@ -292,14 +292,14 @@ export default function HomePage() {
       )}
 
       {/* Features Section */}
-      <section className="py-24 sm:py-28 lg:py-36 bg-gray-50 border-t border-gray-200">
+      <section className="py-24 sm:py-28 lg:py-36 bg-gray-50 dark:bg-gray-900 border-t border-gray-200 dark:border-gray-700">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16 sm:mb-20">
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 mb-4 sm:mb-6">
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 dark:text-white mb-4 sm:mb-6">
               Everything You Need to
-              <span className="text-makrx-blue"> Create</span>
+              <span className="text-makrx-blue dark:text-makrx-yellow"> Create</span>
             </h2>
-            <p className="text-lg sm:text-xl text-gray-600 max-w-3xl mx-auto px-4">
+            <p className="text-lg sm:text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto px-4">
               From idea to reality, MakrX provides the tools, space, knowledge, and community to bring your vision to life.
             </p>
           </div>
@@ -333,13 +333,13 @@ export default function HomePage() {
       </section>
 
       {/* How It Works Section */}
-      <section className="py-24 sm:py-28 lg:py-36 bg-white border-t border-gray-100">
+      <section className="py-24 sm:py-28 lg:py-36 bg-white dark:bg-gray-800 border-t border-gray-100 dark:border-gray-700">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16 sm:mb-20">
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 mb-4 sm:mb-6">
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 dark:text-white mb-4 sm:mb-6">
               How MakrX Works
             </h2>
-            <p className="text-lg sm:text-xl text-gray-600 max-w-3xl mx-auto px-4">
+            <p className="text-lg sm:text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto px-4">
               Simple steps to transform your ideas into reality
             </p>
           </div>
@@ -349,8 +349,8 @@ export default function HomePage() {
               <div className="w-20 h-20 bg-makrx-blue rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:bg-makrx-yellow group-hover:scale-110 transition-all">
                 <span className="text-2xl font-bold text-white group-hover:text-makrx-blue">1</span>
               </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-4">Discover & Plan</h3>
-              <p className="text-gray-600 leading-relaxed">
+              <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-4">Discover & Plan</h3>
+              <p className="text-gray-600 dark:text-gray-300 leading-relaxed">
                 Explore makerspaces near you, browse tools and materials, and plan your project with our expert community guidance.
               </p>
             </div>
@@ -359,8 +359,8 @@ export default function HomePage() {
               <div className="w-20 h-20 bg-makrx-blue rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:bg-makrx-yellow group-hover:scale-110 transition-all">
                 <span className="text-2xl font-bold text-white group-hover:text-makrx-blue">2</span>
               </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-4">Create & Build</h3>
-              <p className="text-gray-600 leading-relaxed">
+              <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-4">Create & Build</h3>
+              <p className="text-gray-600 dark:text-gray-300 leading-relaxed">
                 Access professional equipment, get materials delivered, and build with support from experienced makers and mentors.
               </p>
             </div>
@@ -369,8 +369,8 @@ export default function HomePage() {
               <div className="w-20 h-20 bg-makrx-blue rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:bg-makrx-yellow group-hover:scale-110 transition-all">
                 <span className="text-2xl font-bold text-white group-hover:text-makrx-blue">3</span>
               </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-4">Share & Inspire</h3>
-              <p className="text-gray-600 leading-relaxed">
+              <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-4">Share & Inspire</h3>
+              <p className="text-gray-600 dark:text-gray-300 leading-relaxed">
                 Showcase your creations, inspire others, and become part of a thriving community of makers and innovators.
               </p>
             </div>
@@ -427,13 +427,13 @@ export default function HomePage() {
 
       {/* Testimonials Section */}
       {showTestimonials && (
-        <section className="py-24 sm:py-28 lg:py-36 bg-gray-50 border-t border-gray-200">
+        <section className="py-24 sm:py-28 lg:py-36 bg-gray-50 dark:bg-gray-900 border-t border-gray-200 dark:border-gray-700">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-16 sm:mb-20">
-              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 mb-4 sm:mb-6">
+              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 dark:text-white mb-4 sm:mb-6">
                 Loved by Makers
               </h2>
-              <p className="text-lg sm:text-xl text-gray-600 max-w-3xl mx-auto px-4">
+              <p className="text-lg sm:text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto px-4">
                 Hear from the amazing creators who are already part of the MakrX family
               </p>
             </div>
