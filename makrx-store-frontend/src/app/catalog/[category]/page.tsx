@@ -117,10 +117,8 @@ export default function CategoryPage() {
     return Object.keys(filtersWithoutCategory).length + (searchQuery ? 1 : 0)
   }
 
-  // Get relevant filters for this category
-  const relevantFilters = filters.filter(filter => 
-    !filter.category || filter.category.includes(categorySlug)
-  ).filter(filter => filter.id !== 'category') // Remove category filter since we're already in a category
+  // Get category-specific filters
+  const categoryFilters = getAllFiltersForCategory(categorySlug)
 
   if (!category) {
     return (
