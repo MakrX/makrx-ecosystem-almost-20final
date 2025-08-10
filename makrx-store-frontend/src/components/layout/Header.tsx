@@ -139,7 +139,7 @@ export function Header() {
                   </a>
                   <a
                     href="https://makrcave.com"
-                    className="block p-2 hover:bg-accent hover:text-accent-foreground rounded-md"
+                    className="block p-3 hover:bg-gradient-to-r hover:from-blue-50 hover:to-indigo-50 dark:hover:from-blue-900/20 dark:hover:to-indigo-900/20 hover:shadow-md transition-all duration-200 rounded-lg"
                   >
                     <div className="font-medium text-popover-foreground">
                       MakrCave
@@ -148,7 +148,7 @@ export function Header() {
                       Makerspace management platform
                     </div>
                   </a>
-                  <div className="block p-2 bg-blue-50 dark:bg-blue-900/20 rounded-md">
+                  <div className="block p-3 bg-gradient-to-r from-blue-100 to-indigo-100 dark:from-blue-900/30 dark:to-indigo-900/30 rounded-lg border border-blue-200 dark:border-blue-800 shadow-sm">
                     <div className="font-medium text-blue-600 dark:text-blue-400">
                       MakrX.Store
                     </div>
