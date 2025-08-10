@@ -178,7 +178,8 @@ export default function CatalogPage() {
   };
 
   const handleCategorySelect = (categoryId: number) => {
-    handleFilterChange("category_id", categoryId);
+    // If categoryId is 0, it means "All Categories" - clear the filter
+    handleFilterChange("category_id", categoryId === 0 ? undefined : categoryId);
   };
 
   const getCategoryName = (categoryId?: number) => {
