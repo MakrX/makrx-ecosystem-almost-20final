@@ -312,7 +312,7 @@ class ApiClient {
            error.message.includes("fetch"))) {
 
         // In development, use mock data instead of showing errors
-        if (process.env.NODE_ENV === "development" || !settings.ENVIRONMENT || settings.ENVIRONMENT !== "production") {
+        if (process.env.NODE_ENV === "development" || process.env.NEXT_PUBLIC_ENV !== "production") {
           // Show a one-time notification that we're using mock data
           if (!sessionStorage.getItem("mock-data-notice-shown")) {
             sessionStorage.setItem("mock-data-notice-shown", "true");
