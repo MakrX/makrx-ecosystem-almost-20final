@@ -54,7 +54,7 @@ const mockReviews: Review[] = [
     verified: true,
     helpful: 12,
     notHelpful: 1,
-    images: ['/api/placeholder/200/200', '/api/placeholder/200/200']
+    images: ['https://via.placeholder.com/200x200/3B82F6/FFFFFF?text=Photo', 'https://via.placeholder.com/200x200/3B82F6/FFFFFF?text=Photo']
   },
   {
     id: '2',
