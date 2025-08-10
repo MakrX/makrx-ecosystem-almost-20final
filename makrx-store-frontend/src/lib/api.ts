@@ -255,6 +255,7 @@ export interface AdminStats {
   total_products: number;
   total_users: number;
   pending_orders: number;
+  active_orders: number;
   low_stock_products: number;
   recent_orders: Order[];
   top_products: Array<{
