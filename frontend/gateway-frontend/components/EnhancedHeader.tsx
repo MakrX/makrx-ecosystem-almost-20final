@@ -51,15 +51,22 @@ export default function EnhancedHeader() {
   const buildNavigation = () => {
     const baseNav = [];
 
+    // External ecosystem URLs
+    const makrcaveUrl = process.env.VITE_MAKRCAVE_URL || 'https://makrcave.com';
+    const storeUrl = process.env.VITE_STORE_URL || 'https://makrx.store';
+    const learnUrl = process.env.VITE_LEARN_URL || 'https://learn.makrx.org';
+    const customPrintUrl = process.env.VITE_3D_STORE_URL || 'https://3d.makrx.store';
+
     if (showMakrCave) {
       baseNav.push({
         name: 'MakrCave',
-        href: '/makrcave',
+        href: makrcaveUrl,
         icon: Building2,
+        isExternal: true,
         dropdown: [
-          { name: 'Portal', href: '/makrcave', icon: Building2 },
-          { name: 'Find Spaces', href: '/makrcave/find', icon: Search },
-          { name: 'Projects', href: '/makrcave/projects', icon: Star },
+          { name: 'Portal', href: makrcaveUrl, icon: Building2, isExternal: true },
+          { name: 'Find Spaces', href: `${makrcaveUrl}/find`, icon: Search, isExternal: true },
+          { name: 'Projects', href: `${makrcaveUrl}/projects`, icon: Star, isExternal: true },
         ]
       });
     }
@@ -67,24 +74,26 @@ export default function EnhancedHeader() {
     if (showStore) {
       baseNav.push({
         name: 'Store',
-        href: '/store',
+        href: storeUrl,
         icon: ShoppingCart,
+        isExternal: true,
         dropdown: [
-          { name: 'Shop', href: '/store', icon: ShoppingCart },
-          { name: 'Services', href: '/store/services', icon: Settings },
-          { name: 'Upload Design', href: '/store/upload', icon: Package },
+          { name: 'Shop', href: storeUrl, icon: ShoppingCart, isExternal: true },
+          { name: 'Custom Print', href: customPrintUrl, icon: Package, isExternal: true },
+          { name: 'Services', href: `${storeUrl}/services`, icon: Settings, isExternal: true },
         ]
       });
     }
 
     baseNav.push({
       name: 'Learn',
-      href: '/learn',
+      href: learnUrl,
       icon: GraduationCap,
+      isExternal: true,
       dropdown: [
-        { name: 'Courses', href: '/learn', icon: GraduationCap },
-        { name: 'Skill Badges', href: '/learn/badges', icon: Star },
-        { name: 'Certifications', href: '/learn/certifications', icon: Settings },
+        { name: 'Courses', href: learnUrl, icon: GraduationCap, isExternal: true },
+        { name: 'Skill Badges', href: `${learnUrl}/badges`, icon: Star, isExternal: true },
+        { name: 'Certifications', href: `${learnUrl}/certifications`, icon: Settings, isExternal: true },
       ]
     });
 
