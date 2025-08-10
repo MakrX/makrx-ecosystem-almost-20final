@@ -4,6 +4,12 @@ const path = require("path");
 const nextConfig = {
   reactStrictMode: true,
   swcMinify: true,
+  // Suppress hydration warnings caused by browser extensions
+  compiler: {
+    removeConsole: process.env.NODE_ENV === "production" ? {
+      exclude: ["error"]
+    } : false,
+  },
   images: {
     domains: ["localhost", "makrx.store", "images.unsplash.com"],
     unoptimized: true,
