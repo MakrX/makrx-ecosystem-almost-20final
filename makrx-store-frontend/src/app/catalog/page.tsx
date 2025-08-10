@@ -491,7 +491,7 @@ export default function CatalogPage() {
                     <div
                       className={viewMode === "list" ? "ml-4 flex-1" : "p-4"}
                     >
-                      <Link href={`/product/${product.slug}`}>
+                      <Link href={`/p/${product.slug}`}>
                         <h3 className="font-semibold text-gray-900 mb-2 hover:text-blue-600">
                           {product.name}
                         </h3>
