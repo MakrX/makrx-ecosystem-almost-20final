@@ -75,7 +75,7 @@ export function Header() {
     }
   };
 
-  const handleCategoryClick = (category: Category) => {
+  const handleCategoryClick = (category: AdminCategory) => {
     router.push(`/catalog/${category.slug}`);
     setIsMenuOpen(false);
   };
