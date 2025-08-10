@@ -30,6 +30,23 @@ const App = () => {
   return (
     <ThemeProvider>
       <Helmet>
+        <script>
+          {`
+            (function() {
+              try {
+                var theme = localStorage.getItem('makrx-theme') || 'system';
+                var systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                var resolvedTheme = theme === 'system' ? (systemDark ? 'dark' : 'light') : theme;
+
+                document.documentElement.classList.add(resolvedTheme);
+                document.documentElement.setAttribute('data-theme', resolvedTheme);
+                document.documentElement.style.colorScheme = resolvedTheme;
+              } catch (e) {
+                console.warn('Theme initialization failed:', e);
+              }
+            })();
+          `}
+        </script>
         <title>MakrX - Digital Manufacturing Ecosystem | Makerspaces, Tools & Fabrication</title>
         <meta name="description" content="India's leading digital manufacturing platform connecting creators, makerspaces, and service providers. Access MakrCave makerspaces, shop at MakrX.Store, and get custom fabrication through 3D.MakrX.Store." />
         <meta name="keywords" content="makerspace, digital manufacturing, 3d printing, laser cutting, custom fabrication, tools, india, makrx" />
