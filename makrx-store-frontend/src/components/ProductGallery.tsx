@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import Image from 'next/image';
-import { ChevronLeftIcon, ChevronRightIcon, MagnifyingGlassIcon } from '@heroicons/react/24/outline';
+// Using inline SVGs instead of Heroicons
 
 interface ProductGalleryProps {
   images: string[];
@@ -62,14 +62,18 @@ export default function ProductGallery({
               className="absolute left-2 top-1/2 -translate-y-1/2 p-2 bg-white/80 dark:bg-black/80 rounded-full shadow-md hover:bg-white dark:hover:bg-black transition-colors opacity-0 group-hover:opacity-100"
               aria-label="Previous image"
             >
-              <ChevronLeftIcon className="h-5 w-5 text-gray-900 dark:text-white" />
+              <svg className="h-5 w-5 text-gray-900 dark:text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+              </svg>
             </button>
             <button
               onClick={handleNext}
               className="absolute right-2 top-1/2 -translate-y-1/2 p-2 bg-white/80 dark:bg-black/80 rounded-full shadow-md hover:bg-white dark:hover:bg-black transition-colors opacity-0 group-hover:opacity-100"
               aria-label="Next image"
             >
-              <ChevronRightIcon className="h-5 w-5 text-gray-900 dark:text-white" />
+              <svg className="h-5 w-5 text-gray-900 dark:text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+              </svg>
             </button>
           </>
         )}
@@ -80,7 +84,9 @@ export default function ProductGallery({
           className="absolute top-2 right-2 p-2 bg-white/80 dark:bg-black/80 rounded-full shadow-md hover:bg-white dark:hover:bg-black transition-colors opacity-0 group-hover:opacity-100"
           aria-label="Zoom image"
         >
-          <MagnifyingGlassIcon className="h-5 w-5 text-gray-900 dark:text-white" />
+          <svg className="h-5 w-5 text-gray-900 dark:text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+          </svg>
         </button>
 
         {/* Image Counter */}
