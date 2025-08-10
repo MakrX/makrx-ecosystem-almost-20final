@@ -154,17 +154,36 @@ export default function EnhancedHeader() {
 
                   {/* Dropdown Menu */}
                   {hasDropdown && showDropdown === item.name && (
-                    <div className="absolute top-full left-0 mt-1 w-48 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 py-2">
+                    <div className="absolute top-full left-0 mt-1 w-56 bg-white dark:bg-gray-800 rounded-lg shadow-xl border border-gray-200 dark:border-gray-700 py-2 z-50 transform -translate-x-2">
+                      <div className="px-3 py-2 border-b border-gray-100 dark:border-gray-700">
+                        <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">{item.name}</p>
+                      </div>
                       {item.dropdown.map((dropdownItem) => {
                         const DropdownIcon = dropdownItem.icon;
                         return (
                           <Link
                             key={dropdownItem.href}
                             to={dropdownItem.href}
-                            className="flex items-center gap-3 px-4 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+                            className="flex items-center gap-3 px-4 py-3 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors group"
                           >
-                            <DropdownIcon className="w-4 h-4" />
-                            {dropdownItem.name}
+                            <div className="w-8 h-8 bg-gray-100 dark:bg-gray-700 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform">
+                              <DropdownIcon className="w-4 h-4" />
+                            </div>
+                            <div>
+                              <p className="text-sm font-medium">{dropdownItem.name}</p>
+                              <p className="text-xs text-gray-500 dark:text-gray-400">
+                                {dropdownItem.name === 'Portal' ? 'Access workspace' :
+                                 dropdownItem.name === 'Find Spaces' ? 'Discover locations' :
+                                 dropdownItem.name === 'Projects' ? 'Browse projects' :
+                                 dropdownItem.name === 'Shop' ? 'Browse products' :
+                                 dropdownItem.name === 'Services' ? 'Custom orders' :
+                                 dropdownItem.name === 'Upload Design' ? 'Get it made' :
+                                 dropdownItem.name === 'Courses' ? 'Learn skills' :
+                                 dropdownItem.name === 'Skill Badges' ? 'Earn badges' :
+                                 dropdownItem.name === 'Certifications' ? 'Get certified' :
+                                 'Explore more'}
+                              </p>
+                            </div>
                           </Link>
                         );
                       })}
