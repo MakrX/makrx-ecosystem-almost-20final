@@ -60,7 +60,7 @@ export function Header() {
   };
 
   const handleCategoryClick = (category: Category) => {
-    router.push(`/catalog/category/${category.slug}`);
+    router.push(`/catalog/${category.slug}`);
     setIsMenuOpen(false);
   };
 

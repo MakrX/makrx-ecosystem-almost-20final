@@ -41,7 +41,7 @@ export default function HomePage() {
   }, []);
 
   const handleCategoryClick = (category: Category) => {
-    window.location.href = `/catalog/category/${category.slug}`;
+    window.location.href = `/catalog/${category.slug}`;
   };
 
   const handleProductClick = (product: Product) => {
