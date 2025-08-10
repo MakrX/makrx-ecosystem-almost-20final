@@ -38,9 +38,12 @@ export function ThemeProvider({
     const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
 
     const applyTheme = (newTheme: Theme) => {
-      // Force remove all theme classes
+      // Force remove all theme classes multiple times to ensure they're gone
       root.classList.remove('light', 'dark');
       root.removeAttribute('data-theme');
+
+      // Force a reflow
+      root.offsetHeight;
 
       let resolvedTheme: 'light' | 'dark';
 
@@ -57,6 +60,9 @@ export function ThemeProvider({
 
       // Force style recalculation
       root.style.colorScheme = resolvedTheme;
+
+      // Additional force by setting both class attribute directly
+      root.className = root.className; // Force class update
 
 
       // Update meta theme-color for mobile browsers
