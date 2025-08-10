@@ -180,7 +180,7 @@ export function ThemeToggle({
     return (
       <button
         onClick={cycleTheme}
-        className={`inline-flex items-center justify-center rounded-lg w-9 h-9 bg-transparent hover:bg-gray-100 dark:hover:bg-slate-900 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-makrx-yellow disabled:pointer-events-none disabled:opacity-50 ${className}`}
+        className={`inline-flex items-center justify-center rounded-lg w-9 h-9 bg-transparent text-gray-600 dark:text-gray-100 hover:bg-gray-100 dark:hover:bg-slate-900 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-makrx-yellow disabled:pointer-events-none disabled:opacity-50 ${className}`}
         aria-label={`Switch to ${theme === 'light' ? 'dark' : theme === 'dark' ? 'system' : 'light'} theme`}
         title={`Current: ${getLabel()} theme`}
       >
