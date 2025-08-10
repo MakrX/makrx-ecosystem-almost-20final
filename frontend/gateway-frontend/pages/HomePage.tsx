@@ -35,18 +35,20 @@ interface FeatureCardProps {
 
 const FeatureCard: React.FC<FeatureCardProps> = ({ title, description, icon, href, gradient }) => (
   <Link to={href} className="group block">
-    <div className={`relative overflow-hidden rounded-2xl bg-gradient-to-br ${gradient} p-8 h-full transition-all duration-300 group-hover:scale-105 group-hover:shadow-2xl`}>
+    <div className={`relative overflow-hidden rounded-2xl bg-gradient-to-br ${gradient} p-8 h-full transition-all duration-500 group-hover:scale-105 group-hover:shadow-2xl group-hover:-rotate-1 border border-white/10`}>
       <div className="relative z-10">
-        <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center mb-6 group-hover:bg-white/30 transition-colors">
+        <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center mb-6 group-hover:bg-white/30 group-hover:scale-110 group-hover:rotate-6 transition-all duration-300">
           {icon}
         </div>
-        <h3 className="text-xl font-bold text-white mb-3">{title}</h3>
-        <p className="text-white/90 mb-4 leading-relaxed">{description}</p>
-        <div className="flex items-center text-white font-medium group-hover:text-makrx-yellow transition-colors">
-          Explore <ArrowRight className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" />
+        <h3 className="text-xl font-bold text-white mb-3 group-hover:text-makrx-yellow transition-colors duration-300">{title}</h3>
+        <p className="text-white/90 mb-4 leading-relaxed group-hover:text-white transition-colors duration-300">{description}</p>
+        <div className="flex items-center text-white font-medium group-hover:text-makrx-yellow transition-all duration-300">
+          Explore <ArrowRight className="ml-2 w-4 h-4 group-hover:translate-x-1 group-hover:scale-110 transition-all duration-300" />
         </div>
       </div>
-      <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -translate-y-16 translate-x-16 group-hover:scale-150 transition-transform duration-500"></div>
+      <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -translate-y-16 translate-x-16 group-hover:scale-150 group-hover:bg-white/20 transition-all duration-700"></div>
+      <div className="absolute bottom-0 left-0 w-24 h-24 bg-white/5 rounded-full translate-y-12 -translate-x-12 group-hover:scale-125 group-hover:bg-white/10 transition-all duration-700"></div>
+      <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
     </div>
   </Link>
 );
@@ -98,13 +100,16 @@ export default function HomePage() {
           <div className="mb-8">
             {/* Animated Logo/Brand */}
             <div className="mb-8">
-              <h1 className="text-5xl lg:text-7xl font-display font-bold mb-4 leading-tight">
-                <span className="text-white">MakrX</span>
-              </h1>
-              <div className="text-2xl lg:text-4xl font-light text-white/80 mb-6 animate-fade-in">
-                <span className="inline-block animate-slide-in-left">Dream.</span>{' '}
-                <span className="inline-block animate-slide-in-right" style={{animationDelay: '0.5s'}}>Make.</span>{' '}
-                <span className="inline-block animate-slide-in-left" style={{animationDelay: '1s'}}>Share.</span>
+              <div className="relative group">
+                <h1 className="text-5xl lg:text-7xl font-display font-bold mb-4 leading-tight relative z-10">
+                  <span className="text-white hover:text-makrx-yellow transition-colors duration-500 cursor-default">MakrX</span>
+                  <div className="absolute inset-0 bg-gradient-to-r from-makrx-yellow/20 to-transparent rounded-2xl blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-700 -z-10"></div>
+                </h1>
+              </div>
+              <div className="text-2xl lg:text-4xl font-light text-white/80 mb-6">
+                <span className="inline-block animate-slide-in-left hover:text-makrx-yellow transition-colors duration-300 cursor-default">Dream.</span>{' '}
+                <span className="inline-block animate-slide-in-right hover:text-makrx-yellow transition-colors duration-300 cursor-default" style={{animationDelay: '0.5s'}}>Make.</span>{' '}
+                <span className="inline-block animate-slide-in-left hover:text-makrx-yellow transition-colors duration-300 cursor-default" style={{animationDelay: '1s'}}>Share.</span>
               </div>
             </div>
 
@@ -122,18 +127,20 @@ export default function HomePage() {
           <div className="flex flex-col sm:flex-row gap-6 justify-center mb-16">
             <Link
               to="/register"
-              className="group inline-flex items-center justify-center px-8 py-4 text-lg font-semibold rounded-2xl bg-makrx-yellow text-makrx-blue hover:bg-yellow-300 transition-all duration-300 hover:scale-105 hover:shadow-2xl"
+              className="group relative inline-flex items-center justify-center px-8 py-4 text-lg font-semibold rounded-2xl bg-makrx-yellow text-makrx-blue hover:bg-yellow-300 transition-all duration-300 hover:scale-105 hover:shadow-2xl overflow-hidden"
             >
-              Get Started Free
-              <Zap className="ml-3 w-5 h-5 group-hover:translate-x-1 transition-transform" />
+              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent transform -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-700"></div>
+              <span className="relative z-10">Get Started Free</span>
+              <Zap className="ml-3 w-5 h-5 group-hover:translate-x-1 group-hover:rotate-12 transition-all duration-300 relative z-10" />
             </Link>
 
             <button
-              className="group inline-flex items-center justify-center px-8 py-4 text-lg font-semibold rounded-2xl bg-white/10 text-white border-2 border-white/20 hover:bg-white/20 hover:border-white/40 transition-all duration-300 hover:scale-105"
+              className="group relative inline-flex items-center justify-center px-8 py-4 text-lg font-semibold rounded-2xl bg-white/10 text-white border-2 border-white/20 hover:bg-white/20 hover:border-white/40 transition-all duration-300 hover:scale-105 backdrop-blur-sm overflow-hidden"
               onClick={() => {/* Open app launcher */}}
             >
-              Launch Apps
-              <Play className="ml-3 w-5 h-5 group-hover:translate-x-1 transition-transform" />
+              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent transform -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-700"></div>
+              <span className="relative z-10">Launch Apps</span>
+              <Play className="ml-3 w-5 h-5 group-hover:translate-x-1 group-hover:scale-110 transition-all duration-300 relative z-10" />
             </button>
           </div>
 
@@ -151,10 +158,12 @@ export default function HomePage() {
           )}
         </div>
 
-        {/* Floating Elements */}
-        <div className="absolute top-20 left-10 w-20 h-20 bg-makrx-yellow/20 rounded-full animate-pulse" />
-        <div className="absolute bottom-20 right-10 w-16 h-16 bg-purple-400/20 rounded-full animate-pulse" style={{ animationDelay: '1s' }} />
-        <div className="absolute top-1/3 right-20 w-12 h-12 bg-white/10 rounded-full animate-pulse" style={{ animationDelay: '2s' }} />
+        {/* Enhanced Floating Elements */}
+        <div className="absolute top-20 left-10 w-20 h-20 bg-makrx-yellow/20 rounded-full animate-float" style={{ animationDelay: '0s' }} />
+        <div className="absolute bottom-20 right-10 w-16 h-16 bg-purple-400/20 rounded-full animate-float" style={{ animationDelay: '1s' }} />
+        <div className="absolute top-1/3 right-20 w-12 h-12 bg-white/10 rounded-full animate-float" style={{ animationDelay: '2s' }} />
+        <div className="absolute top-1/2 left-1/4 w-8 h-8 bg-makrx-blue/20 rounded-full animate-pulse-slow" style={{ animationDelay: '3s' }} />
+        <div className="absolute bottom-1/3 left-1/3 w-6 h-6 bg-white/15 rounded-full animate-bounce-gentle" style={{ animationDelay: '4s' }} />
       </section>
 
       {/* Stats Section */}
