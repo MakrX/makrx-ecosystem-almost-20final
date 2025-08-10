@@ -1,9 +1,7 @@
 import { defineConfig } from 'vitest/config'
-import react from '@vitejs/plugin-react-swc'
-import path from 'path'
+import { resolve } from 'path'
 
 export default defineConfig({
-  plugins: [react()],
   test: {
     globals: true,
     environment: 'jsdom',
@@ -24,12 +22,12 @@ export default defineConfig({
   },
   resolve: {
     alias: {
-      '@': path.resolve(__dirname, './src'),
-      '@/components': path.resolve(__dirname, './components'),
-      '@/lib': path.resolve(__dirname, './lib'),
-      '@/pages': path.resolve(__dirname, './pages'),
-      '@/contexts': path.resolve(__dirname, './contexts'),
-      '@/hooks': path.resolve(__dirname, './hooks'),
+      '@': resolve(__dirname, './src'),
+      '@/components': resolve(__dirname, './components'),
+      '@/lib': resolve(__dirname, './lib'),
+      '@/pages': resolve(__dirname, './pages'),
+      '@/contexts': resolve(__dirname, './contexts'),
+      '@/hooks': resolve(__dirname, './hooks'),
     }
   }
 })
