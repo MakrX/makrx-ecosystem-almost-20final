@@ -96,6 +96,18 @@ export default function HomePage() {
 
         <div className="relative z-10 max-w-7xl mx-auto px-6 text-center">
           <div className="mb-8">
+            {/* Animated Logo/Brand */}
+            <div className="mb-8">
+              <h1 className="text-5xl lg:text-7xl font-display font-bold mb-4 leading-tight">
+                <span className="text-white">MakrX</span>
+              </h1>
+              <div className="text-2xl lg:text-4xl font-light text-white/80 mb-6 animate-fade-in">
+                <span className="inline-block animate-slide-in-left">Dream.</span>{' '}
+                <span className="inline-block animate-slide-in-right" style={{animationDelay: '0.5s'}}>Make.</span>{' '}
+                <span className="inline-block animate-slide-in-left" style={{animationDelay: '1s'}}>Share.</span>
+              </div>
+            </div>
+
             <div className="inline-flex items-center px-4 py-2 rounded-full bg-makrx-yellow/20 text-makrx-yellow text-sm font-medium mb-6">
               <Zap className="w-4 h-4 mr-2" />
               Welcome to the Future of Making
