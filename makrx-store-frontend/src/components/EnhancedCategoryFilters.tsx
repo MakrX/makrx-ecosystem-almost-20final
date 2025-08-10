@@ -48,7 +48,7 @@ export default function EnhancedCategoryFilters({
   };
 
   const removeFilter = (filterType: string, value?: string) => {
-    const newFilters = { ...activeFilters };
+    const newFilters = { ...(activeFilters || {}) };
     if (value) {
       if (Array.isArray(newFilters[filterType])) {
         newFilters[filterType] = newFilters[filterType].filter(
@@ -65,13 +65,14 @@ export default function EnhancedCategoryFilters({
   };
 
   const addFilter = (filterType: string, value: string) => {
-    const currentValues = activeFilters[filterType] || [];
+    const safeActiveFilters = activeFilters || {};
+    const currentValues = safeActiveFilters[filterType] || [];
     const newValues = currentValues.includes(value)
       ? currentValues.filter((v) => v !== value)
       : [...currentValues, value];
 
     onFilterChange({
-      ...activeFilters,
+      ...safeActiveFilters,
       [filterType]: newValues.length > 0 ? newValues : undefined,
     });
   };
