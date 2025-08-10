@@ -45,22 +45,8 @@ export default function DevErrorHandler() {
       }
     };
 
-    // Handle general fetch errors that might be affecting RSC
-    const originalFetch = window.fetch;
-    window.fetch = async (...args) => {
-      try {
-        return await originalFetch(...args);
-      } catch (error) {
-        // Check if this looks like an RSC-related fetch
-        const url = args[0]?.toString() || '';
-        if (url.includes('/_next/') || url.includes('RSC')) {
-          console.warn('Development: Next.js internal fetch failed', url, error);
-          // Don't throw for internal Next.js fetches in development
-          return new Response('{}', { status: 200 });
-        }
-        throw error;
-      }
-    };
+    // Don't interfere with fetch operations in development
+    // Let Next.js handle its own RSC fetches without intervention
 
     // Also handle regular errors that might be related to RSC
     const handleError = (event: ErrorEvent) => {
