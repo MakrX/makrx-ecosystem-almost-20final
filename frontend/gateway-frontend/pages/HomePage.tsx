@@ -18,7 +18,6 @@ const StatCard: React.FC<StatCardProps> = ({ number, label, icon }) => {
   const [displayNumber, setDisplayNumber] = useState(0);
   const [hasAnimated, setHasAnimated] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
-  const timerRef = useRef<NodeJS.Timeout | null>(null);
 
   // Extract the numeric part from the string (e.g., "50+" -> 50)
   const targetNumber = parseInt(number.replace(/\D/g, '')) || 0;
@@ -51,28 +50,32 @@ const StatCard: React.FC<StatCardProps> = ({ number, label, icon }) => {
         if (entry.isIntersecting && !hasAnimated) {
           setHasAnimated(true);
 
-          // Animate the number counting up
-          const duration = 2000; // 2 seconds
-          const steps = 60;
-          const stepDuration = duration / steps;
-          const increment = targetNumber / steps;
+          // Start animation immediately
+          let start = 0;
+          const duration = 2000;
+          const startTime = performance.now();
 
-          let currentNumber = 0;
-          timerRef.current = setInterval(() => {
-            currentNumber += increment;
-            if (currentNumber >= targetNumber) {
-              setDisplayNumber(targetNumber);
-              if (timerRef.current) {
-                clearInterval(timerRef.current);
-                timerRef.current = null;
-              }
+          const animateNumber = (currentTime: number) => {
+            const elapsed = currentTime - startTime;
+            const progress = Math.min(elapsed / duration, 1);
+
+            // Use easing function for smooth animation
+            const easeOutQuart = 1 - Math.pow(1 - progress, 4);
+            const current = Math.floor(easeOutQuart * targetNumber);
+
+            setDisplayNumber(current);
+
+            if (progress < 1) {
+              requestAnimationFrame(animateNumber);
             } else {
-              setDisplayNumber(Math.floor(currentNumber));
+              setDisplayNumber(targetNumber);
             }
-          }, stepDuration);
+          };
+
+          requestAnimationFrame(animateNumber);
         }
       },
-      { threshold: 0.5 }
+      { threshold: 0.3 }
     );
 
     const currentRef = ref.current;
@@ -82,9 +85,6 @@ const StatCard: React.FC<StatCardProps> = ({ number, label, icon }) => {
 
     return () => {
       observer.disconnect();
-      if (timerRef.current) {
-        clearInterval(timerRef.current);
-      }
     };
   }, [targetNumber, hasAnimated]);
 
