@@ -248,6 +248,35 @@ export interface ServiceOrder {
   quote?: Quote;
 }
 
+export interface AdminStats {
+  total_orders: number;
+  total_revenue: number;
+  total_products: number;
+  total_users: number;
+  pending_orders: number;
+  low_stock_products: number;
+  recent_orders: Order[];
+  top_products: Array<{
+    product: Product;
+    quantity_sold: number;
+    revenue: number;
+  }>;
+  revenue_chart: Array<{
+    date: string;
+    revenue: number;
+    orders: number;
+  }>;
+}
+
+export interface NotificationSettings {
+  email_notifications: boolean;
+  push_notifications: boolean;
+  sms_notifications: boolean;
+  marketing_emails: boolean;
+  order_updates: boolean;
+  product_updates: boolean;
+}
+
 // API Client Class
 class ApiClient {
   private baseURL: string;
