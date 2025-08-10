@@ -32,8 +32,6 @@ export default defineConfig({
           router: ['react-router-dom'],
           // Utils chunk for utility libraries
           utils: ['lucide-react', '@tanstack/react-query'],
-          // UI chunk for UI components
-          ui: ['@radix-ui/react-dialog', '@radix-ui/react-dropdown-menu'],
         },
         // Optimize chunk file names
         chunkFileNames: (chunkInfo) => {
