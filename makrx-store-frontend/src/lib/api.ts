@@ -416,7 +416,11 @@ class ApiClient {
       case "/auth/me":
         return this.getMockUser() as T;
       default:
-        // For unknown endpoints, return appropriate empty structure
+        // Handle dynamic endpoints
+        if (path.startsWith("/catalog/products/slug/")) {
+          const slug = path.split("/").pop();
+          return this.getMockProductBySlug(slug || '') as T;
+        }
         if (endpoint.includes("/orders")) {
           return { orders: [], total: 0, page: 1, per_page: 10, pages: 0 } as T;
         }
