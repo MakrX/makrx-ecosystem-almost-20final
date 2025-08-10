@@ -103,14 +103,23 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     }
   }, [theme]);
 
+  // Effect to apply theme to DOM and persist user preference
   useEffect(() => {
     const root = window.document.documentElement;
+
+    // Remove any existing theme classes to avoid conflicts
     root.classList.remove('light', 'dark');
+
+    // Add the current effective theme class for CSS styling
+    // This enables Tailwind's dark: modifier and custom CSS selectors
     root.classList.add(effectiveTheme);
-    
-    // Also set data-theme for better CSS selector support
+
+    // Also set data-theme attribute for additional CSS selector support
+    // Allows selectors like [data-theme="dark"] for more specific styling
     root.setAttribute('data-theme', effectiveTheme);
-    
+
+    // Persist user's theme preference (not the effective theme)
+    // This ensures we remember if user chose 'system', 'light', or 'dark'
     localStorage.setItem('makrx-theme', theme);
   }, [theme, effectiveTheme]);
 
