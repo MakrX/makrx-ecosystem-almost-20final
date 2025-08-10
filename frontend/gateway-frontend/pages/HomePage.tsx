@@ -204,7 +204,7 @@ export default function HomePage() {
               {/* Enhanced Dream. Make. Share. section */}
               <div className="relative dream-make-share-container">
                 <div className="text-xl sm:text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-light text-white/90 mb-8 leading-tight">
-                  <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-6 md:gap-8">
+                  <div className="flex flex-row items-center justify-center gap-2 sm:gap-6 md:gap-8">
                     {/* Dream word with enhanced animations */}
                     <div className="dream-word inline-block animate-slide-in-left cursor-default relative group" style={{animationDelay: '0.2s'}}>
                       <span className="relative z-10 bg-gradient-to-r from-white via-white/90 to-white/80 bg-clip-text text-transparent font-medium">
