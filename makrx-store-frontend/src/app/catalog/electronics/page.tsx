@@ -5,8 +5,9 @@ import Link from "next/link";
 import { ChevronRight, Grid, List, Filter } from "lucide-react";
 import { api, type Product } from "@/lib/api";
 import ProductGrid from "@/components/ProductGrid";
-import EnhancedCategoryFilters from "@/components/EnhancedCategoryFilters";
+import EnhancedCategoryFilters, { useFiltersToggle } from "@/components/EnhancedCategoryFilters";
 import SortSelect from "@/components/SortSelect";
+import { getAllFiltersForCategory } from "@/data/categoryFilters";
 
 export default function ElectronicsPage() {
   const [products, setProducts] = useState<Product[]>([]);
@@ -14,7 +15,11 @@ export default function ElectronicsPage() {
   const [error, setError] = useState<string | null>(null);
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
   const [sortBy, setSortBy] = useState("featured");
-  const [showFilters, setShowFilters] = useState(false);
+  const [activeFilters, setActiveFilters] = useState<Record<string, string[]>>({});
+  const { isFiltersOpen, toggleFilters, closeFilters } = useFiltersToggle();
+
+  // Get category-specific filters
+  const categoryFilters = getAllFiltersForCategory('electronics');
 
   useEffect(() => {
     const loadProducts = async () => {
@@ -37,21 +42,10 @@ export default function ElectronicsPage() {
     loadProducts();
   }, [sortBy]);
 
-  const handleFilterChange = async (filters: any) => {
-    try {
-      setLoading(true);
-      const productsData = await api.getProducts({
-        category: "electronics",
-        per_page: 20,
-        sort: sortBy,
-        ...filters,
-      });
-      setProducts(productsData.products || []);
-    } catch (err) {
-      console.error("Failed to apply filters:", err);
-    } finally {
-      setLoading(false);
-    }
+  const handleFilterChange = (filters: Record<string, string[]>) => {
+    setActiveFilters(filters);
+    // Apply filters to products - in a real app this would be an API call
+    // For now we'll just update the state
   };
 
   return (
