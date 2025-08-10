@@ -22,6 +22,7 @@ import {
   Bell,
   Gift,
   Zap,
+  Bookmark,
 } from "lucide-react";
 import { products } from "@/data/products";
 
