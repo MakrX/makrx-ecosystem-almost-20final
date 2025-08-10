@@ -1,31 +1,88 @@
 """
 MakrX Store Backend - FastAPI Application
-Main application entry point with comprehensive security middleware and router setup
-Implements full security specification with DPDP Act compliance
+
+Main application entry point with comprehensive security middleware and router setup.
+This application implements:
+- Full e-commerce functionality (products, cart, orders, payments)
+- 3D printing and fabrication services
+- DPDP Act 2023 compliance for data protection
+- Comprehensive security monitoring and logging
+- Multi-factor authentication and authorization
+- File upload security and validation
+- Payment processing security
+- Real-time monitoring and alerting
+
+Security Features:
+- Rate limiting and DDoS protection
+- Input validation and sanitization
+- Comprehensive audit logging
+- Data encryption at rest and in transit
+- Secure file handling with virus scanning
+- PCI DSS compliance for payments
+- GDPR/DPDP data protection measures
+
+Architecture:
+- FastAPI for high-performance async operations
+- SQLAlchemy with async support for database operations
+- Keycloak integration for SSO and identity management
+- Redis for caching and session management
+- Background tasks for file processing and notifications
 """
 
+# FastAPI core imports for application setup
 from fastapi import FastAPI, Request, Response
-from fastapi.middleware.cors import CORSMiddleware
-from fastapi.middleware.trustedhost import TrustedHostMiddleware
+from fastapi.middleware.cors import CORSMiddleware        # Cross-origin resource sharing
+from fastapi.middleware.trustedhost import TrustedHostMiddleware  # Host validation
 from fastapi.responses import JSONResponse
-import time
-import uuid
-import logging
-import asyncio
 
-from app.core.config import settings
-from app.core.db import engine, create_tables
-from app.routes import auth, catalog, cart, orders, uploads, quotes, admin, webhooks, health, bridge, security_management
+# Standard library imports for utilities
+import time      # Performance timing and timestamps
+import uuid      # Unique identifier generation
+import logging   # Structured logging system
+import asyncio   # Asynchronous programming support
 
-# Import comprehensive security modules
-from app.middleware.api_security import setup_api_security
-from app.middleware.observability import ObservabilityMiddleware
-from app.core.enhanced_security_auth import enhanced_auth
-from app.core.file_security import file_validator, storage_manager
-from app.core.payment_security import webhook_verifier, payment_processor
-from app.core.data_protection import consent_manager, retention_manager, user_rights_manager
-from app.core.security_monitoring import security_logger, security_monitor, performance_monitor
-from app.core.operational_security import secrets_manager, mfa_manager, access_control
+# Core application modules
+from app.core.config import settings                    # Application configuration
+from app.core.db import engine, create_tables          # Database connection and setup
+
+# API route modules - each handles specific functionality
+from app.routes import (
+    auth,              # Authentication and user management
+    catalog,           # Product catalog and search
+    cart,              # Shopping cart operations
+    orders,            # Order processing and management
+    uploads,           # File upload handling
+    quotes,            # Service quotation system
+    admin,             # Administrative functions
+    webhooks,          # External service webhooks
+    health,            # Health checks and monitoring
+    bridge,            # Cross-service communication
+    security_management  # Security administration
+)
+
+# Security and middleware modules
+from app.middleware.api_security import setup_api_security      # API security middleware
+from app.middleware.observability import ObservabilityMiddleware # Request monitoring
+
+# Comprehensive security system imports
+from app.core.enhanced_security_auth import enhanced_auth       # Advanced authentication
+from app.core.file_security import file_validator, storage_manager  # Secure file handling
+from app.core.payment_security import webhook_verifier, payment_processor  # Payment security
+from app.core.data_protection import (                          # DPDP Act compliance
+    consent_manager,     # User consent management
+    retention_manager,   # Data retention policies
+    user_rights_manager  # User data rights (access, deletion)
+)
+from app.core.security_monitoring import (                      # Security monitoring
+    security_logger,     # Security event logging
+    security_monitor,    # Real-time threat detection
+    performance_monitor  # Performance and anomaly detection
+)
+from app.core.operational_security import (                     # Operational security
+    secrets_manager,     # Secret rotation and management
+    mfa_manager,         # Multi-factor authentication
+    access_control       # Role-based access control
+)
 
 # Configure logging
 logging.basicConfig(
