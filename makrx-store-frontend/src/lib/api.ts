@@ -938,9 +938,27 @@ class ApiClient {
   }
 
   private transformMockProducts() {
+    // Create a mapping of category names to numeric IDs
+    const categoryMap: { [key: string]: number } = {
+      '3d-printers': 1,
+      'filament': 2,
+      'electronics': 3,
+      'tools': 4,
+      'components': 5,
+      'kits': 6,
+      'materials': 7
+    };
+
     return mockProducts.map((product, index) => {
       // Generate a unique numeric ID based on index to avoid conflicts
       const numericId = index + 1000; // Start from 1000 to avoid low number conflicts
+
+      // Map product category to numeric ID
+      const categorySlug = product.category?.toLowerCase().replace(/\s+/g, '-').replace(/&/g, '');
+      const categoryId = categoryMap[categorySlug] || categoryMap['3d-printers'] || 1;
+
+      // Find the matching category from our categories data
+      const categoryInfo = mockCategories.find(cat => cat.slug === categorySlug) || mockCategories[0];
 
       return {
         id: numericId,
@@ -950,11 +968,11 @@ class ApiClient {
         short_description:
           product.shortDescription || product.description || "",
         brand: product.brand || "",
-        category_id: 1,
+        category_id: categoryId,
         category: {
-          id: 1,
-          name: product.category || "General",
-          slug: product.category || "general",
+          id: categoryId,
+          name: categoryInfo?.name || product.category || "General",
+          slug: categoryInfo?.slug || categorySlug || "general",
         },
         price: product.originalPrice || product.price || 0,
         sale_price: product.originalPrice ? product.price : null,
