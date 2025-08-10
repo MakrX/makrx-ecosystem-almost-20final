@@ -82,11 +82,17 @@ export function ThemeProvider({
       }
     };
 
-    // Apply initial theme
+    // Apply initial theme immediately
     applyTheme(theme);
+    setIsInitialized(true);
 
     // Listen for system theme changes
     mediaQuery.addEventListener('change', handleSystemThemeChange);
+
+    // Force a reapply after a short delay to ensure it sticks
+    const forceApply = setTimeout(() => {
+      applyTheme(theme);
+    }, 100);
 
     return () => {
       mediaQuery.removeEventListener('change', handleSystemThemeChange);
