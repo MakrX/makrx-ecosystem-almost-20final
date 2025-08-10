@@ -36,11 +36,15 @@
     }
   },
   "include": [
-    "client/**/*",
-    "server/**/*",
-    "shared/**/*",
-    "vite.config.ts",
-    "vite.config.server.ts"
+    "src/**/*",
+    "components/**/*",
+    "contexts/**/*",
+    "pages/**/*",
+    "hooks/**/*",
+    "lib/**/*",
+    "*.ts",
+    "*.tsx",
+    "vite.config.ts"
   ],
   "exclude": ["node_modules", "dist"]
 }
