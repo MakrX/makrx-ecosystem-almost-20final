@@ -154,6 +154,39 @@ export default function RootLayout({
                     return false;
                   };
 
+                  // Nuclear option: Override the native fetch to prevent FullStory interference
+                  const originalFetch = window.fetch;
+                  window.fetch = function(...args) {
+                    try {
+                      return originalFetch.apply(this, args);
+                    } catch (error) {
+                      if (isDevelopmentError(error.message, error.stack)) {
+                        // Return a resolved promise for development errors
+                        return Promise.resolve(new Response('', { status: 200 }));
+                      }
+                      throw error;
+                    }
+                  };
+
+                  // Silence all unhandled rejections from third-party scripts
+                  const originalAddEventListener = window.addEventListener;
+                  window.addEventListener = function(type, listener, options) {
+                    if (type === 'unhandledrejection' || type === 'error') {
+                      const wrappedListener = function(event) {
+                        const errorMessage = event.reason?.message || event.message || '';
+                        const errorStack = event.reason?.stack || event.error?.stack || '';
+                        if (isDevelopmentError(errorMessage, errorStack)) {
+                          event.preventDefault();
+                          event.stopImmediatePropagation();
+                          return false;
+                        }
+                        return listener.call(this, event);
+                      };
+                      return originalAddEventListener.call(this, type, wrappedListener, options);
+                    }
+                    return originalAddEventListener.call(this, type, listener, options);
+                  };
+
                 } else {
                   // In production, apply fetch protection
                   try{
