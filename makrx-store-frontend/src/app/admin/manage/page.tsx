@@ -476,6 +476,132 @@ function AdminManagementPage() {
     }
   };
 
+  // QR Code Management Functions
+  const generateQRCode = async (data: any): Promise<string> => {
+    try {
+      const qrData = JSON.stringify(data);
+      const qrCodeDataUrl = await QRCode.toDataURL(qrData, {
+        width: 256,
+        margin: 2,
+        color: {
+          dark: '#000000',
+          light: '#FFFFFF'
+        }
+      });
+      return qrCodeDataUrl;
+    } catch (error) {
+      console.error('Error generating QR code:', error);
+      throw error;
+    }
+  };
+
+  const handleSaveQRCode = async () => {
+    try {
+      let qrData: any = {
+        id: Date.now().toString(),
+        timestamp: new Date().toISOString(),
+        type: qrForm.type,
+        makrx_verified: true
+      };
+
+      if (qrForm.type === 'product' && qrForm.productId) {
+        const product = products.find(p => p.id === qrForm.productId);
+        if (product) {
+          qrData = {
+            ...qrData,
+            product: {
+              id: product.id,
+              name: product.name,
+              sku: product.sku,
+              category: product.category,
+              price: product.price,
+              brand: product.brand,
+              model: product.model
+            },
+            warehouse: qrForm.includeWarehouse,
+            billing: qrForm.includeBilling,
+            inventory: qrForm.includeInventory
+          };
+        }
+      } else if (qrForm.type === 'category' && qrForm.categoryId) {
+        const category = categories.find(c => c.id === qrForm.categoryId);
+        if (category) {
+          qrData = {
+            ...qrData,
+            category: {
+              id: category.id,
+              name: category.name,
+              slug: category.slug,
+              description: category.description
+            }
+          };
+        }
+      } else if (qrForm.type === 'project') {
+        qrData = {
+          ...qrData,
+          project: JSON.parse(qrForm.customData || '{}')
+        };
+      }
+
+      const qrCodeUrl = await generateQRCode(qrData);
+
+      const newQRCode: QRCodeData = {
+        id: Date.now().toString(),
+        type: qrForm.type,
+        title: qrForm.title || `${qrForm.type.charAt(0).toUpperCase()}${qrForm.type.slice(1)} QR Code`,
+        content: JSON.stringify(qrData, null, 2),
+        data: qrData,
+        qrCodeUrl,
+        createdAt: new Date().toISOString(),
+        expiresAt: qrForm.expirationDays > 0
+          ? new Date(Date.now() + qrForm.expirationDays * 24 * 60 * 60 * 1000).toISOString()
+          : undefined
+      };
+
+      const updatedQRCodes = [...qrCodes, newQRCode];
+      setQrCodes(updatedQRCodes);
+      saveToStorage('admin_qrcodes', updatedQRCodes);
+      resetQRForm();
+    } catch (error) {
+      alert('Error generating QR code. Please check your data.');
+    }
+  };
+
+  const resetQRForm = () => {
+    setQrForm({
+      type: 'product',
+      title: '',
+      productId: '',
+      categoryId: '',
+      customData: '',
+      includeWarehouse: false,
+      includeBilling: false,
+      includeInventory: false,
+      expirationDays: 0
+    });
+    setShowQRForm(false);
+  };
+
+  const handleDeleteQRCode = (qrId: string) => {
+    if (confirm('Are you sure you want to delete this QR code?')) {
+      const updatedQRCodes = qrCodes.filter(qr => qr.id !== qrId);
+      setQrCodes(updatedQRCodes);
+      saveToStorage('admin_qrcodes', updatedQRCodes);
+    }
+  };
+
+  const downloadQRCode = (qrCode: QRCodeData) => {
+    const link = document.createElement('a');
+    link.download = `qr-${qrCode.type}-${qrCode.id}.png`;
+    link.href = qrCode.qrCodeUrl;
+    link.click();
+  };
+
+  const copyQRData = (qrCode: QRCodeData) => {
+    navigator.clipboard.writeText(qrCode.content);
+    alert('QR code data copied to clipboard!');
+  };
+
   // Filter data based on search
   const filteredCategories = categories.filter(cat => 
     cat.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
