@@ -166,6 +166,21 @@ function AdminManagementPage() {
     origin: ''
   });
 
+  // QR Code management state
+  const [showQRForm, setShowQRForm] = useState(false);
+  const [qrForm, setQrForm] = useState({
+    type: 'product' as const,
+    title: '',
+    productId: '',
+    categoryId: '',
+    customData: '',
+    includeWarehouse: false,
+    includeBilling: false,
+    includeInventory: false,
+    expirationDays: 0
+  });
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+
   useEffect(() => {
     loadAdminData();
   }, []);
