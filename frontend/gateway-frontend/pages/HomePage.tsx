@@ -88,7 +88,7 @@ export default function HomePage() {
   return (
     <div className="min-h-screen">
       {/* Hero Section */}
-      <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-to-br from-makrx-blue via-makrx-blue/90 to-purple-900 px-4 sm:px-6">
+      <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-to-br from-makrx-blue via-makrx-blue/90 to-purple-900 px-4 sm:px-6 pt-20 lg:pt-24">
         {/* Background Pattern */}
         <div className="absolute inset-0 opacity-10">
           <div className="absolute inset-0" style={{
@@ -99,17 +99,39 @@ export default function HomePage() {
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <div className="mb-8">
             {/* Animated Logo/Brand */}
-            <div className="mb-8">
-              <div className="relative group">
-                <h1 className="text-5xl lg:text-7xl font-display font-bold mb-4 leading-tight relative z-10">
-                  <span className="text-white hover:text-makrx-yellow transition-colors duration-500 cursor-default">MakrX</span>
+            <div className="mb-8 sm:mb-12">
+              <div className="relative group mb-6 sm:mb-8">
+                <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-display font-bold leading-none relative z-10">
+                  <span className="text-white hover:text-makrx-yellow transition-colors duration-500 cursor-default block sm:inline">MakrX</span>
                   <div className="absolute inset-0 bg-gradient-to-r from-makrx-yellow/20 to-transparent rounded-2xl blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-700 -z-10"></div>
                 </h1>
               </div>
-              <div className="text-xl sm:text-2xl lg:text-4xl font-light text-white/80 mb-6">
-                <span className="inline-block animate-slide-in-left hover:text-makrx-yellow transition-colors duration-300 cursor-default">Dream.</span>{' '}
-                <span className="inline-block animate-slide-in-right hover:text-makrx-yellow transition-colors duration-300 cursor-default" style={{animationDelay: '0.5s'}}>Make.</span>{' '}
-                <span className="inline-block animate-slide-in-left hover:text-makrx-yellow transition-colors duration-300 cursor-default" style={{animationDelay: '1s'}}>Share.</span>
+
+              {/* Enhanced Dream. Make. Share. section */}
+              <div className="relative">
+                <div className="text-xl sm:text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-light text-white/90 mb-6 leading-tight">
+                  <div className="flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-4">
+                    <span className="inline-block animate-slide-in-left hover:text-makrx-yellow transition-all duration-500 cursor-default transform hover:scale-110 relative group">
+                      <span className="relative z-10 bg-gradient-to-r from-white to-white/80 bg-clip-text text-transparent font-medium">Dream.</span>
+                      <div className="absolute inset-0 bg-makrx-yellow/20 rounded-lg blur-md opacity-0 group-hover:opacity-100 transition-opacity duration-500 -z-10"></div>
+                    </span>
+
+                    <span className="inline-block animate-slide-in-right hover:text-makrx-yellow transition-all duration-500 cursor-default transform hover:scale-110 relative group" style={{animationDelay: '0.5s'}}>
+                      <span className="relative z-10 bg-gradient-to-r from-makrx-yellow to-yellow-300 bg-clip-text text-transparent font-semibold">Make.</span>
+                      <div className="absolute inset-0 bg-makrx-yellow/30 rounded-lg blur-md opacity-0 group-hover:opacity-100 transition-opacity duration-500 -z-10"></div>
+                    </span>
+
+                    <span className="inline-block animate-slide-in-left hover:text-makrx-yellow transition-all duration-500 cursor-default transform hover:scale-110 relative group" style={{animationDelay: '1s'}}>
+                      <span className="relative z-10 bg-gradient-to-r from-white to-white/80 bg-clip-text text-transparent font-medium">Share.</span>
+                      <div className="absolute inset-0 bg-makrx-yellow/20 rounded-lg blur-md opacity-0 group-hover:opacity-100 transition-opacity duration-500 -z-10"></div>
+                    </span>
+                  </div>
+                </div>
+
+                {/* Animated underline */}
+                <div className="flex justify-center">
+                  <div className="w-24 sm:w-32 md:w-40 h-1 bg-gradient-to-r from-transparent via-makrx-yellow to-transparent rounded-full animate-pulse-slow"></div>
+                </div>
               </div>
             </div>
 
