@@ -76,8 +76,8 @@ export default function EnhancedCategoryFilters({
     });
   };
 
-  const hasActiveFilters = Object.keys(activeFilters).length > 0;
-  const activeFilterCount = Object.values(activeFilters).flat().length;
+  const hasActiveFilters = Object.keys(activeFilters || {}).length > 0;
+  const activeFilterCount = Object.values(activeFilters || {}).flat().length;
 
   // Close drawer on desktop
   useEffect(() => {
