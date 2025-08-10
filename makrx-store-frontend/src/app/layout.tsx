@@ -91,7 +91,7 @@ export default function RootLayout({
                            (text.includes('typeerror') && text.includes('fetch'));
                   };
 
-                  // Override console methods immediately
+                  // Override console methods immediately and aggressively
                   const originalError = console.error;
                   const originalWarn = console.warn;
                   const originalLog = console.log;
@@ -101,12 +101,22 @@ export default function RootLayout({
                     if (!isDevelopmentError(message)) {
                       originalError.apply(console, args);
                     }
+                    // Completely suppress development errors - don't log anything
                   };
 
                   console.warn = function(...args) {
                     const message = args.join(' ');
                     if (!isDevelopmentError(message)) {
                       originalWarn.apply(console, args);
+                    }
+                    // Completely suppress development errors - don't log anything
+                  };
+
+                  // Also override console.log for any leaked dev messages
+                  console.log = function(...args) {
+                    const message = args.join(' ');
+                    if (!isDevelopmentError(message)) {
+                      originalLog.apply(console, args);
                     }
                   };
 
