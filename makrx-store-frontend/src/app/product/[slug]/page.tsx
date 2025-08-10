@@ -146,11 +146,6 @@ export default function ProductPage() {
     );
   }
 
-  // Calculate savings percentage
-  const savingsPercentage = product?.sale_price
-    ? Math.round(((product.price - product.sale_price) / product.price) * 100)
-    : 0;
-
   if (error || !product) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50">
