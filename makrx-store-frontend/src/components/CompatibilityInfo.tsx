@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { ChevronDownIcon, ChevronUpIcon } from '@heroicons/react/24/outline';
+// Using inline SVGs instead of Heroicons
 
 interface CompatibilityInfoProps {
   compatibility: string[];
