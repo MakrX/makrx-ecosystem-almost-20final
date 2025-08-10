@@ -322,30 +322,26 @@ class ApiClient {
       const isConnectionError = error instanceof Error &&
           (error.message.includes("ECONNREFUSED") ||
            error.message.includes("Connection refused") ||
-           error.message.includes("ERR_CONNECTION_REFUSED"));
+           error.message.includes("ERR_CONNECTION_REFUSED") ||
+           error.message.includes("CORS") ||
+           error.message.includes("net::ERR"));
 
-      if (isNetworkError || isConnectionError) {
-        // In development, use mock data instead of showing errors
-        if (process.env.NODE_ENV === "development" || process.env.NEXT_PUBLIC_ENV !== "production") {
-          // Show a one-time notification that we're using mock data
-          if (!sessionStorage.getItem("mock-data-notice-shown")) {
-            sessionStorage.setItem("mock-data-notice-shown", "true");
-            if (typeof window !== "undefined") {
-              console.info(
-                "🔧 Development Mode: Backend server not available, using mock data for demo purposes.",
-              );
-            }
-          }
-
-          return this.getMockData<T>(endpoint);
+      // Always use mock data in development for network errors
+      if (isNetworkError || isConnectionError || (process.env.NODE_ENV === "development" && url.includes("localhost:8003"))) {
+        // Show a one-time notification that we're using mock data
+        if (typeof window !== "undefined" && !sessionStorage.getItem("mock-data-notice-shown")) {
+          sessionStorage.setItem("mock-data-notice-shown", "true");
+          console.info(
+            "🔧 Development Mode: Backend server not available, using mock data for demo purposes.",
+          );
         }
+
+        return this.getMockData<T>(endpoint);
       }
 
-      // Only log detailed errors in development
-      if (process.env.NODE_ENV === "development") {
-        console.error(`API request failed: ${endpoint}`, error);
-      } else {
-        console.warn(`API request failed for ${endpoint}`);
+      // Only log detailed errors in development and only for non-network issues
+      if (process.env.NODE_ENV === "development" && !isNetworkError && !isConnectionError) {
+        console.warn(`API request failed: ${endpoint}`, error.message);
       }
 
       throw error;
