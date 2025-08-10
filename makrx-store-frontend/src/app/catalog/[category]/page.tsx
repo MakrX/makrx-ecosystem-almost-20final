@@ -486,7 +486,7 @@ export default function CategoryPage() {
                                 onClick={() => toggleCompare(product.id)}
                                 className={`p-2 rounded-full ${compareList.includes(product.id) ? 'bg-store-primary text-white' : 'bg-white/90 text-gray-600'} hover:bg-store-primary hover:text-white transition-colors`}
                               >
-                                <Compare className="h-4 w-4" />
+                                <Scale className="h-4 w-4" />
                               </button>
                               <button className="p-2 bg-white/90 rounded-full text-gray-600 hover:bg-white hover:text-red-500 transition-colors">
                                 <Heart className="h-4 w-4" />
@@ -597,7 +597,7 @@ export default function CategoryPage() {
                                     onClick={() => toggleCompare(product.id)}
                                     className={`p-2 rounded ${compareList.includes(product.id) ? 'bg-store-primary text-white' : 'bg-gray-100 text-gray-600'}`}
                                   >
-                                    <Compare className="h-4 w-4" />
+                                    <Scale className="h-4 w-4" />
                                   </button>
                                   <button className="p-2 bg-gray-100 rounded text-gray-600 hover:text-red-500">
                                     <Heart className="h-4 w-4" />
