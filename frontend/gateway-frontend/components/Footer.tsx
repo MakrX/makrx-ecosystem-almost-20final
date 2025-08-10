@@ -1,283 +1,273 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { 
-  Mail, Phone, MapPin, Github, Twitter, Instagram, Linkedin,
-  Building2, ShoppingCart, GraduationCap, Star, Heart,
-  ArrowUp, ExternalLink
+  MapPin, Phone, Mail, Globe, Twitter, Linkedin, Instagram, 
+  Youtube, Github, ArrowRight, Heart, ExternalLink
 } from 'lucide-react';
 
-const Footer: React.FC = () => {
-  const scrollToTop = () => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
+export default function Footer() {
+  const currentYear = new Date().getFullYear();
+
+  const footerSections = [
+    {
+      title: 'Ecosystem',
+      links: [
+        { name: 'MakrCave', href: '/makrcave', description: 'Premium makerspaces' },
+        { name: 'MakrX Store', href: '/store', description: 'Tools & materials' },
+        { name: '3D Store', href: '/3d-store', description: 'Custom printing' },
+        { name: 'Service Providers', href: '/service-providers', description: 'Freelance makers' },
+      ]
+    },
+    {
+      title: 'Resources',
+      links: [
+        { name: 'Documentation', href: '/docs', description: 'API & guides' },
+        { name: 'Learning Hub', href: '/learn', description: 'Courses & tutorials' },
+        { name: 'Events', href: '/events', description: 'Workshops & meetups' },
+        { name: 'Blog', href: '/blog', description: 'News & insights' },
+      ]
+    },
+    {
+      title: 'Support',
+      links: [
+        { name: 'Help Center', href: '/support', description: 'Get assistance' },
+        { name: 'Status', href: '/status', description: 'System status' },
+        { name: 'Contact Us', href: '/contact', description: 'Get in touch' },
+        { name: 'Safety Guidelines', href: '/safety', description: 'Stay safe' },
+      ]
+    },
+    {
+      title: 'Company',
+      links: [
+        { name: 'About Us', href: '/about', description: 'Our story' },
+        { name: 'Careers', href: '/careers', description: 'Join our team' },
+        { name: 'Press Kit', href: '/press', description: 'Media resources' },
+        { name: 'Partners', href: '/partners', description: 'Collaboration' },
+      ]
+    }
+  ];
+
+  const socialLinks = [
+    { name: 'Twitter', icon: Twitter, href: 'https://twitter.com/makrx', color: 'hover:text-blue-400' },
+    { name: 'LinkedIn', icon: Linkedin, href: 'https://linkedin.com/company/makrx', color: 'hover:text-blue-600' },
+    { name: 'Instagram', icon: Instagram, href: 'https://instagram.com/makrx', color: 'hover:text-pink-500' },
+    { name: 'YouTube', icon: Youtube, href: 'https://youtube.com/@makrx', color: 'hover:text-red-500' },
+    { name: 'GitHub', icon: Github, href: 'https://github.com/makrx', color: 'hover:text-gray-400' },
+  ];
+
+  const legalLinks = [
+    { name: 'Privacy Policy', href: '/privacy' },
+    { name: 'Terms of Service', href: '/terms' },
+    { name: 'Cookie Policy', href: '/cookies' },
+    { name: 'GDPR Compliance', href: '/gdpr' },
+  ];
 
   return (
     <footer className="bg-gray-900 text-white">
       {/* Main Footer Content */}
-      <div className="max-w-7xl mx-auto px-6 py-16">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
-          
-          {/* Company Info */}
-          <div className="lg:col-span-1">
-            <div className="flex items-center mb-6">
-              <img 
-                src="https://cdn.builder.io/api/v1/assets/f367f5e46f75423a83d3f29fae529dbb/botlogofinal-c921e6?format=webp&width=800" 
-                alt="MakrX" 
-                className="w-8 h-8 mr-3"
-              />
-              <span className="text-2xl font-bold">
-                Makr<span className="text-makrx-yellow">X</span>
-              </span>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 pb-12">
+        {/* Top Section with Company Info */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 mb-12">
+          {/* Company Information */}
+          <div className="lg:col-span-4">
+            <div className="mb-6">
+              <Link to="/" className="flex items-center gap-3 group">
+                <img 
+                  src="https://cdn.builder.io/api/v1/assets/f367f5e46f75423a83d3f29fae529dbb/botlogofinal-c921e6?format=webp&width=800" 
+                  alt="MakrBot" 
+                  className="w-8 h-8 group-hover:scale-110 transition-transform"
+                />
+                <div className="text-2xl font-display font-bold">
+                  <span className="text-white">Makr</span>
+                  <span className="text-makrx-yellow">X</span>
+                </div>
+              </Link>
             </div>
             
             <p className="text-gray-300 mb-6 leading-relaxed">
-              Empowering makers, innovators, and creators with access to world-class makerspaces, 
-              tools, and learning opportunities across India.
+              India's largest maker ecosystem connecting creators, innovators, and entrepreneurs 
+              through premium makerspaces, cutting-edge tools, and comprehensive learning resources.
             </p>
-            
-            <div className="flex space-x-4">
-              <a 
-                href="https://twitter.com/makrx" 
-                className="w-10 h-10 bg-gray-800 rounded-lg flex items-center justify-center hover:bg-makrx-blue transition-colors"
-                aria-label="Follow us on Twitter"
-              >
-                <Twitter className="w-5 h-5" />
-              </a>
-              <a 
-                href="https://instagram.com/makrx" 
-                className="w-10 h-10 bg-gray-800 rounded-lg flex items-center justify-center hover:bg-makrx-blue transition-colors"
-                aria-label="Follow us on Instagram"
-              >
-                <Instagram className="w-5 h-5" />
-              </a>
-              <a 
-                href="https://linkedin.com/company/makrx" 
-                className="w-10 h-10 bg-gray-800 rounded-lg flex items-center justify-center hover:bg-makrx-blue transition-colors"
-                aria-label="Follow us on LinkedIn"
-              >
-                <Linkedin className="w-5 h-5" />
-              </a>
-              <a 
-                href="https://github.com/makrx" 
-                className="w-10 h-10 bg-gray-800 rounded-lg flex items-center justify-center hover:bg-makrx-blue transition-colors"
-                aria-label="Check out our GitHub"
-              >
-                <Github className="w-5 h-5" />
-              </a>
-            </div>
-          </div>
 
-          {/* Quick Links */}
-          <div>
-            <h3 className="text-lg font-semibold mb-6">Platform</h3>
-            <ul className="space-y-4">
-              <li>
-                <Link 
-                  to="/makrcave" 
-                  className="flex items-center text-gray-300 hover:text-makrx-yellow transition-colors"
-                >
-                  <Building2 className="w-4 h-4 mr-2" />
-                  MakrCave
-                </Link>
-              </li>
-              <li>
-                <Link 
-                  to="/store" 
-                  className="flex items-center text-gray-300 hover:text-makrx-yellow transition-colors"
-                >
-                  <ShoppingCart className="w-4 h-4 mr-2" />
-                  MakrX Store
-                </Link>
-              </li>
-              <li>
-                <Link 
-                  to="/learn" 
-                  className="flex items-center text-gray-300 hover:text-makrx-yellow transition-colors"
-                >
-                  <GraduationCap className="w-4 h-4 mr-2" />
-                  Learning Hub
-                </Link>
-              </li>
-              <li>
-                <Link 
-                  to="/community" 
-                  className="flex items-center text-gray-300 hover:text-makrx-yellow transition-colors"
-                >
-                  <Star className="w-4 h-4 mr-2" />
-                  Community
-                </Link>
-              </li>
-            </ul>
-          </div>
-
-          {/* Support & Resources */}
-          <div>
-            <h3 className="text-lg font-semibold mb-6">Support</h3>
-            <ul className="space-y-4">
-              <li>
-                <Link 
-                  to="/help" 
-                  className="text-gray-300 hover:text-makrx-yellow transition-colors"
-                >
-                  Help Center
-                </Link>
-              </li>
-              <li>
-                <Link 
-                  to="/contact" 
-                  className="text-gray-300 hover:text-makrx-yellow transition-colors"
-                >
-                  Contact Us
-                </Link>
-              </li>
-              <li>
-                <Link 
-                  to="/faq" 
-                  className="text-gray-300 hover:text-makrx-yellow transition-colors"
-                >
-                  FAQ
-                </Link>
-              </li>
-              <li>
-                <Link 
-                  to="/safety" 
-                  className="text-gray-300 hover:text-makrx-yellow transition-colors"
-                >
-                  Safety Guidelines
-                </Link>
-              </li>
-              <li>
-                <a 
-                  href="/api/docs" 
-                  className="flex items-center text-gray-300 hover:text-makrx-yellow transition-colors"
-                >
-                  API Documentation
-                  <ExternalLink className="w-3 h-3 ml-1" />
+            <div className="space-y-3 text-sm text-gray-400">
+              <div className="flex items-center gap-3">
+                <MapPin className="w-4 h-4 text-makrx-yellow flex-shrink-0" />
+                <span>Bangalore, Mumbai, Delhi, Pune & 25+ cities across India</span>
+              </div>
+              <div className="flex items-center gap-3">
+                <Phone className="w-4 h-4 text-makrx-yellow flex-shrink-0" />
+                <a href="tel:+918047258000" className="hover:text-white transition-colors">
+                  +91 80472 58000
                 </a>
-              </li>
-            </ul>
-          </div>
-
-          {/* Contact Info */}
-          <div>
-            <h3 className="text-lg font-semibold mb-6">Get in Touch</h3>
-            <ul className="space-y-4">
-              <li className="flex items-start">
-                <Mail className="w-5 h-5 text-makrx-yellow mr-3 mt-1 flex-shrink-0" />
-                <div>
-                  <p className="text-gray-300">Email</p>
-                  <a 
-                    href="mailto:hello@makrx.org" 
-                    className="text-white hover:text-makrx-yellow transition-colors"
-                  >
-                    hello@makrx.org
-                  </a>
-                </div>
-              </li>
-              <li className="flex items-start">
-                <Phone className="w-5 h-5 text-makrx-yellow mr-3 mt-1 flex-shrink-0" />
-                <div>
-                  <p className="text-gray-300">Phone</p>
-                  <a 
-                    href="tel:+911234567890" 
-                    className="text-white hover:text-makrx-yellow transition-colors"
-                  >
-                    +91 12345 67890
-                  </a>
-                </div>
-              </li>
-              <li className="flex items-start">
-                <MapPin className="w-5 h-5 text-makrx-yellow mr-3 mt-1 flex-shrink-0" />
-                <div>
-                  <p className="text-gray-300">Headquarters</p>
-                  <address className="text-white not-italic">
-                    Bangalore, Karnataka<br />
-                    India 560001
-                  </address>
-                </div>
-              </li>
-            </ul>
-          </div>
-        </div>
-      </div>
-
-      {/* Newsletter Signup */}
-      <div className="border-t border-gray-800">
-        <div className="max-w-7xl mx-auto px-6 py-12">
-          <div className="text-center mb-8">
-            <h3 className="text-2xl font-bold mb-4">Stay Updated</h3>
-            <p className="text-gray-300 max-w-2xl mx-auto">
-              Get the latest news about new makerspaces, workshops, and exciting projects from the MakrX community.
-            </p>
-          </div>
-          
-          <form className="max-w-md mx-auto flex">
-            <input
-              type="email"
-              placeholder="Enter your email"
-              className="flex-1 px-4 py-3 bg-gray-800 border border-gray-700 rounded-l-lg text-white placeholder-gray-400 focus:outline-none focus:border-makrx-blue"
-              required
-            />
-            <button
-              type="submit"
-              className="px-6 py-3 bg-makrx-yellow text-makrx-blue font-semibold rounded-r-lg hover:bg-yellow-300 transition-colors"
-            >
-              Subscribe
-            </button>
-          </form>
-        </div>
-      </div>
-
-      {/* Bottom Bar */}
-      <div className="border-t border-gray-800 bg-gray-950">
-        <div className="max-w-7xl mx-auto px-6 py-6">
-          <div className="flex flex-col md:flex-row justify-between items-center">
-            <div className="flex flex-col md:flex-row items-center space-y-2 md:space-y-0 md:space-x-6">
-              <p className="text-gray-400 text-sm">
-                © 2024 MakrX Technologies Pvt Ltd. All rights reserved.
-              </p>
-              <div className="flex items-center space-x-4 text-sm">
-                <Link 
-                  to="/privacy" 
-                  className="text-gray-400 hover:text-white transition-colors"
-                >
-                  Privacy Policy
-                </Link>
-                <span className="text-gray-600">•</span>
-                <Link 
-                  to="/terms" 
-                  className="text-gray-400 hover:text-white transition-colors"
-                >
-                  Terms of Service
-                </Link>
-                <span className="text-gray-600">•</span>
-                <Link 
-                  to="/cookies" 
-                  className="text-gray-400 hover:text-white transition-colors"
-                >
-                  Cookie Policy
-                </Link>
+              </div>
+              <div className="flex items-center gap-3">
+                <Mail className="w-4 h-4 text-makrx-yellow flex-shrink-0" />
+                <a href="mailto:hello@makrx.org" className="hover:text-white transition-colors">
+                  hello@makrx.org
+                </a>
+              </div>
+              <div className="flex items-center gap-3">
+                <Globe className="w-4 h-4 text-makrx-yellow flex-shrink-0" />
+                <span>An initiative by Botness Technologies Pvt Ltd.</span>
               </div>
             </div>
+          </div>
 
-            <div className="flex items-center space-x-4 mt-4 md:mt-0">
-              <div className="flex items-center text-gray-400 text-sm">
-                Made with <Heart className="w-4 h-4 text-red-500 mx-1" /> in India
-              </div>
-              
-              <button
-                onClick={scrollToTop}
-                className="w-10 h-10 bg-gray-800 rounded-lg flex items-center justify-center hover:bg-makrx-blue transition-colors"
-                aria-label="Scroll to top"
-              >
-                <ArrowUp className="w-5 h-5" />
+          {/* Navigation Sections */}
+          <div className="lg:col-span-8">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+              {footerSections.map((section) => (
+                <div key={section.title}>
+                  <h3 className="text-lg font-semibold mb-4 text-white">{section.title}</h3>
+                  <ul className="space-y-3">
+                    {section.links.map((link) => (
+                      <li key={link.name}>
+                        <Link
+                          to={link.href}
+                          className="group flex flex-col text-gray-400 hover:text-white transition-colors"
+                        >
+                          <span className="font-medium group-hover:text-makrx-yellow transition-colors">
+                            {link.name}
+                          </span>
+                          <span className="text-xs text-gray-500 mt-1">
+                            {link.description}
+                          </span>
+                        </Link>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* Newsletter Subscription */}
+        <div className="border-t border-gray-800 pt-12 mb-12">
+          <div className="max-w-2xl mx-auto text-center">
+            <h3 className="text-2xl font-bold mb-4">Stay Updated with MakrX</h3>
+            <p className="text-gray-400 mb-6">
+              Get the latest maker news, workshop announcements, and exclusive insights delivered to your inbox.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4 max-w-md mx-auto">
+              <input
+                type="email"
+                placeholder="Enter your email"
+                className="flex-1 px-4 py-3 rounded-lg bg-gray-800 border border-gray-700 text-white placeholder-gray-400 focus:border-makrx-yellow focus:outline-none"
+              />
+              <button className="px-6 py-3 bg-makrx-yellow text-makrx-blue font-semibold rounded-lg hover:bg-yellow-300 transition-colors flex items-center justify-center gap-2">
+                Subscribe
+                <ArrowRight className="w-4 h-4" />
               </button>
             </div>
+            <p className="text-xs text-gray-500 mt-3">
+              No spam, unsubscribe anytime. Read our{' '}
+              <Link to="/privacy" className="text-makrx-yellow hover:underline">
+                Privacy Policy
+              </Link>
+            </p>
+          </div>
+        </div>
+
+        {/* Social Links */}
+        <div className="border-t border-gray-800 pt-8 mb-8">
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-6">
+            <div className="flex items-center gap-4">
+              <span className="text-gray-400 text-sm">Follow us:</span>
+              <div className="flex items-center gap-4">
+                {socialLinks.map((social) => {
+                  const Icon = social.icon;
+                  return (
+                    <a
+                      key={social.name}
+                      href={social.href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className={`p-2 rounded-lg bg-gray-800 text-gray-400 ${social.color} transition-all hover:scale-110`}
+                      aria-label={`Follow us on ${social.name}`}
+                    >
+                      <Icon className="w-5 h-5" />
+                    </a>
+                  );
+                })}
+              </div>
+            </div>
+
+            <div className="flex items-center gap-2 text-sm text-gray-400">
+              <span>Made with</span>
+              <Heart className="w-4 h-4 text-red-500 fill-current" />
+              <span>in India</span>
+            </div>
+          </div>
+        </div>
+
+        {/* Bottom Bar */}
+        <div className="border-t border-gray-800 pt-8">
+          <div className="flex flex-col lg:flex-row items-center justify-between gap-6">
+            {/* Copyright */}
+            <div className="text-sm text-gray-400">
+              <p>
+                © {currentYear} Botness Technologies Pvt Ltd. All rights reserved.
+              </p>
+            </div>
+
+            {/* Legal Links */}
+            <div className="flex flex-wrap items-center gap-6 text-sm">
+              {legalLinks.map((link, index) => (
+                <React.Fragment key={link.name}>
+                  <Link
+                    to={link.href}
+                    className="text-gray-400 hover:text-white transition-colors"
+                  >
+                    {link.name}
+                  </Link>
+                  {index < legalLinks.length - 1 && (
+                    <span className="text-gray-600">|</span>
+                  )}
+                </React.Fragment>
+              ))}
+            </div>
+
+            {/* Additional Info */}
+            <div className="text-sm text-gray-400">
+              <p>
+                GST: 29ABCDE1234F1Z5 | CIN: U72900KA2020PTC123456
+              </p>
+            </div>
+          </div>
+        </div>
+
+        {/* Trust Indicators */}
+        <div className="border-t border-gray-800 pt-8 mt-8">
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-8 text-xs text-gray-500">
+            <div className="flex items-center gap-2">
+              <div className="w-3 h-3 bg-green-500 rounded-full"></div>
+              <span>ISO 27001 Certified</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <div className="w-3 h-3 bg-blue-500 rounded-full"></div>
+              <span>GDPR Compliant</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <div className="w-3 h-3 bg-yellow-500 rounded-full"></div>
+              <span>SOC 2 Type II</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <div className="w-3 h-3 bg-purple-500 rounded-full"></div>
+              <span>99.9% Uptime SLA</span>
+            </div>
           </div>
         </div>
       </div>
+
+      {/* Scroll to Top Button */}
+      <button
+        onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+        className="fixed bottom-6 right-6 p-3 bg-makrx-yellow text-makrx-blue rounded-full shadow-lg hover:bg-yellow-300 transition-all hover:scale-110 z-40"
+        aria-label="Scroll to top"
+      >
+        <ArrowRight className="w-5 h-5 rotate-[-90deg]" />
+      </button>
     </footer>
   );
-};
-
-export default Footer;
+}
