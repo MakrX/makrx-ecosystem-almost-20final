@@ -198,8 +198,17 @@ export default function CatalogPage() {
           <h1 className="text-3xl font-bold text-gray-900 mb-4">
             Product Catalog
           </h1>
+        </div>
 
-          {/* Search and Sort */}
+        {/* Category Carousel */}
+        <CategoryCarousel
+          categories={categories}
+          onCategorySelect={handleCategorySelect}
+          selectedCategoryId={filters.category_id}
+        />
+
+        {/* Search and Sort */}
+        <div className="mb-8">
           <div className="flex flex-col md:flex-row gap-4 items-center justify-between">
             <div className="flex-1 max-w-md">
               <div className="relative">
