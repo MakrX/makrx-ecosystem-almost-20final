@@ -51,11 +51,25 @@ class CategoryCRUD:
                 selectinload(Category.children),
                 selectinload(Category.parent)
             ).where(Category.slug == slug)
-            
+
             result = await db.execute(query)
             return result.scalar_one_or_none()
         except Exception as e:
             logger.error(f"Failed to get category by slug {slug}: {e}")
+            return None
+
+    async def get_by_path(self, db: AsyncSession, path: str) -> Optional[Category]:
+        """Get category by hierarchical path (e.g., 'electronics/arduino/boards')"""
+        try:
+            query = select(Category).options(
+                selectinload(Category.children),
+                selectinload(Category.parent)
+            ).where(Category.path == path)
+
+            result = await db.execute(query)
+            return result.scalar_one_or_none()
+        except Exception as e:
+            logger.error(f"Failed to get category by path {path}: {e}")
             return None
     
     async def get_categories(
