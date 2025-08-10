@@ -313,40 +313,14 @@ class ApiClient {
     endpoint: string,
     options: RequestInit = {},
   ): Promise<T> {
-    // In development, if backend is definitely not available, skip network request entirely
+    // In development mode, skip backend requests entirely and use mock data
     if (process.env.NODE_ENV === "development" && this.baseURL.includes("localhost:8003")) {
-      try {
-        // Quick connectivity check using Promise.race to avoid AbortController
-        const timeoutPromise = new Promise((_, reject) =>
-          setTimeout(() => reject(new Error('Connection timeout')), 300)
-        );
-
-        const fetchPromise = fetch(this.baseURL + "/health", {
-          mode: 'no-cors'
-        });
-
-        await Promise.race([fetchPromise, timeoutPromise]);
-      } catch (error) {
-        // Handle both network errors and timeout gracefully
-        const isTimeoutError = error instanceof Error && error.message === 'Connection timeout';
-        const isNetworkError = error instanceof Error && (
-          error.message.includes('Failed to fetch') ||
-          error.message.includes('NetworkError') ||
-          error.message.includes('ERR_NETWORK')
-        );
-
-        if (isTimeoutError || isNetworkError || error instanceof TypeError) {
-          // Backend is not available, use mock data immediately
-          if (typeof window !== "undefined" && !sessionStorage.getItem("mock-data-notice-shown")) {
-            sessionStorage.setItem("mock-data-notice-shown", "true");
-            console.info("🔧 Development Mode: Backend server not available, using mock data for demo purposes.");
-          }
-          return this.getMockData<T>(endpoint);
-        }
-
-        // Re-throw other unexpected errors
-        throw error;
+      // Show a one-time notification that we're using mock data
+      if (typeof window !== "undefined" && !sessionStorage.getItem("mock-data-notice-shown")) {
+        sessionStorage.setItem("mock-data-notice-shown", "true");
+        console.info("🔧 Development Mode: Using mock data for demo purposes (backend requests disabled).");
       }
+      return this.getMockData<T>(endpoint);
     }
     const url = `${this.baseURL}${endpoint}`;
     const token = await getToken();
