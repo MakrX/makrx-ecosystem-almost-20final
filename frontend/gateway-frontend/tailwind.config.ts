@@ -189,6 +189,7 @@ const config: Config = {
         'shimmer': 'shimmer 2s linear infinite',
         'glow': 'glow 2s ease-in-out infinite alternate',
         'type': 'type 3s steps(20) infinite',
+        'slideRight': 'slideRight 3s ease-in-out infinite',
       },
       keyframes: {
         fadeIn: {
@@ -214,6 +215,11 @@ const config: Config = {
         slideInUp: {
           '0%': { opacity: '0', transform: 'translateY(40px)' },
           '100%': { opacity: '1', transform: 'translateY(0)' },
+        },
+        slideRight: {
+          '0%': { width: '0%', opacity: '0.6' },
+          '50%': { width: '100%', opacity: '1' },
+          '100%': { width: '0%', opacity: '0.6' },
         },
         scaleIn: {
           '0%': { opacity: '0', transform: 'scale(0.95)' },
