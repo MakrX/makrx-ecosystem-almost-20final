@@ -157,12 +157,21 @@ export default function ThreeDPrintersPage() {
 
         <div className="flex gap-8">
           {/* Filters Sidebar */}
-          <div className={`${showFilters ? "block" : "hidden"} md:block w-full md:w-80 flex-shrink-0`}>
-            <EnhancedCategoryFilters 
-              category="3d-printers" 
-              onFiltersChange={handleFilterChange}
-              isOpen={showFilters}
-              onClose={() => setShowFilters(false)}
+          <div className="hidden lg:block w-80 flex-shrink-0">
+            <EnhancedCategoryFilters
+              facets={categoryFilters.map(filter => ({
+                name: filter.id,
+                values: filter.options?.map(opt => ({
+                  id: opt.value,
+                  name: opt.label,
+                  count: opt.count
+                })) || []
+              }))}
+              activeFilters={activeFilters}
+              onFilterChange={handleFilterChange}
+              onToggle={toggleFilters}
+              isOpen={isFiltersOpen}
+              className="w-full"
             />
           </div>
 
