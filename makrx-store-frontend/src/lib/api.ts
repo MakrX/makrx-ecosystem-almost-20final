@@ -771,7 +771,7 @@ class ApiClient {
         id: product.id || index + 1,
         slug: product.slug || `product-${index + 1}`,
         name: product.name || `Product ${index + 1}`,
-        images: product.images || ["/api/placeholder/400/300"],
+        images: product.images || ["https://via.placeholder.com/400x300/3B82F6/FFFFFF?text=Product"],
         tags: product.tags || [],
         currency: product.currency || "INR",
       }));
