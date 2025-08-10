@@ -233,7 +233,7 @@ export default function CategoryPage() {
                     const url = new URL(window.location.href);
                     Object.entries(newFilters).forEach(([key, value]) => {
                       if (value) {
-                        url.searchParams.set(key, value);
+                        url.searchParams.set(key, String(value));
                       } else {
                         url.searchParams.delete(key);
                       }
