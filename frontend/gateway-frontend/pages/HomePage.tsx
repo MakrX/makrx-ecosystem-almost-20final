@@ -22,6 +22,16 @@ const StatCard: React.FC<StatCardProps> = ({ number, label, icon }) => {
   const targetNumber = parseInt(number.replace(/\D/g, '')) || 0;
   const suffix = number.replace(/\d/g, '');
 
+  // Format number for display (e.g., 10000 -> "10K")
+  const formatNumber = (num: number) => {
+    if (num >= 1000000) {
+      return (num / 1000000).toFixed(num % 1000000 === 0 ? 0 : 1) + 'M';
+    } else if (num >= 1000) {
+      return (num / 1000).toFixed(num % 1000 === 0 ? 0 : 1) + 'K';
+    }
+    return num.toString();
+  };
+
   useEffect(() => {
     const observer = new IntersectionObserver(
       ([entry]) => {
@@ -64,7 +74,7 @@ const StatCard: React.FC<StatCardProps> = ({ number, label, icon }) => {
         </div>
       </div>
       <div className="text-3xl font-bold text-white mb-2">
-        {displayNumber}{suffix}
+        {targetNumber >= 1000 ? formatNumber(displayNumber) : displayNumber}{targetNumber < 1000 ? suffix : ''}
       </div>
       <div className="text-white/80">{label}</div>
     </div>
@@ -262,12 +272,12 @@ export default function HomePage() {
                 icon={<Building2 className="w-8 h-8 text-makrx-yellow" />}
               />
               <StatCard
-                number="10000+"
+                number="10000"
                 label="Active Makers"
                 icon={<Users className="w-8 h-8 text-makrx-yellow" />}
               />
               <StatCard
-                number="1000000+"
+                number="1000000"
                 label="Projects Created"
                 icon={<Award className="w-8 h-8 text-makrx-yellow" />}
               />
