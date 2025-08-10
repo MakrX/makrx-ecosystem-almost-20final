@@ -59,6 +59,15 @@ export default function HomePage() {
 
   return (
     <div className="min-h-screen bg-background">
+      {/* Development Mode Notice */}
+      {process.env.NODE_ENV === "development" && typeof window !== "undefined" && sessionStorage.getItem("mock-data-notice-shown") && (
+        <div className="bg-yellow-100 dark:bg-yellow-900 border-b border-yellow-200 dark:border-yellow-800 px-4 py-2">
+          <p className="text-center text-yellow-800 dark:text-yellow-200 text-sm">
+            🔧 Development Mode: Using demo data - Backend service not connected
+          </p>
+        </div>
+      )}
+
       {/* Hero Section */}
       <section className="relative bg-gradient-to-r from-blue-600 to-purple-700 text-white">
         <div className="absolute inset-0 bg-black opacity-20"></div>
