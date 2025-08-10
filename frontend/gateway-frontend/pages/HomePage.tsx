@@ -6,6 +6,7 @@ import {
   ChevronRight, Award, TrendingUp, Heart
 } from 'lucide-react';
 import { useBooleanFlag } from '../lib/feature-flags';
+import SEOStructuredData from '../components/SEOStructuredData';
 
 interface StatCardProps {
   number: string;
