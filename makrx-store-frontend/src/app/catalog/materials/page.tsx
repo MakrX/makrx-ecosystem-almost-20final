@@ -25,7 +25,7 @@ export default function MaterialsPage() {
       try {
         setLoading(true);
         const productsData = await api.getProducts({
-          category: "materials",
+          category: "filament",
           per_page: 20,
           sort: sortBy,
         });
