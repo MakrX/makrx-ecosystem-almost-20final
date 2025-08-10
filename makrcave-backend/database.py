@@ -11,10 +11,15 @@ load_dotenv()
 DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///./makrcave.db")
 
 # Create SQLAlchemy engine
+# Only enable SQL logging in development for debugging
+enable_sql_logging = os.getenv("ENVIRONMENT", "production") == "development"
+
 engine = create_engine(
     DATABASE_URL,
-    echo=True,  # Set to False in production
-    connect_args={"check_same_thread": False} if "sqlite" in DATABASE_URL else {}
+    echo=enable_sql_logging,  # Only log SQL queries in development
+    connect_args={"check_same_thread": False} if "sqlite" in DATABASE_URL else {},
+    # Security: Hide connection details in logs
+    hide_parameters=not enable_sql_logging
 )
 
 # Create SessionLocal class
