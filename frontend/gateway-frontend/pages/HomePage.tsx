@@ -190,9 +190,9 @@ export default function HomePage() {
 
       {/* Stats Section */}
       {showStats && (
-        <section className="py-20 bg-makrx-blue">
-          <div className="max-w-7xl mx-auto px-6">
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-12">
+        <section className="py-20 sm:py-24 lg:py-32 bg-makrx-blue border-t border-makrx-blue-700">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-8 sm:gap-12">
               <StatCard 
                 number="50+" 
                 label="Makerspaces" 
@@ -219,11 +219,11 @@ export default function HomePage() {
       )}
 
       {/* Features Section */}
-      <section className="py-24 bg-gray-50">
-        <div className="max-w-7xl mx-auto px-6">
-          <div className="text-center mb-20">
-            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
-              Everything You Need to 
+      <section className="py-24 sm:py-28 lg:py-36 bg-gray-50 border-t border-gray-200">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16 sm:mb-20">
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 mb-4 sm:mb-6">
+              Everything You Need to
               <span className="text-makrx-blue"> Create</span>
             </h2>
             <p className="text-lg sm:text-xl text-gray-600 max-w-3xl mx-auto px-4">
@@ -260,10 +260,10 @@ export default function HomePage() {
       </section>
 
       {/* How It Works Section */}
-      <section className="py-24 bg-white">
-        <div className="max-w-7xl mx-auto px-6">
-          <div className="text-center mb-20">
-            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
+      <section className="py-24 sm:py-28 lg:py-36 bg-white border-t border-gray-100">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16 sm:mb-20">
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 mb-4 sm:mb-6">
               How MakrX Works
             </h2>
             <p className="text-lg sm:text-xl text-gray-600 max-w-3xl mx-auto px-4">
@@ -271,7 +271,7 @@ export default function HomePage() {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 sm:gap-12">
             <div className="text-center group">
               <div className="w-20 h-20 bg-makrx-blue rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:bg-makrx-yellow group-hover:scale-110 transition-all">
                 <span className="text-2xl font-bold text-white group-hover:text-makrx-blue">1</span>
@@ -306,8 +306,8 @@ export default function HomePage() {
       </section>
 
       {/* Benefits Section */}
-      <section className="py-24 bg-gradient-to-br from-gray-900 to-makrx-blue">
-        <div className="max-w-7xl mx-auto px-6">
+      <section className="py-24 sm:py-28 lg:py-36 bg-gradient-to-br from-gray-900 to-makrx-blue border-t border-gray-700">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-20">
             <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
               Why Choose MakrX?
