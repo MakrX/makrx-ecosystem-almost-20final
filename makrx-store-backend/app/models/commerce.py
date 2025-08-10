@@ -221,3 +221,159 @@ class OrderItem(Base):
     # Relationships
     order = relationship("Order", back_populates="items")
     product = relationship("Product", back_populates="order_items")
+
+
+class Brand(Base):
+    __tablename__ = "brands"
+
+    id = Column(Integer, primary_key=True, index=True)
+    name = Column(String(255), nullable=False, unique=True, index=True)
+    slug = Column(String(255), nullable=False, unique=True, index=True)
+    description = Column(Text)
+    logo = Column(String(500))
+    banner_image = Column(String(500))
+    website = Column(String(500))
+    founded = Column(Integer)
+    headquarters = Column(String(255))
+    specialties = Column(JSONB, default=[])  # Array of specialty areas
+
+    # SEO fields
+    seo_title = Column(String(255))
+    seo_description = Column(String(500))
+
+    # Status
+    is_active = Column(Boolean, default=True)
+    is_featured = Column(Boolean, default=False)
+
+    # Timestamps
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    updated_at = Column(DateTime(timezone=True), onupdate=func.now())
+
+    # Relationships
+    products = relationship("Product", back_populates="brand_info")
+
+
+class Collection(Base):
+    __tablename__ = "collections"
+
+    id = Column(Integer, primary_key=True, index=True)
+    name = Column(String(255), nullable=False, index=True)
+    slug = Column(String(255), nullable=False, unique=True, index=True)
+    description = Column(Text, nullable=False)
+    banner_image = Column(String(500))
+
+    # Curator information
+    curator_name = Column(String(255))
+    curator_bio = Column(Text)
+
+    # SEO fields
+    seo_title = Column(String(255))
+    seo_description = Column(String(500))
+
+    # Metadata
+    tags = Column(JSONB, default=[])  # Related tags
+    featured_categories = Column(JSONB, default=[])  # Featured category IDs
+
+    # Status
+    is_active = Column(Boolean, default=True)
+    is_featured = Column(Boolean, default=False)
+
+    # Timestamps
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    updated_at = Column(DateTime(timezone=True), onupdate=func.now())
+
+    # Relationships
+    products = relationship("CollectionProduct", back_populates="collection")
+
+
+class CollectionProduct(Base):
+    __tablename__ = "collection_products"
+
+    id = Column(Integer, primary_key=True, index=True)
+    collection_id = Column(Integer, ForeignKey("collections.id"), nullable=False)
+    product_id = Column(Integer, ForeignKey("products.id"), nullable=False)
+    sort_order = Column(Integer, default=0)
+    is_featured = Column(Boolean, default=False)  # Featured within collection
+    added_at = Column(DateTime(timezone=True), server_default=func.now())
+
+    # Relationships
+    collection = relationship("Collection", back_populates="products")
+    product = relationship("Product")
+
+    # Unique constraint
+    __table_args__ = (
+        Index("ix_collection_products_unique", "collection_id", "product_id", unique=True),
+        Index("ix_collection_products_sort", "collection_id", "sort_order"),
+    )
+
+
+class Tag(Base):
+    __tablename__ = "tags"
+
+    id = Column(Integer, primary_key=True, index=True)
+    name = Column(String(100), nullable=False, unique=True, index=True)
+    slug = Column(String(100), nullable=False, unique=True, index=True)
+    description = Column(Text)
+    usage_count = Column(Integer, default=0, index=True)  # Number of products using this tag
+
+    # Status
+    is_active = Column(Boolean, default=True)
+    is_featured = Column(Boolean, default=False)
+
+    # Timestamps
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    updated_at = Column(DateTime(timezone=True), onupdate=func.now())
+
+
+class ProductTag(Base):
+    __tablename__ = "product_tags"
+
+    id = Column(Integer, primary_key=True, index=True)
+    product_id = Column(Integer, ForeignKey("products.id"), nullable=False)
+    tag_id = Column(Integer, ForeignKey("tags.id"), nullable=False)
+    added_at = Column(DateTime(timezone=True), server_default=func.now())
+
+    # Relationships
+    product = relationship("Product")
+    tag = relationship("Tag")
+
+    # Unique constraint
+    __table_args__ = (
+        Index("ix_product_tags_unique", "product_id", "tag_id", unique=True),
+    )
+
+
+class ProductVariant(Base):
+    __tablename__ = "product_variants"
+
+    id = Column(Integer, primary_key=True, index=True)
+    product_id = Column(Integer, ForeignKey("products.id"), nullable=False)
+    sku = Column(String(100), nullable=False, unique=True, index=True)
+
+    # Variant-specific attributes
+    attributes = Column(JSONB, default={})  # e.g., {"color": "red", "size": "L"}
+
+    # Pricing (overrides parent product if set)
+    price = Column(Numeric(10, 2))
+    sale_price = Column(Numeric(10, 2))
+
+    # Inventory
+    stock_qty = Column(Integer, default=0)
+
+    # Images specific to this variant
+    images = Column(JSONB, default=[])
+
+    # Status
+    is_active = Column(Boolean, default=True)
+
+    # Timestamps
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    updated_at = Column(DateTime(timezone=True), onupdate=func.now())
+
+    # Relationships
+    product = relationship("Product", back_populates="variants")
+
+    # Indexes
+    __table_args__ = (
+        Index("ix_product_variants_product_active", "product_id", "is_active"),
+    )
