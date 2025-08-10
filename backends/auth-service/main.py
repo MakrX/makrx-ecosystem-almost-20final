@@ -93,16 +93,21 @@ app = FastAPI(
     lifespan=lifespan
 )
 
+# Security middleware (order matters!)
+app.add_middleware(SecurityHeadersMiddleware)
+app.add_middleware(InputValidationMiddleware)
+app.add_middleware(RateLimitMiddleware, calls=100, period=3600)  # 100 calls per hour
+
 # CORS configuration
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
         "http://localhost:3000",  # Gateway
-        "http://localhost:3001",  # MakrCave  
+        "http://localhost:3001",  # MakrCave
         "http://localhost:3002",  # Store
         "http://localhost:3003",  # Store (current)
         "http://gateway-frontend:3000",
-        "http://makrcave-frontend:3001", 
+        "http://makrcave-frontend:3001",
         "http://makrx-store-frontend:3002"
     ],
     allow_credentials=True,
