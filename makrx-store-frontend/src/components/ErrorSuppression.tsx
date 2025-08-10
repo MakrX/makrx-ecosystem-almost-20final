@@ -51,7 +51,11 @@ export function ErrorSuppression() {
           (message.includes("NetworkError") ||
            message.includes("Failed to fetch") ||
            message.includes("/api/placeholder") ||
-           message.includes("ECONNREFUSED"))) {
+           message.includes("ECONNREFUSED") ||
+           message.includes("Extra attributes from the server") ||
+           message.includes("data-new-gr-c-s-check-loaded") ||
+           message.includes("data-gr-ext-installed") ||
+           message.includes("Hydration failed"))) {
         return true; // Suppress the error
       }
       return false; // Let other errors through
