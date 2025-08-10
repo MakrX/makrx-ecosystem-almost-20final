@@ -97,6 +97,8 @@ export default function DevErrorHandler() {
     return () => {
       window.removeEventListener('unhandledrejection', handleUnhandledRejection);
       window.removeEventListener('error', handleError);
+      // Restore original console.error
+      console.error = originalConsoleError;
     };
   }, []);
 
