@@ -231,7 +231,11 @@ export default function PrintingServicesPage() {
                     volume_mm3: upload.volume_mm3
                       ? Number(upload.volume_mm3)
                       : undefined,
-                    dimensions: upload.dimensions,
+                    dimensions: upload.dimensions ? {
+                      x: upload.dimensions.x || 0,
+                      y: upload.dimensions.y || 0,
+                      z: upload.dimensions.z || 0
+                    } : undefined,
                   }
                 : f,
             ),
