@@ -45,22 +45,22 @@ export default function DevErrorHandler() {
 
     // Suppress console errors for development-related issues
     const originalConsoleError = console.error;
+    const originalConsoleWarn = console.warn;
+
     console.error = (...args: any[]) => {
       const message = args.join(' ');
-
-      // Check for development-specific error patterns
-      if (message.includes('Failed to fetch') && (
-          message.includes('RSC payload') ||
-          message.includes('fetchServerResponse') ||
-          message.includes('fastRefreshReducerImpl') ||
-          message.includes('hot-reloader-client')
-        )) {
-        // Suppress these development errors
-        return;
+      if (isDevelopmentError(message)) {
+        return; // Suppress completely
       }
-
-      // Call original console.error for other errors
       originalConsoleError.apply(console, args);
+    };
+
+    console.warn = (...args: any[]) => {
+      const message = args.join(' ');
+      if (isDevelopmentError(message)) {
+        return; // Suppress completely
+      }
+      originalConsoleWarn.apply(console, args);
     };
 
     // Also handle regular errors that might be related to RSC
