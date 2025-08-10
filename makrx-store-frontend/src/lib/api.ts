@@ -455,6 +455,7 @@ class ApiClient {
     params: {
       q?: string;
       category_id?: number;
+      category?: string; // Allow category slug filtering
       brand?: string;
       price_min?: number;
       price_max?: number;
