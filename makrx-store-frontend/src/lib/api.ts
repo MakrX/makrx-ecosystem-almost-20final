@@ -38,6 +38,7 @@ export interface Product {
   description: string;
   short_description?: string;
   brand?: string;
+  sku?: string;
   category_id: number;
   price: number;
   sale_price?: number;
