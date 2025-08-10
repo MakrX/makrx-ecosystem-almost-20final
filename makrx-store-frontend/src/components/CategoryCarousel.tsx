@@ -217,9 +217,9 @@ export default function CategoryCarousel({
                     </div>
                   </div>
 
-                  <div className="text-center px-2">
+                  <div className="text-center px-1">
                     <h3
-                      className={`font-semibold text-sm mb-1 transition-colors duration-200 ${
+                      className={`font-medium text-xs mb-1 transition-colors duration-200 ${
                       (selectedCategoryId === category.id) || (selectedCategoryId === undefined && category.id === 0)
                         ? "text-blue-600"
                         : "text-gray-900 group-hover:text-blue-600"
@@ -227,7 +227,7 @@ export default function CategoryCarousel({
                     >
                       {category.name}
                     </h3>
-                    <p className="text-xs text-gray-500 line-clamp-2">
+                    <p className="text-xs text-gray-500 line-clamp-1">
                       {category.description || `Explore ${category.name.toLowerCase()}`}
                     </p>
                   </div>
