@@ -283,49 +283,43 @@ export default function ProductPage() {
               </span>
             </div>
 
-            {/* Variants Selection */}
-            {product.variants && product.variants.length > 0 && (
-              <div className="space-y-3">
-                <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-                  Options
-                </h3>
-                <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
-                  {product.variants.map((variant) => (
-                    <button
-                      key={variant.id}
-                      onClick={() => setSelectedVariant(variant.id)}
-                      className={`p-3 border rounded-lg text-left transition-colors ${
-                        selectedVariant === variant.id
-                          ? "border-blue-500 bg-blue-50 dark:bg-blue-900/20"
-                          : "border-gray-300 dark:border-gray-600 hover:border-gray-400"
-                      }`}
-                    >
-                      <div className="text-sm">
-                        {Object.entries(variant.attributes).map(
-                          ([key, value]) => (
-                            <div key={key}>
-                              <span className="font-medium">{key}:</span>{" "}
-                              {value}
-                            </div>
-                          ),
-                        )}
-                      </div>
-                      <div className="text-sm font-semibold mt-1">
-                        {product.currency === "INR" ? "₹" : "$"}
-                        {(variant.sale_price || variant.price).toLocaleString()}
-                      </div>
-                    </button>
-                  ))}
-                </div>
+            {/* Enhanced Variant Selection */}
+            {product.variants && product.variants.length > 0 ? (
+              <ProductVariantSelector
+                variants={product.variants}
+                onVariantChange={handleVariantChange}
+                basePrice={product.price}
+                currency={product.currency}
+              />
+            ) : (
+              /* Price Display for Non-Variant Products */
+              <div className="flex items-center gap-3">
+                <span className="text-2xl font-bold text-gray-900 dark:text-white">
+                  {product.currency === "INR" ? "₹" : "$"}
+                  {effectivePrice.toLocaleString()}
+                </span>
+                {isOnSale && (
+                  <>
+                    <span className="text-lg text-gray-500 line-through">
+                      {product.currency === "INR" ? "₹" : "$"}
+                      {originalPrice.toLocaleString()}
+                    </span>
+                    <span className="bg-red-100 dark:bg-red-900 text-red-800 dark:text-red-200 px-2 py-1 rounded text-sm font-medium">
+                      {Math.round(
+                        ((originalPrice - effectivePrice) / originalPrice) * 100
+                      )}% OFF
+                    </span>
+                  </>
+                )}
               </div>
             )}
 
             {/* Add to Cart */}
             <AddToCartForm
               productId={product.id}
-              variantId={selectedVariant}
-              maxQuantity={product.stock_qty}
-              inStock={product.stock_qty > 0}
+              variantId={selectedVariant?.id || null}
+              maxQuantity={selectedVariant?.stock_qty || product.stock_qty}
+              inStock={product.variants?.length > 0 ? canAddToCart : product.stock_qty > 0}
             />
 
             {/* Key Features */}
