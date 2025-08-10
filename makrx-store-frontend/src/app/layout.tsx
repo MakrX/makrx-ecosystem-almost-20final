@@ -58,38 +58,51 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
-        {/* Early fetch protection - runs before any external scripts */}
+        {/* Development-friendly fetch protection */}
         <script
           dangerouslySetInnerHTML={{
-            __html: `(function(){try{const f=fetch;Object.defineProperty(window,'fetch',{value:f,writable:false,configurable:false});}catch(e){}})();`
+            __html: `
+              // Only apply fetch protection in production to avoid interfering with Next.js development
+              (function(){
+                const isDev = window.location.hostname === 'localhost' || window.location.hostname.includes('dev') || window.location.port;
+                if (isDev) {
+                  // In development, only protect against obvious external interference
+                  const originalFetch = window.fetch;
+                  let overrideAttempts = 0;
+
+                  Object.defineProperty(window, 'fetch', {
+                    get: function() {
+                      return originalFetch;
+                    },
+                    set: function(value) {
+                      overrideAttempts++;
+                      // Allow a few overrides for development tools, but warn about excessive attempts
+                      if (overrideAttempts > 3) {
+                        console.warn('Multiple fetch override attempts detected, keeping original');
+                        return originalFetch;
+                      }
+                      return value;
+                    },
+                    configurable: true
+                  });
+                } else {
+                  // In production, apply stricter protection
+                  try{
+                    const f=fetch;
+                    Object.defineProperty(window,'fetch',{value:f,writable:false,configurable:false});
+                  }catch(e){}
+                }
+              })();
+            `
           }}
         />
         <script
           dangerouslySetInnerHTML={{
             __html: `
-              // Protect fetch from external interference and prevent hydration issues
+              // Hydration issue prevention (production only)
               (function() {
-                // Store original fetch before any external tools can override it
-                const originalFetch = window.fetch;
-                let fetchProtected = false;
-
-                // Protect fetch from being overridden
-                Object.defineProperty(window, 'fetch', {
-                  get: function() {
-                    return originalFetch;
-                  },
-                  set: function(value) {
-                    // Only allow setting fetch once during initialization
-                    if (!fetchProtected) {
-                      fetchProtected = true;
-                      return originalFetch;
-                    }
-                    // Ignore subsequent attempts to override fetch
-                    console.warn('Prevented external tool from overriding fetch');
-                    return originalFetch;
-                  },
-                  configurable: false
-                });
+                const isDev = window.location.hostname === 'localhost' || window.location.hostname.includes('dev') || window.location.port;
+                if (isDev) return; // Skip in development
 
                 // Prevent browser extension hydration issues
                 const originalConsoleError = console.error;
