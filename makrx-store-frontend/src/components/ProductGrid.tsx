@@ -3,8 +3,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { HeartIcon, ShoppingCartIcon, EyeIcon } from '@heroicons/react/24/outline';
-import { HeartIcon as HeartIconSolid } from '@heroicons/react/24/solid';
+// Using SVG icons directly instead of Heroicons for better compatibility
 
 interface Product {
   id: number;
