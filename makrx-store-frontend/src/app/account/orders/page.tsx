@@ -52,6 +52,16 @@ export default function AccountOrdersPage() {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
 
+  // Review modal state
+  const [isReviewModalOpen, setIsReviewModalOpen] = useState(false);
+  const [selectedReviewItem, setSelectedReviewItem] = useState<{
+    item: Order['items'][0];
+    orderId: string;
+  } | null>(null);
+
+  // Track submitted reviews (in real app, this would be stored in database)
+  const [submittedReviews, setSubmittedReviews] = useState<Set<string>>(new Set());
+
   // Mock orders data - mix of product and service orders
   const allOrders: Order[] = [
     {
