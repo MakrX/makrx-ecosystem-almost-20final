@@ -969,11 +969,6 @@ class ApiClient {
 
       const categoryId = categoryMap[categorySlug] || 1;
 
-      // Debugging: log category mapping
-      if (process.env.NODE_ENV === 'development' && index < 5) {
-        console.log(`Product ${product.name}: category "${product.category}" -> slug "${categorySlug}" -> ID ${categoryId}`);
-      }
-
       // Find the matching category from our categories data
       const categoryInfo = mockCategories.find(cat => cat.slug === categorySlug) || mockCategories[0];
 
