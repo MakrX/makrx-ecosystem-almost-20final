@@ -4,7 +4,7 @@ import {
   AlertTriangle, Info, XCircle, Zap, Palette,
   Settings, User, Mail, Phone, Globe
 } from 'lucide-react';
-import { ThemeToggle, Card, Button, Text, useTheme } from '../lib/ui';
+import { ThemeToggle, useTheme } from '../lib/theme';
 import { PrimaryIcon, AccentIcon, MutedIcon, InteractiveIcon } from '../components/ThemeAwareIcon';
 
 export default function ThemeDemo() {
