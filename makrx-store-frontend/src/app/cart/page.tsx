@@ -22,8 +22,19 @@ export default function CartPage() {
   const [loading, setLoading] = useState(true);
   const [updating, setUpdating] = useState<{ [key: number]: boolean }>({});
   const [couponCode, setCouponCode] = useState('');
-  const [couponDiscount, setCouponDiscount] = useState(0);
-  const [shippingCost, setShippingCost] = useState(5.99);
+
+  // Enhanced cart calculations
+  const {
+    subtotal,
+    shippingCost,
+    taxAmount,
+    discountAmount,
+    total,
+    setSubtotal,
+    handleShippingChange,
+    handleTaxChange,
+    handleDiscountChange,
+  } = useCartCalculations();
 
   useEffect(() => {
     const loadCart = async () => {
