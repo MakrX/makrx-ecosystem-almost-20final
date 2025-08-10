@@ -165,7 +165,7 @@ export default function HomePage() {
 
               {/* Enhanced Dream. Make. Share. section */}
               <div className="relative dream-make-share-container">
-                <div className="text-xl sm:text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-light text-white/90 mb-8 leading-tight">
+                <div className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-light text-white/90 mb-8 leading-tight">
                   <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-6 md:gap-8">
                     {/* Dream word with enhanced animations */}
                     <div className="dream-word inline-block animate-slide-in-left cursor-default relative group" style={{animationDelay: '0.2s'}}>
@@ -180,7 +180,7 @@ export default function HomePage() {
 
                     {/* Make word - central focus with enhanced styling */}
                     <div className="make-word inline-block animate-slide-in-right cursor-default relative group" style={{animationDelay: '0.5s'}}>
-                      <span className="relative z-10 bg-gradient-to-r from-makrx-yellow via-yellow-300 to-makrx-yellow bg-clip-text text-transparent font-bold text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl">
+                      <span className="relative z-10 bg-gradient-to-r from-makrx-yellow via-yellow-300 to-makrx-yellow bg-clip-text text-transparent font-bold text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl">
                         Make.
                       </span>
                       <div className="absolute inset-0 bg-gradient-to-r from-makrx-yellow/20 via-makrx-yellow/30 to-makrx-yellow/20 rounded-xl blur-lg opacity-0 group-hover:opacity-100 transition-all duration-300 -z-10"></div>
@@ -210,13 +210,13 @@ export default function HomePage() {
               </div>
             </div>
 
-            <div className="inline-flex items-center px-6 py-3 rounded-full bg-makrx-yellow/20 text-makrx-yellow text-base font-semibold mb-8">
-              <Zap className="w-5 h-5 mr-3" />
+            <div className="inline-flex items-center px-8 py-4 rounded-full bg-makrx-yellow/20 text-makrx-yellow text-lg sm:text-xl md:text-2xl font-semibold mb-10">
+              <Zap className="w-6 h-6 mr-4" />
               Welcome to the Future of Making
             </div>
           </div>
 
-          <p className="text-lg sm:text-xl lg:text-2xl text-white/90 mb-8 sm:mb-12 max-w-4xl mx-auto leading-relaxed px-4">
+          <p className="text-base sm:text-lg md:text-xl text-white/90 mb-8 sm:mb-12 max-w-4xl mx-auto leading-relaxed px-4">
             Access world-class makerspaces, shop cutting-edge tools, learn new skills, and bring your ideas to life.
             Join thousands of makers, innovators, and creators in the MakrX ecosystem.
           </p>
