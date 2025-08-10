@@ -114,35 +114,27 @@ export default function HomePage() {
             </div>
           </div>
 
-          <h1 className="text-5xl md:text-7xl font-bold text-white mb-6 leading-tight">
-            Your Creative
-            <span className="block bg-gradient-to-r from-makrx-yellow to-yellow-300 bg-clip-text text-transparent">
-              Ecosystem
-            </span>
-            Awaits
-          </h1>
-
           <p className="text-xl md:text-2xl text-white/90 mb-12 max-w-4xl mx-auto leading-relaxed">
-            Access world-class makerspaces, shop cutting-edge tools, learn new skills, and bring your ideas to life. 
-            Join thousands of makers, innovators, and creators in the MakrX community.
+            Access world-class makerspaces, shop cutting-edge tools, learn new skills, and bring your ideas to life.
+            Join thousands of makers, innovators, and creators in the MakrX ecosystem.
           </p>
 
           <div className="flex flex-col sm:flex-row gap-6 justify-center mb-16">
-            <Link 
-              to="/makrcave" 
+            <Link
+              to="/register"
               className="group inline-flex items-center justify-center px-8 py-4 text-lg font-semibold rounded-2xl bg-makrx-yellow text-makrx-blue hover:bg-yellow-300 transition-all duration-300 hover:scale-105 hover:shadow-2xl"
             >
-              Explore Makerspaces
-              <Building2 className="ml-3 w-5 h-5 group-hover:translate-x-1 transition-transform" />
+              Get Started Free
+              <Zap className="ml-3 w-5 h-5 group-hover:translate-x-1 transition-transform" />
             </Link>
-            
-            <Link 
-              to="/store" 
+
+            <button
               className="group inline-flex items-center justify-center px-8 py-4 text-lg font-semibold rounded-2xl bg-white/10 text-white border-2 border-white/20 hover:bg-white/20 hover:border-white/40 transition-all duration-300 hover:scale-105"
+              onClick={() => {/* Open app launcher */}}
             >
-              Shop Tools & Materials
-              <ShoppingCart className="ml-3 w-5 h-5 group-hover:translate-x-1 transition-transform" />
-            </Link>
+              Launch Apps
+              <Play className="ml-3 w-5 h-5 group-hover:translate-x-1 transition-transform" />
+            </button>
           </div>
 
           {showVideo && (
