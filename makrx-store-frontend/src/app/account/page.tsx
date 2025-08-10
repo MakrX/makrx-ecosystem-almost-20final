@@ -393,6 +393,18 @@ export default function AccountDashboard() {
                       Reorder Items
                     </Button>
                   </Link>
+                  <Link href="/account/saved-carts">
+                    <Button variant="outline" className="w-full justify-start">
+                      <ShoppingCart className="h-4 w-4 mr-2" />
+                      Saved Carts
+                    </Button>
+                  </Link>
+                  <Link href="/account/payment-methods">
+                    <Button variant="outline" className="w-full justify-start">
+                      <CreditCard className="h-4 w-4 mr-2" />
+                      Payment Methods
+                    </Button>
+                  </Link>
                   <Link href="/catalog">
                     <Button variant="outline" className="w-full justify-start">
                       <ShoppingCart className="h-4 w-4 mr-2" />
