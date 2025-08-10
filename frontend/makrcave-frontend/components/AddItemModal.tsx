@@ -28,7 +28,7 @@ interface AddItemModalProps {
 
 export default function AddItemModal({ isOpen, onClose, editItem, onSubmit }: AddItemModalProps) {
   const { user } = useAuth();
-  const { addInventoryItem } = useMakerspace();
+  const { addInventoryItem, inventoryItems } = useMakerspace();
   const [showQRScanner, setShowQRScanner] = useState(false);
   const [isScannedItem, setIsScannedItem] = useState(false);
   const [duplicateWarning, setDuplicateWarning] = useState('');
