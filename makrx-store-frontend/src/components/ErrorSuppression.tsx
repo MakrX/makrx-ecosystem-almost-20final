@@ -4,8 +4,7 @@ import { useEffect } from "react";
 
 export function ErrorSuppression() {
   useEffect(() => {
-    // Temporarily disabled to debug fetch issues
-    return;
+    if (process.env.NODE_ENV !== "development") return;
 
     // Suppress unhandled promise rejections for network errors
     const handleUnhandledRejection = (event: PromiseRejectionEvent) => {
