@@ -612,10 +612,15 @@ function AdminManagementPage() {
     filter.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  const filteredProducts = products.filter(product => 
+  const filteredProducts = products.filter(product =>
     product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
     product.brand.toLowerCase().includes(searchQuery.toLowerCase()) ||
     product.category.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
+  const filteredQRCodes = qrCodes.filter(qr =>
+    qr.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    qr.type.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   return (
