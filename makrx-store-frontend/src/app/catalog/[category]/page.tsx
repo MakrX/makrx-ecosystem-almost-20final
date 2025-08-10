@@ -24,6 +24,7 @@ import {
   Compare
 } from 'lucide-react'
 import { products, categories, filters, filterProducts, sortProducts, type Product, getProductsByCategory } from '@/data/products'
+import { getAllFiltersForCategory, type CategoryFilter } from '@/data/categoryFilters'
 
 export default function CategoryPage() {
   const params = useParams()
