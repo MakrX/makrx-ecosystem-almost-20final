@@ -31,6 +31,7 @@ import PrivacyPolicy from "./pages/PrivacyPolicy";
 import TermsOfService from "./pages/TermsOfService";
 import CookiePolicy from "./pages/CookiePolicy";
 import AccessibilityStatement from "./pages/AccessibilityStatement";
+import ReturnsPolicy from "./pages/ReturnsPolicy";
 import { Helmet } from "react-helmet-async";
 
 const queryClient = new QueryClient();
