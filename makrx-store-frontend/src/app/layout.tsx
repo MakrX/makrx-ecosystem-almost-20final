@@ -129,12 +129,14 @@ export default function RootLayout({
         <ThemeProvider>
           <AuthProvider>
             <NotificationProvider>
-              <div className="min-h-screen flex flex-col bg-background text-foreground">
-                <Header />
-                <main className="flex-1">{children}</main>
-                <Footer />
-              </div>
-              <ToastNotifications />
+              <ErrorBoundary>
+                <div className="min-h-screen flex flex-col bg-background text-foreground">
+                  <Header />
+                  <main className="flex-1">{children}</main>
+                  <Footer />
+                </div>
+                <ToastNotifications />
+              </ErrorBoundary>
             </NotificationProvider>
           </AuthProvider>
         </ThemeProvider>
