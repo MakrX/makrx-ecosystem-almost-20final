@@ -44,14 +44,30 @@ interface ThemeContextType {
  */
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
+/**
+ * ThemeProvider component that manages theme state for the entire application
+ *
+ * This provider should wrap the entire app to ensure theme context is available
+ * to all components. It handles:
+ * - Theme persistence via localStorage
+ * - System theme detection and monitoring
+ * - CSS class application to document root
+ * - SSR-safe initialization
+ *
+ * @param children - React components to wrap with theme context
+ */
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
+  // Initialize theme from localStorage or default to 'system'
+  // SSR-safe: defaults to 'system' on server, reads from localStorage on client
   const [theme, setTheme] = useState<Theme>(() => {
     if (typeof window !== 'undefined') {
-      return (localStorage.getItem('makrx-theme') as Theme) || 'system';
+      const stored = localStorage.getItem('makrx-theme') as Theme;
+      return stored || 'system';
     }
-    return 'system';
+    return 'system'; // Default for SSR
   });
 
+  // Track the resolved theme (light or dark) that gets applied to UI
   const [effectiveTheme, setEffectiveTheme] = useState<'light' | 'dark'>('light');
 
   useEffect(() => {
