@@ -147,7 +147,7 @@ export default function CategoryCarousel({
               >
                 <div
                   className={`group cursor-pointer transition-all duration-200 ${
-                    selectedCategoryId === category.id
+                    (selectedCategoryId === category.id) || (selectedCategoryId === undefined && category.id === 0)
                       ? "transform scale-105"
                       : "hover:transform hover:scale-105"
                   }`}
