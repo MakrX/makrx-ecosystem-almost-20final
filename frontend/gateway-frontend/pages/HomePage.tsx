@@ -536,10 +536,7 @@ export default function HomePage() {
       </section>
 
       {/* App Launcher Modal */}
-      <AppLauncher
-        isOpen={isLauncherOpen}
-        onClose={() => setIsLauncherOpen(false)}
-      />
+      {/* AppLauncher removed for simplified public gateway */}
     </div>
   );
 }
