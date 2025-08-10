@@ -8,7 +8,7 @@ import {
   Filter, 
   ShoppingCart, 
   Heart, 
-  Compare, 
+  Scale, 
   Home, 
   Package,
   Keyboard,
