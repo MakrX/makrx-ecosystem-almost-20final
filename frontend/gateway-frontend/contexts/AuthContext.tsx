@@ -47,6 +47,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<AuthError | null>(null);
+  const [token, setToken] = useState<string | null>(null);
 
   useEffect(() => {
     // Check for existing auth on app start
