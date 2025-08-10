@@ -303,7 +303,7 @@ export function Header() {
             {/* Cart */}
             <Link
               href="/cart"
-              className="relative p-2 text-foreground hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+              className="relative p-2 rounded-lg text-foreground hover:text-blue-600 dark:hover:text-blue-400 hover:bg-accent transition-colors"
             >
               <ShoppingCart className="h-6 w-6" />
               {cartItemCount > 0 && (
