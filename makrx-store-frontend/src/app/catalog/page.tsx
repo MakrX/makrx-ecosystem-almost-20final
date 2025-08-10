@@ -272,7 +272,7 @@ export default function CatalogPage() {
               {/* Filter Toggle - Mobile Only */}
               <button
                 onClick={() => setShowFilters(!showFilters)}
-                className="md:hidden flex items-center gap-2 px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50"
+                className="lg:hidden flex items-center gap-2 px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50"
               >
                 <SlidersHorizontal className="h-4 w-4" />
                 Filters
