@@ -17,6 +17,7 @@ import {
   ArrowUpDown,
 } from "lucide-react";
 import { api, type Product, type Category, formatPrice } from "@/lib/api";
+import CategoryCarousel from "@/components/CategoryCarousel";
 
 const SORT_OPTIONS = [
   { value: "created_desc", label: "Newest First" },
