@@ -19,6 +19,7 @@ import AuthCallback from "./pages/AuthCallback";
 import MakrCave from "./pages/MakrCave";
 import Store from "./pages/Store";
 import Learn from "./pages/Learn";
+import Contact from "./pages/Contact";
 import Profile from "./pages/Profile";
 import ProfilePage from "./pages/ProfilePage";
 import FeatureFlagsAdmin from "./pages/admin/FeatureFlags";
@@ -85,7 +86,7 @@ const App = () => {
                       <Route path="/admin/feature-flags" element={<FeatureFlagsAdmin />} />
                       
                       {/* Additional important pages */}
-                      <Route path="/contact" element={<div className="min-h-screen flex items-center justify-center"><div className="text-center"><h1 className="text-3xl font-bold mb-4">Contact Us</h1><p>Get in touch with our team</p></div></div>} />
+                      <Route path="/contact" element={<Contact />} />
                       <Route path="/help" element={<div className="min-h-screen flex items-center justify-center"><div className="text-center"><h1 className="text-3xl font-bold mb-4">Help Center</h1><p>Find answers to common questions</p></div></div>} />
                       <Route path="/privacy" element={<div className="min-h-screen flex items-center justify-center"><div className="text-center"><h1 className="text-3xl font-bold mb-4">Privacy Policy</h1><p>Your privacy is important to us</p></div></div>} />
                       <Route path="/terms" element={<div className="min-h-screen flex items-center justify-center"><div className="text-center"><h1 className="text-3xl font-bold mb-4">Terms of Service</h1><p>Terms and conditions for using MakrX</p></div></div>} />
