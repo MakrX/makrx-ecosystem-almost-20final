@@ -136,10 +136,10 @@ export default function CategoryCarousel({
             className="flex transition-transform duration-300 ease-in-out gap-4"
             style={{
               transform: `translateX(-${currentIndex * (100 / visibleCount)}%)`,
-              width: `${(categories.length / visibleCount) * 100}%`,
+              width: `${(displayCategories.length / visibleCount) * 100}%`,
             }}
           >
-            {categories.map((category) => (
+            {displayCategories.map((category) => (
               <div
                 key={category.id}
                 className="flex-shrink-0"
