@@ -8,6 +8,7 @@ import { Header } from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import ToastNotifications from "@/components/ToastNotifications";
 import { HydrationFix } from "@/components/HydrationFix";
+import DevErrorHandler from "@/components/DevErrorHandler";
 
 const inter = Inter({ subsets: ["latin"] });
 
