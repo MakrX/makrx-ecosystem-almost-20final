@@ -440,6 +440,9 @@ export default function EnhancedHeader() {
       {isInternal && process.env.NODE_ENV === 'development' && (
         <FeatureFlagDebugBanner />
       )}
+
+      {/* App Launcher Overlay */}
+      <AppLauncher isOpen={isLauncherOpen} onClose={() => setIsLauncherOpen(false)} />
     </header>
   );
 }
