@@ -262,7 +262,7 @@ export default function HomePage() {
 
             <button
               className="group relative inline-flex items-center justify-center px-6 sm:px-8 py-3 sm:py-4 text-base sm:text-lg font-semibold rounded-2xl bg-white/10 text-white border-2 border-white/20 hover:bg-white/20 hover:border-white/40 transition-all duration-300 hover:scale-105 backdrop-blur-sm overflow-hidden"
-              onClick={() => {/* Open app launcher */}}
+              onClick={() => setIsLauncherOpen(true)}
             >
               <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent transform -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-700"></div>
               <span className="relative z-10">Launch Apps</span>
