@@ -14,7 +14,7 @@ import {
   Star,
   ShoppingCart,
   Heart,
-  Compare,
+  Scale,
   Eye,
   Package,
   Truck,
