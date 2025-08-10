@@ -210,14 +210,90 @@ export default function EnhancedHeader() {
               </button>
             )}
 
-            {/* App Launcher */}
-            <button
-              onClick={() => setIsLauncherOpen(true)}
-              className="p-2 rounded-lg text-white/80 hover:text-white hover:bg-white/10 transition-colors"
-              aria-label="Launch Apps"
-            >
-              <Grid3X3 className="w-4 h-4" />
-            </button>
+            {/* App Launcher Dropdown */}
+            <div className="relative group">
+              <button
+                className="p-2 rounded-lg text-white/80 hover:text-white hover:bg-white/10 transition-colors"
+                aria-label="Launch Apps"
+              >
+                <Grid3X3 className="w-4 h-4" />
+              </button>
+
+              {/* App Launcher Dropdown Menu */}
+              <div className="absolute right-0 top-full mt-1 w-72 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 py-4 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
+                <div className="px-4 pb-3 border-b border-gray-200 dark:border-gray-700">
+                  <h3 className="text-sm font-semibold text-gray-900 dark:text-white">MakrX Ecosystem</h3>
+                  <p className="text-xs text-gray-500 dark:text-gray-400">Access all your tools</p>
+                </div>
+
+                <div className="p-3 grid grid-cols-2 gap-2">
+                  {/* MakrCave */}
+                  <Link
+                    to="/makrcave"
+                    className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors group/item"
+                  >
+                    <div className="w-10 h-10 bg-blue-100 dark:bg-blue-900 rounded-lg flex items-center justify-center group-hover/item:scale-110 transition-transform">
+                      <Building2 className="w-5 h-5 text-blue-600 dark:text-blue-400" />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-medium text-gray-900 dark:text-white">MakrCave</p>
+                      <p className="text-xs text-gray-500 dark:text-gray-400">Makerspaces</p>
+                    </div>
+                  </Link>
+
+                  {/* Store */}
+                  <Link
+                    to="/store"
+                    className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors group/item"
+                  >
+                    <div className="w-10 h-10 bg-green-100 dark:bg-green-900 rounded-lg flex items-center justify-center group-hover/item:scale-110 transition-transform">
+                      <ShoppingCart className="w-5 h-5 text-green-600 dark:text-green-400" />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-medium text-gray-900 dark:text-white">Store</p>
+                      <p className="text-xs text-gray-500 dark:text-gray-400">Shop tools</p>
+                    </div>
+                  </Link>
+
+                  {/* Learn */}
+                  <Link
+                    to="/learn"
+                    className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors group/item"
+                  >
+                    <div className="w-10 h-10 bg-purple-100 dark:bg-purple-900 rounded-lg flex items-center justify-center group-hover/item:scale-110 transition-transform">
+                      <GraduationCap className="w-5 h-5 text-purple-600 dark:text-purple-400" />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-medium text-gray-900 dark:text-white">Learn</p>
+                      <p className="text-xs text-gray-500 dark:text-gray-400">Courses</p>
+                    </div>
+                  </Link>
+
+                  {/* Community */}
+                  <Link
+                    to="/ecosystem"
+                    className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors group/item"
+                  >
+                    <div className="w-10 h-10 bg-yellow-100 dark:bg-yellow-900 rounded-lg flex items-center justify-center group-hover/item:scale-110 transition-transform">
+                      <Users className="w-5 h-5 text-yellow-600 dark:text-yellow-400" />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-medium text-gray-900 dark:text-white">Ecosystem</p>
+                      <p className="text-xs text-gray-500 dark:text-gray-400">Overview</p>
+                    </div>
+                  </Link>
+                </div>
+
+                <div className="px-4 pt-3 border-t border-gray-200 dark:border-gray-700">
+                  <button
+                    onClick={() => setIsLauncherOpen(true)}
+                    className="w-full text-left text-xs text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 font-medium"
+                  >
+                    View all apps →
+                  </button>
+                </div>
+              </div>
+            </div>
 
             {/* Theme Toggle */}
             <ThemeToggle variant="icon-only" className="bg-white/10 hover:bg-white/20 border-white/20" />
