@@ -16,8 +16,9 @@ interface StatCardProps {
 
 const StatCard: React.FC<StatCardProps> = ({ number, label, icon }) => {
   const [displayNumber, setDisplayNumber] = useState(0);
-  const [isVisible, setIsVisible] = useState(false);
+  const [hasAnimated, setHasAnimated] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
+  const timerRef = useRef<NodeJS.Timeout | null>(null);
 
   // Extract the numeric part from the string (e.g., "50+" -> 50)
   const targetNumber = parseInt(number.replace(/\D/g, '')) || 0;
@@ -47,8 +48,8 @@ const StatCard: React.FC<StatCardProps> = ({ number, label, icon }) => {
   useEffect(() => {
     const observer = new IntersectionObserver(
       ([entry]) => {
-        if (entry.isIntersecting && !isVisible) {
-          setIsVisible(true);
+        if (entry.isIntersecting && !hasAnimated) {
+          setHasAnimated(true);
 
           // Animate the number counting up
           const duration = 2000; // 2 seconds
@@ -57,18 +58,18 @@ const StatCard: React.FC<StatCardProps> = ({ number, label, icon }) => {
           const increment = targetNumber / steps;
 
           let currentNumber = 0;
-          const timer = setInterval(() => {
+          timerRef.current = setInterval(() => {
             currentNumber += increment;
             if (currentNumber >= targetNumber) {
               setDisplayNumber(targetNumber);
-              clearInterval(timer);
+              if (timerRef.current) {
+                clearInterval(timerRef.current);
+                timerRef.current = null;
+              }
             } else {
               setDisplayNumber(Math.floor(currentNumber));
             }
           }, stepDuration);
-
-          // Store timer ref for cleanup
-          return () => clearInterval(timer);
         }
       },
       { threshold: 0.5 }
@@ -81,8 +82,11 @@ const StatCard: React.FC<StatCardProps> = ({ number, label, icon }) => {
 
     return () => {
       observer.disconnect();
+      if (timerRef.current) {
+        clearInterval(timerRef.current);
+      }
     };
-  }, [targetNumber, isVisible]);
+  }, [targetNumber, hasAnimated]);
 
   return (
     <div ref={ref} className="text-center group">
