@@ -190,7 +190,7 @@ export default function ProductPage() {
             <>
               <ChevronRight className="h-4 w-4" />
               <Link
-                href={`/catalog/category/${product.category.slug}`}
+                href={`/catalog/${product.category.slug}`}
                 className="hover:text-blue-600"
               >
                 {product.category.name}
