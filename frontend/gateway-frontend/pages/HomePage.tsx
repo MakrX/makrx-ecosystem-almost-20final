@@ -108,30 +108,60 @@ export default function HomePage() {
               </div>
 
               {/* Enhanced Dream. Make. Share. section */}
-              <div className="relative">
-                <div className="text-xl sm:text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-light text-white/90 mb-6 leading-tight">
-                  <div className="flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-4">
-                    <span className="inline-block animate-slide-in-left hover:text-makrx-yellow transition-all duration-500 cursor-default transform hover:scale-110 relative group">
-                      <span className="relative z-10 bg-gradient-to-r from-white to-white/80 bg-clip-text text-transparent font-medium">Dream.</span>
-                      <div className="absolute inset-0 bg-makrx-yellow/20 rounded-lg blur-md opacity-0 group-hover:opacity-100 transition-opacity duration-500 -z-10"></div>
-                    </span>
+              <div className="relative dream-make-share-container">
+                <div className="text-xl sm:text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-light text-white/90 mb-8 leading-tight">
+                  <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-6 md:gap-8">
+                    {/* Dream word with enhanced animations */}
+                    <div className="dream-word inline-block animate-slide-in-left cursor-default relative group" style={{animationDelay: '0.2s'}}>
+                      <span className="relative z-10 bg-gradient-to-r from-white via-white/90 to-white/80 bg-clip-text text-transparent font-medium animate-dream-glow highlight-word">
+                        Dream.
+                      </span>
+                      <div className="absolute inset-0 bg-gradient-to-r from-makrx-yellow/20 via-makrx-yellow/30 to-makrx-yellow/20 rounded-xl blur-lg opacity-0 group-hover:opacity-100 transition-all duration-700 -z-10 scale-110"></div>
+                      <div className="absolute -inset-2 bg-gradient-to-r from-transparent via-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-xl animate-shimmer"></div>
+                    </div>
 
-                    <span className="inline-block animate-slide-in-right hover:text-makrx-yellow transition-all duration-500 cursor-default transform hover:scale-110 relative group" style={{animationDelay: '0.5s'}}>
-                      <span className="relative z-10 bg-gradient-to-r from-makrx-yellow to-yellow-300 bg-clip-text text-transparent font-semibold">Make.</span>
-                      <div className="absolute inset-0 bg-makrx-yellow/30 rounded-lg blur-md opacity-0 group-hover:opacity-100 transition-opacity duration-500 -z-10"></div>
-                    </span>
+                    {/* Animated separator */}
+                    <div className="hidden sm:block w-2 h-2 rounded-full bg-makrx-yellow/60 animate-pulse" style={{animationDelay: '0.7s'}}></div>
 
-                    <span className="inline-block animate-slide-in-left hover:text-makrx-yellow transition-all duration-500 cursor-default transform hover:scale-110 relative group" style={{animationDelay: '1s'}}>
-                      <span className="relative z-10 bg-gradient-to-r from-white to-white/80 bg-clip-text text-transparent font-medium">Share.</span>
-                      <div className="absolute inset-0 bg-makrx-yellow/20 rounded-lg blur-md opacity-0 group-hover:opacity-100 transition-opacity duration-500 -z-10"></div>
-                    </span>
+                    {/* Make word - central focus with enhanced styling */}
+                    <div className="make-word inline-block animate-slide-in-right cursor-default relative group" style={{animationDelay: '0.5s'}}>
+                      <span className="relative z-10 bg-gradient-to-r from-makrx-yellow via-yellow-300 to-makrx-yellow bg-clip-text text-transparent font-bold text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl animate-make-glow animate-gradient-shift highlight-word">
+                        Make.
+                      </span>
+                      <div className="absolute inset-0 bg-gradient-to-r from-makrx-yellow/40 via-makrx-yellow/60 to-makrx-yellow/40 rounded-xl blur-xl opacity-70 group-hover:opacity-100 transition-all duration-700 -z-10 scale-125"></div>
+                      <div className="absolute -inset-3 bg-gradient-to-r from-transparent via-makrx-yellow/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-xl animate-shimmer"></div>
+                      {/* Glowing particles effect */}
+                      <div className="absolute -top-2 -left-2 w-1 h-1 bg-makrx-yellow rounded-full animate-ping" style={{animationDelay: '1s'}}></div>
+                      <div className="absolute -bottom-2 -right-2 w-1 h-1 bg-makrx-yellow rounded-full animate-ping" style={{animationDelay: '1.5s'}}></div>
+                    </div>
+
+                    {/* Animated separator */}
+                    <div className="hidden sm:block w-2 h-2 rounded-full bg-makrx-yellow/60 animate-pulse" style={{animationDelay: '1.2s'}}></div>
+
+                    {/* Share word with enhanced animations */}
+                    <div className="share-word inline-block animate-slide-in-left cursor-default relative group" style={{animationDelay: '0.8s'}}>
+                      <span className="relative z-10 bg-gradient-to-r from-white via-white/90 to-white/80 bg-clip-text text-transparent font-medium animate-share-glow highlight-word">
+                        Share.
+                      </span>
+                      <div className="absolute inset-0 bg-gradient-to-r from-makrx-yellow/20 via-makrx-yellow/30 to-makrx-yellow/20 rounded-xl blur-lg opacity-0 group-hover:opacity-100 transition-all duration-700 -z-10 scale-110"></div>
+                      <div className="absolute -inset-2 bg-gradient-to-r from-transparent via-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-xl animate-shimmer"></div>
+                    </div>
                   </div>
                 </div>
 
-                {/* Animated underline */}
-                <div className="flex justify-center">
-                  <div className="w-24 sm:w-32 md:w-40 h-1 bg-gradient-to-r from-transparent via-makrx-yellow to-transparent rounded-full animate-pulse-slow"></div>
+                {/* Enhanced animated underline with flowing effect */}
+                <div className="flex justify-center mb-4">
+                  <div className="relative w-32 sm:w-40 md:w-48 h-1">
+                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-makrx-yellow/40 to-transparent rounded-full"></div>
+                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-makrx-yellow to-transparent rounded-full animate-pulse-slow"></div>
+                    <div className="absolute inset-0 bg-gradient-to-r from-makrx-yellow/60 to-transparent rounded-full w-0 animate-[slideRight_3s_ease-in-out_infinite]" style={{animationDelay: '1s'}}></div>
+                  </div>
                 </div>
+
+                {/* Floating inspiration particles */}
+                <div className="absolute -top-4 left-1/4 w-1 h-1 bg-makrx-yellow/40 rounded-full animate-float" style={{animationDelay: '2s'}}></div>
+                <div className="absolute -top-2 right-1/3 w-1.5 h-1.5 bg-white/30 rounded-full animate-pulse" style={{animationDelay: '2.5s'}}></div>
+                <div className="absolute top-2 left-1/3 w-1 h-1 bg-makrx-yellow/50 rounded-full animate-bounce-gentle" style={{animationDelay: '3s'}}></div>
               </div>
             </div>
 
