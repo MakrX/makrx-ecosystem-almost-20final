@@ -298,7 +298,7 @@ export function Header() {
             </div>
 
             {/* Theme Toggle */}
-            <ThemeToggle />
+            <ThemeToggle variant="icon-only" className="" />
 
             {/* Cart */}
             <Link
@@ -359,7 +359,9 @@ export function Header() {
                       </button>
                     )}
                     <hr className="my-1 border-border" />
-                    <ThemeToggleCompact />
+                    <div className="px-4 py-2">
+                      <ThemeToggle variant="compact" className="" />
+                    </div>
                     <hr className="my-1 border-border" />
                     <button
                       onClick={() => handleUserMenuClick("logout")}
@@ -463,7 +465,9 @@ export function Header() {
             {/* Theme Toggle for Mobile */}
             <div className="py-2 border-t border-border">
               <div className="font-medium text-foreground mb-2">Appearance</div>
-              <ThemeToggleCompact />
+              <div className="pl-4">
+                <ThemeToggle variant="compact" className="" />
+              </div>
             </div>
 
             {/* Mobile user menu */}
