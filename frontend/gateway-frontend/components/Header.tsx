@@ -24,25 +24,29 @@ export default function Header() {
       name: 'MakrCave',
       description: 'Makerspace Management',
       url: 'https://makrcave.com',
-      color: 'blue'
+      bgColor: 'bg-blue-100 dark:bg-blue-900',
+      iconColor: 'bg-blue-500 dark:bg-blue-400'
     },
     {
-      name: 'MakrX.Store', 
+      name: 'MakrX.Store',
       description: 'Tools & Components',
       url: 'https://makrx.store',
-      color: 'green'
+      bgColor: 'bg-green-100 dark:bg-green-900',
+      iconColor: 'bg-green-500 dark:bg-green-400'
     },
     {
       name: '3D.MakrX.Store',
-      description: 'Custom Fabrication', 
+      description: 'Custom Fabrication',
       url: 'https://3d.makrx.store',
-      color: 'purple'
+      bgColor: 'bg-purple-100 dark:bg-purple-900',
+      iconColor: 'bg-purple-500 dark:bg-purple-400'
     },
     {
       name: 'Provider Panel',
       description: 'Service Providers',
       url: 'https://providers.makrx.org',
-      color: 'orange'
+      bgColor: 'bg-orange-100 dark:bg-orange-900',
+      iconColor: 'bg-orange-500 dark:bg-orange-400'
     }
   ];
 
