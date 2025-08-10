@@ -1502,6 +1502,171 @@ function AdminManagementPage() {
           </div>
         </div>
       )}
+
+      {/* QR Code Form Modal */}
+      {showQRForm && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-6 w-full max-w-2xl mx-4 max-h-[90vh] overflow-y-auto">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-lg font-semibold">Generate QR Code</h3>
+              <button onClick={resetQRForm} className="text-gray-400 hover:text-gray-600">
+                <X className="h-5 w-5" />
+              </button>
+            </div>
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Title</label>
+                <input
+                  type="text"
+                  value={qrForm.title}
+                  onChange={(e) => setQrForm({...qrForm, title: e.target.value})}
+                  className="w-full p-2 border border-gray-300 rounded-md"
+                  placeholder="QR Code title"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">QR Code Type</label>
+                <select
+                  value={qrForm.type}
+                  onChange={(e) => setQrForm({...qrForm, type: e.target.value as any})}
+                  className="w-full p-2 border border-gray-300 rounded-md"
+                >
+                  <option value="product">Product QR Code</option>
+                  <option value="category">Category QR Code</option>
+                  <option value="project">Custom Project QR Code</option>
+                </select>
+              </div>
+
+              {qrForm.type === 'product' && (
+                <>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Select Product</label>
+                    <select
+                      value={qrForm.productId}
+                      onChange={(e) => setQrForm({...qrForm, productId: e.target.value})}
+                      className="w-full p-2 border border-gray-300 rounded-md"
+                    >
+                      <option value="">Choose a product</option>
+                      {products.map(product => (
+                        <option key={product.id} value={product.id}>
+                          {product.name} ({product.sku})
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+
+                  <div className="space-y-2">
+                    <label className="block text-sm font-medium text-gray-700">Include Features</label>
+                    <div className="space-y-2">
+                      <label className="flex items-center">
+                        <input
+                          type="checkbox"
+                          checked={qrForm.includeWarehouse}
+                          onChange={(e) => setQrForm({...qrForm, includeWarehouse: e.target.checked})}
+                          className="mr-2"
+                        />
+                        <span className="text-sm">Warehouse Management (Billing In/Out)</span>
+                      </label>
+                      <label className="flex items-center">
+                        <input
+                          type="checkbox"
+                          checked={qrForm.includeBilling}
+                          onChange={(e) => setQrForm({...qrForm, includeBilling: e.target.checked})}
+                          className="mr-2"
+                        />
+                        <span className="text-sm">Billing Integration</span>
+                      </label>
+                      <label className="flex items-center">
+                        <input
+                          type="checkbox"
+                          checked={qrForm.includeInventory}
+                          onChange={(e) => setQrForm({...qrForm, includeInventory: e.target.checked})}
+                          className="mr-2"
+                        />
+                        <span className="text-sm">Makerspace Inventory Add</span>
+                      </label>
+                    </div>
+                  </div>
+                </>
+              )}
+
+              {qrForm.type === 'category' && (
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Select Category</label>
+                  <select
+                    value={qrForm.categoryId}
+                    onChange={(e) => setQrForm({...qrForm, categoryId: e.target.value})}
+                    className="w-full p-2 border border-gray-300 rounded-md"
+                  >
+                    <option value="">Choose a category</option>
+                    {categories.map(category => (
+                      <option key={category.id} value={category.id}>
+                        {category.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              )}
+
+              {qrForm.type === 'project' && (
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Custom Project Data (JSON format)
+                  </label>
+                  <textarea
+                    value={qrForm.customData}
+                    onChange={(e) => setQrForm({...qrForm, customData: e.target.value})}
+                    className="w-full p-2 border border-gray-300 rounded-md"
+                    rows={6}
+                    placeholder='{"project_name": "My Project", "description": "Project description", "components": []}'
+                  />
+                  <p className="text-xs text-gray-500 mt-1">
+                    Enter project data in JSON format. This will be embedded in the QR code.
+                  </p>
+                </div>
+              )}
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Expiration (days, 0 = never expires)
+                </label>
+                <input
+                  type="number"
+                  min="0"
+                  value={qrForm.expirationDays}
+                  onChange={(e) => setQrForm({...qrForm, expirationDays: parseInt(e.target.value) || 0})}
+                  className="w-full p-2 border border-gray-300 rounded-md"
+                  placeholder="0"
+                />
+              </div>
+            </div>
+
+            <div className="flex justify-end space-x-2 mt-6">
+              <button
+                onClick={resetQRForm}
+                className="px-4 py-2 text-gray-600 border border-gray-300 rounded-md hover:bg-gray-50"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleSaveQRCode}
+                disabled={
+                  (qrForm.type === 'product' && !qrForm.productId) ||
+                  (qrForm.type === 'category' && !qrForm.categoryId) ||
+                  (qrForm.type === 'project' && !qrForm.customData)
+                }
+                className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                <QrCode className="h-4 w-4" />
+                Generate QR Code
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      <canvas ref={canvasRef} className="hidden" />
     </div>
   );
 }
