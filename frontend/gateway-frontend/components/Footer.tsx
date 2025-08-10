@@ -156,7 +156,7 @@ export default function Footer() {
         </div>
 
         {/* Newsletter Subscription */}
-        <div className="border-t border-gray-800 pt-12 mb-12">
+        <div className="border-t border-gray-800 dark:border-gray-700 pt-12 mb-12">
           <div className="max-w-2xl mx-auto text-center">
             <h3 className="text-2xl font-bold mb-4">Stay Updated with MakrX</h3>
             <p className="text-gray-400 mb-6">
