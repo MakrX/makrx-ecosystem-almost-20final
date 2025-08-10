@@ -978,18 +978,17 @@ class ApiClient {
   }
 
   private transformMockProducts() {
-    // Create a mapping of category names to numeric IDs
-    const categoryMap: { [key: string]: number } = {
-      '3d-printers': 1,
-      'filament': 2,
-      'electronics': 3,
-      'tools': 4,
-      'components': 5,
-      'kits': 6,
-      'materials': 7
-    };
+    // Get products and categories from admin data service
+    const adminProducts = adminDataService.getProducts();
+    const adminCategories = adminDataService.getCategories();
 
-    return mockProducts.map((product, index) => {
+    // Create a mapping of category slugs to numeric IDs
+    const categoryMap: { [key: string]: number } = {};
+    adminCategories.forEach((cat, index) => {
+      categoryMap[cat.slug] = parseInt(cat.id) || index + 100;
+    });
+
+    return adminProducts.map((product, index) => {
       // Generate a unique numeric ID based on index to avoid conflicts
       const numericId = index + 1000; // Start from 1000 to avoid low number conflicts
 
