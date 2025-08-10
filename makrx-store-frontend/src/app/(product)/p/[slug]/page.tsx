@@ -79,10 +79,19 @@ export default function ProductPage() {
   >([]);
   const [loading, setLoading] = useState(true);
   const [selectedImage, setSelectedImage] = useState(0);
-  const [selectedVariant, setSelectedVariant] = useState<number | null>(null);
   const [breadcrumbs, setBreadcrumbs] = useState<
     Array<{ name: string; href: string }>
   >([]);
+
+  // Enhanced variant handling
+  const {
+    selectedVariant,
+    selectedAttributes,
+    handleVariantChange,
+    canAddToCart,
+    isInStock,
+    currentPrice,
+  } = useProductVariants(product?.variants || []);
 
   useEffect(() => {
     const fetchProductData = async () => {
