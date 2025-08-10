@@ -42,12 +42,12 @@ export default function CategoryPage() {
   const [showFilters, setShowFilters] = useState(false)
   const [compareList, setCompareList] = useState<string[]>([])
 
-  // Get category products
-  const categoryProducts = getProductsByCategory(categorySlug)
-  const [filteredProducts, setFilteredProducts] = useState<Product[]>(categoryProducts)
+  const [filteredProducts, setFilteredProducts] = useState<Product[]>([])
 
   // Update products when filters or search change
   useEffect(() => {
+    // Get category products inside useEffect to avoid infinite loop
+    const categoryProducts = getProductsByCategory(categorySlug)
     let filtered = categoryProducts
 
     // Apply search
@@ -70,7 +70,7 @@ export default function CategoryPage() {
     filtered = sortProducts(filtered, sortBy)
 
     setFilteredProducts(filtered)
-  }, [searchQuery, selectedFilters, sortBy, categoryProducts])
+  }, [searchQuery, selectedFilters, sortBy, categorySlug])
 
   const handleFilterChange = (filterId: string, value: any, checked?: boolean) => {
     setSelectedFilters(prev => {
