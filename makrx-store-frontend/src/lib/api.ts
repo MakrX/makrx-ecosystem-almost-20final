@@ -256,6 +256,11 @@ class ApiClient {
   constructor() {
     this.baseURL = API_BASE_URL;
     this.sessionId = this.getSessionId();
+
+    // In development, log initialization
+    if (process.env.NODE_ENV === "development") {
+      console.info("API Client initialized with base URL:", this.baseURL);
+    }
   }
 
   private getSessionId(): string {
