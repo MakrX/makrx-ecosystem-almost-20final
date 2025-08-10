@@ -273,6 +273,94 @@ export function ThemeToggle({
 }
 
 // Anti-FOIT script generator (for HTML head injection)
+// Theme-aware utility components
+export function Card({
+  children,
+  className = '',
+  variant = 'default'
+}: {
+  children: React.ReactNode;
+  className?: string;
+  variant?: 'default' | 'elevated' | 'outline';
+}) {
+  const baseClasses = 'rounded-lg transition-colors';
+
+  const variants = {
+    default: 'bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-700',
+    elevated: 'bg-white dark:bg-slate-900 shadow-lg dark:shadow-slate-900/25',
+    outline: 'border-2 border-gray-200 dark:border-slate-700 hover:border-makrx-blue dark:hover:border-makrx-blue'
+  };
+
+  return (
+    <div className={`${baseClasses} ${variants[variant]} ${className}`}>
+      {children}
+    </div>
+  );
+}
+
+export function Button({
+  children,
+  className = '',
+  variant = 'primary',
+  size = 'default',
+  ...props
+}: {
+  children: React.ReactNode;
+  className?: string;
+  variant?: 'primary' | 'secondary' | 'outline' | 'ghost' | 'destructive';
+  size?: 'sm' | 'default' | 'lg';
+} & React.ButtonHTMLAttributes<HTMLButtonElement>) {
+  const baseClasses = 'inline-flex items-center justify-center rounded-lg font-medium transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-makrx-yellow disabled:pointer-events-none disabled:opacity-50';
+
+  const variants = {
+    primary: 'bg-makrx-blue hover:bg-makrx-blue/90 text-white shadow hover:shadow-lg',
+    secondary: 'bg-makrx-yellow hover:bg-makrx-yellow/90 text-makrx-blue shadow hover:shadow-lg',
+    outline: 'border-2 border-makrx-blue text-makrx-blue hover:bg-makrx-blue hover:text-white dark:border-makrx-blue dark:text-makrx-blue',
+    ghost: 'hover:bg-gray-100 dark:hover:bg-slate-800 text-gray-900 dark:text-gray-100',
+    destructive: 'bg-red-600 hover:bg-red-700 text-white shadow hover:shadow-lg'
+  };
+
+  const sizes = {
+    sm: 'px-3 py-1.5 text-sm',
+    default: 'px-4 py-2 text-sm',
+    lg: 'px-6 py-3 text-base'
+  };
+
+  return (
+    <button
+      className={`${baseClasses} ${variants[variant]} ${sizes[size]} ${className}`}
+      {...props}
+    >
+      {children}
+    </button>
+  );
+}
+
+// Theme-aware text components
+export function Text({
+  children,
+  className = '',
+  variant = 'body',
+  as: Component = 'p'
+}: {
+  children: React.ReactNode;
+  className?: string;
+  variant?: 'heading' | 'subheading' | 'body' | 'caption' | 'muted';
+  as?: keyof JSX.IntrinsicElements;
+}) {
+  const variants = {
+    heading: 'text-2xl font-bold text-gray-900 dark:text-white',
+    subheading: 'text-lg font-semibold text-gray-800 dark:text-gray-200',
+    body: 'text-base text-gray-700 dark:text-gray-300',
+    caption: 'text-sm text-gray-600 dark:text-gray-400',
+    muted: 'text-sm text-gray-500 dark:text-gray-500'
+  };
+
+  return React.createElement(Component, {
+    className: `${variants[variant]} ${className}`
+  }, children);
+}
+
 export function generateThemeScript(storageKey: string = THEME_STORAGE_KEY): string {
   return `
     (function() {
