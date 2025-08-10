@@ -255,7 +255,8 @@ export default function AddItemModal({ isOpen, onClose, editItem, onSubmit }: Ad
                   onChange={(e) => {
                     const newName = e.target.value;
                     setFormData({...formData, name: newName});
-                    // TODO: Add duplicate checking logic here
+                    // Check for duplicates
+                    checkForDuplicates(newName, formData.sku);
                   }}
                   className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-makrx-teal ${
                     duplicateWarning ? 'border-red-300 bg-red-50' : 'border-border'
