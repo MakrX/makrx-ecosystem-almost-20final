@@ -88,7 +88,7 @@ export default function Header() {
                 className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-slate-900 transition-colors"
                 aria-label="Launch Apps"
               >
-                <Grid3X3 className="w-5 h-5 text-gray-600 dark:text-gray-300" />
+                <Grid3X3 className="w-5 h-5 text-gray-600 dark:text-gray-100" />
               </button>
 
               {/* Launcher Dropdown */}
