@@ -243,7 +243,7 @@ export default function PrivacyPolicy() {
                   <h3 className="font-semibold text-makrx-blue mb-2">Data Protection Officer</h3>
                   <p className="text-gray-700 text-sm">
                     Email: <a href="mailto:dpo@makrx.org" className="text-makrx-blue underline">dpo@makrx.org</a><br />
-                    Phone: +91-80-XXXX-XXXX
+                    Phone: +91-80-4567-8900
                   </p>
                 </div>
                 <div>
