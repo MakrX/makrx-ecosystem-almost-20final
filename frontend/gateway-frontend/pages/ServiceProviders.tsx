@@ -38,52 +38,52 @@ export default function ServiceProviders() {
             <div className="text-center">
               <div className="w-12 h-12 bg-blue-100 dark:bg-blue-900 text-blue-600 dark:text-blue-300 rounded-full flex items-center justify-center mx-auto mb-4 text-xl font-bold transition-colors">1</div>
               <h3 className="text-xl font-semibold mb-3 text-gray-900 dark:text-white">Job Posted</h3>
-              <p className="text-gray-600">Customers upload their designs and requirements through our platform.</p>
+              <p className="text-gray-600 dark:text-gray-400">Customers upload their designs and requirements through our platform.</p>
             </div>
 
             <div className="text-center">
-              <div className="w-12 h-12 bg-green-100 text-green-600 rounded-full flex items-center justify-center mx-auto mb-4 text-xl font-bold">2</div>
-              <h3 className="text-xl font-semibold mb-3">First-to-Accept</h3>
-              <p className="text-gray-600">Qualified providers receive notifications and can accept jobs on a first-come basis.</p>
+              <div className="w-12 h-12 bg-green-100 dark:bg-green-900 text-green-600 dark:text-green-300 rounded-full flex items-center justify-center mx-auto mb-4 text-xl font-bold transition-colors">2</div>
+              <h3 className="text-xl font-semibold mb-3 text-gray-900 dark:text-white">First-to-Accept</h3>
+              <p className="text-gray-600 dark:text-gray-400">Qualified providers receive notifications and can accept jobs on a first-come basis.</p>
             </div>
 
             <div className="text-center">
-              <div className="w-12 h-12 bg-purple-100 text-purple-600 rounded-full flex items-center justify-center mx-auto mb-4 text-xl font-bold">3</div>
-              <h3 className="text-xl font-semibold mb-3">Complete & Earn</h3>
-              <p className="text-gray-600">Fulfill the order, ship to customer, and receive payment through our secure system.</p>
+              <div className="w-12 h-12 bg-purple-100 dark:bg-purple-900 text-purple-600 dark:text-purple-300 rounded-full flex items-center justify-center mx-auto mb-4 text-xl font-bold transition-colors">3</div>
+              <h3 className="text-xl font-semibold mb-3 text-gray-900 dark:text-white">Complete & Earn</h3>
+              <p className="text-gray-600 dark:text-gray-400">Fulfill the order, ship to customer, and receive payment through our secure system.</p>
             </div>
           </div>
         </div>
       </section>
 
       {/* Earnings Model */}
-      <section className="py-20 bg-white">
+      <section className="py-20 bg-white dark:bg-gray-800">
         <div className="max-w-6xl mx-auto px-6">
-          <h2 className="text-3xl font-bold text-center mb-16">Transparent Earnings Model</h2>
+          <h2 className="text-3xl font-bold text-center mb-16 text-gray-900 dark:text-white">Transparent Earnings Model</h2>
           
           <div className="grid md:grid-cols-3 gap-8">
-            <div className="text-center p-6 border border-gray-200 rounded-xl">
-              <DollarSign className="w-12 h-12 text-green-600 mx-auto mb-4" />
-              <h3 className="text-xl font-semibold mb-3">Competitive Rates</h3>
-              <p className="text-gray-600 mb-4">Set your own pricing for different services and materials.</p>
-              <div className="text-2xl font-bold text-green-600">70-85%</div>
-              <p className="text-sm text-gray-500">of job value</p>
+            <div className="text-center p-6 border border-gray-200 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-900">
+              <DollarSign className="w-12 h-12 text-green-600 dark:text-green-400 mx-auto mb-4" />
+              <h3 className="text-xl font-semibold mb-3 text-gray-900 dark:text-white">Competitive Rates</h3>
+              <p className="text-gray-600 dark:text-gray-400 mb-4">Set your own pricing for different services and materials.</p>
+              <div className="text-2xl font-bold text-green-600 dark:text-green-400">70-85%</div>
+              <p className="text-sm text-gray-500 dark:text-gray-500">of job value</p>
             </div>
 
-            <div className="text-center p-6 border border-gray-200 rounded-xl">
-              <Clock className="w-12 h-12 text-blue-600 mx-auto mb-4" />
-              <h3 className="text-xl font-semibold mb-3">Quick Payments</h3>
-              <p className="text-gray-600 mb-4">Get paid within 24 hours of successful delivery confirmation.</p>
-              <div className="text-2xl font-bold text-blue-600">24hrs</div>
-              <p className="text-sm text-gray-500">payment processing</p>
+            <div className="text-center p-6 border border-gray-200 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-900">
+              <Clock className="w-12 h-12 text-blue-600 dark:text-blue-400 mx-auto mb-4" />
+              <h3 className="text-xl font-semibold mb-3 text-gray-900 dark:text-white">Quick Payments</h3>
+              <p className="text-gray-600 dark:text-gray-400 mb-4">Get paid within 24 hours of successful delivery confirmation.</p>
+              <div className="text-2xl font-bold text-blue-600 dark:text-blue-400">24hrs</div>
+              <p className="text-sm text-gray-500 dark:text-gray-500">payment processing</p>
             </div>
 
-            <div className="text-center p-6 border border-gray-200 rounded-xl">
-              <Users className="w-12 h-12 text-purple-600 mx-auto mb-4" />
-              <h3 className="text-xl font-semibold mb-3">Growing Network</h3>
-              <p className="text-gray-600 mb-4">Access to a rapidly expanding customer base across India.</p>
-              <div className="text-2xl font-bold text-purple-600">10K+</div>
-              <p className="text-sm text-gray-500">active customers</p>
+            <div className="text-center p-6 border border-gray-200 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-900">
+              <Users className="w-12 h-12 text-purple-600 dark:text-purple-400 mx-auto mb-4" />
+              <h3 className="text-xl font-semibold mb-3 text-gray-900 dark:text-white">Growing Network</h3>
+              <p className="text-gray-600 dark:text-gray-400 mb-4">Access to a rapidly expanding customer base across India.</p>
+              <div className="text-2xl font-bold text-purple-600 dark:text-purple-400">10K+</div>
+              <p className="text-sm text-gray-500 dark:text-gray-500">active customers</p>
             </div>
           </div>
         </div>
