@@ -110,8 +110,9 @@ const App = () => {
                       <Route path="/admin/feature-flags" element={<FeatureFlagsAdmin />} />
 
                       {/* Legal & Policy Pages */}
-                      <Route path="/privacy" element={<div className="pt-16 min-h-screen flex items-center justify-center"><div className="text-center"><h1 className="text-3xl font-bold mb-4">Privacy Policy</h1><p>Your privacy is important to us</p></div></div>} />
-                      <Route path="/terms" element={<div className="pt-16 min-h-screen flex items-center justify-center"><div className="text-center"><h1 className="text-3xl font-bold mb-4">Terms of Service</h1><p>Terms and conditions for using MakrX</p></div></div>} />
+                      <Route path="/privacy" element={<PrivacyPolicy />} />
+                      <Route path="/terms" element={<TermsOfService />} />
+                      <Route path="/cookies" element={<CookiePolicy />} />
                       <Route path="/safety" element={<div className="pt-16 min-h-screen flex items-center justify-center"><div className="text-center"><h1 className="text-3xl font-bold mb-4">Safety Guidelines</h1><p>Safety first in all makerspaces</p></div></div>} />
 
                       {/* Catch-all route for 404 - MUST be last */}
