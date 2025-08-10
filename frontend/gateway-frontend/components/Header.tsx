@@ -93,7 +93,7 @@ export default function Header() {
 
               {/* Launcher Dropdown */}
               {showLauncher && (
-                <div className="absolute right-0 top-full mt-2 w-80 bg-white dark:bg-gray-800 rounded-xl shadow-xl border border-gray-200 dark:border-gray-700 p-4 z-50">
+                <div className="absolute right-0 top-full mt-2 w-80 bg-white dark:bg-slate-950 rounded-xl shadow-xl border border-gray-200 dark:border-slate-800 p-4 z-50">
                   <h3 className="font-semibold text-gray-900 dark:text-white mb-3">MakrX Apps</h3>
                   <div className="grid grid-cols-2 gap-3">
                     {launcherApps.map((app) => (
