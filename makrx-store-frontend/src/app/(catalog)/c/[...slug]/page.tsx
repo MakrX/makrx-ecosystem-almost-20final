@@ -8,6 +8,8 @@ import Image from "next/image";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import ProductGrid from "@/components/ProductGrid";
 import EnhancedCategoryFilters, { useFiltersToggle } from "@/components/EnhancedCategoryFilters";
+import { CategoryStructuredData, OrganizationStructuredData } from "@/components/StructuredData";
+import { CategorySEO } from "@/components/SEOMetaTags";
 import SortSelect from "@/components/SortSelect";
 
 interface Category {
