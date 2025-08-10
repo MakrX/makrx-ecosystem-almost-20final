@@ -521,6 +521,70 @@ input::placeholder, textarea::placeholder {
   }
 }
 
+/* Enhanced animations for Dream Make Share */
+@keyframes dreamGlow {
+  0%, 100% {
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+  }
+  50% {
+    text-shadow: 0 0 20px rgba(251, 191, 36, 0.6), 0 0 30px rgba(251, 191, 36, 0.4);
+  }
+}
+
+@keyframes makeGlow {
+  0%, 100% {
+    text-shadow: 0 0 15px rgba(251, 191, 36, 0.8), 0 0 25px rgba(251, 191, 36, 0.5);
+  }
+  50% {
+    text-shadow: 0 0 25px rgba(251, 191, 36, 1), 0 0 35px rgba(251, 191, 36, 0.7), 0 0 45px rgba(251, 191, 36, 0.4);
+  }
+}
+
+@keyframes shareGlow {
+  0%, 100% {
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+  }
+  50% {
+    text-shadow: 0 0 20px rgba(251, 191, 36, 0.6), 0 0 30px rgba(251, 191, 36, 0.4);
+  }
+}
+
+@keyframes typewriter {
+  from {
+    width: 0;
+  }
+  to {
+    width: 100%;
+  }
+}
+
+@keyframes blinkCursor {
+  from, to {
+    border-color: transparent;
+  }
+  50% {
+    border-color: var(--makrx-yellow);
+  }
+}
+
+@keyframes gradientShift {
+  0%, 100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
 /* Animation utility classes */
 .animate-fade-in {
   animation: fadeIn 0.6s var(--transition-base);
@@ -552,6 +616,27 @@ input::placeholder, textarea::placeholder {
 
 .animate-bounce-gentle {
   animation: bounce 2s ease-in-out infinite;
+}
+
+.animate-dream-glow {
+  animation: dreamGlow 3s ease-in-out infinite;
+}
+
+.animate-make-glow {
+  animation: makeGlow 2s ease-in-out infinite;
+}
+
+.animate-share-glow {
+  animation: shareGlow 3s ease-in-out infinite;
+}
+
+.animate-gradient-shift {
+  animation: gradientShift 4s ease infinite;
+  background-size: 400% 400%;
+}
+
+.animate-shimmer {
+  animation: shimmer 2s linear infinite;
 }
 
 /* Responsive typography */
@@ -789,4 +874,59 @@ input::placeholder, textarea::placeholder {
 
 .contain-strict {
   contain: strict;
+}
+
+/* Special Dream Make Share styling */
+.dream-make-share-container {
+  position: relative;
+  perspective: 1000px;
+}
+
+.dream-word {
+  position: relative;
+  display: inline-block;
+  transition: all 0.3s ease;
+}
+
+.dream-word:hover {
+  transform: translateY(-2px) scale(1.05);
+}
+
+.make-word {
+  position: relative;
+  display: inline-block;
+  transition: all 0.3s ease;
+  font-weight: 600;
+}
+
+.make-word:hover {
+  transform: translateY(-3px) scale(1.1);
+}
+
+.share-word {
+  position: relative;
+  display: inline-block;
+  transition: all 0.3s ease;
+}
+
+.share-word:hover {
+  transform: translateY(-2px) scale(1.05);
+}
+
+/* Highlight animation for Dream Make Share */
+.highlight-word {
+  position: relative;
+  overflow: hidden;
+}
+
+.highlight-word::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(251, 191, 36, 0.3), transparent);
+  animation: shimmer 2s linear infinite;
+  z-index: -1;
 }
