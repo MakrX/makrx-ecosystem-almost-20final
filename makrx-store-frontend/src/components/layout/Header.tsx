@@ -291,7 +291,7 @@ export function Header() {
           </nav>
 
           {/* Search, Cart, User Actions */}
-          <div className="flex items-center space-x-4">
+          <div className="flex items-center space-x-3 lg:space-x-4">
             {/* Smart Search */}
             <div className="hidden md:block">
               <SmartSearch onSearch={handleSearch} />
