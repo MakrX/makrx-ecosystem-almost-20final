@@ -26,7 +26,8 @@
       "@/*": ["./*"],
       "@makrx/ui": ["../../packages/ui"],
       "@makrx/types": ["../../packages/types"],
-      "@makrx/utils": ["../../packages/utils"]
+      "@makrx/utils": ["../../packages/utils"],
+      "@makrx/feature-flags": ["../../packages/feature-flags/src"]
     }
   },
   "include": ["**/*.ts", "**/*.tsx"],
