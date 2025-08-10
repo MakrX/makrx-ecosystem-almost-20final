@@ -93,6 +93,9 @@ export default function ProductPage() {
   const [displayedReviewsCount, setDisplayedReviewsCount] = useState(6);
   const [isLoadingMoreReviews, setIsLoadingMoreReviews] = useState(false);
 
+  // Ref to track if component is mounted
+  const isMountedRef = useRef(true);
+
   // Generate mock reviews based on product with pagination support
   const generateAllMockReviews = (product: Product) => {
     const reviewTemplates = [
