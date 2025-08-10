@@ -106,13 +106,21 @@ export default function ElectronicsPage() {
         {/* Controls */}
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
           <div className="flex items-center space-x-4">
-            <button
-              onClick={() => setShowFilters(!showFilters)}
-              className="md:hidden flex items-center space-x-2 px-4 py-2 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700"
-            >
-              <Filter className="h-4 w-4" />
-              <span>Filters</span>
-            </button>
+            <EnhancedCategoryFilters
+              facets={categoryFilters.map(filter => ({
+                name: filter.id,
+                values: filter.options?.map(opt => ({
+                  id: opt.value,
+                  name: opt.label,
+                  count: opt.count
+                })) || []
+              }))}
+              activeFilters={activeFilters}
+              onFilterChange={handleFilterChange}
+              onToggle={toggleFilters}
+              isOpen={isFiltersOpen}
+              className="lg:hidden"
+            />
             <p className="text-gray-600 dark:text-gray-400">
               {loading ? "Loading..." : `${products.length} products found`}
             </p>
@@ -148,12 +156,21 @@ export default function ElectronicsPage() {
 
         <div className="flex gap-8">
           {/* Filters Sidebar */}
-          <div className={`${showFilters ? "block" : "hidden"} md:block w-full md:w-80 flex-shrink-0`}>
-            <EnhancedCategoryFilters 
-              category="electronics" 
-              onFiltersChange={handleFilterChange}
-              isOpen={showFilters}
-              onClose={() => setShowFilters(false)}
+          <div className="hidden lg:block w-80 flex-shrink-0">
+            <EnhancedCategoryFilters
+              facets={categoryFilters.map(filter => ({
+                name: filter.id,
+                values: filter.options?.map(opt => ({
+                  id: opt.value,
+                  name: opt.label,
+                  count: opt.count
+                })) || []
+              }))}
+              activeFilters={activeFilters}
+              onFilterChange={handleFilterChange}
+              onToggle={toggleFilters}
+              isOpen={isFiltersOpen}
+              className="w-full"
             />
           </div>
 
