@@ -279,6 +279,30 @@ class ApiClient {
     endpoint: string,
     options: RequestInit = {},
   ): Promise<T> {
+    // In development, if backend is definitely not available, skip network request entirely
+    if (process.env.NODE_ENV === "development" && this.baseURL.includes("localhost:8003")) {
+      try {
+        // Quick connectivity check - if this fails, go straight to mock data
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 100); // 100ms timeout
+
+        await fetch(this.baseURL + "/health", {
+          signal: controller.signal,
+          mode: 'no-cors'
+        }).catch(() => {
+          throw new Error("Backend not available");
+        });
+
+        clearTimeout(timeoutId);
+      } catch (error) {
+        // Backend is not available, use mock data immediately
+        if (typeof window !== "undefined" && !sessionStorage.getItem("mock-data-notice-shown")) {
+          sessionStorage.setItem("mock-data-notice-shown", "true");
+          console.info("🔧 Development Mode: Backend server not available, using mock data for demo purposes.");
+        }
+        return this.getMockData<T>(endpoint);
+      }
+    }
     const url = `${this.baseURL}${endpoint}`;
     const token = await getToken();
 
