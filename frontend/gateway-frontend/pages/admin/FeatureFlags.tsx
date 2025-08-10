@@ -140,7 +140,7 @@ export default function FeatureFlagsAdmin() {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 
   // Check if user is superadmin
-  if (user?.role !== 'super_admin') {
+  if (!user?.roles || !user.roles.includes('super_admin')) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
