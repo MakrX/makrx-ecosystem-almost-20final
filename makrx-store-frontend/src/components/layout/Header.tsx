@@ -97,10 +97,12 @@ export function Header() {
     }
   };
 
-  // Group categories by parent
-  const rootCategories = categories.filter((cat) => !cat.parent_id);
-  const getSubcategories = (parentId: number) =>
-    categories.filter((cat) => cat.parent_id === parentId);
+  // All categories are root categories in the admin system
+  const rootCategories = categories;
+  const getSubcategories = (categorySlug: string) => {
+    const category = categories.find(cat => cat.slug === categorySlug);
+    return category?.subcategories || [];
+  };
 
   return (
     <header className="bg-background border-b border-border sticky top-0 z-50 backdrop-blur-sm bg-background/90">
