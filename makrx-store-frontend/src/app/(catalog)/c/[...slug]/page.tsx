@@ -223,29 +223,28 @@ export default function CategoryPage() {
       {/* Main Content */}
       <div className="container mx-auto px-4 py-6">
         <div className="flex flex-col lg:flex-row gap-6">
-          {/* Filters Sidebar */}
-          <div className="lg:w-64 flex-shrink-0">
-            <div className="sticky top-4">
-              {productList?.facets && (
-                <CategoryFilters
-                  facets={productList.facets}
-                  activeFilters={filters}
-                  onFilterChange={(newFilters) => {
-                    const url = new URL(window.location.href);
-                    Object.entries(newFilters).forEach(([key, value]) => {
-                      if (value) {
-                        url.searchParams.set(key, String(value));
-                      } else {
-                        url.searchParams.delete(key);
-                      }
-                    });
-                    window.history.pushState({}, "", url.toString());
-                    window.location.reload();
-                  }}
-                />
-              )}
-            </div>
-          </div>
+          {/* Desktop Filters Sidebar */}
+          {productList?.facets && (
+            <EnhancedCategoryFilters
+              facets={productList.facets}
+              activeFilters={filters}
+              isOpen={isFiltersOpen}
+              onToggle={toggleFilters}
+              onFilterChange={(newFilters) => {
+                const url = new URL(window.location.href);
+                Object.entries(newFilters).forEach(([key, value]) => {
+                  if (value && value.length > 0) {
+                    url.searchParams.set(key, value.join(","));
+                  } else {
+                    url.searchParams.delete(key);
+                  }
+                });
+                window.history.pushState({}, "", url.toString());
+                window.location.reload();
+              }}
+              className="lg:w-64 flex-shrink-0"
+            />
+          )}
 
           {/* Products */}
           <div className="flex-1">
