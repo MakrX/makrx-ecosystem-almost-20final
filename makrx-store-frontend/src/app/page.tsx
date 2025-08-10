@@ -23,7 +23,16 @@ export default function HomePage() {
         setFeaturedProducts(Array.isArray(productsData) ? productsData : []);
         setCategories(Array.isArray(categoriesData) ? categoriesData : []);
       } catch (error) {
-        console.error("Failed to load homepage data:", error);
+        // Silently handle errors in development when using mock data
+        if (process.env.NODE_ENV === "development") {
+          console.warn("Using fallback data due to backend unavailability");
+        } else {
+          console.error("Failed to load homepage data:", error);
+        }
+
+        // Set empty arrays as fallback
+        setFeaturedProducts([]);
+        setCategories([]);
       } finally {
         setLoading(false);
       }
