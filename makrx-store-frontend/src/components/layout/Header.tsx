@@ -224,16 +224,16 @@ export function Header() {
                       {/* Subcategories */}
                       {hoveredCategory === category.id && (
                         <div className="mt-2 space-y-1">
-                          {getSubcategories(category.id).map((subcat) => (
+                          {getSubcategories(category.slug).map((subcatName) => (
                             <div
-                              key={subcat.id}
+                              key={subcatName}
                               className="text-sm text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 cursor-pointer pl-2"
                               onClick={(e) => {
                                 e.stopPropagation();
-                                handleCategoryClick(subcat);
+                                router.push(`/catalog/${category.slug}?sub=${subcatName}`);
                               }}
                             >
-                              {subcat.name}
+                              {subcatName}
                             </div>
                           ))}
                         </div>
