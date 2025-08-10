@@ -84,6 +84,7 @@ export default function ProductPage() {
   >([]);
   const [loading, setLoading] = useState(true);
   const [selectedImage, setSelectedImage] = useState(0);
+  const [activeTab, setActiveTab] = useState("description");
   const [breadcrumbs, setBreadcrumbs] = useState<
     Array<{ name: string; href: string }>
   >([]);
