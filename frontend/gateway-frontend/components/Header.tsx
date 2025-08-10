@@ -108,13 +108,27 @@ export default function Header() {
                 </button>
               </div>
             ) : (
-              <Link
-                to="/login"
+              <a
+                href="https://auth.makrx.org/realms/makrx/protocol/openid-connect/auth?client_id=makrx-gateway&redirect_uri=${encodeURIComponent(window.location.origin + '/auth/callback')}&response_type=code&scope=openid%20email%20profile&state=${Math.random().toString(36).substring(2)}"
+                onClick={(e) => {
+                  e.preventDefault();
+                  // Store current page for redirect after login
+                  sessionStorage.setItem('makrx_redirect_url', window.location.href);
+                  // Redirect to SSO
+                  const params = new URLSearchParams({
+                    client_id: 'makrx-gateway',
+                    redirect_uri: window.location.origin + '/auth/callback',
+                    response_type: 'code',
+                    scope: 'openid email profile',
+                    state: Math.random().toString(36).substring(2)
+                  });
+                  window.location.href = `https://auth.makrx.org/realms/makrx/protocol/openid-connect/auth?${params}`;
+                }}
                 className="hidden md:flex items-center gap-2 px-4 py-2 makrx-btn-primary text-sm"
               >
                 <User className="w-4 h-4" />
                 Sign In
-              </Link>
+              </a>
             )}
 
             {/* Mobile Menu Button */}
