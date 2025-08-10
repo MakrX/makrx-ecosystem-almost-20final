@@ -44,7 +44,7 @@ interface Product {
   rating?: {
     average: number;
     count: number;
-    verified_count: number;
+    verified_count?: number;
   };
   variants?: Array<{
     id: number;
