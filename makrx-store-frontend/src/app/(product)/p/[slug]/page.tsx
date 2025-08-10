@@ -100,49 +100,24 @@ export default function ProductPage() {
     const fetchProductData = async () => {
       setLoading(true);
       try {
-        // Fetch product details
-        const productResponse = await fetch(
-          `/api/catalog/products/slug/${slug}`,
-        );
-        if (!productResponse.ok) {
-          throw new Error("Product not found");
-        }
-        const productData = await productResponse.json();
+        // Fetch product details using API client
+        const productData = await api.getProductBySlug(slug);
         setProduct(productData);
 
         // Build breadcrumbs
         const crumbs = [{ name: "Home", href: "/" }];
-        if (productData.category?.path) {
-          const pathParts = productData.category.path.split("/");
-          let currentPath = "";
-          for (const part of pathParts) {
-            currentPath += (currentPath ? "/" : "") + part;
-            const name = part
-              .replace(/-/g, " ")
-              .replace(/\b\w/g, (l: string) => l.toUpperCase());
-            crumbs.push({ name, href: `/c/${currentPath}` });
-          }
+        if (productData.category?.slug) {
+          // Use category slug to build breadcrumb
+          const categoryName = productData.category.name;
+          crumbs.push({ name: categoryName, href: `/catalog/${productData.category.slug}` });
         }
         crumbs.push({ name: productData.name, href: `/p/${productData.slug}` });
         setBreadcrumbs(crumbs);
 
-        // Fetch related products
-        const relatedResponse = await fetch(
-          `/api/catalog/recommendations?product_id=${productData.id}&recommendation_type=similar&limit=6`,
-        );
-        if (relatedResponse.ok) {
-          const relatedData = await relatedResponse.json();
-          setRelatedProducts(relatedData || []);
-        }
-
-        // Fetch complementary products
-        const complementaryResponse = await fetch(
-          `/api/catalog/recommendations?product_id=${productData.id}&recommendation_type=complementary&limit=6`,
-        );
-        if (complementaryResponse.ok) {
-          const complementaryData = await complementaryResponse.json();
-          setComplementaryProducts(complementaryData || []);
-        }
+        // For now, set empty related products since we don't have recommendation API
+        // TODO: Implement recommendation system
+        setRelatedProducts([]);
+        setComplementaryProducts([]);
       } catch (error) {
         console.error("Failed to fetch product data:", error);
       } finally {
