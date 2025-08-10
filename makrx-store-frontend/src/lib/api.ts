@@ -355,7 +355,22 @@ class ApiClient {
         return this.getMockUser() as T;
       case "/health":
         return { status: "ok", timestamp: new Date().toISOString() } as T;
+      case "/catalog/brands":
+        return { brands: ["MakerBot", "Prusa", "Bambu Lab", "Elegoo", "Arduino"] } as T;
+      case "/auth/me":
+        return this.getMockUser() as T;
       default:
+        // For unknown endpoints, return appropriate empty structure
+        if (endpoint.includes("/orders")) {
+          return { orders: [], total: 0, page: 1, per_page: 10, pages: 0 } as T;
+        }
+        if (endpoint.includes("/notifications")) {
+          return { notifications: [], unread_count: 0 } as T;
+        }
+        if (endpoint.includes("/cart")) {
+          return this.getMockCart() as T;
+        }
+
         console.warn(
           `No mock data available for endpoint: ${endpoint}, returning empty response`,
         );
