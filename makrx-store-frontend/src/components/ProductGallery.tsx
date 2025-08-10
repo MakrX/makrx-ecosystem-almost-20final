@@ -1,7 +1,7 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import Image from 'next/image';
+import { useState } from "react";
+import Image from "next/image";
 // Using inline SVGs instead of Heroicons
 
 interface ProductGalleryProps {
@@ -11,24 +11,27 @@ interface ProductGalleryProps {
   onImageChange: (index: number) => void;
 }
 
-export default function ProductGallery({ 
-  images, 
-  productName, 
-  selectedImage, 
-  onImageChange 
+export default function ProductGallery({
+  images,
+  productName,
+  selectedImage,
+  onImageChange,
 }: ProductGalleryProps) {
   const [isZoomed, setIsZoomed] = useState(false);
-  
-  const safeImages = images && images.length > 0 ? images : ['/placeholder.svg'];
+
+  const safeImages =
+    images && images.length > 0 ? images : ["/placeholder.svg"];
   const currentImage = safeImages[selectedImage] || safeImages[0];
 
   const handlePrevious = () => {
-    const newIndex = selectedImage > 0 ? selectedImage - 1 : safeImages.length - 1;
+    const newIndex =
+      selectedImage > 0 ? selectedImage - 1 : safeImages.length - 1;
     onImageChange(newIndex);
   };
 
   const handleNext = () => {
-    const newIndex = selectedImage < safeImages.length - 1 ? selectedImage + 1 : 0;
+    const newIndex =
+      selectedImage < safeImages.length - 1 ? selectedImage + 1 : 0;
     onImageChange(newIndex);
   };
 
@@ -50,7 +53,7 @@ export default function ProductGallery({
           sizes="(max-width: 768px) 100vw, 50vw"
           priority
           onError={(e) => {
-            e.currentTarget.src = '/placeholder.svg';
+            e.currentTarget.src = "/placeholder.svg";
           }}
         />
 
@@ -62,8 +65,18 @@ export default function ProductGallery({
               className="absolute left-2 top-1/2 -translate-y-1/2 p-2 bg-white/80 dark:bg-black/80 rounded-full shadow-md hover:bg-white dark:hover:bg-black transition-colors opacity-0 group-hover:opacity-100"
               aria-label="Previous image"
             >
-              <svg className="h-5 w-5 text-gray-900 dark:text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+              <svg
+                className="h-5 w-5 text-gray-900 dark:text-white"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M15 19l-7-7 7-7"
+                />
               </svg>
             </button>
             <button
@@ -71,8 +84,18 @@ export default function ProductGallery({
               className="absolute right-2 top-1/2 -translate-y-1/2 p-2 bg-white/80 dark:bg-black/80 rounded-full shadow-md hover:bg-white dark:hover:bg-black transition-colors opacity-0 group-hover:opacity-100"
               aria-label="Next image"
             >
-              <svg className="h-5 w-5 text-gray-900 dark:text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+              <svg
+                className="h-5 w-5 text-gray-900 dark:text-white"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M9 5l7 7-7 7"
+                />
               </svg>
             </button>
           </>
@@ -84,8 +107,18 @@ export default function ProductGallery({
           className="absolute top-2 right-2 p-2 bg-white/80 dark:bg-black/80 rounded-full shadow-md hover:bg-white dark:hover:bg-black transition-colors opacity-0 group-hover:opacity-100"
           aria-label="Zoom image"
         >
-          <svg className="h-5 w-5 text-gray-900 dark:text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+          <svg
+            className="h-5 w-5 text-gray-900 dark:text-white"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+            />
           </svg>
         </button>
 
@@ -106,8 +139,8 @@ export default function ProductGallery({
               onClick={() => handleImageChange(index)}
               className={`relative flex-shrink-0 w-16 h-16 rounded-md overflow-hidden border-2 transition-colors ${
                 index === selectedImage
-                  ? 'border-blue-500'
-                  : 'border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600'
+                  ? "border-blue-500"
+                  : "border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600"
               }`}
             >
               <Image
@@ -117,7 +150,7 @@ export default function ProductGallery({
                 className="object-cover"
                 sizes="64px"
                 onError={(e) => {
-                  e.currentTarget.src = '/placeholder.svg';
+                  e.currentTarget.src = "/placeholder.svg";
                 }}
               />
             </button>
@@ -127,7 +160,7 @@ export default function ProductGallery({
 
       {/* Zoom Modal */}
       {isZoomed && (
-        <div 
+        <div
           className="fixed inset-0 z-50 bg-black/90 flex items-center justify-center p-4"
           onClick={() => setIsZoomed(false)}
         >
@@ -139,15 +172,25 @@ export default function ProductGallery({
               height={800}
               className="object-contain max-h-[90vh] w-auto h-auto"
               onError={(e) => {
-                e.currentTarget.src = '/placeholder.svg';
+                e.currentTarget.src = "/placeholder.svg";
               }}
             />
             <button
               onClick={() => setIsZoomed(false)}
               className="absolute top-4 right-4 p-2 bg-white/20 hover:bg-white/30 rounded-full text-white"
             >
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              <svg
+                className="w-6 h-6"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M6 18L18 6M6 6l12 12"
+                />
               </svg>
             </button>
           </div>

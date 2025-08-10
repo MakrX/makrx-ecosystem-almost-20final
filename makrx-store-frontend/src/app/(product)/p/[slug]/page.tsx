@@ -1,17 +1,17 @@
-'use client';
+"use client";
 
-import { useEffect, useState } from 'react';
-import { useParams } from 'next/navigation';
-import { Metadata } from 'next';
-import Link from 'next/link';
-import Image from 'next/image';
-import Breadcrumbs from '@/components/Breadcrumbs';
-import ProductGallery from '@/components/ProductGallery';
-import ProductSpecs from '@/components/ProductSpecs';
-import ProductReviews from '@/components/ProductReviews';
-import RecommendedProducts from '@/components/RecommendedProducts';
-import AddToCartForm from '@/components/AddToCartForm';
-import CompatibilityInfo from '@/components/CompatibilityInfo';
+import { useEffect, useState } from "react";
+import { useParams } from "next/navigation";
+import { Metadata } from "next";
+import Link from "next/link";
+import Image from "next/image";
+import Breadcrumbs from "@/components/Breadcrumbs";
+import ProductGallery from "@/components/ProductGallery";
+import ProductSpecs from "@/components/ProductSpecs";
+import ProductReviews from "@/components/ProductReviews";
+import RecommendedProducts from "@/components/RecommendedProducts";
+import AddToCartForm from "@/components/AddToCartForm";
+import CompatibilityInfo from "@/components/CompatibilityInfo";
 
 interface Product {
   id: number;
@@ -73,32 +73,40 @@ export default function ProductPage() {
 
   const [product, setProduct] = useState<Product | null>(null);
   const [relatedProducts, setRelatedProducts] = useState<RelatedProduct[]>([]);
-  const [complementaryProducts, setComplementaryProducts] = useState<RelatedProduct[]>([]);
+  const [complementaryProducts, setComplementaryProducts] = useState<
+    RelatedProduct[]
+  >([]);
   const [loading, setLoading] = useState(true);
   const [selectedImage, setSelectedImage] = useState(0);
   const [selectedVariant, setSelectedVariant] = useState<number | null>(null);
-  const [breadcrumbs, setBreadcrumbs] = useState<Array<{name: string; href: string}>>([]);
+  const [breadcrumbs, setBreadcrumbs] = useState<
+    Array<{ name: string; href: string }>
+  >([]);
 
   useEffect(() => {
     const fetchProductData = async () => {
       setLoading(true);
       try {
         // Fetch product details
-        const productResponse = await fetch(`/api/catalog/products/slug/${slug}`);
+        const productResponse = await fetch(
+          `/api/catalog/products/slug/${slug}`,
+        );
         if (!productResponse.ok) {
-          throw new Error('Product not found');
+          throw new Error("Product not found");
         }
         const productData = await productResponse.json();
         setProduct(productData);
 
         // Build breadcrumbs
-        const crumbs = [{ name: 'Home', href: '/' }];
+        const crumbs = [{ name: "Home", href: "/" }];
         if (productData.category?.path) {
-          const pathParts = productData.category.path.split('/');
-          let currentPath = '';
+          const pathParts = productData.category.path.split("/");
+          let currentPath = "";
           for (const part of pathParts) {
-            currentPath += (currentPath ? '/' : '') + part;
-            const name = part.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+            currentPath += (currentPath ? "/" : "") + part;
+            const name = part
+              .replace(/-/g, " ")
+              .replace(/\b\w/g, (l) => l.toUpperCase());
             crumbs.push({ name, href: `/c/${currentPath}` });
           }
         }
@@ -106,20 +114,24 @@ export default function ProductPage() {
         setBreadcrumbs(crumbs);
 
         // Fetch related products
-        const relatedResponse = await fetch(`/api/catalog/recommendations?product_id=${productData.id}&recommendation_type=similar&limit=6`);
+        const relatedResponse = await fetch(
+          `/api/catalog/recommendations?product_id=${productData.id}&recommendation_type=similar&limit=6`,
+        );
         if (relatedResponse.ok) {
           const relatedData = await relatedResponse.json();
           setRelatedProducts(relatedData || []);
         }
 
         // Fetch complementary products
-        const complementaryResponse = await fetch(`/api/catalog/recommendations?product_id=${productData.id}&recommendation_type=complementary&limit=6`);
+        const complementaryResponse = await fetch(
+          `/api/catalog/recommendations?product_id=${productData.id}&recommendation_type=complementary&limit=6`,
+        );
         if (complementaryResponse.ok) {
           const complementaryData = await complementaryResponse.json();
           setComplementaryProducts(complementaryData || []);
         }
       } catch (error) {
-        console.error('Failed to fetch product data:', error);
+        console.error("Failed to fetch product data:", error);
       } finally {
         setLoading(false);
       }
@@ -136,20 +148,25 @@ export default function ProductPage() {
     return <ProductNotFound />;
   }
 
-  const effectivePrice = selectedVariant 
-    ? (product.variants?.find(v => v.id === selectedVariant)?.sale_price || product.variants?.find(v => v.id === selectedVariant)?.price || product.price)
-    : (product.sale_price || product.price);
+  const effectivePrice = selectedVariant
+    ? product.variants?.find((v) => v.id === selectedVariant)?.sale_price ||
+      product.variants?.find((v) => v.id === selectedVariant)?.price ||
+      product.price
+    : product.sale_price || product.price;
 
   const originalPrice = selectedVariant
-    ? (product.variants?.find(v => v.id === selectedVariant)?.price || product.price)
+    ? product.variants?.find((v) => v.id === selectedVariant)?.price ||
+      product.price
     : product.price;
 
   const savingsAmount = originalPrice - effectivePrice;
-  const savingsPercentage = savingsAmount > 0 ? Math.round((savingsAmount / originalPrice) * 100) : 0;
+  const savingsPercentage =
+    savingsAmount > 0 ? Math.round((savingsAmount / originalPrice) * 100) : 0;
 
   const isOnSale = savingsAmount > 0;
-  const stockStatus = product.stock_qty > 0 ? 'In Stock' : 'Out of Stock';
-  const estimatedDelivery = product.stock_qty > 0 ? '2-3 business days' : 'Backordered - 1-2 weeks';
+  const stockStatus = product.stock_qty > 0 ? "In Stock" : "Out of Stock";
+  const estimatedDelivery =
+    product.stock_qty > 0 ? "2-3 business days" : "Backordered - 1-2 weeks";
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
@@ -166,7 +183,7 @@ export default function ProductPage() {
           {/* Product Gallery */}
           <div className="space-y-4">
             <ProductGallery
-              images={product.images || ['/placeholder.svg']}
+              images={product.images || ["/placeholder.svg"]}
               productName={product.name}
               selectedImage={selectedImage}
               onImageChange={setSelectedImage}
@@ -182,7 +199,13 @@ export default function ProductPage() {
               </h1>
               {product.brand && (
                 <p className="text-lg text-gray-600 dark:text-gray-400 mb-2">
-                  by <Link href={`/brands/${product.brand.toLowerCase().replace(/\s+/g, '-')}`} className="text-blue-600 dark:text-blue-400 hover:underline">{product.brand}</Link>
+                  by{" "}
+                  <Link
+                    href={`/brands/${product.brand.toLowerCase().replace(/\s+/g, "-")}`}
+                    className="text-blue-600 dark:text-blue-400 hover:underline"
+                  >
+                    {product.brand}
+                  </Link>
                 </p>
               )}
               {product.rating && (
@@ -191,7 +214,7 @@ export default function ProductPage() {
                     {[...Array(5)].map((_, i) => (
                       <svg
                         key={i}
-                        className={`w-4 h-4 ${i < Math.floor(product.rating!.average) ? 'text-yellow-400' : 'text-gray-300'}`}
+                        className={`w-4 h-4 ${i < Math.floor(product.rating!.average) ? "text-yellow-400" : "text-gray-300"}`}
                         fill="currentColor"
                         viewBox="0 0 20 20"
                       >
@@ -200,7 +223,8 @@ export default function ProductPage() {
                     ))}
                   </div>
                   <span className="text-sm text-gray-600 dark:text-gray-400">
-                    {product.rating.average.toFixed(1)} ({product.rating.count} reviews)
+                    {product.rating.average.toFixed(1)} ({product.rating.count}{" "}
+                    reviews)
                   </span>
                 </div>
               )}
@@ -217,11 +241,13 @@ export default function ProductPage() {
             <div className="space-y-2">
               <div className="flex items-center gap-3">
                 <span className="text-3xl font-bold text-gray-900 dark:text-white">
-                  {product.currency === 'INR' ? '₹' : '$'}{effectivePrice.toLocaleString()}
+                  {product.currency === "INR" ? "₹" : "$"}
+                  {effectivePrice.toLocaleString()}
                 </span>
                 {isOnSale && (
                   <span className="text-xl text-gray-500 dark:text-gray-400 line-through">
-                    {product.currency === 'INR' ? '₹' : '$'}{originalPrice.toLocaleString()}
+                    {product.currency === "INR" ? "₹" : "$"}
+                    {originalPrice.toLocaleString()}
                   </span>
                 )}
                 {isOnSale && (
@@ -232,7 +258,8 @@ export default function ProductPage() {
               </div>
               {isOnSale && (
                 <p className="text-sm text-green-600 dark:text-green-400">
-                  You save {product.currency === 'INR' ? '₹' : '$'}{savingsAmount.toLocaleString()}!
+                  You save {product.currency === "INR" ? "₹" : "$"}
+                  {savingsAmount.toLocaleString()}!
                 </p>
               )}
             </div>
@@ -240,8 +267,12 @@ export default function ProductPage() {
             {/* Stock Status */}
             <div className="flex items-center gap-4">
               <div className="flex items-center gap-2">
-                <div className={`w-3 h-3 rounded-full ${product.stock_qty > 0 ? 'bg-green-500' : 'bg-red-500'}`}></div>
-                <span className={`text-sm font-medium ${product.stock_qty > 0 ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'}`}>
+                <div
+                  className={`w-3 h-3 rounded-full ${product.stock_qty > 0 ? "bg-green-500" : "bg-red-500"}`}
+                ></div>
+                <span
+                  className={`text-sm font-medium ${product.stock_qty > 0 ? "text-green-600 dark:text-green-400" : "text-red-600 dark:text-red-400"}`}
+                >
                   {stockStatus}
                 </span>
               </div>
@@ -253,7 +284,9 @@ export default function ProductPage() {
             {/* Variants Selection */}
             {product.variants && product.variants.length > 0 && (
               <div className="space-y-3">
-                <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Options</h3>
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+                  Options
+                </h3>
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
                   {product.variants.map((variant) => (
                     <button
@@ -261,19 +294,23 @@ export default function ProductPage() {
                       onClick={() => setSelectedVariant(variant.id)}
                       className={`p-3 border rounded-lg text-left transition-colors ${
                         selectedVariant === variant.id
-                          ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20'
-                          : 'border-gray-300 dark:border-gray-600 hover:border-gray-400'
+                          ? "border-blue-500 bg-blue-50 dark:bg-blue-900/20"
+                          : "border-gray-300 dark:border-gray-600 hover:border-gray-400"
                       }`}
                     >
                       <div className="text-sm">
-                        {Object.entries(variant.attributes).map(([key, value]) => (
-                          <div key={key}>
-                            <span className="font-medium">{key}:</span> {value}
-                          </div>
-                        ))}
+                        {Object.entries(variant.attributes).map(
+                          ([key, value]) => (
+                            <div key={key}>
+                              <span className="font-medium">{key}:</span>{" "}
+                              {value}
+                            </div>
+                          ),
+                        )}
                       </div>
                       <div className="text-sm font-semibold mt-1">
-                        {product.currency === 'INR' ? '₹' : '$'}{(variant.sale_price || variant.price).toLocaleString()}
+                        {product.currency === "INR" ? "₹" : "$"}
+                        {(variant.sale_price || variant.price).toLocaleString()}
                       </div>
                     </button>
                   ))}
@@ -290,27 +327,37 @@ export default function ProductPage() {
             />
 
             {/* Key Features */}
-            {product.attributes && Object.keys(product.attributes).length > 0 && (
-              <div className="space-y-3">
-                <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Key Features</h3>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                  {Object.entries(product.attributes).slice(0, 6).map(([key, value]) => (
-                    <div key={key} className="flex justify-between py-1">
-                      <span className="text-gray-600 dark:text-gray-400 capitalize">
-                        {key.replace(/_/g, ' ')}:
-                      </span>
-                      <span className="text-gray-900 dark:text-white font-medium">
-                        {typeof value === 'object' ? JSON.stringify(value) : String(value)}
-                      </span>
-                    </div>
-                  ))}
+            {product.attributes &&
+              Object.keys(product.attributes).length > 0 && (
+                <div className="space-y-3">
+                  <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+                    Key Features
+                  </h3>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                    {Object.entries(product.attributes)
+                      .slice(0, 6)
+                      .map(([key, value]) => (
+                        <div key={key} className="flex justify-between py-1">
+                          <span className="text-gray-600 dark:text-gray-400 capitalize">
+                            {key.replace(/_/g, " ")}:
+                          </span>
+                          <span className="text-gray-900 dark:text-white font-medium">
+                            {typeof value === "object"
+                              ? JSON.stringify(value)
+                              : String(value)}
+                          </span>
+                        </div>
+                      ))}
+                  </div>
                 </div>
-              </div>
-            )}
+              )}
 
             {/* Compatibility */}
             {product.compatibility && product.compatibility.length > 0 && (
-              <CompatibilityInfo compatibility={product.compatibility} productId={product.id} />
+              <CompatibilityInfo
+                compatibility={product.compatibility}
+                productId={product.id}
+              />
             )}
           </div>
         </div>
@@ -365,30 +412,35 @@ export default function ProductPage() {
           __html: JSON.stringify({
             "@context": "https://schema.org/",
             "@type": "Product",
-            "name": product.name,
-            "description": product.short_description || product.description,
-            "brand": {
+            name: product.name,
+            description: product.short_description || product.description,
+            brand: {
               "@type": "Brand",
-              "name": product.brand
+              name: product.brand,
             },
-            "image": product.images,
-            "offers": {
+            image: product.images,
+            offers: {
               "@type": "Offer",
-              "url": `${window.location.origin}/p/${product.slug}`,
-              "priceCurrency": product.currency,
-              "price": effectivePrice,
-              "availability": product.stock_qty > 0 ? "https://schema.org/InStock" : "https://schema.org/OutOfStock",
-              "seller": {
+              url: `${window.location.origin}/p/${product.slug}`,
+              priceCurrency: product.currency,
+              price: effectivePrice,
+              availability:
+                product.stock_qty > 0
+                  ? "https://schema.org/InStock"
+                  : "https://schema.org/OutOfStock",
+              seller: {
                 "@type": "Organization",
-                "name": "MakrX Store"
-              }
+                name: "MakrX Store",
+              },
             },
-            "aggregateRating": product.rating ? {
-              "@type": "AggregateRating",
-              "ratingValue": product.rating.average,
-              "reviewCount": product.rating.count
-            } : undefined
-          })
+            aggregateRating: product.rating
+              ? {
+                  "@type": "AggregateRating",
+                  ratingValue: product.rating.average,
+                  reviewCount: product.rating.count,
+                }
+              : undefined,
+          }),
         }}
       />
     </div>

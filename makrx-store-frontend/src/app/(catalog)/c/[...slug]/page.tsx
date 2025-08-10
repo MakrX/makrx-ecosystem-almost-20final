@@ -1,14 +1,14 @@
-'use client';
+"use client";
 
-import { useEffect, useState } from 'react';
-import { useParams, useSearchParams } from 'next/navigation';
-import { Metadata } from 'next';
-import Link from 'next/link';
-import Image from 'next/image';
-import Breadcrumbs from '@/components/Breadcrumbs';
-import ProductGrid from '@/components/ProductGrid';
-import CategoryFilters from '@/components/CategoryFilters';
-import SortSelect from '@/components/SortSelect';
+import { useEffect, useState } from "react";
+import { useParams, useSearchParams } from "next/navigation";
+import { Metadata } from "next";
+import Link from "next/link";
+import Image from "next/image";
+import Breadcrumbs from "@/components/Breadcrumbs";
+import ProductGrid from "@/components/ProductGrid";
+import CategoryFilters from "@/components/CategoryFilters";
+import SortSelect from "@/components/SortSelect";
 
 interface Category {
   id: number;
@@ -62,16 +62,18 @@ export default function CategoryPage() {
   const params = useParams();
   const searchParams = useSearchParams();
   const slug = params.slug as string[];
-  const categoryPath = slug.join('/');
+  const categoryPath = slug.join("/");
 
   const [category, setCategory] = useState<Category | null>(null);
   const [productList, setProductList] = useState<ProductList | null>(null);
   const [loading, setLoading] = useState(true);
-  const [breadcrumbs, setBreadcrumbs] = useState<Array<{name: string; href: string}>>([]);
+  const [breadcrumbs, setBreadcrumbs] = useState<
+    Array<{ name: string; href: string }>
+  >([]);
 
   // URL query params
-  const page = parseInt(searchParams.get('page') || '1');
-  const sort = searchParams.get('sort') || 'popularity';
+  const page = parseInt(searchParams.get("page") || "1");
+  const sort = searchParams.get("sort") || "popularity";
   const filters = Object.fromEntries(searchParams.entries());
 
   useEffect(() => {
@@ -79,21 +81,25 @@ export default function CategoryPage() {
       setLoading(true);
       try {
         // Fetch category details
-        const categoryResponse = await fetch(`/api/catalog/categories/by-path/${categoryPath}`);
+        const categoryResponse = await fetch(
+          `/api/catalog/categories/by-path/${categoryPath}`,
+        );
         if (!categoryResponse.ok) {
-          throw new Error('Category not found');
+          throw new Error("Category not found");
         }
         const categoryData = await categoryResponse.json();
         setCategory(categoryData);
 
         // Build breadcrumbs
-        const crumbs = [{ name: 'Home', href: '/' }];
+        const crumbs = [{ name: "Home", href: "/" }];
         if (categoryData.path) {
-          const pathParts = categoryData.path.split('/');
-          let currentPath = '';
+          const pathParts = categoryData.path.split("/");
+          let currentPath = "";
           for (const part of pathParts) {
-            currentPath += (currentPath ? '/' : '') + part;
-            const name = part.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+            currentPath += (currentPath ? "/" : "") + part;
+            const name = part
+              .replace(/-/g, " ")
+              .replace(/\b\w/g, (l) => l.toUpperCase());
             crumbs.push({ name, href: `/c/${currentPath}` });
           }
         }
@@ -101,9 +107,9 @@ export default function CategoryPage() {
 
         // Fetch products in category
         const productsResponse = await fetch(`/api/catalog/search/advanced`, {
-          method: 'POST',
+          method: "POST",
           headers: {
-            'Content-Type': 'application/json',
+            "Content-Type": "application/json",
           },
           body: JSON.stringify({
             filters: {
@@ -122,7 +128,7 @@ export default function CategoryPage() {
           setProductList(productsData);
         }
       } catch (error) {
-        console.error('Failed to fetch category data:', error);
+        console.error("Failed to fetch category data:", error);
       } finally {
         setLoading(false);
       }
@@ -232,7 +238,7 @@ export default function CategoryPage() {
                         url.searchParams.delete(key);
                       }
                     });
-                    window.history.pushState({}, '', url.toString());
+                    window.history.pushState({}, "", url.toString());
                     window.location.reload();
                   }}
                 />
@@ -249,13 +255,15 @@ export default function CategoryPage() {
                   {productList?.total_count || 0} products
                 </span>
                 <div className="flex items-center gap-2">
-                  <span className="text-sm text-gray-600 dark:text-gray-400">Sort by:</span>
+                  <span className="text-sm text-gray-600 dark:text-gray-400">
+                    Sort by:
+                  </span>
                   <SortSelect
                     value={sort}
                     onChange={(newSort) => {
                       const url = new URL(window.location.href);
-                      url.searchParams.set('sort', newSort);
-                      window.history.pushState({}, '', url.toString());
+                      url.searchParams.set("sort", newSort);
+                      window.history.pushState({}, "", url.toString());
                       window.location.reload();
                     }}
                   />
@@ -265,13 +273,29 @@ export default function CategoryPage() {
               {/* View Toggle */}
               <div className="flex items-center gap-2">
                 <button className="p-2 rounded border border-gray-300 dark:border-gray-600">
-                  <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M3 4a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1H4a1 1 0 01-1-1V4zm8 0a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1h-4a1 1 0 01-1-1V4zM3 12a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1H4a1 1 0 01-1-1v-4zm8 0a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1h-4a1 1 0 01-1-1v-4z" clipRule="evenodd" />
+                  <svg
+                    className="w-4 h-4"
+                    fill="currentColor"
+                    viewBox="0 0 20 20"
+                  >
+                    <path
+                      fillRule="evenodd"
+                      d="M3 4a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1H4a1 1 0 01-1-1V4zm8 0a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1h-4a1 1 0 01-1-1V4zM3 12a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1H4a1 1 0 01-1-1v-4zm8 0a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1h-4a1 1 0 01-1-1v-4z"
+                      clipRule="evenodd"
+                    />
                   </svg>
                 </button>
                 <button className="p-2 rounded border border-gray-300 dark:border-gray-600">
-                  <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M3 4a1 1 0 000 2h14a1 1 0 100-2H3zm0 4a1 1 0 000 2h14a1 1 0 100-2H3zm0 4a1 1 0 000 2h14a1 1 0 100-2H3z" clipRule="evenodd" />
+                  <svg
+                    className="w-4 h-4"
+                    fill="currentColor"
+                    viewBox="0 0 20 20"
+                  >
+                    <path
+                      fillRule="evenodd"
+                      d="M3 4a1 1 0 000 2h14a1 1 0 100-2H3zm0 4a1 1 0 000 2h14a1 1 0 100-2H3zm0 4a1 1 0 000 2h14a1 1 0 100-2H3z"
+                      clipRule="evenodd"
+                    />
                   </svg>
                 </button>
               </div>
@@ -285,8 +309,8 @@ export default function CategoryPage() {
                 totalPages={productList.total_pages}
                 onPageChange={(newPage) => {
                   const url = new URL(window.location.href);
-                  url.searchParams.set('page', newPage.toString());
-                  window.history.pushState({}, '', url.toString());
+                  url.searchParams.set("page", newPage.toString());
+                  window.history.pushState({}, "", url.toString());
                   window.location.reload();
                 }}
               />
@@ -315,7 +339,10 @@ function CategoryPageSkeleton() {
           <div className="flex-1">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {[...Array(6)].map((_, i) => (
-                <div key={i} className="h-64 bg-gray-200 dark:bg-gray-700 rounded"></div>
+                <div
+                  key={i}
+                  className="h-64 bg-gray-200 dark:bg-gray-700 rounded"
+                ></div>
               ))}
             </div>
           </div>

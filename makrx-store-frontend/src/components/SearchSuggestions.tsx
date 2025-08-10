@@ -1,11 +1,14 @@
-'use client';
+"use client";
 
 interface SearchSuggestionsProps {
   suggestions: string[];
   onSuggestionClick: (suggestion: string) => void;
 }
 
-export default function SearchSuggestions({ suggestions, onSuggestionClick }: SearchSuggestionsProps) {
+export default function SearchSuggestions({
+  suggestions,
+  onSuggestionClick,
+}: SearchSuggestionsProps) {
   if (!suggestions || suggestions.length === 0) {
     return null;
   }

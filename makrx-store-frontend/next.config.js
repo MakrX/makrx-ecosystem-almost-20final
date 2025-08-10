@@ -1,4 +1,4 @@
-const path = require('path');
+const path = require("path");
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
@@ -17,8 +17,8 @@ const nextConfig = {
   webpack: (config) => {
     config.resolve.alias = {
       ...config.resolve.alias,
-      '@makrx/ui': path.resolve(__dirname, '../packages/ui'),
-      '@makrx/types': path.resolve(__dirname, '../packages/types'),
+      "@makrx/ui": path.resolve(__dirname, "../packages/ui"),
+      "@makrx/types": path.resolve(__dirname, "../packages/types"),
     };
     return config;
   },
