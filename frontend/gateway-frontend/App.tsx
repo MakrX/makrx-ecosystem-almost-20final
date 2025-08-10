@@ -114,6 +114,7 @@ const App = () => {
                       <Route path="/privacy" element={<PrivacyPolicy />} />
                       <Route path="/terms" element={<TermsOfService />} />
                       <Route path="/cookies" element={<CookiePolicy />} />
+                      <Route path="/accessibility" element={<AccessibilityStatement />} />
                       <Route path="/safety" element={<div className="pt-16 min-h-screen flex items-center justify-center"><div className="text-center"><h1 className="text-3xl font-bold mb-4">Safety Guidelines</h1><p>Safety first in all makerspaces</p></div></div>} />
 
                       {/* Catch-all route for 404 - MUST be last */}
