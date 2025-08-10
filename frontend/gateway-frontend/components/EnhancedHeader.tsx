@@ -142,24 +142,37 @@ export default function EnhancedHeader() {
               const hasDropdown = item.dropdown && item.dropdown.length > 0;
               
               return (
-                <div 
+                <div
                   key={item.name}
                   className="relative"
                   onMouseEnter={() => hasDropdown && setShowDropdown(item.name)}
                   onMouseLeave={() => setShowDropdown(null)}
                 >
-                  <Link
-                    to={item.href}
-                    className={`flex items-center gap-2 px-3 py-2 rounded-lg font-medium transition-all duration-200 ${
-                      isActive(item.href)
-                        ? 'text-makrx-yellow bg-makrx-yellow/20'
-                        : 'text-white/80 hover:text-white hover:bg-white/10'
-                    }`}
-                  >
-                    <Icon className="w-4 h-4" />
-                    {item.name}
-                    {hasDropdown && <ChevronDown className="w-3 h-3" />}
-                  </Link>
+                  {item.isExternal ? (
+                    <a
+                      href={item.href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center gap-2 px-3 py-2 rounded-lg font-medium transition-all duration-200 text-white/80 hover:text-white hover:bg-white/10"
+                    >
+                      <Icon className="w-4 h-4" />
+                      {item.name}
+                      {hasDropdown && <ChevronDown className="w-3 h-3" />}
+                    </a>
+                  ) : (
+                    <Link
+                      to={item.href}
+                      className={`flex items-center gap-2 px-3 py-2 rounded-lg font-medium transition-all duration-200 ${
+                        isActive(item.href)
+                          ? 'text-makrx-yellow bg-makrx-yellow/20'
+                          : 'text-white/80 hover:text-white hover:bg-white/10'
+                      }`}
+                    >
+                      <Icon className="w-4 h-4" />
+                      {item.name}
+                      {hasDropdown && <ChevronDown className="w-3 h-3" />}
+                    </Link>
+                  )}
 
                   {/* Dropdown Menu */}
                   {hasDropdown && showDropdown === item.name && (
