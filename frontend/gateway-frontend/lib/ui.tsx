@@ -51,9 +51,20 @@ export function ThemeProvider({
       setActualTheme(resolvedTheme);
 
       // Update meta theme-color for mobile browsers
-      const metaThemeColor = document.querySelector('meta[name="theme-color"]');
+      const metaThemeColor = document.querySelector('meta[name="theme-color"]:not([media])');
+      const metaThemeColorDark = document.querySelector('meta[name="theme-color"][media="(prefers-color-scheme: dark)"]');
+
       if (metaThemeColor) {
         metaThemeColor.setAttribute('content', resolvedTheme === 'dark' ? '#0f172a' : '#1e40af');
+      }
+
+      // Ensure mobile browsers use the correct theme color
+      if (resolvedTheme === 'dark' && !metaThemeColorDark) {
+        const darkMeta = document.createElement('meta');
+        darkMeta.name = 'theme-color';
+        darkMeta.content = '#0f172a';
+        darkMeta.media = '(prefers-color-scheme: dark)';
+        document.head.appendChild(darkMeta);
       }
     };
 
