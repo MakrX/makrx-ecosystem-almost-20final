@@ -2,6 +2,7 @@ import { Link, useLocation } from "react-router-dom";
 import { useState } from "react";
 import { useAuth } from "../contexts/AuthContext";
 import { ThemeToggle } from "../lib/ui";
+import AppLauncher from "./AppLauncher";
 import {
   Bot,
   Menu,
@@ -21,7 +22,8 @@ import {
   Activity,
   Package,
   Users,
-  Star
+  Star,
+  Grid3X3
 } from "lucide-react";
 
 // Import feature flag components
@@ -30,6 +32,7 @@ import { NavLinkGuard, FlagGuard, useBooleanFlag, useIsInternalUser } from "../l
 export default function EnhancedHeader() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [showDropdown, setShowDropdown] = useState<string | null>(null);
+  const [isLauncherOpen, setIsLauncherOpen] = useState(false);
   const location = useLocation();
   const { user, isAuthenticated, logout } = useAuth();
   const isInternal = useIsInternalUser();
