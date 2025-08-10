@@ -43,8 +43,25 @@ export default function DevErrorHandler() {
       }
     };
 
-    // Don't interfere with fetch operations in development
-    // Let Next.js handle its own RSC fetches without intervention
+    // Suppress console errors for development-related issues
+    const originalConsoleError = console.error;
+    console.error = (...args: any[]) => {
+      const message = args.join(' ');
+
+      // Check for development-specific error patterns
+      if (message.includes('Failed to fetch') && (
+          message.includes('RSC payload') ||
+          message.includes('fetchServerResponse') ||
+          message.includes('fastRefreshReducerImpl') ||
+          message.includes('hot-reloader-client')
+        )) {
+        // Suppress these development errors
+        return;
+      }
+
+      // Call original console.error for other errors
+      originalConsoleError.apply(console, args);
+    };
 
     // Also handle regular errors that might be related to RSC
     const handleError = (event: ErrorEvent) => {
