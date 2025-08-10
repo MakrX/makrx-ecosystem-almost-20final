@@ -125,7 +125,7 @@ export default function EnhancedCategoryFilters({
   // Close drawer on desktop
   useEffect(() => {
     const handleResize = () => {
-      if (window.innerWidth >= 1024 && isOpen) {
+      if (window.innerWidth >= 1024 && isOpen && onToggle) {
         onToggle();
       }
     };
