@@ -105,10 +105,10 @@ const StatCard: React.FC<StatCardProps> = ({ number, label, icon }) => {
           {icon}
         </div>
       </div>
-      <div className="text-3xl font-bold text-white mb-2" aria-live="polite">
+      <div className="text-3xl font-bold text-white dark:text-gray-100 mb-2" aria-live="polite">
         {getDisplayText()}
       </div>
-      <div className="text-white/80">{label}</div>
+      <div className="text-white/80 dark:text-gray-300">{label}</div>
     </div>
   );
 };
@@ -305,7 +305,7 @@ export default function HomePage() {
 
       {/* Stats Section */}
       {showStats && (
-        <section className="py-20 sm:py-24 lg:py-32 bg-makrx-blue border-t border-makrx-blue-700">
+        <section className="py-20 sm:py-24 lg:py-32 bg-makrx-blue dark:bg-makrx-blue-900 border-t border-makrx-blue-700 dark:border-makrx-blue-800">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-8 sm:gap-12">
               <StatCard
@@ -339,7 +339,7 @@ export default function HomePage() {
           <div className="text-center mb-16 sm:mb-20">
             <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 dark:text-white mb-4 sm:mb-6">
               Everything You Need to
-              <span className="text-makrx-blue dark:text-makrx-yellow"> Create</span>
+              <span className="text-makrx-blue dark:text-makrx-yellow transition-colors"> Create</span>
             </h2>
             <p className="text-lg sm:text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto px-4">
               From idea to reality, MakrX provides the tools, space, knowledge, and community to bring your vision to life.
@@ -388,8 +388,8 @@ export default function HomePage() {
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 sm:gap-12">
             <div className="text-center group">
-              <div className="w-20 h-20 bg-makrx-blue rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:bg-makrx-yellow group-hover:scale-110 transition-all">
-                <span className="text-2xl font-bold text-white group-hover:text-makrx-blue">1</span>
+              <div className="w-20 h-20 bg-makrx-blue dark:bg-makrx-blue-700 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:bg-makrx-yellow group-hover:scale-110 transition-all">
+                <span className="text-2xl font-bold text-white group-hover:text-makrx-blue transition-colors">1</span>
               </div>
               <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-4">Discover & Plan</h3>
               <p className="text-gray-600 dark:text-gray-300 leading-relaxed">
@@ -398,8 +398,8 @@ export default function HomePage() {
             </div>
 
             <div className="text-center group">
-              <div className="w-20 h-20 bg-makrx-blue rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:bg-makrx-yellow group-hover:scale-110 transition-all">
-                <span className="text-2xl font-bold text-white group-hover:text-makrx-blue">2</span>
+              <div className="w-20 h-20 bg-makrx-blue dark:bg-makrx-blue-700 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:bg-makrx-yellow group-hover:scale-110 transition-all">
+                <span className="text-2xl font-bold text-white group-hover:text-makrx-blue transition-colors">2</span>
               </div>
               <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-4">Create & Build</h3>
               <p className="text-gray-600 dark:text-gray-300 leading-relaxed">
@@ -408,8 +408,8 @@ export default function HomePage() {
             </div>
 
             <div className="text-center group">
-              <div className="w-20 h-20 bg-makrx-blue rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:bg-makrx-yellow group-hover:scale-110 transition-all">
-                <span className="text-2xl font-bold text-white group-hover:text-makrx-blue">3</span>
+              <div className="w-20 h-20 bg-makrx-blue dark:bg-makrx-blue-700 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:bg-makrx-yellow group-hover:scale-110 transition-all">
+                <span className="text-2xl font-bold text-white group-hover:text-makrx-blue transition-colors">3</span>
               </div>
               <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-4">Share & Inspire</h3>
               <p className="text-gray-600 dark:text-gray-300 leading-relaxed">
@@ -421,7 +421,7 @@ export default function HomePage() {
       </section>
 
       {/* Benefits Section */}
-      <section className="py-24 sm:py-28 lg:py-36 bg-gradient-to-br from-gray-900 to-makrx-blue dark:from-gray-950 dark:to-makrx-blue-900 border-t border-gray-700 dark:border-gray-600">
+      <section className="py-24 sm:py-28 lg:py-36 bg-gradient-to-br from-gray-900 to-makrx-blue dark:from-gray-950 dark:to-gray-800 border-t border-gray-700 dark:border-gray-600">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-20">
             <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
