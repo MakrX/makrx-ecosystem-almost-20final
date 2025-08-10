@@ -183,7 +183,7 @@ export function ThemeToggle({
           {showLabel && <span>{getLabel()}</span>}
         </button>
         
-        <div className="absolute right-0 mt-2 w-32 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
+        <div className="absolute right-0 mt-2 w-32 bg-white dark:bg-slate-950 border border-gray-200 dark:border-slate-800 rounded-lg shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
           <div className="p-1">
             {(['light', 'dark', 'system'] as Theme[]).map((t) => (
               <button
