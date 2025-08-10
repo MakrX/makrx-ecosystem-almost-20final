@@ -80,7 +80,9 @@ export default function EnhancedCategoryFilters({
   };
 
   const clearAllFilters = () => {
-    onFilterChange({});
+    if (onFilterChange) {
+      onFilterChange({});
+    }
   };
 
   const removeFilter = (filterType: string, value?: string) => {
@@ -97,7 +99,9 @@ export default function EnhancedCategoryFilters({
     } else {
       delete newFilters[filterType];
     }
-    onFilterChange(newFilters);
+    if (onFilterChange) {
+      onFilterChange(newFilters);
+    }
   };
 
   const addFilter = (filterType: string, value: string) => {
@@ -107,10 +111,12 @@ export default function EnhancedCategoryFilters({
       ? currentValues.filter((v) => v !== value)
       : [...currentValues, value];
 
-    onFilterChange({
-      ...safeActiveFilters,
-      [filterType]: newValues.length > 0 ? newValues : undefined,
-    });
+    if (onFilterChange) {
+      onFilterChange({
+        ...safeActiveFilters,
+        [filterType]: newValues.length > 0 ? newValues : undefined,
+      });
+    }
   };
 
   const hasActiveFilters = Object.keys(activeFilters || {}).length > 0;
