@@ -301,21 +301,49 @@ export default function CategoryPage() {
                 </div>
 
                 <div className="space-y-6">
-                  {relevantFilters.map(filter => (
+                  {categoryFilters.map(filter => (
                     <div key={filter.id} className="border-b border-gray-200 pb-4 last:border-b-0">
-                      <h4 className="font-medium text-store-text mb-3">{filter.name}</h4>
-                      
+                      <div className="flex items-center justify-between mb-3">
+                        <h4 className="font-medium text-store-text">{filter.name}</h4>
+                        {filter.required && (
+                          <span className="text-xs text-red-600 bg-red-50 px-2 py-1 rounded">Required</span>
+                        )}
+                      </div>
+
+                      {filter.helpText && (
+                        <p className="text-xs text-gray-500 mb-3">{filter.helpText}</p>
+                      )}
+
                       {filter.type === 'checkbox' && filter.options && (
-                        <div className="space-y-2 max-h-48 overflow-y-auto">
+                        <div className="space-y-2 max-h-64 overflow-y-auto">
                           {filter.options.map(option => (
-                            <label key={option.value} className="flex items-center">
+                            <label key={option.value} className="flex items-center hover:bg-gray-50 p-1 rounded transition-colors">
                               <input
                                 type="checkbox"
                                 checked={selectedFilters[filter.id]?.includes(option.value) || false}
                                 onChange={(e) => handleFilterChange(filter.id, option.value, e.target.checked)}
-                                className="rounded border-gray-300 text-store-primary focus:ring-store-primary"
+                                className="rounded border-gray-300 text-store-primary focus:ring-store-primary h-4 w-4"
                               />
-                              <span className="ml-2 text-sm text-store-text-light">
+                              <span className="ml-3 text-sm text-store-text-light flex-1">
+                                {option.label}
+                                {option.count && <span className="text-gray-400 ml-1">({option.count})</span>}
+                              </span>
+                            </label>
+                          ))}
+                        </div>
+                      )}
+
+                      {filter.type === 'multiselect' && filter.options && (
+                        <div className="space-y-2 max-h-64 overflow-y-auto">
+                          {filter.options.map(option => (
+                            <label key={option.value} className="flex items-center hover:bg-gray-50 p-1 rounded transition-colors">
+                              <input
+                                type="checkbox"
+                                checked={selectedFilters[filter.id]?.includes(option.value) || false}
+                                onChange={(e) => handleFilterChange(filter.id, option.value, e.target.checked)}
+                                className="rounded border-gray-300 text-store-primary focus:ring-store-primary h-4 w-4"
+                              />
+                              <span className="ml-3 text-sm text-store-text-light flex-1">
                                 {option.label}
                                 {option.count && <span className="text-gray-400 ml-1">({option.count})</span>}
                               </span>
@@ -327,37 +355,84 @@ export default function CategoryPage() {
                       {filter.type === 'range' && (
                         <div className="space-y-3">
                           <div className="flex gap-2">
-                            <input
-                              type="number"
-                              placeholder="Min"
-                              value={selectedFilters.priceMin || ''}
-                              onChange={(e) => handleFilterChange('priceMin', e.target.value ? Number(e.target.value) : undefined)}
-                              className="flex-1 px-3 py-2 border border-gray-300 rounded text-sm"
-                            />
-                            <input
-                              type="number"
-                              placeholder="Max"
-                              value={selectedFilters.priceMax || ''}
-                              onChange={(e) => handleFilterChange('priceMax', e.target.value ? Number(e.target.value) : undefined)}
-                              className="flex-1 px-3 py-2 border border-gray-300 rounded text-sm"
-                            />
+                            <div className="flex-1">
+                              <input
+                                type="number"
+                                placeholder={`Min${filter.unit ? ` (${filter.unit})` : ''}`}
+                                min={filter.min}
+                                max={filter.max}
+                                value={selectedFilters[`${filter.id}Min`] || ''}
+                                onChange={(e) => handleFilterChange(`${filter.id}Min`, e.target.value ? Number(e.target.value) : undefined)}
+                                className="w-full px-3 py-2 border border-gray-300 rounded text-sm focus:ring-2 focus:ring-store-primary focus:border-store-primary"
+                              />
+                            </div>
+                            <div className="flex-1">
+                              <input
+                                type="number"
+                                placeholder={`Max${filter.unit ? ` (${filter.unit})` : ''}`}
+                                min={filter.min}
+                                max={filter.max}
+                                value={selectedFilters[`${filter.id}Max`] || ''}
+                                onChange={(e) => handleFilterChange(`${filter.id}Max`, e.target.value ? Number(e.target.value) : undefined)}
+                                className="w-full px-3 py-2 border border-gray-300 rounded text-sm focus:ring-2 focus:ring-store-primary focus:border-store-primary"
+                              />
+                            </div>
                           </div>
+                          {filter.min !== undefined && filter.max !== undefined && (
+                            <div className="text-xs text-gray-500">
+                              Range: {filter.min}{filter.unit} - {filter.max}{filter.unit}
+                            </div>
+                          )}
                         </div>
                       )}
 
                       {filter.type === 'select' && filter.options && (
                         <select
                           value={selectedFilters[filter.id]?.[0] || ''}
-                          onChange={(e) => handleFilterChange(filter.id, e.target.value, true)}
-                          className="w-full px-3 py-2 border border-gray-300 rounded text-sm"
+                          onChange={(e) => {
+                            if (e.target.value) {
+                              handleFilterChange(filter.id, e.target.value, true)
+                            } else {
+                              setSelectedFilters(prev => {
+                                const newFilters = { ...prev }
+                                delete newFilters[filter.id]
+                                return newFilters
+                              })
+                            }
+                          }}
+                          className="w-full px-3 py-2 border border-gray-300 rounded text-sm focus:ring-2 focus:ring-store-primary focus:border-store-primary"
                         >
                           <option value="">All {filter.name}</option>
                           {filter.options.map(option => (
                             <option key={option.value} value={option.value}>
                               {option.label}
+                              {option.count && ` (${option.count})`}
                             </option>
                           ))}
                         </select>
+                      )}
+
+                      {filter.type === 'toggle' && (
+                        <label className="flex items-center cursor-pointer">
+                          <input
+                            type="checkbox"
+                            checked={selectedFilters[filter.id]?.[0] === 'true' || false}
+                            onChange={(e) => handleFilterChange(filter.id, e.target.checked ? 'true' : 'false', true)}
+                            className="sr-only"
+                          />
+                          <div className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
+                            selectedFilters[filter.id]?.[0] === 'true'
+                              ? 'bg-store-primary'
+                              : 'bg-gray-200'
+                          }`}>
+                            <span className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
+                              selectedFilters[filter.id]?.[0] === 'true'
+                                ? 'translate-x-6'
+                                : 'translate-x-1'
+                            }`} />
+                          </div>
+                          <span className="ml-3 text-sm text-store-text">{filter.name}</span>
+                        </label>
                       )}
                     </div>
                   ))}
