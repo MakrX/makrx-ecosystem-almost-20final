@@ -274,8 +274,10 @@ export default function EnhancedHeader() {
 
                 <div className="p-3 grid grid-cols-2 gap-2">
                   {/* MakrCave */}
-                  <Link
-                    to="/makrcave"
+                  <a
+                    href={process.env.VITE_MAKRCAVE_URL || 'https://makrcave.com'}
+                    target="_blank"
+                    rel="noopener noreferrer"
                     className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors group/item"
                   >
                     <div className="w-10 h-10 bg-blue-100 dark:bg-blue-900 rounded-lg flex items-center justify-center group-hover/item:scale-110 transition-transform">
@@ -285,11 +287,13 @@ export default function EnhancedHeader() {
                       <p className="text-sm font-medium text-gray-900 dark:text-white">MakrCave</p>
                       <p className="text-xs text-gray-500 dark:text-gray-400">Makerspaces</p>
                     </div>
-                  </Link>
+                  </a>
 
                   {/* Store */}
-                  <Link
-                    to="/store"
+                  <a
+                    href={process.env.VITE_STORE_URL || 'https://makrx.store'}
+                    target="_blank"
+                    rel="noopener noreferrer"
                     className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors group/item"
                   >
                     <div className="w-10 h-10 bg-green-100 dark:bg-green-900 rounded-lg flex items-center justify-center group-hover/item:scale-110 transition-transform">
@@ -299,11 +303,13 @@ export default function EnhancedHeader() {
                       <p className="text-sm font-medium text-gray-900 dark:text-white">Store</p>
                       <p className="text-xs text-gray-500 dark:text-gray-400">Shop tools</p>
                     </div>
-                  </Link>
+                  </a>
 
                   {/* Learn */}
-                  <Link
-                    to="/learn"
+                  <a
+                    href={process.env.VITE_LEARN_URL || 'https://learn.makrx.org'}
+                    target="_blank"
+                    rel="noopener noreferrer"
                     className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors group/item"
                   >
                     <div className="w-10 h-10 bg-purple-100 dark:bg-purple-900 rounded-lg flex items-center justify-center group-hover/item:scale-110 transition-transform">
@@ -313,21 +319,23 @@ export default function EnhancedHeader() {
                       <p className="text-sm font-medium text-gray-900 dark:text-white">Learn</p>
                       <p className="text-xs text-gray-500 dark:text-gray-400">Courses</p>
                     </div>
-                  </Link>
+                  </a>
 
-                  {/* Community */}
-                  <Link
-                    to="/ecosystem"
+                  {/* Custom Fabrication */}
+                  <a
+                    href={process.env.VITE_3D_STORE_URL || 'https://3d.makrx.store'}
+                    target="_blank"
+                    rel="noopener noreferrer"
                     className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors group/item"
                   >
-                    <div className="w-10 h-10 bg-yellow-100 dark:bg-yellow-900 rounded-lg flex items-center justify-center group-hover/item:scale-110 transition-transform">
-                      <Users className="w-5 h-5 text-yellow-600 dark:text-yellow-400" />
+                    <div className="w-10 h-10 bg-orange-100 dark:bg-orange-900 rounded-lg flex items-center justify-center group-hover/item:scale-110 transition-transform">
+                      <Package className="w-5 h-5 text-orange-600 dark:text-orange-400" />
                     </div>
                     <div className="flex-1 min-w-0">
-                      <p className="text-sm font-medium text-gray-900 dark:text-white">Ecosystem</p>
-                      <p className="text-xs text-gray-500 dark:text-gray-400">Overview</p>
+                      <p className="text-sm font-medium text-gray-900 dark:text-white">3D Print</p>
+                      <p className="text-xs text-gray-500 dark:text-gray-400">Custom jobs</p>
                     </div>
-                  </Link>
+                  </a>
                 </div>
 
                 <div className="px-4 pt-3 border-t border-gray-200 dark:border-gray-700">
