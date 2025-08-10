@@ -66,16 +66,22 @@ const StatCard: React.FC<StatCardProps> = ({ number, label, icon }) => {
               setDisplayNumber(Math.floor(currentNumber));
             }
           }, stepDuration);
+
+          // Store timer ref for cleanup
+          return () => clearInterval(timer);
         }
       },
       { threshold: 0.5 }
     );
 
-    if (ref.current) {
-      observer.observe(ref.current);
+    const currentRef = ref.current;
+    if (currentRef) {
+      observer.observe(currentRef);
     }
 
-    return () => observer.disconnect();
+    return () => {
+      observer.disconnect();
+    };
   }, [targetNumber, isVisible]);
 
   return (
