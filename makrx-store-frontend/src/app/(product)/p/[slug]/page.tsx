@@ -16,6 +16,7 @@ import ProductVariantSelector, { useProductVariants } from "@/components/Product
 import { ProductStructuredData, OrganizationStructuredData } from "@/components/StructuredData";
 import { ProductSEO } from "@/components/SEOMetaTags";
 import { api } from "@/lib/api";
+import { getRelatedProducts, getFrequentlyBoughtTogether } from "@/lib/recommendations";
 import ProductStructuredDataClient from "@/components/ProductStructuredData";
 import ProductPageErrorBoundary from "@/components/ProductPageErrorBoundary";
 
