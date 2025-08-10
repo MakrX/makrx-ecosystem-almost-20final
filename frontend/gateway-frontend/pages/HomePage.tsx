@@ -46,37 +46,40 @@ const StatCard: React.FC<StatCardProps> = ({ number, label, icon }) => {
   };
 
   useEffect(() => {
+    const startAnimation = () => {
+      if (hasAnimated) return;
+      setHasAnimated(true);
+
+      const duration = 2000;
+      const startTime = performance.now();
+
+      const animateNumber = (currentTime: number) => {
+        const elapsed = currentTime - startTime;
+        const progress = Math.min(elapsed / duration, 1);
+
+        // Use easing function for smooth animation
+        const easeOutQuart = 1 - Math.pow(1 - progress, 4);
+        const current = Math.floor(easeOutQuart * targetNumber);
+
+        setDisplayNumber(current);
+
+        if (progress < 1) {
+          requestAnimationFrame(animateNumber);
+        } else {
+          setDisplayNumber(targetNumber);
+        }
+      };
+
+      requestAnimationFrame(animateNumber);
+    };
+
     const observer = new IntersectionObserver(
       ([entry]) => {
-        if (entry.isIntersecting && !hasAnimated) {
-          setHasAnimated(true);
-
-          // Start animation immediately
-          let start = 0;
-          const duration = 2000;
-          const startTime = performance.now();
-
-          const animateNumber = (currentTime: number) => {
-            const elapsed = currentTime - startTime;
-            const progress = Math.min(elapsed / duration, 1);
-
-            // Use easing function for smooth animation
-            const easeOutQuart = 1 - Math.pow(1 - progress, 4);
-            const current = Math.floor(easeOutQuart * targetNumber);
-
-            setDisplayNumber(current);
-
-            if (progress < 1) {
-              requestAnimationFrame(animateNumber);
-            } else {
-              setDisplayNumber(targetNumber);
-            }
-          };
-
-          requestAnimationFrame(animateNumber);
+        if (entry.isIntersecting) {
+          startAnimation();
         }
       },
-      { threshold: 0.3 }
+      { threshold: 0.1, rootMargin: '50px' }
     );
 
     const currentRef = ref.current;
@@ -84,8 +87,14 @@ const StatCard: React.FC<StatCardProps> = ({ number, label, icon }) => {
       observer.observe(currentRef);
     }
 
+    // Fallback: start animation after 3 seconds if not triggered
+    const fallbackTimer = setTimeout(() => {
+      startAnimation();
+    }, 3000);
+
     return () => {
       observer.disconnect();
+      clearTimeout(fallbackTimer);
     };
   }, [targetNumber, hasAnimated]);
 
