@@ -37,18 +37,25 @@ export function ThemeProvider({
     const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
 
     const applyTheme = (newTheme: Theme) => {
+      // Force remove all theme classes
       root.classList.remove('light', 'dark');
+      root.removeAttribute('data-theme');
 
       let resolvedTheme: 'light' | 'dark';
-      
+
       if (newTheme === 'system') {
         resolvedTheme = mediaQuery.matches ? 'dark' : 'light';
       } else {
         resolvedTheme = newTheme;
       }
 
+      // Apply theme with both class and data attribute for maximum compatibility
       root.classList.add(resolvedTheme);
+      root.setAttribute('data-theme', resolvedTheme);
       setActualTheme(resolvedTheme);
+
+      // Force style recalculation
+      root.style.colorScheme = resolvedTheme;
 
       // Update meta theme-color for mobile browsers
       const metaThemeColor = document.querySelector('meta[name="theme-color"]:not([media])');
