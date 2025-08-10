@@ -121,13 +121,17 @@ const GeneralSettingsForm: React.FC<GeneralSettingsFormProps> = ({
       const formData = new FormData();
       formData.append('file', file);
 
-      // In a real implementation, you'd upload to your file storage service
-      // For now, we'll create a local object URL
-      const objectUrl = URL.createObjectURL(file);
-      handleInputChange('logo_url', objectUrl);
-      
-      // TODO: Implement actual file upload to backend/cloud storage
-      console.log('File upload would happen here:', file);
+      // Upload file using the file upload service
+      const uploadResult = await uploadProfileImage(file, (progress) => {
+        // Could add progress indicator here if needed
+        console.log(`Upload progress: ${progress}%`);
+      });
+
+      if (uploadResult.success && uploadResult.url) {
+        handleInputChange('logo_url', uploadResult.url);
+      } else {
+        throw new Error(uploadResult.error || 'Upload failed');
+      }
     } catch (error) {
       console.error('Error uploading logo:', error);
     } finally {
