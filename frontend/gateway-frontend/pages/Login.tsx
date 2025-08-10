@@ -29,23 +29,25 @@ export default function Login() {
         {/* Loading Card */}
         <div className="backdrop-blur-md border border-white/20 rounded-2xl p-8 bg-white/10 text-center">
           {/* Header */}
-          <div className="text-center mb-8">
-            <div className="flex justify-center mb-4">
+          <div className="text-center">
+            <div className="flex justify-center mb-6">
               <div className="relative">
-                <img
-                  src="https://cdn.builder.io/api/v1/assets/f367f5e46f75423a83d3f29fae529dbb/botlogofinal-c921e6?format=webp&width=800"
-                  alt="MakrBot"
-                  className="w-16 h-16"
-                />
-                <div className="absolute inset-0 bg-makrx-yellow/20 rounded-full blur-lg" />
+                <Bot className="w-16 h-16 text-makrx-yellow animate-pulse" />
+                <div className="absolute inset-0 bg-makrx-yellow/20 rounded-full blur-lg animate-pulse" />
               </div>
             </div>
-            <h1 className="text-2xl font-bold text-white mb-2">
-              Welcome to <span className="text-makrx-yellow">MakrX</span>
+            <h1 className="text-2xl font-bold text-white mb-4">
+              Redirecting to <span className="text-makrx-yellow">MakrX SSO</span>
             </h1>
-            <p className="text-white/80">
-              Sign in to access the maker ecosystem
+            <p className="text-white/80 mb-6">
+              Please wait while we redirect you to the secure authentication portal at
             </p>
+            <p className="text-makrx-yellow font-mono text-sm mb-6">
+              auth.makrx.org
+            </p>
+            <div className="flex justify-center">
+              <div className="w-8 h-8 border-4 border-white/30 border-t-makrx-yellow rounded-full animate-spin"></div>
+            </div>
           </div>
 
           {/* Login Form */}
