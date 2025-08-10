@@ -955,8 +955,22 @@ class ApiClient {
       const numericId = index + 1000; // Start from 1000 to avoid low number conflicts
 
       // Map product category to numeric ID
-      const categorySlug = product.category?.toLowerCase().replace(/\s+/g, '-').replace(/&/g, '');
-      const categoryId = categoryMap[categorySlug] || categoryMap['3d-printers'] || 1;
+      let categorySlug = product.category?.toLowerCase().replace(/\s+/g, '-').replace(/&/g, '');
+
+      // Handle common category name variations
+      if (categorySlug === 'filament-materials' || categorySlug === 'materials') {
+        categorySlug = 'filament';
+      }
+      if (categorySlug === 'tools-hardware' || categorySlug === 'hardware') {
+        categorySlug = 'tools';
+      }
+
+      const categoryId = categoryMap[categorySlug] || 1;
+
+      // Debugging: log category mapping
+      if (process.env.NODE_ENV === 'development' && index < 5) {
+        console.log(`Product ${product.name}: category "${product.category}" -> slug "${categorySlug}" -> ID ${categoryId}`);
+      }
 
       // Find the matching category from our categories data
       const categoryInfo = mockCategories.find(cat => cat.slug === categorySlug) || mockCategories[0];
