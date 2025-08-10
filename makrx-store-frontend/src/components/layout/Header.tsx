@@ -59,6 +59,12 @@ export function Header() {
       }
     };
 
+    loadCartCount();
+
+    return () => {
+      window.removeEventListener('categoriesUpdated', handleCategoriesUpdate as EventListener);
+    };
+
     loadCategories();
     loadCartCount();
   }, [isAuthenticated]);
