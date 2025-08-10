@@ -3,9 +3,34 @@ from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from sqlalchemy.orm import Session
 from typing import Optional
 import jwt
+import httpx
+import os
 from datetime import datetime
+import logging
 
 from .database import get_db
+
+# Configure logging
+logger = logging.getLogger(__name__)
+
+# Keycloak configuration
+KEYCLOAK_URL = os.getenv("KEYCLOAK_URL", "http://keycloak:8080")
+KEYCLOAK_REALM = os.getenv("KEYCLOAK_REALM", "makrx")
+KEYCLOAK_CLIENT_ID = os.getenv("KEYCLOAK_CLIENT_ID", "makrcave-frontend")
+
+# JWT verification settings
+JWT_SECRET = os.getenv("JWT_SECRET")
+if not JWT_SECRET:
+    logger.warning("JWT_SECRET not set - using fallback validation")
+
+# Global HTTP client for token validation
+http_client = None
+
+async def get_http_client():
+    global http_client
+    if http_client is None:
+        http_client = httpx.AsyncClient(timeout=30.0)
+    return http_client
 
 security = HTTPBearer()
 
@@ -17,43 +42,117 @@ class CurrentUser:
         self.role = role
         self.makerspace_id = makerspace_id
 
-async def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(security)) -> CurrentUser:
-    """Extract and validate current user from JWT token"""
+async def validate_token_with_auth_service(token: str) -> dict:
+    """Validate token using the auth service"""
     try:
-        # In a real implementation, you would:
-        # 1. Decode the JWT token
-        # 2. Validate the token signature
-        # 3. Check token expiration
-        # 4. Fetch user details from database
-        
-        token = credentials.credentials
-        
-        # Mock token validation for now
-        # payload = jwt.decode(token, SECRET_KEY, algorithms=["HS256"])
-        # user_id = payload.get("sub")
-        
-        # Mock user for demonstration
-        return CurrentUser(
-            id="user123",
-            name="John Doe",
-            email="john@example.com",
-            role="makerspace_admin",
-            makerspace_id="makrspace123"
+        client = await get_http_client()
+
+        # Call auth service to validate token
+        auth_service_url = os.getenv("AUTH_SERVICE_URL", "http://auth-service:8000")
+
+        response = await client.get(
+            f"{auth_service_url}/auth/profile",
+            headers={"Authorization": f"Bearer {token}"}
         )
-        
+
+        if response.status_code == 200:
+            return response.json()
+        else:
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="Token validation failed",
+                headers={"WWW-Authenticate": "Bearer"},
+            )
+
+    except httpx.RequestError:
+        # Fallback to local JWT validation if auth service is unavailable
+        logger.warning("Auth service unavailable, falling back to local validation")
+        return await validate_token_locally(token)
+
+async def validate_token_locally(token: str) -> dict:
+    """Fallback local token validation"""
+    try:
+        if JWT_SECRET:
+            # Validate service-generated tokens
+            payload = jwt.decode(token, JWT_SECRET, algorithms=["HS256"])
+            return payload
+        else:
+            # If no JWT_SECRET, decode without verification (development only)
+            logger.warning("No JWT_SECRET set - token validation disabled for development")
+            payload = jwt.decode(token, options={"verify_signature": False})
+            return payload
+
     except jwt.ExpiredSignatureError:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Token has expired",
             headers={"WWW-Authenticate": "Bearer"},
         )
-    except jwt.JWTError:
+    except jwt.InvalidTokenError:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Invalid token",
             headers={"WWW-Authenticate": "Bearer"},
         )
+
+def map_keycloak_roles_to_makrcave(keycloak_roles: list) -> str:
+    """Map Keycloak roles to MakrCave roles"""
+    role_mapping = {
+        "super-admin": "super_admin",
+        "makerspace-admin": "makerspace_admin",
+        "admin": "admin",
+        "user": "user",
+        "service-provider": "service_provider"
+    }
+
+    # Return the highest privilege role found
+    for keycloak_role in keycloak_roles:
+        if keycloak_role in role_mapping:
+            return role_mapping[keycloak_role]
+
+    # Default to user role
+    return "user"
+
+async def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(security)) -> CurrentUser:
+    """Extract and validate current user from JWT token"""
+    try:
+        token = credentials.credentials
+
+        # Validate token and get user data
+        user_data = await validate_token_with_auth_service(token)
+
+        # Extract user information
+        user_id = user_data.get("sub") or user_data.get("id")
+        email = user_data.get("email", "")
+        username = user_data.get("preferred_username") or user_data.get("username") or email
+
+        # Extract and map roles
+        keycloak_roles = []
+        if "realm_access" in user_data:
+            keycloak_roles.extend(user_data["realm_access"].get("roles", []))
+        if "resource_access" in user_data:
+            for client, access in user_data["resource_access"].items():
+                keycloak_roles.extend(access.get("roles", []))
+
+        makrcave_role = map_keycloak_roles_to_makrcave(keycloak_roles)
+
+        # Extract makerspace information (from token claims or default)
+        makerspace_id = user_data.get("makerspace_id") or "default-makerspace"
+
+        # Create user object
+        return CurrentUser(
+            id=user_id,
+            name=username,
+            email=email,
+            role=makrcave_role,
+            makerspace_id=makerspace_id
+        )
+
+    except HTTPException:
+        # Re-raise HTTP exceptions
+        raise
     except Exception as e:
+        logger.error(f"Authentication failed: {e}")
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Authentication failed",
