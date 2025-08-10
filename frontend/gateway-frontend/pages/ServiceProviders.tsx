@@ -3,7 +3,7 @@ import { ExternalLink, Zap, DollarSign, Clock, Users } from 'lucide-react';
 
 export default function ServiceProviders() {
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors">
       {/* Hero Section */}
       <section className="bg-gradient-to-br from-green-600 to-emerald-700 py-20">
         <div className="max-w-6xl mx-auto px-6 text-center">
@@ -30,14 +30,14 @@ export default function ServiceProviders() {
       {/* How It Works */}
       <section className="py-20">
         <div className="max-w-6xl mx-auto px-6">
-          <h2 className="text-3xl md:text-4xl font-bold text-center mb-16">
+          <h2 className="text-3xl md:text-4xl font-bold text-center mb-16 text-gray-900 dark:text-white">
             How Job Assignment Works
           </h2>
           
           <div className="grid md:grid-cols-3 gap-8 mb-16">
             <div className="text-center">
-              <div className="w-12 h-12 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center mx-auto mb-4 text-xl font-bold">1</div>
-              <h3 className="text-xl font-semibold mb-3">Job Posted</h3>
+              <div className="w-12 h-12 bg-blue-100 dark:bg-blue-900 text-blue-600 dark:text-blue-300 rounded-full flex items-center justify-center mx-auto mb-4 text-xl font-bold transition-colors">1</div>
+              <h3 className="text-xl font-semibold mb-3 text-gray-900 dark:text-white">Job Posted</h3>
               <p className="text-gray-600">Customers upload their designs and requirements through our platform.</p>
             </div>
 
