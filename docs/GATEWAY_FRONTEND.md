@@ -22,7 +22,7 @@ npm run preview  # Test build locally
 ## Architecture & Design
 
 ### System Architecture
-The Gateway Frontend follows a modern React architecture pattern:
+The Gateway Frontend follows a simplified React architecture:
 
 ```
 ┌─────────────────────────────────────────────────────────┐
@@ -30,34 +30,32 @@ The Gateway Frontend follows a modern React architecture pattern:
 ├─────────────────────────────────────────────────────────┤
 │  React Router (Client-side routing)                     │
 ├─────────────────────────────────────────────────────────┤
-│  React Context API (State Management)                   │
-│  ├── AuthContext (Authentication)                       │
-│  ├── FeatureFlagContext (Feature toggles)              │
-│  └── CrossPortalAuth (Cross-app auth)                  │
+│  Theme Provider (UI theming)                            │
 ├─────────────────────────────────────────────────────────┤
 │  Component Layer                                        │
-│  ├── Pages (Route components)                           │
-│  ├── Components (Reusable UI)                          │
-│  └── Hooks (Custom logic)                              │
+│  ├── Pages (Public route components)                   │
+│  ├── Components (Header, Footer, UI)                   │
+���  └── Utilities (Helpers, styles)                       │
 ├─────────────────────────────────────────────────────────┤
-│  External Integrations                                  │
-│  ├── Keycloak SSO (auth.makrx.org)                     │
-│  ├── MakrCave Portal (makrcave.makrx.org)              │
-│  ├── Store Portal (store.makrx.org)                    │
-│  └── Learn Portal (learn.makrx.org)                    │
+│  External Ecosystem Links                               │
+│  ├── MakrCave (makrcave.com)                           │
+│  ├── MakrX.Store (makrx.store)                         │
+│  ├── 3D.MakrX.Store (3d.makrx.store)                   │
+│  └── External Auth (auth.makrx.org)                    │
 └─────────────────────────────────────────────────────────┘
 ```
 
 ### Technology Stack
 - **Frontend Framework**: React 18.3.1 with TypeScript
-- **Build Tool**: Vite 6.3.5 (fast development, optimized builds)
+- **Build Tool**: Vite 6.2.2 (fast development, optimized builds)
 - **Styling**: Tailwind CSS with custom MakrX design system
-- **Routing**: React Router DOM v6
-- **State Management**: React Context API + custom hooks
-- **Authentication**: Keycloak SSO integration
-- **Feature Management**: Custom feature flag system
+- **Routing**: React Router DOM v6 (client-side routing)
+- **State Management**: Minimal (theme provider only)
+- **Icons**: Lucide React (lightweight icon library)
+- **Data Fetching**: TanStack React Query (for future API needs)
 - **Testing**: Vitest + React Testing Library
 - **Type Safety**: TypeScript with strict configuration
+- **Meta Tags**: React Helmet Async for SEO
 
 ### Design System Integration
 The Gateway uses a unified MakrX design system:
