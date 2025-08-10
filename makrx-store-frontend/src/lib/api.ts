@@ -836,7 +836,7 @@ class ApiClient {
   private getMockCategories() {
     // Transform mock categories to match API response format
     const transformedCategories = mockCategories.map((category, index) => ({
-      id: index + 1,
+      id: index + 100, // Start from 100 to avoid conflicts with product IDs
       name: category.name,
       slug: category.slug,
       description: category.description,
