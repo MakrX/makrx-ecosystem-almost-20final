@@ -536,12 +536,6 @@ export default function AccountOrdersPage() {
                         <Download className="h-4 w-4 mr-1" />
                         Invoice
                       </Button>
-                      {order.status === "delivered" && (
-                        <Button variant="outline" size="sm">
-                          <Star className="h-4 w-4 mr-1" />
-                          Review
-                        </Button>
-                      )}
                     </div>
 
                     <div className="flex items-center gap-2">
