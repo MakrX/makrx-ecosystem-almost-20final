@@ -534,10 +534,6 @@ class ApiClient {
     return this.request<{ brands: string[] }>("/catalog/brands");
   }
 
-  // Get single product by slug
-  async getProductBySlug(slug: string) {
-    return this.request<Product>(`/catalog/products/slug/${slug}`);
-  }
 
   // Categories
   async getCategories(
