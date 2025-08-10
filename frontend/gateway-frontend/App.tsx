@@ -12,6 +12,7 @@ import EnhancedHeader from "./components/EnhancedHeader";
 import HomePage from "./pages/HomePage";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
+import AuthCallback from "./pages/AuthCallback";
 import MakrCave from "./pages/MakrCave";
 import Store from "./pages/Store";
 import Learn from "./pages/Learn";
