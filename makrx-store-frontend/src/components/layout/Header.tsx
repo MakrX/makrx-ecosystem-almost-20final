@@ -17,7 +17,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { api, type Category, type Product } from "@/lib/api";
 import SmartSearch from "@/components/SmartSearch";
 import NotificationDropdown from "@/components/NotificationDropdown";
-import { ThemeToggle } from "@/components/ThemeToggle";
+import { ThemeToggle, ThemeToggleCompact } from "@/components/ThemeToggle";
 
 export function Header() {
   const { user, isAuthenticated, login, logout } = useAuth();
@@ -298,7 +298,7 @@ export function Header() {
             </div>
 
             {/* Theme Toggle */}
-            <ThemeToggle variant="icon-only" className="text-foreground hover:text-blue-600 dark:hover:text-blue-400" />
+            <ThemeToggle />
 
             {/* Cart */}
             <Link
@@ -359,9 +359,7 @@ export function Header() {
                       </button>
                     )}
                     <hr className="my-1 border-border" />
-                    <div className="px-4 py-2">
-                      <ThemeToggle variant="compact" className="" />
-                    </div>
+                    <ThemeToggleCompact />
                     <hr className="my-1 border-border" />
                     <button
                       onClick={() => handleUserMenuClick("logout")}
@@ -465,9 +463,7 @@ export function Header() {
             {/* Theme Toggle for Mobile */}
             <div className="py-2 border-t border-border">
               <div className="font-medium text-foreground mb-2">Appearance</div>
-              <div className="pl-4">
-                <ThemeToggle variant="compact" className="" />
-              </div>
+              <ThemeToggleCompact />
             </div>
 
             {/* Mobile user menu */}
