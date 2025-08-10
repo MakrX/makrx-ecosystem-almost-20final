@@ -225,7 +225,7 @@ export default function HomePage() {
                     </div>
 
                     {/* Separator */}
-                    <div className="hidden sm:block w-2 h-2 rounded-full bg-makrx-yellow/60" style={{opacity: '0', animation: 'fadeIn 0.6s ease-out 1.2s forwards'}}></div>
+                    <div className="w-1 h-1 sm:w-2 sm:h-2 rounded-full bg-makrx-yellow/60" style={{opacity: '0', animation: 'fadeIn 0.6s ease-out 1.2s forwards'}}></div>
 
                     {/* Share word with enhanced animations */}
                     <div className="share-word inline-block animate-slide-in-left cursor-default relative group" style={{animationDelay: '0.8s'}}>
