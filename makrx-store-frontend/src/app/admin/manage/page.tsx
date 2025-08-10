@@ -687,11 +687,12 @@ function AdminManagementPage() {
               if (activeTab === 'categories') setShowCategoryForm(true);
               else if (activeTab === 'filters') setShowFilterForm(true);
               else if (activeTab === 'products') setShowProductForm(true);
+              else if (activeTab === 'qrcodes') setShowQRForm(true);
             }}
             className="ml-4 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center gap-2"
           >
             <Plus className="h-4 w-4" />
-            Add {activeTab.slice(0, -1)}
+            {activeTab === 'qrcodes' ? 'Generate QR Code' : `Add ${activeTab.slice(0, -1)}`}
           </button>
         </div>
 
