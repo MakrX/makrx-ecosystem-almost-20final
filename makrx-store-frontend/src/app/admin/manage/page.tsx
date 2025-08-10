@@ -85,7 +85,18 @@ interface AdminProduct {
   origin: string;
 }
 
-type AdminTab = 'categories' | 'filters' | 'products';
+interface QRCodeData {
+  id: string;
+  type: 'product' | 'project' | 'category';
+  title: string;
+  content: string;
+  data: any;
+  qrCodeUrl: string;
+  createdAt: string;
+  expiresAt?: string;
+}
+
+type AdminTab = 'categories' | 'filters' | 'products' | 'qrcodes';
 
 function AdminManagementPage() {
   const [activeTab, setActiveTab] = useState<AdminTab>('categories');
