@@ -364,7 +364,7 @@ export default function ProductPage() {
             )}
 
             {/* Quick Specifications */}
-            {product.attributes && Object.keys(product.attributes).length > 0 && (
+            {product.attributes && Object.keys(product.attributes || {}).length > 0 && (
               <div>
                 <h3 className="font-semibold text-gray-900 mb-3">
                   Key Features
@@ -386,7 +386,7 @@ export default function ProductPage() {
                       </div>
                     ))}
                 </div>
-                {Object.keys(product.attributes).length > 4 && (
+                {Object.keys(product.attributes || {}).length > 4 && (
                   <button
                     onClick={() => setShowSpecifications(!showSpecifications)}
                     className="text-sm text-blue-600 hover:text-blue-700 mt-2"
@@ -529,14 +529,14 @@ export default function ProductPage() {
 
             {activeTab === "specifications" && (
               <div>
-                {Object.keys(product.specifications).length > 0 ? (
+                {Object.keys(product.specifications || {}).length > 0 ? (
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                     <div>
                       <h3 className="font-semibold text-gray-900 mb-4">
                         Technical Specifications
                       </h3>
                       <div className="space-y-3">
-                        {Object.entries(product.specifications).map(
+                        {Object.entries(product.specifications || {}).map(
                           ([key, value]) => (
                             <div
                               key={key}
@@ -554,13 +554,13 @@ export default function ProductPage() {
                       </div>
                     </div>
 
-                    {Object.keys(product.attributes).length > 0 && (
+                    {Object.keys(product.attributes || {}).length > 0 && (
                       <div>
                         <h3 className="font-semibold text-gray-900 mb-4">
                           Product Attributes
                         </h3>
                         <div className="space-y-3">
-                          {Object.entries(product.attributes).map(
+                          {Object.entries(product.attributes || {}).map(
                             ([key, value]) => (
                               <div
                                 key={key}
