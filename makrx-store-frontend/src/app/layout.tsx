@@ -64,18 +64,43 @@ export default function RootLayout({
         <script
           dangerouslySetInnerHTML={{
             __html: `
-              // Only apply fetch protection in production to avoid interfering with Next.js development
+              // Aggressive development error suppression
               (function(){
                 const isDev = window.location.hostname === 'localhost' ||
                              window.location.hostname.includes('dev') ||
                              window.location.port ||
                              window.location.hostname.includes('fly.dev');
                 if (isDev) {
-                  // In development/staging, minimal protection to avoid Next.js interference
-                  console.log('Development mode detected, minimal fetch protection applied');
-                  return; // Skip fetch protection entirely in development
+                  // Suppress RSC and development errors early
+                  const isDevelopmentError = (msg) => {
+                    const text = (msg || '').toLowerCase();
+                    return text.includes('failed to fetch') ||
+                           text.includes('rsc payload') ||
+                           text.includes('fetchserverresponse') ||
+                           text.includes('fastrefresh') ||
+                           text.includes('hot-reloader') ||
+                           text.includes('webpack') ||
+                           text.includes('fullstory') ||
+                           text.includes('fs.js');
+                  };
+
+                  // Override early error handlers
+                  window.addEventListener('error', (e) => {
+                    if (isDevelopmentError(e.message) || isDevelopmentError(e.error?.message)) {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      return false;
+                    }
+                  }, true);
+
+                  window.addEventListener('unhandledrejection', (e) => {
+                    if (isDevelopmentError(e.reason?.message)) {
+                      e.preventDefault();
+                      return false;
+                    }
+                  }, true);
                 } else {
-                  // In production, apply stricter protection
+                  // In production, apply fetch protection
                   try{
                     const f=fetch;
                     Object.defineProperty(window,'fetch',{value:f,writable:false,configurable:false});
