@@ -460,7 +460,7 @@ export default function CatalogPage() {
                     }`}
                   >
                     <Link
-                      href={`/product/${product.slug}`}
+                      href={`/p/${product.slug}`}
                       className={
                         viewMode === "list" ? "flex-shrink-0" : "block"
                       }
