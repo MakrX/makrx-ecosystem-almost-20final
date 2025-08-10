@@ -160,6 +160,7 @@ const Testimonial: React.FC<TestimonialProps> = ({ quote, author, role, company 
 );
 
 export default function HomePage() {
+  const [isLauncherOpen, setIsLauncherOpen] = useState(false);
   const showStats = useBooleanFlag('org.homepage.stats', true);
   const showTestimonials = useBooleanFlag('org.homepage.testimonials', true);
   const showVideo = useBooleanFlag('org.homepage.video', true);
