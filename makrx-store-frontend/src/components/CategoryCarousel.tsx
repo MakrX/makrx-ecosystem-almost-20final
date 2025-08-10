@@ -165,9 +165,9 @@ export default function CategoryCarousel({
                         ? "bg-gradient-to-br from-blue-500 to-blue-600"
                         : "bg-gradient-to-br from-gray-100 to-gray-200"
                     }`}>
-                      {category.image ? (
+                      {(category.image_url || (category as any).image) ? (
                         <Image
-                          src={category.image}
+                          src={category.image_url || (category as any).image}
                           alt={category.name}
                           fill
                           className="object-cover transition-transform duration-300 group-hover:scale-110"
