@@ -88,7 +88,7 @@ export default function HomePage() {
   return (
     <div className="min-h-screen">
       {/* Hero Section */}
-      <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-to-br from-makrx-blue via-makrx-blue/90 to-purple-900 px-4 sm:px-6 pt-20 lg:pt-24">
+      <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-to-br from-makrx-blue via-makrx-blue/90 to-purple-900 px-4 sm:px-6">
         {/* Background Pattern */}
         <div className="absolute inset-0 opacity-10">
           <div className="absolute inset-0" style={{
