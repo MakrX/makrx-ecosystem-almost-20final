@@ -43,7 +43,7 @@ export default function CategoryCarousel({
   }, []);
 
   const canScrollLeft = currentIndex > 0;
-  const canScrollRight = currentIndex < categories.length - visibleCount;
+  const canScrollRight = currentIndex < displayCategories.length - visibleCount;
 
   const scrollLeft = () => {
     if (canScrollLeft && !isScrolling) {
