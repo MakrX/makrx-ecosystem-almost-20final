@@ -13,11 +13,19 @@ interface FilterFacet {
 }
 
 interface EnhancedCategoryFiltersProps {
-  facets: FilterFacet[];
-  activeFilters: Record<string, string[]>;
-  onFilterChange: (filters: Record<string, string[]>) => void;
+  // New interface for facet-based filtering
+  facets?: FilterFacet[];
+  activeFilters?: Record<string, string[]>;
+  onFilterChange?: (filters: Record<string, string[]>) => void;
+  onToggle?: () => void;
+
+  // Legacy interface for category-based filtering
+  category?: string;
+  onFiltersChange?: (filters: any) => void;
+  onClose?: () => void;
+
+  // Common props
   isOpen: boolean;
-  onToggle: () => void;
   className?: string;
 }
 
