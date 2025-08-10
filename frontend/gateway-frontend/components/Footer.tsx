@@ -196,7 +196,7 @@ export default function Footer() {
         </div>
 
         {/* Social Links */}
-        <div className="border-t border-gray-800 pt-8 mb-8">
+        <div className="border-t border-gray-800 dark:border-gray-700 pt-8 mb-8">
           <div className="flex flex-col sm:flex-row items-center justify-between gap-6">
             <div className="flex items-center gap-4">
               <span className="text-gray-400 text-sm">Follow us:</span>
