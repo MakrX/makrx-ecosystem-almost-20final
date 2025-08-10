@@ -16,6 +16,7 @@ import ProductVariantSelector, { useProductVariants } from "@/components/Product
 import { ProductStructuredData, OrganizationStructuredData } from "@/components/StructuredData";
 import { ProductSEO } from "@/components/SEOMetaTags";
 import { api } from "@/lib/api";
+import ProductStructuredDataClient from "@/components/ProductStructuredData";
 
 interface Product {
   id: number;
