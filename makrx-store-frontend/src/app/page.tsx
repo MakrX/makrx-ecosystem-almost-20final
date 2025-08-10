@@ -356,6 +356,60 @@ export default function HomePage() {
           </div>
         </div>
       </section>
+
+      {/* QR Code Demo Section */}
+      <section className="py-16 bg-gradient-to-r from-green-50 to-blue-50 dark:from-green-900/20 dark:to-blue-900/20">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center">
+            <div className="inline-flex items-center justify-center w-16 h-16 bg-green-100 dark:bg-green-800 rounded-full mb-6">
+              <QrCode className="h-8 w-8 text-green-600 dark:text-green-400" />
+            </div>
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">
+              QR Code Integration Demo
+            </h2>
+            <p className="text-xl text-gray-600 dark:text-gray-300 mb-8 max-w-3xl mx-auto">
+              Experience our revolutionary QR code system for warehouse management, billing automation, and makerspace inventory integration.
+            </p>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
+              <div className="text-center">
+                <div className="bg-blue-100 dark:bg-blue-800 w-12 h-12 rounded-lg flex items-center justify-center mx-auto mb-3">
+                  <Package className="h-6 w-6 text-blue-600 dark:text-blue-400" />
+                </div>
+                <h3 className="font-semibold text-gray-900 dark:text-white mb-2">Warehouse Automation</h3>
+                <p className="text-sm text-gray-600 dark:text-gray-300">
+                  Scan QR codes to automatically bill components in/out of warehouse
+                </p>
+              </div>
+              <div className="text-center">
+                <div className="bg-green-100 dark:bg-green-800 w-12 h-12 rounded-lg flex items-center justify-center mx-auto mb-3">
+                  <Truck className="h-6 w-6 text-green-600 dark:text-green-400" />
+                </div>
+                <h3 className="font-semibold text-gray-900 dark:text-white mb-2">Shipping Integration</h3>
+                <p className="text-sm text-gray-600 dark:text-gray-300">
+                  Streamline shipping processes with automated data capture
+                </p>
+              </div>
+              <div className="text-center">
+                <div className="bg-purple-100 dark:bg-purple-800 w-12 h-12 rounded-lg flex items-center justify-center mx-auto mb-3">
+                  <Users className="h-6 w-6 text-purple-600 dark:text-purple-400" />
+                </div>
+                <h3 className="font-semibold text-gray-900 dark:text-white mb-2">Makerspace Inventory</h3>
+                <p className="text-sm text-gray-600 dark:text-gray-300">
+                  Allow makerspace managers to add items by scanning QR codes
+                </p>
+              </div>
+            </div>
+            <Link
+              href="/demo/qr-generator"
+              className="bg-green-600 hover:bg-green-700 text-white px-8 py-3 rounded-lg font-semibold inline-flex items-center gap-2 transition-colors"
+            >
+              <QrCode className="h-5 w-5" />
+              Try QR Demo
+              <ArrowRight className="h-5 w-5" />
+            </Link>
+          </div>
+        </div>
+      </section>
     </div>
   );
 }
