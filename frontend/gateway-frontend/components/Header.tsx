@@ -107,10 +107,10 @@ export default function Header() {
                         <div className={`w-8 h-8 ${app.bgColor} rounded-lg flex items-center justify-center mb-2 transition-colors`}>
                           <div className={`w-4 h-4 ${app.iconColor} rounded transition-colors`}></div>
                         </div>
-                        <div className="text-sm font-medium text-gray-900 dark:text-white group-hover:text-makrx-blue dark:group-hover:text-makrx-blue transition-colors">
+                        <div className="text-sm font-medium text-gray-900 dark:text-gray-100 group-hover:text-makrx-blue dark:group-hover:text-makrx-yellow transition-colors">
                           {app.name}
                         </div>
-                        <div className="text-xs text-gray-500 dark:text-gray-400">{app.description}</div>
+                        <div className="text-xs text-gray-500 dark:text-gray-300">{app.description}</div>
                       </a>
                     ))}
                   </div>
