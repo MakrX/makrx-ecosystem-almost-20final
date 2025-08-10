@@ -184,7 +184,7 @@ export default function Header() {
                       href={app.url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex items-center gap-3 p-2 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+                      className="flex items-center gap-3 p-2 rounded-lg hover:bg-gray-50 dark:hover:bg-slate-900 transition-colors"
                     >
                       <div className={`w-6 h-6 ${app.bgColor} rounded flex items-center justify-center transition-colors`}>
                         <div className={`w-3 h-3 ${app.iconColor} rounded transition-colors`}></div>
