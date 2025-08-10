@@ -32,6 +32,17 @@ const StatCard: React.FC<StatCardProps> = ({ number, label, icon }) => {
     return num.toString();
   };
 
+  // Get display text based on the current number
+  const getDisplayText = () => {
+    if (targetNumber >= 1000) {
+      // For large numbers, always format
+      return formatNumber(displayNumber);
+    } else {
+      // For small numbers, show number + suffix
+      return displayNumber + suffix;
+    }
+  };
+
   useEffect(() => {
     const observer = new IntersectionObserver(
       ([entry]) => {
@@ -73,8 +84,8 @@ const StatCard: React.FC<StatCardProps> = ({ number, label, icon }) => {
           {icon}
         </div>
       </div>
-      <div className="text-3xl font-bold text-white mb-2">
-        {targetNumber >= 1000 ? formatNumber(displayNumber) : displayNumber}{targetNumber < 1000 ? suffix : ''}
+      <div className="text-3xl font-bold text-white mb-2" aria-live="polite">
+        {getDisplayText()}
       </div>
       <div className="text-white/80">{label}</div>
     </div>
@@ -245,8 +256,11 @@ export default function HomePage() {
             <div className="relative max-w-4xl mx-auto">
               <div className="aspect-video bg-black/20 rounded-2xl overflow-hidden backdrop-blur border border-white/20">
                 <div className="w-full h-full flex items-center justify-center">
-                  <button className="w-20 h-20 bg-makrx-yellow rounded-full flex items-center justify-center hover:bg-yellow-300 transition-colors group">
-                    <Play className="w-8 h-8 text-makrx-blue ml-1 group-hover:scale-110 transition-transform" />
+                  <button
+                    className="w-20 h-20 bg-makrx-yellow rounded-full flex items-center justify-center hover:bg-yellow-300 transition-colors group"
+                    aria-label="Play video about MakrX ecosystem"
+                  >
+                    <Play className="w-8 h-8 text-makrx-blue ml-1 group-hover:scale-110 transition-transform" aria-hidden="true" />
                   </button>
                 </div>
               </div>

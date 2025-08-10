@@ -150,17 +150,26 @@ export default function Footer() {
               Get the latest maker news, workshop announcements, and exclusive insights delivered to your inbox.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 max-w-md mx-auto">
+              <label htmlFor="newsletter-email" className="sr-only">
+                Email address for newsletter subscription
+              </label>
               <input
+                id="newsletter-email"
                 type="email"
                 placeholder="Enter your email"
                 className="flex-1 px-4 py-3 rounded-lg bg-gray-800 border border-gray-700 text-white placeholder-gray-400 focus:border-makrx-yellow focus:outline-none"
+                aria-required="true"
+                aria-describedby="newsletter-description"
               />
-              <button className="px-6 py-3 bg-makrx-yellow text-makrx-blue font-semibold rounded-lg hover:bg-yellow-300 transition-colors flex items-center justify-center gap-2">
+              <button
+                className="px-6 py-3 bg-makrx-yellow text-makrx-blue font-semibold rounded-lg hover:bg-yellow-300 transition-colors flex items-center justify-center gap-2"
+                aria-label="Subscribe to newsletter"
+              >
                 Subscribe
-                <ArrowRight className="w-4 h-4" />
+                <ArrowRight className="w-4 h-4" aria-hidden="true" />
               </button>
             </div>
-            <p className="text-xs text-gray-500 mt-3">
+            <p id="newsletter-description" className="text-xs text-gray-500 mt-3">
               No spam, unsubscribe anytime. Read our{' '}
               <Link to="/privacy" className="text-makrx-yellow hover:underline">
                 Privacy Policy
