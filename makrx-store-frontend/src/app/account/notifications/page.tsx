@@ -27,10 +27,10 @@ function NotificationSettingsPage() {
   const [settings, setSettings] = useState<NotificationSettings>({
     email_notifications: true,
     push_notifications: false,
-    order_updates: true,
+    sms_notifications: false,
     marketing_emails: false,
-    security_alerts: true,
-    processing_updates: true,
+    order_updates: true,
+    product_updates: true,
   });
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
