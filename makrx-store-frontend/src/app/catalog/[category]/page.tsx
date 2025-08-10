@@ -47,10 +47,8 @@ export default function CategoryPage() {
     const checkScreenSize = () => {
       const mobile = window.innerWidth < 1024; // lg breakpoint
       setIsMobile(mobile);
-      // On desktop, show filters by default; on mobile, keep them hidden
-      if (!mobile && !showFilters) {
-        setShowFilters(true);
-      }
+      // On desktop, show filters by default
+      setShowFilters(!mobile);
     };
 
     checkScreenSize();
