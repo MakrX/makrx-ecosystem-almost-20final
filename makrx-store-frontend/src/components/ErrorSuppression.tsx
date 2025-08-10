@@ -61,25 +61,8 @@ export function ErrorSuppression() {
       return false; // Let other errors through
     };
 
-    // Only intercept very specific problematic requests in development
+    // Store original fetch for cleanup, but don't intercept it
     const originalFetch = window.fetch;
-    const interceptedFetch = async (input: RequestInfo | URL, init?: RequestInit) => {
-      const url = typeof input === "string" ? input : input.toString();
-
-      // Only block explicit placeholder URLs that we know are problematic
-      if (url && url.includes("/api/placeholder")) {
-        console.warn("Blocked placeholder request:", url);
-        // Return a resolved promise with a mock response
-        return Promise.resolve(new Response("", {
-          status: 200,
-          statusText: "OK",
-          headers: new Headers()
-        }));
-      }
-
-      // For all other requests, use original fetch without any interception
-      return originalFetch(input, init);
-    };
 
     // Add global resource error handler
     const handleResourceError = (event: Event) => {
