@@ -35,13 +35,39 @@ app = FastAPI(
     redoc_url="/redoc"
 )
 
-# CORS middleware configuration
+# CORS middleware configuration - Secure origins only
+allowed_origins = [
+    "https://makrcave.com",
+    "https://makrx.org",
+    "https://makrx.store",
+    "http://localhost:3000",  # Gateway (development)
+    "http://localhost:3001",  # MakrCave (development)
+    "http://localhost:3002",  # Store (development)
+    "http://localhost:3003",  # Store alternate (development)
+]
+
+# Add environment-specific origins
+if os.getenv("ENVIRONMENT") == "development":
+    allowed_origins.extend([
+        "http://gateway-frontend:3000",
+        "http://makrcave-frontend:3001",
+        "http://makrx-store-frontend:3002"
+    ])
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Configure this properly for production
+    allow_origins=allowed_origins,
     allow_credentials=True,
     allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    allow_headers=["*"],
+    allow_headers=[
+        "Accept",
+        "Accept-Language",
+        "Content-Language",
+        "Content-Type",
+        "Authorization",
+        "X-Requested-With",
+        "X-CSRF-Token"
+    ],
 )
 
 # Global exception handler
