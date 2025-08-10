@@ -538,7 +538,7 @@ export default function CategoryPage() {
                               </div>
                             </div>
                             <div className="flex gap-2">
-                              <Link href={`/product/${product.id}`} className="flex-1">
+                              <Link href={`/p/${product.id}`} className="flex-1">
                                 <Button variant="outline" size="sm" className="w-full text-xs">
                                   <Eye className="h-3 w-3 mr-1" />
                                   View
