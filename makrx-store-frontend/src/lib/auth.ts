@@ -154,7 +154,12 @@ export const refreshToken = async (): Promise<boolean> => {
     setTokens(tokens);
     return true;
   } catch (error) {
-    console.error("Token refresh failed:", error);
+    // In development, silently handle auth errors
+    if (process.env.NODE_ENV === "development") {
+      console.warn("Auth service unavailable in development mode");
+    } else {
+      console.error("Token refresh failed:", error);
+    }
     clearTokens();
     return false;
   }
