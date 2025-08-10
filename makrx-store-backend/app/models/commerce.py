@@ -101,7 +101,7 @@ class Product(Base):
     
     # Relationships
     category = relationship("Category", back_populates="products")
-    brand_info = relationship("Brand", back_populates="products", foreign_keys=[brand])
+    brand_info = relationship("Brand", back_populates="products", foreign_keys=[brand_id])
     variants = relationship("ProductVariant", back_populates="product", cascade="all, delete-orphan")
     cart_items = relationship("CartItem", back_populates="product")
     order_items = relationship("OrderItem", back_populates="product")
