@@ -284,11 +284,12 @@ export default function ProductPage() {
           crumbs.push({ name: productData.name, href: `/p/${productData.slug}` });
           setBreadcrumbs(crumbs);
 
-          // Use recommendation system to get related products
+          // Use recommendation system to get related and complementary products
           const allProducts = await api.getProducts();
           const recommendations = getRelatedProducts(product, allProducts, 6);
+          const complementary = getFrequentlyBoughtTogether(product, allProducts, 4);
           setRelatedProducts(recommendations);
-          setComplementaryProducts([]);
+          setComplementaryProducts(complementary);
         }
       } catch (error) {
         // Only log if not an abort error and component is still mounted
