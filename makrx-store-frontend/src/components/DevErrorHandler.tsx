@@ -11,35 +11,17 @@ export default function DevErrorHandler() {
     const handleUnhandledRejection = (event: PromiseRejectionEvent) => {
       const error = event.reason;
 
-      // Check if this is a Next.js RSC payload fetch error
-      if (error &&
-          (error.message?.includes('Failed to fetch') ||
-           error.message?.includes('RSC payload') ||
-           error.toString?.().includes('fetchServerResponse') ||
-           error.toString?.().includes('fastRefreshReducerImpl') ||
-           error.toString?.().includes('router-reducer'))) {
+      // Be more specific about RSC errors - only handle development-specific Next.js errors
+      if (error && error.stack && (
+          (error.message?.includes('Failed to fetch') &&
+           (error.stack.includes('fetchServerResponse') ||
+            error.stack.includes('fastRefreshReducerImpl') ||
+            error.stack.includes('router-reducer'))) ||
+          error.message?.includes('RSC payload'))) {
 
-        console.warn('Development: RSC payload fetch failed, preventing error propagation');
-
-        // Prevent the error from bubbling up and causing unnecessary noise
+        // Only suppress these specific Next.js development errors
+        console.warn('Development: Next.js RSC fetch error suppressed for better development experience');
         event.preventDefault();
-
-        // Reset error count periodically
-        const now = Date.now();
-        const lastErrorTime = parseInt(sessionStorage.getItem('rsc-error-time') || '0');
-        if (now - lastErrorTime > 30000) { // Reset every 30 seconds
-          sessionStorage.setItem('rsc-error-count', '0');
-        }
-        sessionStorage.setItem('rsc-error-time', now.toString());
-
-        const errorCount = parseInt(sessionStorage.getItem('rsc-error-count') || '0') + 1;
-        sessionStorage.setItem('rsc-error-count', errorCount.toString());
-
-        // If too many errors in a short time, suggest refresh
-        if (errorCount > 10) {
-          console.log('Multiple RSC errors detected. The page will continue to work normally.');
-          sessionStorage.setItem('rsc-error-count', '0');
-        }
 
         return; // Exit early to prevent further processing
       }
