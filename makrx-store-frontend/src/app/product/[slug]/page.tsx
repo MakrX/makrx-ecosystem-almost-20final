@@ -50,6 +50,11 @@ export default function ProductPage() {
         const productData = await api.getProductBySlug(slug);
         setProduct(productData);
 
+        // Ensure selectedImageIndex is valid for the loaded product
+        if (productData.images && productData.images.length > 0) {
+          setSelectedImageIndex(0);
+        }
+
         // Load related products from the same category
         if (productData.category_id) {
           const relatedData = await api.getProductsByCategory(
