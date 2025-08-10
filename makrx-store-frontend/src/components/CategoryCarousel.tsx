@@ -33,6 +33,17 @@ export default function CategoryCarousel({
 
   const [visibleCount, setVisibleCount] = useState(getVisibleCount);
 
+  // Add "All Categories" option at the beginning
+  const allCategoriesOption = {
+    id: 0,
+    name: "All Categories",
+    description: "Browse all products",
+    image_url: undefined,
+    product_count: 0
+  };
+
+  const displayCategories = [allCategoriesOption, ...categories] as any[];
+
   useEffect(() => {
     const handleResize = () => {
       setVisibleCount(getVisibleCount());
@@ -66,17 +77,6 @@ export default function CategoryCarousel({
       onCategorySelect(category.id);
     }
   };
-
-  // Add "All Categories" option at the beginning
-  const allCategoriesOption = {
-    id: 0,
-    name: "All Categories",
-    description: "Browse all products",
-    image_url: undefined,
-    product_count: 0
-  };
-
-  const displayCategories = [allCategoriesOption, ...categories] as any[];
 
   if (categories.length === 0) {
     return (
