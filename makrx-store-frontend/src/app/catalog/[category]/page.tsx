@@ -43,11 +43,13 @@ export default function CategoryPage() {
   const [compareList, setCompareList] = useState<string[]>([])
 
   const [filteredProducts, setFilteredProducts] = useState<Product[]>([])
+  const [categoryProductsCount, setCategoryProductsCount] = useState(0)
 
   // Update products when filters or search change
   useEffect(() => {
     // Get category products inside useEffect to avoid infinite loop
     const categoryProducts = getProductsByCategory(categorySlug)
+    setCategoryProductsCount(categoryProducts.length)
     let filtered = categoryProducts
 
     // Apply search
