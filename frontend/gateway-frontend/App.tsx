@@ -27,6 +27,9 @@ import Profile from "./pages/Profile";
 import ProfilePage from "./pages/ProfilePage";
 import FeatureFlagsAdmin from "./pages/admin/FeatureFlags";
 import NotFound from "./pages/NotFound";
+import PrivacyPolicy from "./pages/PrivacyPolicy";
+import TermsOfService from "./pages/TermsOfService";
+import CookiePolicy from "./pages/CookiePolicy";
 import { Helmet } from "react-helmet-async";
 
 const queryClient = new QueryClient();
