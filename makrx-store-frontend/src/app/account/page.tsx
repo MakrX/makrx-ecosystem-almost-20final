@@ -396,7 +396,7 @@ export default function AccountDashboard() {
                   </Link>
                   <Link href="/account/saved-carts">
                     <Button variant="outline" className="w-full justify-start">
-                      <ShoppingCart className="h-4 w-4 mr-2" />
+                      <Bookmark className="h-4 w-4 mr-2" />
                       Saved Carts
                     </Button>
                   </Link>
