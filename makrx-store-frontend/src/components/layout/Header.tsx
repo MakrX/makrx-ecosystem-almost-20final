@@ -26,7 +26,7 @@ export function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [categories, setCategories] = useState<AdminCategory[]>([]);
   const [cartItemCount, setCartItemCount] = useState(0);
-  const [hoveredCategory, setHoveredCategory] = useState<number | null>(null);
+  const [hoveredCategory, setHoveredCategory] = useState<string | null>(null);
 
   // Load categories and cart count
   useEffect(() => {
