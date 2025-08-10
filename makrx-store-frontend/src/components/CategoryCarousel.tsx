@@ -72,7 +72,7 @@ export default function CategoryCarousel({
     id: 0,
     name: "All Categories",
     description: "Browse all products",
-    image: undefined,
+    image_url: undefined,
     product_count: 0
   };
 
