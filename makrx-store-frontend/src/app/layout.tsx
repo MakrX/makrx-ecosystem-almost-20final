@@ -44,7 +44,7 @@ if (typeof window !== "undefined" && process.env.NODE_ENV === "development") {
     return false; // Let other errors through
   };
 
-  // Intercept fetch requests to block placeholder URLs
+  // Intercept fetch requests to block placeholder URLs and handle API errors
   const originalFetch = window.fetch;
   window.fetch = async (input, init) => {
     const url = typeof input === "string" ? input : input.url;
@@ -60,8 +60,24 @@ if (typeof window !== "undefined" && process.env.NODE_ENV === "development") {
       }));
     }
 
-    // Allow other requests to proceed
-    return originalFetch(input, init);
+    // Block requests to backend API in development if they're failing
+    if (url && url.includes("localhost:8003") && process.env.NODE_ENV === "development") {
+      console.warn("Intercepted API request in development mode:", url);
+      // Return a mock response that will trigger the fallback logic
+      return Promise.reject(new TypeError("Failed to fetch"));
+    }
+
+    try {
+      // Allow other requests to proceed
+      return await originalFetch(input, init);
+    } catch (error) {
+      // Suppress network errors in development
+      if (process.env.NODE_ENV === "development") {
+        console.warn("Network request failed (suppressed in dev):", url, error);
+        throw error; // Re-throw to maintain API client fallback logic
+      }
+      throw error;
+    }
   };
 }
 
