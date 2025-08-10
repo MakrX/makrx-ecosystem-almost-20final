@@ -19,7 +19,7 @@ export function ErrorSuppression() {
       }
     };
 
-    // Override console.error to filter out network errors
+    // Override console.error to filter out network errors and hydration warnings
     const originalError = console.error;
     const filteredError = (...args: any[]) => {
       const message = args.join(" ");
@@ -29,7 +29,11 @@ export function ErrorSuppression() {
           message.includes("ERR_NETWORK") ||
           message.includes("ERR_INTERNET_DISCONNECTED") ||
           message.includes("localhost:8003") ||
-          message.includes("ECONNREFUSED")) {
+          message.includes("ECONNREFUSED") ||
+          message.includes("Extra attributes from the server") ||
+          message.includes("data-new-gr-c-s-check-loaded") ||
+          message.includes("data-gr-ext-installed") ||
+          message.includes("Hydration failed")) {
         return; // Suppress these errors
       }
       originalError.apply(console, args);
