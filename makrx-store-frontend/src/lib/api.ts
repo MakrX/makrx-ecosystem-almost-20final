@@ -395,10 +395,12 @@ class ApiClient {
   private getMockData<T>(endpoint: string): T {
     // Mock data responses for when backend is not available
     const path = endpoint.split("?")[0]; // Remove query params for matching
+    const fullUrl = new URL(`http://localhost${endpoint}`);
+    const searchParams = fullUrl.searchParams;
 
     switch (path) {
       case "/catalog/products":
-        return this.getMockProducts() as T;
+        return this.getMockProducts(searchParams) as T;
       case "/catalog/products/featured":
         return this.getMockFeaturedProducts(endpoint) as T;
       case "/catalog/categories":
