@@ -322,10 +322,23 @@ export default function CartPage() {
           </div>
 
           {/* Order Summary */}
-          <div className="lg:col-span-1">
+          <div className="lg:col-span-1 space-y-6">
+            {/* Shipping Estimator */}
+            <ShippingEstimator
+              subtotal={subtotal}
+              items={cart.items.map(item => ({
+                id: item.id,
+                quantity: item.quantity,
+                weight: 0.5, // Default weight in kg
+              }))}
+              onShippingChange={handleShippingChange}
+              onTaxChange={handleTaxChange}
+            />
+
+            {/* Order Summary */}
             <div className="bg-white shadow rounded-lg p-6 sticky top-4">
               <h2 className="text-lg font-semibold text-gray-900 mb-4">Order Summary</h2>
-              
+
               {/* Coupon Code */}
               <div className="mb-6">
                 <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -340,12 +353,22 @@ export default function CartPage() {
                     className="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                   />
                   <button
-                    onClick={applyCoupon}
+                    onClick={() => {
+                      // Simulate coupon application
+                      if (couponCode.toLowerCase() === 'save10') {
+                        handleDiscountChange(subtotal * 0.1);
+                      } else {
+                        handleDiscountChange(0);
+                      }
+                    }}
                     className="px-4 py-2 bg-gray-100 text-gray-700 border border-gray-300 rounded-md hover:bg-gray-200"
                   >
                     Apply
                   </button>
                 </div>
+                {couponCode.toLowerCase() === 'save10' && discountAmount > 0 && (
+                  <p className="text-sm text-green-600 mt-1">Coupon applied successfully!</p>
+                )}
               </div>
 
               {/* Price Breakdown */}
@@ -354,42 +377,36 @@ export default function CartPage() {
                   <span className="text-gray-600">Subtotal</span>
                   <span className="font-medium">{formatPrice(subtotal, cart.currency)}</span>
                 </div>
-                
-                {couponDiscount > 0 && (
+
+                {discountAmount > 0 && (
                   <div className="flex justify-between text-green-600">
                     <span className="flex items-center">
                       <Tag className="h-4 w-4 mr-1" />
                       Coupon Discount
                     </span>
-                    <span className="font-medium">-{formatPrice(couponDiscount, cart.currency)}</span>
+                    <span className="font-medium">-{formatPrice(discountAmount, cart.currency)}</span>
                   </div>
                 )}
-                
+
                 <div className="flex justify-between">
                   <span className="text-gray-600 flex items-center">
                     <Truck className="h-4 w-4 mr-1" />
                     Shipping
                   </span>
                   <span className="font-medium">
-                    {qualifiesForFreeShipping ? (
+                    {shippingCost === 0 ? (
                       <span className="text-green-600">FREE</span>
                     ) : (
-                      formatPrice(finalShippingCost, cart.currency)
+                      formatPrice(shippingCost, cart.currency)
                     )}
                   </span>
                 </div>
-                
-                {!qualifiesForFreeShipping && (
-                  <div className="text-sm text-blue-600">
-                    Add {formatPrice(freeShippingThreshold - subtotal, cart.currency)} more for free shipping
-                  </div>
-                )}
-                
+
                 <div className="flex justify-between">
                   <span className="text-gray-600">Tax</span>
-                  <span className="font-medium">{formatPrice(tax, cart.currency)}</span>
+                  <span className="font-medium">{formatPrice(taxAmount, cart.currency)}</span>
                 </div>
-                
+
                 <div className="border-t border-gray-200 pt-3">
                   <div className="flex justify-between">
                     <span className="text-lg font-semibold text-gray-900">Total</span>
