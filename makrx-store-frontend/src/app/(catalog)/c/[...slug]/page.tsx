@@ -250,24 +250,66 @@ export default function CategoryPage() {
           <div className="flex-1">
             {/* Toolbar */}
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6 gap-4">
-              <div className="flex items-center gap-4">
-                <span className="text-sm text-gray-600 dark:text-gray-400">
-                  {productList?.total_count || 0} products
-                </span>
-                <div className="flex items-center gap-2">
+              <div className="flex items-center justify-between w-full sm:w-auto">
+                <div className="flex items-center gap-4">
                   <span className="text-sm text-gray-600 dark:text-gray-400">
-                    Sort by:
+                    {productList?.total_count || 0} products
                   </span>
-                  <SortSelect
-                    value={sort}
-                    onChange={(newSort) => {
-                      const url = new URL(window.location.href);
-                      url.searchParams.set("sort", newSort);
-                      window.history.pushState({}, "", url.toString());
-                      window.location.reload();
-                    }}
-                  />
+                  <div className="hidden sm:flex items-center gap-2">
+                    <span className="text-sm text-gray-600 dark:text-gray-400">
+                      Sort by:
+                    </span>
+                    <SortSelect
+                      value={sort}
+                      onChange={(newSort) => {
+                        const url = new URL(window.location.href);
+                        url.searchParams.set("sort", newSort);
+                        window.history.pushState({}, "", url.toString());
+                        window.location.reload();
+                      }}
+                    />
+                  </div>
                 </div>
+
+                {/* Mobile Filter Button */}
+                {productList?.facets && (
+                  <div className="lg:hidden">
+                    <EnhancedCategoryFilters
+                      facets={productList.facets}
+                      activeFilters={filters}
+                      isOpen={isFiltersOpen}
+                      onToggle={toggleFilters}
+                      onFilterChange={(newFilters) => {
+                        const url = new URL(window.location.href);
+                        Object.entries(newFilters).forEach(([key, value]) => {
+                          if (value && value.length > 0) {
+                            url.searchParams.set(key, value.join(","));
+                          } else {
+                            url.searchParams.delete(key);
+                          }
+                        });
+                        window.history.pushState({}, "", url.toString());
+                        window.location.reload();
+                      }}
+                    />
+                  </div>
+                )}
+              </div>
+
+              {/* Mobile Sort */}
+              <div className="sm:hidden flex items-center gap-2">
+                <span className="text-sm text-gray-600 dark:text-gray-400">
+                  Sort by:
+                </span>
+                <SortSelect
+                  value={sort}
+                  onChange={(newSort) => {
+                    const url = new URL(window.location.href);
+                    url.searchParams.set("sort", newSort);
+                    window.history.pushState({}, "", url.toString());
+                    window.location.reload();
+                  }}
+                />
               </div>
 
               {/* View Toggle */}
