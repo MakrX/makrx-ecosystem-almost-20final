@@ -421,7 +421,7 @@ export default function HomePage() {
       </section>
 
       {/* Benefits Section */}
-      <section className="py-24 sm:py-28 lg:py-36 bg-gradient-to-br from-gray-900 to-makrx-blue dark:from-gray-950 dark:to-gray-800 border-t border-gray-700 dark:border-gray-600">
+      <section className="py-24 sm:py-28 lg:py-36 bg-gradient-to-br from-gray-900 to-makrx-blue dark:from-slate-950 dark:to-slate-900 border-t border-gray-700 dark:border-slate-800">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-20">
             <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
