@@ -125,8 +125,9 @@ export default function AppLauncher({ isOpen, onClose }: AppLauncherProps) {
           <button
             onClick={onClose}
             className="w-10 h-10 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center transition-colors"
+            aria-label="Close app launcher"
           >
-            <X className="w-5 h-5" />
+            <X className="w-5 h-5" aria-hidden="true" />
           </button>
         </div>
 
