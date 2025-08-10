@@ -1,57 +1,63 @@
 # MakrX Gateway Frontend
 
-The **MakrX Gateway Frontend** is the primary landing page and entry point for the entire MakrX ecosystem. Built with React 18.3.1, TypeScript, and Vite, it serves as the unified portal connecting users to MakrCave (makerspaces), MakrX Store (marketplace), and Learn (educational platform).
+The **MakrX Gateway Frontend** is the primary landing page and entry point for the entire MakrX ecosystem. Built with React 18.3.1, TypeScript, and Vite, it serves as the unified public gateway connecting users to external MakrX ecosystem applications.
 
 ## 🎯 Overview
 
-The Gateway Frontend is designed to be the first touchpoint for visitors discovering the MakrX ecosystem. It provides:
+The Gateway Frontend is designed as a **simplified public gateway** that serves as the first touchpoint for visitors discovering the MakrX ecosystem. It provides:
 
-- **Unified Authentication**: Single sign-on integration with Keycloak
-- **App Launcher**: Central hub to access all MakrX applications
-- **Ecosystem Overview**: Comprehensive introduction to MakrX services
+- **Public Gateway**: Clean, informational landing page without authentication complexity
+- **External App Launcher**: Direct links to external MakrX ecosystem domains
+- **Ecosystem Overview**: Comprehensive introduction to MakrX services and applications
 - **Legal Compliance**: Full DPDP Act 2023 and Indian regulatory compliance
-- **SEO Optimization**: Structured data and comprehensive meta tags
+- **SEO Optimization**: Structured data and comprehensive meta tags for better discoverability
 - **Performance**: Optimized for Core Web Vitals and accessibility
 
 ## 🏗️ Architecture
 
 ### Tech Stack
 - **Framework**: React 18.3.1 with TypeScript
-- **Build Tool**: Vite 6.3.5 for fast development and optimized builds
+- **Build Tool**: Vite 6.2.2 for fast development and optimized builds
 - **Styling**: Tailwind CSS with custom MakrX design system
 - **Routing**: React Router DOM v6 for client-side navigation
-- **State Management**: React Context API with custom hooks
-- **Authentication**: Keycloak SSO integration
-- **Feature Flags**: Custom context-driven feature flag system
+- **State Management**: React Context API (minimal, no authentication state)
+- **UI Components**: Custom components with Lucide React icons
+- **Query Management**: TanStack React Query for data fetching
 
 ### Project Structure
 ```
 frontend/gateway-frontend/
 ├── components/           # Reusable UI components
-│   ├── ui/              # shadcn/ui components
-│   ├── AppLauncher.tsx  # Central app launcher modal
-│   ├── EnhancedHeader.tsx # Main navigation header
-│   └── Footer.tsx       # Site footer with newsletter
-├── contexts/            # React contexts for state management
-│   ├── AuthContext.tsx  # Authentication state
-│   └── CrossPortalAuth.tsx # Cross-app authentication
-├── hooks/               # Custom React hooks
+│   ├── ui/              # Base UI components (buttons, cards, etc.)
+│   ├── Header.tsx       # Main navigation header with app launcher
+│   ├── Footer.tsx       # Site footer with company information
+│   └── SEOStructuredData.tsx # Structured data for SEO
 ├── lib/                 # Utility libraries
-│   ├── feature-flags.tsx # Feature flag system
-│   └── utils.ts         # Helper functions
-├── pages/               # Route components
-│   ├── admin/           # Admin-only pages
+│   ├── ui.tsx           # UI theme provider and utilities
+│   └── utils.ts         # Helper functions and utilities
+├── pages/               # Route components (all public pages)
 │   ├── HomePage.tsx     # Main landing page
 │   ├── About.tsx        # Company information
-│   ├── Ecosystem.tsx    # Ecosystem overview
+│   ├── Ecosystem.tsx    # Ecosystem overview and app launcher
+│   ├── Makerspaces.tsx  # MakrCave information and CTA
+│   ├── Store.tsx        # MakrX.Store information
+│   ├── ServiceProviders.tsx # Service provider onboarding
+│   ├── ThreeDStore.tsx  # 3D printing services
+│   ├── Events.tsx       # Events and workshops
+│   ├── Blog.tsx         # Blog and content
+│   ├── Docs.tsx         # Documentation portal
+│   ├── Careers.tsx      # Career opportunities
+│   ├── Press.tsx        # Press and media
+│   ├── Contact.tsx      # Contact information
+│   ├── Support.tsx      # Support and help
+│   ├── Status.tsx       # System status
 │   ├── PrivacyPolicy.tsx # DPDP Act 2023 compliant
 │   ├── TermsOfService.tsx # Legal terms
-│   ├── CookiePolicy.tsx # Cookie management
-│   ├── AccessibilityStatement.tsx # WCAG 2.1 AA
-│   └── ReturnsPolicy.tsx # Consumer Protection Act 2019
+│   └── NotFound.tsx     # 404 error page
 ├── public/              # Static assets
 │   ├── sitemap.xml      # SEO sitemap
-│   └── robots.txt       # Search engine directives
+│   ├── robots.txt       # Search engine directives
+│   └── manifest.json    # Web app manifest
 └── src/
     └── main.tsx         # Application entry point
 ```
@@ -79,31 +85,30 @@ npm run dev
 Create a `.env.local` file with the following variables:
 
 ```env
-# Authentication (Keycloak)
-VITE_KEYCLOAK_URL=https://auth.makrx.org
-VITE_KEYCLOAK_REALM=makrx
-VITE_KEYCLOAK_CLIENT_ID=makrx-gateway
+# Application Configuration
+VITE_APP_NAME=MakrX Gateway
+VITE_APP_VERSION=1.0.0
+VITE_NODE_ENV=production
 
-# API Endpoints
-VITE_API_BASE_URL=https://api.makrx.org
-VITE_MAKRCAVE_URL=https://makrcave.makrx.org
-VITE_STORE_URL=https://store.makrx.org
-VITE_LEARN_URL=https://learn.makrx.org
+# MakrX Ecosystem URLs (External Domains)
+VITE_MAKRCAVE_URL=https://makrcave.com
+VITE_STORE_URL=https://makrx.store
+VITE_3D_STORE_URL=https://3d.makrx.store
 
-# Feature Flags
-VITE_ENABLE_FEATURE_FLAGS=true
-VITE_FEATURE_FLAG_SERVICE_URL=https://flags.makrx.org
+# Authentication (Optional - for external auth links)
+VITE_AUTH_URL=https://auth.makrx.org
 
 # Analytics & Monitoring
 VITE_GA_TRACKING_ID=G-XXXXXXXXXX
 VITE_SENTRY_DSN=https://xxx@sentry.io/xxx
 VITE_HOTJAR_ID=XXXXXXX
 
-# Company Information
-VITE_COMPANY_NAME="Botness Technologies Pvt Ltd"
-VITE_COMPANY_CIN="U72900KA2024PTC123456"
-VITE_SUPPORT_EMAIL="hello@makrx.org"
-VITE_SUPPORT_PHONE="+91 80472 58000"
+# Company Information (MUST UPDATE FOR PRODUCTION)
+VITE_COMPANY_NAME="Your Company Name"
+VITE_COMPANY_LEGAL_NAME="Your Company Legal Name Pvt Ltd"
+VITE_COMPANY_CIN="U72900XX2024PTC123456"
+VITE_SUPPORT_EMAIL="support@yourdomain.com"
+VITE_SUPPORT_PHONE="+91 XXXX XXXXXX"
 ```
 
 ## 🎨 Customization
@@ -120,21 +125,32 @@ colors: {
 }
 ```
 
-### Feature Flags
-The Gateway includes a comprehensive feature flag system:
+### External App Integration
+The Gateway provides direct navigation to external MakrX ecosystem applications:
 
 ```typescript
-// Usage in components
-const showStats = useBooleanFlag('org.homepage.stats', true);
-const showTestimonials = useBooleanFlag('org.homepage.testimonials', true);
+// External app configuration in Header.tsx
+const launcherApps = [
+  {
+    name: 'MakrCave',
+    description: 'Makerspace Management',
+    url: 'https://makrcave.com',
+    color: 'blue'
+  },
+  {
+    name: 'MakrX.Store',
+    description: 'Tools & Components',
+    url: 'https://makrx.store',
+    color: 'green'
+  },
+  {
+    name: '3D.MakrX.Store',
+    description: 'Custom Fabrication',
+    url: 'https://3d.makrx.store',
+    color: 'purple'
+  }
+];
 ```
-
-Available feature flags:
-- `org.homepage.stats` - Display statistics section
-- `org.homepage.testimonials` - Show user testimonials
-- `org.homepage.video` - Display promotional video
-- `org.header.app-launcher` - Enable app launcher button
-- `org.footer.newsletter` - Newsletter subscription form
 
 ### Content Management
 Key content areas that can be customized:
@@ -146,35 +162,31 @@ Key content areas that can be customized:
 
 ## 🔧 Configuration
 
-### Authentication Setup
-1. Configure Keycloak realm at `auth.makrx.org`
-2. Create client configuration for `makrx-gateway`
-3. Set up redirect URIs for your domain
-4. Update environment variables with Keycloak details
+### External Authentication
+The Gateway links to external authentication services:
 
-### Cross-Portal Integration
-The Gateway integrates with other MakrX applications:
+1. **Sign In Button**: Direct link to external auth service (e.g., `https://auth.makrx.org/login`)
+2. **No Internal Auth State**: Gateway doesn't manage authentication internally
+3. **External App Access**: Users authenticate directly on each external application
+4. **SSO Recommendation**: External apps can share authentication via SSO
 
-```typescript
-// Cross-portal navigation configuration
-const portalApps = [
-  {
-    name: 'MakrCave',
-    url: process.env.VITE_MAKRCAVE_URL,
-    description: 'Access premium makerspaces'
-  },
-  {
-    name: 'Store',
-    url: process.env.VITE_STORE_URL,
-    description: 'Shop maker tools and components'
-  },
-  {
-    name: 'Learn',
-    url: process.env.VITE_LEARN_URL,
-    description: 'Educational resources and courses'
-  }
-];
-```
+### Page Structure
+The Gateway includes the following public pages:
+
+- **/** - Homepage with ecosystem overview and hero section
+- **/ecosystem** - Detailed ecosystem overview with app launcher
+- **/makerspaces** - Information about MakrCave and makerspace access
+- **/store** - Information about MakrX.Store marketplace
+- **/service-providers** - Service provider onboarding and information
+- **/3d** - 3D printing and custom fabrication services
+- **/events** - Events, workshops, and community activities
+- **/blog** - Blog and content hub
+- **/docs** - Documentation and guides
+- **/careers** - Career opportunities
+- **/about** - Company information
+- **/contact** - Contact information and support
+- **/legal/privacy** - Privacy policy (DPDP Act 2023 compliant)
+- **/legal/terms** - Terms of service
 
 ### SEO Configuration
 Update SEO metadata in `App.tsx`:
