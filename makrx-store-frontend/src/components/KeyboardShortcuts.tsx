@@ -46,7 +46,7 @@ export function KeyboardShortcutsModal({ isOpen, onClose }: KeyboardShortcutsMod
       shortcuts: [
         { key: 'A', description: 'Add to cart', icon: ShoppingCart },
         { key: 'W', description: 'Add to wishlist', icon: Heart },
-        { key: 'C', description: 'Add to compare', icon: Compare },
+        { key: 'C', description: 'Add to compare', icon: Scale },
         { key: 'Enter', description: 'Select/confirm action', icon: Command }
       ]
     },
