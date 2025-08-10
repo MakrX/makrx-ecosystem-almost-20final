@@ -288,7 +288,7 @@ export default function CatalogPage() {
 
         <div className="flex gap-8">
           {/* Filters Sidebar - Desktop */}
-          <div className="hidden md:block w-64 flex-shrink-0">
+          <div className="hidden lg:block w-64 flex-shrink-0">
             <div className="bg-white p-6 rounded-lg shadow-sm sticky top-4">
               <div className="flex items-center justify-between mb-4">
                 <h3 className="font-semibold text-gray-900">Filters</h3>
