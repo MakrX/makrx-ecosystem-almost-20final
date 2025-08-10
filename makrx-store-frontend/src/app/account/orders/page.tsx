@@ -594,6 +594,20 @@ export default function AccountOrdersPage() {
           )}
         </div>
       </div>
+
+      {/* Review Modal */}
+      {selectedReviewItem && (
+        <WriteReviewModal
+          isOpen={isReviewModalOpen}
+          onClose={() => {
+            setIsReviewModalOpen(false);
+            setSelectedReviewItem(null);
+          }}
+          item={selectedReviewItem.item}
+          orderId={selectedReviewItem.orderId}
+          onSubmit={handleReviewSubmit}
+        />
+      )}
     </Layout>
   );
 }
