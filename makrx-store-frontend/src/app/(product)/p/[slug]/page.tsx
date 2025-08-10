@@ -17,6 +17,7 @@ import { ProductStructuredData, OrganizationStructuredData } from "@/components/
 import { ProductSEO } from "@/components/SEOMetaTags";
 import { api } from "@/lib/api";
 import ProductStructuredDataClient from "@/components/ProductStructuredData";
+import ProductPageErrorBoundary from "@/components/ProductPageErrorBoundary";
 
 interface Product {
   id: number;
