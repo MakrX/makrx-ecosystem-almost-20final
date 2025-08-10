@@ -39,39 +39,39 @@ export default function Makerspaces() {
               <div className="w-16 h-16 bg-blue-100 dark:bg-blue-900 rounded-xl flex items-center justify-center mx-auto mb-4">
                 <Package className="w-8 h-8 text-blue-600 dark:text-blue-300" />
               </div>
-              <h3 className="text-xl font-semibold mb-3">Inventory Management</h3>
-              <p className="text-gray-600">Track tools, materials, and equipment with real-time availability and automated reordering.</p>
+              <h3 className="text-xl font-semibold mb-3 text-gray-900 dark:text-white">Inventory Management</h3>
+              <p className="text-gray-600 dark:text-gray-400">Track tools, materials, and equipment with real-time availability and automated reordering.</p>
             </div>
 
             <div className="text-center">
-              <div className="w-16 h-16 bg-green-100 rounded-xl flex items-center justify-center mx-auto mb-4">
-                <Calendar className="w-8 h-8 text-green-600" />
+              <div className="w-16 h-16 bg-green-100 dark:bg-green-900 rounded-xl flex items-center justify-center mx-auto mb-4">
+                <Calendar className="w-8 h-8 text-green-600 dark:text-green-300" />
               </div>
-              <h3 className="text-xl font-semibold mb-3">Reservations</h3>
-              <p className="text-gray-600">Book equipment, workstations, and meeting rooms with smart scheduling and conflict resolution.</p>
+              <h3 className="text-xl font-semibold mb-3 text-gray-900 dark:text-white">Reservations</h3>
+              <p className="text-gray-600 dark:text-gray-400">Book equipment, workstations, and meeting rooms with smart scheduling and conflict resolution.</p>
             </div>
 
             <div className="text-center">
-              <div className="w-16 h-16 bg-purple-100 rounded-xl flex items-center justify-center mx-auto mb-4">
-                <BarChart3 className="w-8 h-8 text-purple-600" />
+              <div className="w-16 h-16 bg-purple-100 dark:bg-purple-900 rounded-xl flex items-center justify-center mx-auto mb-4">
+                <BarChart3 className="w-8 h-8 text-purple-600 dark:text-purple-300" />
               </div>
-              <h3 className="text-xl font-semibold mb-3">Project Tracking</h3>
-              <p className="text-gray-600">Collaborate on projects, track progress, and share resources with team members.</p>
+              <h3 className="text-xl font-semibold mb-3 text-gray-900 dark:text-white">Project Tracking</h3>
+              <p className="text-gray-600 dark:text-gray-400">Collaborate on projects, track progress, and share resources with team members.</p>
             </div>
 
             <div className="text-center">
-              <div className="w-16 h-16 bg-yellow-100 rounded-xl flex items-center justify-center mx-auto mb-4">
-                <Building2 className="w-8 h-8 text-yellow-600" />
+              <div className="w-16 h-16 bg-yellow-100 dark:bg-yellow-900 rounded-xl flex items-center justify-center mx-auto mb-4">
+                <Building2 className="w-8 h-8 text-yellow-600 dark:text-yellow-300" />
               </div>
-              <h3 className="text-xl font-semibold mb-3">BOM Ordering</h3>
-              <p className="text-gray-600">Generate bills of materials and order components directly from integrated suppliers.</p>
+              <h3 className="text-xl font-semibold mb-3 text-gray-900 dark:text-white">BOM Ordering</h3>
+              <p className="text-gray-600 dark:text-gray-400">Generate bills of materials and order components directly from integrated suppliers.</p>
             </div>
           </div>
         </div>
       </section>
 
       {/* Screenshot Carousel */}
-      <section className="py-20 bg-white">
+      <section className="py-20 bg-white dark:bg-gray-800">
         <div className="max-w-6xl mx-auto px-6">
           <h2 className="text-3xl font-bold text-center mb-16">See MakrCave in Action</h2>
           <div className="grid md:grid-cols-3 gap-8">
