@@ -79,12 +79,12 @@ const mockOrderStatus: OrderStatus = {
     {
       name: 'Custom Phone Case - iPhone 15 Pro',
       quantity: 2,
-      image: '/api/placeholder/100/100'
+      image: 'https://via.placeholder.com/100x100/3B82F6/FFFFFF?text=Product'
     },
     {
       name: 'Precision Bracket - Aluminum',
       quantity: 1,
-      image: '/api/placeholder/100/100'
+      image: 'https://via.placeholder.com/100x100/3B82F6/FFFFFF?text=Product'
     }
   ]
 };
