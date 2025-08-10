@@ -3,7 +3,7 @@ import { ExternalLink, Building2, Package, Calendar, BarChart3 } from 'lucide-re
 
 export default function Makerspaces() {
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors">
       {/* Hero Section */}
       <section className="bg-gradient-to-br from-makrx-blue to-blue-800 py-20">
         <div className="max-w-6xl mx-auto px-6 text-center">
@@ -30,14 +30,14 @@ export default function Makerspaces() {
       {/* Features Section */}
       <section className="py-20">
         <div className="max-w-6xl mx-auto px-6">
-          <h2 className="text-3xl md:text-4xl font-bold text-center mb-16">
+          <h2 className="text-3xl md:text-4xl font-bold text-center mb-16 text-gray-900 dark:text-white">
             Complete Makerspace Management
           </h2>
           
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
             <div className="text-center">
-              <div className="w-16 h-16 bg-blue-100 rounded-xl flex items-center justify-center mx-auto mb-4">
-                <Package className="w-8 h-8 text-blue-600" />
+              <div className="w-16 h-16 bg-blue-100 dark:bg-blue-900 rounded-xl flex items-center justify-center mx-auto mb-4">
+                <Package className="w-8 h-8 text-blue-600 dark:text-blue-300" />
               </div>
               <h3 className="text-xl font-semibold mb-3">Inventory Management</h3>
               <p className="text-gray-600">Track tools, materials, and equipment with real-time availability and automated reordering.</p>
