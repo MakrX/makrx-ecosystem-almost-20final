@@ -14,7 +14,7 @@ To democratize making by providing an integrated platform that bridges the gap b
 The MakrX ecosystem consists of a **public gateway** connecting to external ecosystem applications:
 
 ```
-┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
+┌─────────────────┐    ┌─────────────────┐    ┌─────��───────────┐
 │   MakrX.org     │    │   MakrCave      │    │  MakrX.Store    │
 │   (Gateway)     │◄──►│ (Management)    │◄──►│ (E-commerce)    │
 │                 │    │                 │    │                 │
@@ -40,9 +40,11 @@ The MakrX ecosystem consists of a **public gateway** connecting to external ecos
 
 | Domain | URL | Purpose | Target Users |
 |--------|-----|---------|--------------|
-| **MakrX.org** | `https://makrx.org` | Ecosystem gateway, landing pages, maker profiles | All users |
-| **MakrCave** | `https://makrcave.com` | Makerspace management, service provider portal | Admins, Providers, Members |
-| **MakrX.Store** | `https://makrx.store` | E-commerce, fabrication services, product catalog | Customers, Makers |
+| **MakrX.org** | `https://makrx.org` | **Public Gateway** - Ecosystem overview, service information, external app links | All visitors |
+| **MakrCave** | `https://makrcave.com` | Makerspace management, booking, community features | Makerspace admins, members |
+| **MakrX.Store** | `https://makrx.store` | E-commerce marketplace, tools and components | Customers, makers |
+| **3D.MakrX.Store** | `https://3d.makrx.store` | Custom fabrication services, upload & quote | Designers, makers |
+| **Provider Panel** | `https://providers.makrx.org` | Service provider portal, job management | Service providers |
 
 ## 🔧 Quick Start
 
