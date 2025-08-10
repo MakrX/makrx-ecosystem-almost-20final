@@ -262,30 +262,41 @@ export default function ProductPage() {
 
   useEffect(() => {
     const fetchProductData = async () => {
+      if (!isMountedRef.current) return;
+
       setLoading(true);
       try {
         // Fetch product details using API client
         const productData = await api.getProductBySlug(slug);
-        setProduct(productData);
 
-        // Build breadcrumbs
-        const crumbs = [{ name: "Home", href: "/" }];
-        if (productData.category?.slug) {
-          // Use category slug to build breadcrumb
-          const categoryName = productData.category.name;
-          crumbs.push({ name: categoryName, href: `/catalog/${productData.category.slug}` });
+        // Only update state if component is still mounted
+        if (isMountedRef.current) {
+          setProduct(productData);
+
+          // Build breadcrumbs
+          const crumbs = [{ name: "Home", href: "/" }];
+          if (productData.category?.slug) {
+            // Use category slug to build breadcrumb
+            const categoryName = productData.category.name;
+            crumbs.push({ name: categoryName, href: `/catalog/${productData.category.slug}` });
+          }
+          crumbs.push({ name: productData.name, href: `/p/${productData.slug}` });
+          setBreadcrumbs(crumbs);
+
+          // For now, set empty related products since we don't have recommendation API
+          // TODO: Implement recommendation system
+          setRelatedProducts([]);
+          setComplementaryProducts([]);
         }
-        crumbs.push({ name: productData.name, href: `/p/${productData.slug}` });
-        setBreadcrumbs(crumbs);
-
-        // For now, set empty related products since we don't have recommendation API
-        // TODO: Implement recommendation system
-        setRelatedProducts([]);
-        setComplementaryProducts([]);
       } catch (error) {
-        console.error("Failed to fetch product data:", error);
+        // Only log if not an abort error and component is still mounted
+        if (isMountedRef.current && !error.toString().includes('abort')) {
+          console.error("Failed to fetch product data:", error);
+        }
       } finally {
-        setLoading(false);
+        if (isMountedRef.current) {
+          setLoading(false);
+        }
       }
     };
 
