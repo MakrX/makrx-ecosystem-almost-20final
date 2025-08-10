@@ -715,10 +715,10 @@ export default function ProductPage() {
         {/* Frequently Bought Together */}
         {complementaryProducts.length > 0 && (
           <div className="mb-12">
-            <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">
-              Frequently Bought Together
-            </h2>
-            <RecommendedProducts products={complementaryProducts} />
+            <FrequentlyBoughtTogether
+              baseProduct={product}
+              recommendations={complementaryProducts}
+            />
           </div>
         )}
       </div>
