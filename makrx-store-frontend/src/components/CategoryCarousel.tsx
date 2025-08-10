@@ -252,7 +252,7 @@ export default function CategoryCarousel({
       {/* Featured Categories Quick Access */}
       <div className="mt-6 pt-6 border-t border-gray-100">
         <div className="flex flex-wrap gap-2 justify-center">
-          {categories.slice(0, 8).map((category) => (
+          {displayCategories.slice(0, 9).map((category) => (
             <button
               key={`quick-${category.id}`}
               onClick={() => handleCategoryClick(category)}
