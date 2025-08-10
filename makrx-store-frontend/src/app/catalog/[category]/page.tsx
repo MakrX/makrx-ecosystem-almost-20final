@@ -3,7 +3,6 @@
 import React, { useState, useEffect } from 'react'
 import { useParams, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
-import Layout from '@/components/layout/Layout'
 import { Button } from '@/components/ui/Button'
 import {
   Search,
