@@ -48,7 +48,7 @@ const blogPosts: BlogPost[] = [
       "The manufacturing industry is undergoing a dramatic transformation...",
     author: {
       name: "Sarah Chen",
-      avatar: "/api/placeholder/40/40",
+      avatar: "https://via.placeholder.com/40x40/3B82F6/FFFFFF?text=A",
       role: "CEO & Founder",
     },
     date: "2024-01-20",
@@ -67,7 +67,7 @@ const blogPosts: BlogPost[] = [
     content: "Design for Manufacturing (DFM) is a critical consideration...",
     author: {
       name: "Marcus Rodriguez",
-      avatar: "/api/placeholder/40/40",
+      avatar: "https://via.placeholder.com/40x40/3B82F6/FFFFFF?text=A",
       role: "CTO",
     },
     date: "2024-01-15",
@@ -85,7 +85,7 @@ const blogPosts: BlogPost[] = [
     content: "Startup XYZ came to us with a challenge...",
     author: {
       name: "Emily Park",
-      avatar: "/api/placeholder/40/40",
+      avatar: "https://via.placeholder.com/40x40/3B82F6/FFFFFF?text=A",
       role: "Head of Customer Success",
     },
     date: "2024-01-10",
@@ -103,7 +103,7 @@ const blogPosts: BlogPost[] = [
     content: "Material selection is one of the most critical decisions...",
     author: {
       name: "Dr. James Wilson",
-      avatar: "/api/placeholder/40/40",
+      avatar: "https://via.placeholder.com/40x40/3B82F6/FFFFFF?text=A",
       role: "Materials Engineer",
     },
     date: "2024-01-08",
@@ -121,7 +121,7 @@ const blogPosts: BlogPost[] = [
     content: "Sustainability has been a core value at MakrX since day one...",
     author: {
       name: "Lisa Thompson",
-      avatar: "/api/placeholder/40/40",
+      avatar: "https://via.placeholder.com/40x40/3B82F6/FFFFFF?text=A",
       role: "Sustainability Director",
     },
     date: "2024-01-05",
@@ -144,7 +144,7 @@ const blogPosts: BlogPost[] = [
     content: "3D printing has revolutionized the way we create...",
     author: {
       name: "Alex Kumar",
-      avatar: "/api/placeholder/40/40",
+      avatar: "https://via.placeholder.com/40x40/3B82F6/FFFFFF?text=A",
       role: "Community Manager",
     },
     date: "2024-01-03",
