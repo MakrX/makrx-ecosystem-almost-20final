@@ -120,18 +120,16 @@ export default function CategoryPage() {
 
   if (!category) {
     return (
-      <Layout>
-        <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-          <div className="text-center">
-            <Package className="h-16 w-16 text-gray-300 mx-auto mb-4" />
-            <h1 className="text-2xl font-bold text-store-text mb-2">Category Not Found</h1>
-            <p className="text-store-text-muted mb-6">The category you're looking for doesn't exist.</p>
-            <Link href="/catalog">
-              <Button>Browse All Products</Button>
-            </Link>
-          </div>
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <Package className="h-16 w-16 text-gray-300 mx-auto mb-4" />
+          <h1 className="text-2xl font-bold text-store-text mb-2">Category Not Found</h1>
+          <p className="text-store-text-muted mb-6">The category you're looking for doesn't exist.</p>
+          <Link href="/catalog">
+            <Button>Browse All Products</Button>
+          </Link>
         </div>
-      </Layout>
+      </div>
     )
   }
 
