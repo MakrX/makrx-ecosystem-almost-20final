@@ -191,9 +191,9 @@ export default function ProductPage() {
           <div className="space-y-4">
             {/* Main Image */}
             <div className="aspect-square bg-gray-100 rounded-lg overflow-hidden relative">
-              {product.images.length > 0 ? (
+              {product.images && product.images.length > 0 ? (
                 <Image
-                  src={product.images[selectedImageIndex]}
+                  src={product.images[selectedImageIndex] || '/placeholder.svg'}
                   alt={product.name}
                   fill
                   className="object-cover"
