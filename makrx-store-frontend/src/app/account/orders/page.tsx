@@ -39,6 +39,7 @@ interface Order {
     quantity: number;
     price: number;
     sku?: string;
+    hasReview?: boolean; // Track if user has reviewed this item
   }>;
   trackingNumber?: string;
   serviceProvider?: string;
