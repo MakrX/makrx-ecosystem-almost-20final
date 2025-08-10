@@ -382,7 +382,7 @@ export function Header() {
 
             {/* Mobile menu toggle */}
             <button
-              className="md:hidden p-2 text-foreground hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+              className="md:hidden p-2 rounded-lg text-foreground hover:text-blue-600 dark:hover:text-blue-400 hover:bg-accent transition-colors"
               onClick={() => setIsMenuOpen(!isMenuOpen)}
             >
               {isMenuOpen ? (
