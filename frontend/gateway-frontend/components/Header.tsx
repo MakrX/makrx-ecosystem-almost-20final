@@ -117,7 +117,7 @@ export default function Header() {
                   <div className="mt-4 pt-3 border-t border-gray-200 dark:border-gray-600">
                     <Link
                       to="/docs"
-                      className="text-sm text-makrx-blue hover:text-blue-700 dark:hover:text-blue-300 transition-colors"
+                      className="text-sm text-makrx-blue hover:text-blue-700 dark:text-makrx-yellow dark:hover:text-yellow-300 transition-colors"
                       onClick={() => setShowLauncher(false)}
                     >
                       View Documentation →
