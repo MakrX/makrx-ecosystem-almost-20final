@@ -67,23 +67,11 @@ export default function DevErrorHandler() {
     const handleError = (event: ErrorEvent) => {
       const error = event.error;
 
-      if (error && (error.message || error.stack)) {
+      if (error) {
         const errorMessage = error.message || '';
         const errorStack = error.stack || '';
 
-        // Development-related error patterns
-        const isDevelopmentError = (
-          errorMessage.includes('Failed to fetch') ||
-          errorMessage.includes('RSC payload') ||
-          errorStack.includes('fetchServerResponse') ||
-          errorStack.includes('fastRefreshReducerImpl') ||
-          errorStack.includes('webpack') ||
-          errorStack.includes('fullstory.com') ||
-          errorStack.includes('hot-reloader-client')
-        );
-
-        if (isDevelopmentError) {
-          console.warn('Development: Error caught and suppressed:', errorMessage);
+        if (isDevelopmentError(errorMessage, errorStack)) {
           event.preventDefault();
           return false;
         }
