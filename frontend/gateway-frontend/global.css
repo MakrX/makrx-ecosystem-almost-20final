@@ -819,6 +819,16 @@ input::placeholder, textarea::placeholder {
   color-scheme: dark;
 }
 
+/* Force header dark mode styles */
+.dark header {
+  background-color: rgba(2, 6, 23, 0.95) !important;
+  border-color: rgb(30, 41, 59) !important;
+}
+
+.dark header * {
+  border-color: rgb(30, 41, 59) !important;
+}
+
 .dark .card {
   background: #1a1a1a;
   border-color: #2a2a2a;
