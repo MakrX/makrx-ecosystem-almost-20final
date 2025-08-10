@@ -277,6 +277,7 @@ export default function HomePage() {
                   <button
                     className="w-20 h-20 bg-makrx-yellow rounded-full flex items-center justify-center hover:bg-yellow-300 transition-colors group"
                     aria-label="Play video about MakrX ecosystem"
+                    onClick={() => alert('Video feature coming soon! This will showcase the MakrX ecosystem.')}
                   >
                     <Play className="w-8 h-8 text-makrx-blue ml-1 group-hover:scale-110 transition-transform" aria-hidden="true" />
                   </button>
