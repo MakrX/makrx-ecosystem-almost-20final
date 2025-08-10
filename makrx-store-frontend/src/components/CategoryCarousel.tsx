@@ -143,7 +143,7 @@ export default function CategoryCarousel({
               <div
                 key={category.id}
                 className="flex-shrink-0"
-                style={{ width: `${100 / categories.length}%` }}
+                style={{ width: `${100 / displayCategories.length}%` }}
               >
                 <div
                   className={`group cursor-pointer transition-all duration-200 ${
