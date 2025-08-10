@@ -32,32 +32,11 @@ export default function DevErrorHandler() {
     const handleUnhandledRejection = (event: PromiseRejectionEvent) => {
       const error = event.reason;
 
-      // Check for various development-related error patterns
-      if (error && (error.message || error.stack)) {
+      if (error) {
         const errorMessage = error.message || '';
         const errorStack = error.stack || '';
 
-        // Next.js development errors
-        const isNextJSDevError = errorMessage.includes('Failed to fetch') && (
-          errorStack.includes('fetchServerResponse') ||
-          errorStack.includes('fastRefreshReducerImpl') ||
-          errorStack.includes('router-reducer') ||
-          errorStack.includes('app-router') ||
-          errorStack.includes('hot-reloader-client') ||
-          errorStack.includes('webpack') ||
-          errorStack.includes('hmrM')
-        );
-
-        // FullStory/third-party errors
-        const isThirdPartyError = errorStack.includes('fullstory.com') ||
-                                 errorStack.includes('fs.js');
-
-        // RSC payload errors
-        const isRSCError = errorMessage.includes('RSC payload') ||
-                          errorMessage.includes('Failed to fetch RSC');
-
-        if (isNextJSDevError || isThirdPartyError || isRSCError) {
-          console.warn('Development: Error suppressed for better development experience:', errorMessage);
+        if (isDevelopmentError(errorMessage, errorStack)) {
           event.preventDefault();
           return;
         }
