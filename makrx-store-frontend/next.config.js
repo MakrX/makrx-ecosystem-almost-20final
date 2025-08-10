@@ -14,8 +14,19 @@ const nextConfig = {
   devIndicators: {
     buildActivity: false,
   },
+  // Improve development experience
+  onDemandEntries: {
+    maxInactiveAge: 25 * 1000,
+    pagesBufferLength: 2,
+  },
   // Disable fast refresh in production-like environments
   fastRefresh: process.env.NODE_ENV === "development",
+  // Reduce development noise
+  logging: {
+    fetches: {
+      fullUrl: process.env.NODE_ENV === "development",
+    },
+  },
   images: {
     domains: ["localhost", "makrx.store", "images.unsplash.com"],
     unoptimized: true,
