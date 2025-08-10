@@ -210,8 +210,8 @@ export default function HomePage() {
               </div>
             </div>
 
-            <div className="inline-flex items-center px-4 py-2 rounded-full bg-makrx-yellow/20 text-makrx-yellow text-sm font-medium mb-6">
-              <Zap className="w-4 h-4 mr-2" />
+            <div className="inline-flex items-center px-6 py-3 rounded-full bg-makrx-yellow/20 text-makrx-yellow text-base font-semibold mb-8">
+              <Zap className="w-5 h-5 mr-3" />
               Welcome to the Future of Making
             </div>
           </div>
