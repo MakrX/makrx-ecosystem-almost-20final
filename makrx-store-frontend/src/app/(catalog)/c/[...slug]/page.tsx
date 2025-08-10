@@ -63,6 +63,7 @@ export default function CategoryPage() {
   const searchParams = useSearchParams();
   const slug = params.slug as string[];
   const categoryPath = slug.join("/");
+  const { isFiltersOpen, toggleFilters } = useFiltersToggle();
 
   const [category, setCategory] = useState<Category | null>(null);
   const [productList, setProductList] = useState<ProductList | null>(null);
