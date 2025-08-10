@@ -46,6 +46,7 @@ export default function ProductPage() {
     const loadProduct = async () => {
       try {
         setLoading(true);
+        setSelectedImageIndex(0); // Reset image index when loading new product
         const productData = await api.getProductBySlug(slug);
         setProduct(productData);
 
