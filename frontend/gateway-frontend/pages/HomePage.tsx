@@ -214,7 +214,7 @@ export default function HomePage() {
                     </div>
 
                     {/* Separator */}
-                    <div className="hidden sm:block w-2 h-2 rounded-full bg-makrx-yellow/60" style={{opacity: '0', animation: 'fadeIn 0.6s ease-out 0.7s forwards'}}></div>
+                    <div className="w-1 h-1 sm:w-2 sm:h-2 rounded-full bg-makrx-yellow/60" style={{opacity: '0', animation: 'fadeIn 0.6s ease-out 0.7s forwards'}}></div>
 
                     {/* Make word - central focus with enhanced styling */}
                     <div className="make-word inline-block animate-slide-in-right cursor-default relative group" style={{animationDelay: '0.5s'}}>
