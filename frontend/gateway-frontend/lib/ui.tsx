@@ -31,6 +31,7 @@ export function ThemeProvider({
   });
 
   const [actualTheme, setActualTheme] = useState<'light' | 'dark'>('light');
+  const [isInitialized, setIsInitialized] = useState(false);
 
   useEffect(() => {
     const root = window.document.documentElement;
