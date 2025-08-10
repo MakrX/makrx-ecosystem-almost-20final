@@ -306,6 +306,18 @@ export function useFiltersToggle() {
   const toggleFilters = () => setIsFiltersOpen(!isFiltersOpen);
   const closeFilters = () => setIsFiltersOpen(false);
 
+  // Show filters by default on desktop, hide on mobile
+  useEffect(() => {
+    const checkScreenSize = () => {
+      const isDesktop = window.innerWidth >= 1024; // lg breakpoint
+      setIsFiltersOpen(isDesktop);
+    };
+
+    checkScreenSize();
+    window.addEventListener('resize', checkScreenSize);
+    return () => window.removeEventListener('resize', checkScreenSize);
+  }, []);
+
   // Close on escape key
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
