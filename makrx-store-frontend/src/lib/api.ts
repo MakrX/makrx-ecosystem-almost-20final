@@ -1055,9 +1055,12 @@ class ApiClient {
   }
 
   private getMockCategories() {
-    // Transform mock categories to match API response format
-    const transformedCategories = mockCategories.map((category, index) => ({
-      id: index + 100, // Start from 100 to avoid conflicts with product IDs
+    // Get categories from admin data service (includes user-added categories)
+    const adminCategories = adminDataService.getCategories();
+
+    // Transform admin categories to match API response format
+    const transformedCategories = adminCategories.map((category, index) => ({
+      id: parseInt(category.id) || index + 100,
       name: category.name,
       slug: category.slug,
       description: category.description,
