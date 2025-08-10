@@ -226,7 +226,7 @@ export default function EnhancedHeader() {
             {isAuthenticated ? (
               <div className="hidden md:flex items-center gap-3">
                 {/* Admin Quick Access */}
-                {user?.role === 'super_admin' && (
+                {user?.roles?.includes('super_admin') && (
                   <Link
                     to="/admin"
                     className="flex items-center gap-2 px-3 py-2 text-white/80 hover:text-white rounded-lg hover:bg-white/10 transition-colors"
