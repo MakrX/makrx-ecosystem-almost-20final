@@ -81,6 +81,9 @@ const App = () => {
               <Route path="/about" element={<About />} />
               <Route path="/press" element={<Press />} />
               <Route path="/contact" element={<Contact />} />
+
+              {/* Theme Demo (Development) */}
+              <Route path="/theme-demo" element={<ThemeDemo />} />
               
               {/* Legal Pages */}
               <Route path="/legal/privacy" element={<PrivacyPolicy />} />
