@@ -411,7 +411,7 @@ export default function CartPage() {
                   <div className="flex justify-between">
                     <span className="text-lg font-semibold text-gray-900">Total</span>
                     <span className="text-lg font-semibold text-gray-900">
-                      {formatPrice(total, cart.currency)}
+                      {formatPrice(cartTotal, cart.currency)}
                     </span>
                   </div>
                 </div>
