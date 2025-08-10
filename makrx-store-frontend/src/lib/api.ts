@@ -305,23 +305,33 @@ class ApiClient {
 
       return await response.json();
     } catch (error) {
-      console.error(`API request failed: ${endpoint}`, error);
+      // Check if this is a network connectivity error
+      if (error instanceof TypeError &&
+          (error.message === "Failed to fetch" ||
+           error.message.includes("NetworkError") ||
+           error.message.includes("fetch"))) {
 
-      // Fallback to mock data for development when backend is not available
-      if (error instanceof TypeError && error.message === "Failed to fetch") {
-        console.warn(`Backend not available, using mock data for: ${endpoint}`);
-
-        // Show a one-time notification that we're using mock data
-        if (!sessionStorage.getItem("mock-data-notice-shown")) {
-          sessionStorage.setItem("mock-data-notice-shown", "true");
-          if (typeof window !== "undefined") {
-            console.info(
-              "🔧 Development Mode: Backend server not available, using mock data for demo purposes.",
-            );
+        // In development, use mock data instead of showing errors
+        if (process.env.NODE_ENV === "development" || !settings.ENVIRONMENT || settings.ENVIRONMENT !== "production") {
+          // Show a one-time notification that we're using mock data
+          if (!sessionStorage.getItem("mock-data-notice-shown")) {
+            sessionStorage.setItem("mock-data-notice-shown", "true");
+            if (typeof window !== "undefined") {
+              console.info(
+                "🔧 Development Mode: Backend server not available, using mock data for demo purposes.",
+              );
+            }
           }
-        }
 
-        return this.getMockData<T>(endpoint);
+          return this.getMockData<T>(endpoint);
+        }
+      }
+
+      // Only log detailed errors in development
+      if (process.env.NODE_ENV === "development") {
+        console.error(`API request failed: ${endpoint}`, error);
+      } else {
+        console.warn(`API request failed for ${endpoint}`);
       }
 
       throw error;
