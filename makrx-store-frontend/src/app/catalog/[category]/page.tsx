@@ -229,7 +229,7 @@ export default function CategoryPage() {
               <Button
                 variant="outline"
                 onClick={() => setShowFilters(!showFilters)}
-                className={`${showFilters ? 'bg-store-primary text-white' : ''} relative`}
+                className={`lg:hidden ${showFilters ? 'bg-store-primary text-white' : ''} relative`}
               >
                 <Filter className="h-4 w-4 mr-2" />
                 Filters
