@@ -302,7 +302,7 @@ export default function EnhancedHeader() {
                 <div className="p-3 grid grid-cols-2 gap-2">
                   {/* MakrCave */}
                   <a
-                    href={process.env.VITE_MAKRCAVE_URL || 'https://makrcave.com'}
+                    href={import.meta.env.VITE_MAKRCAVE_URL || 'https://makrcave.com'}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors group/item"
@@ -318,7 +318,7 @@ export default function EnhancedHeader() {
 
                   {/* Store */}
                   <a
-                    href={process.env.VITE_STORE_URL || 'https://makrx.store'}
+                    href={import.meta.env.VITE_STORE_URL || 'https://makrx.store'}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors group/item"
@@ -334,7 +334,7 @@ export default function EnhancedHeader() {
 
                   {/* Learn */}
                   <a
-                    href={process.env.VITE_LEARN_URL || 'https://learn.makrx.org'}
+                    href={import.meta.env.VITE_LEARN_URL || 'https://learn.makrx.org'}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors group/item"
@@ -350,7 +350,7 @@ export default function EnhancedHeader() {
 
                   {/* Custom Fabrication */}
                   <a
-                    href={process.env.VITE_3D_STORE_URL || 'https://3d.makrx.store'}
+                    href={import.meta.env.VITE_3D_STORE_URL || 'https://3d.makrx.store'}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors group/item"
