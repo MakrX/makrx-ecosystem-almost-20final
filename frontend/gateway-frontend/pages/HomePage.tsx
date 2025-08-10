@@ -5,9 +5,9 @@ import {
   GraduationCap, Zap, Shield, Globe, CheckCircle,
   ChevronRight, Award, TrendingUp, Heart
 } from 'lucide-react';
-import { useBooleanFlag } from '../lib/feature-flags';
+// Feature flags removed - using default behavior
 import SEOStructuredData from '../components/SEOStructuredData';
-import AppLauncher from '../components/AppLauncher';
+// AppLauncher removed - simplified for public gateway
 
 interface StatCardProps {
   number: string;
