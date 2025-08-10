@@ -494,47 +494,68 @@ export default function EnhancedHeader() {
             <nav className="flex flex-col gap-2">
               {navigation.map((item) => {
                 const Icon = item.icon;
-                const MainLinkComponent = item.isExternal ? 'a' : Link;
-                const mainLinkProps = item.isExternal
-                  ? { href: item.href, target: "_blank", rel: "noopener noreferrer" }
-                  : { to: item.href };
 
                 return (
                   <div key={item.name}>
-                    <MainLinkComponent
-                      {...mainLinkProps}
-                      onClick={() => setIsMenuOpen(false)}
-                      className={`flex items-center gap-3 px-4 py-3 rounded-lg font-medium transition-all duration-200 ${
-                        !item.isExternal && isActive(item.href)
-                          ? 'text-makrx-yellow bg-makrx-yellow/20'
-                          : 'text-white/80 hover:text-white hover:bg-white/10'
-                      }`}
-                    >
-                      <Icon className="w-5 h-5" />
-                      {item.name}
-                    </MainLinkComponent>
+                    {item.isExternal ? (
+                      <a
+                        href={item.href}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        onClick={() => setIsMenuOpen(false)}
+                        className="flex items-center gap-3 px-4 py-3 rounded-lg font-medium transition-all duration-200 text-white/80 hover:text-white hover:bg-white/10"
+                      >
+                        <Icon className="w-5 h-5" />
+                        {item.name}
+                      </a>
+                    ) : (
+                      <Link
+                        to={item.href}
+                        onClick={() => setIsMenuOpen(false)}
+                        className={`flex items-center gap-3 px-4 py-3 rounded-lg font-medium transition-all duration-200 ${
+                          isActive(item.href)
+                            ? 'text-makrx-yellow bg-makrx-yellow/20'
+                            : 'text-white/80 hover:text-white hover:bg-white/10'
+                        }`}
+                      >
+                        <Icon className="w-5 h-5" />
+                        {item.name}
+                      </Link>
+                    )}
 
                     {/* Mobile Dropdown Items */}
                     {item.dropdown && (
                       <div className="ml-8 mt-2 space-y-1">
                         {item.dropdown.map((dropdownItem) => {
                           const DropdownIcon = dropdownItem.icon;
-                          const DropdownLinkComponent = dropdownItem.isExternal ? 'a' : Link;
-                          const dropdownLinkProps = dropdownItem.isExternal
-                            ? { href: dropdownItem.href, target: "_blank", rel: "noopener noreferrer" }
-                            : { to: dropdownItem.href };
 
-                          return (
-                            <DropdownLinkComponent
-                              key={dropdownItem.href}
-                              {...dropdownLinkProps}
-                              onClick={() => setIsMenuOpen(false)}
-                              className="flex items-center gap-3 px-4 py-2 text-white/60 hover:text-white/80 rounded-lg hover:bg-white/5 transition-colors text-sm"
-                            >
-                              <DropdownIcon className="w-4 h-4" />
-                              {dropdownItem.name}
-                            </DropdownLinkComponent>
-                          );
+                          if (dropdownItem.isExternal) {
+                            return (
+                              <a
+                                key={dropdownItem.href}
+                                href={dropdownItem.href}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                onClick={() => setIsMenuOpen(false)}
+                                className="flex items-center gap-3 px-4 py-2 text-white/60 hover:text-white/80 rounded-lg hover:bg-white/5 transition-colors text-sm"
+                              >
+                                <DropdownIcon className="w-4 h-4" />
+                                {dropdownItem.name}
+                              </a>
+                            );
+                          } else {
+                            return (
+                              <Link
+                                key={dropdownItem.href}
+                                to={dropdownItem.href}
+                                onClick={() => setIsMenuOpen(false)}
+                                className="flex items-center gap-3 px-4 py-2 text-white/60 hover:text-white/80 rounded-lg hover:bg-white/5 transition-colors text-sm"
+                              >
+                                <DropdownIcon className="w-4 h-4" />
+                                {dropdownItem.name}
+                              </Link>
+                            );
+                          }
                         })}
                       </div>
                     )}
