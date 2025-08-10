@@ -45,6 +45,7 @@ const App = () => {
         <link rel="icon" type="image/x-icon" href="/favicon.ico" />
         <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
         <meta name="theme-color" content="#1e40af" />
+        <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0f172a" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
       </Helmet>
       
