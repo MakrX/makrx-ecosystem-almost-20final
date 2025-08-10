@@ -116,7 +116,7 @@ export default function ShippingPage() {
             <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-6">Special Item Shipping</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-3">Heavy Items (>20kg)</h3>
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-3">Heavy Items (&gt;20kg)</h3>
                 <ul className="space-y-2 text-gray-600 dark:text-gray-400">
                   <li>• 3D printers, large tools</li>
                   <li>• Freight shipping required</li>
@@ -144,7 +144,7 @@ export default function ShippingPage() {
             </h2>
             <div className="space-y-4 text-gray-600 dark:text-gray-400">
               <p>
-                All orders include real-time tracking from dispatch to delivery. You'll receive:
+                All orders include real-time tracking from dispatch to delivery. You&apos;ll receive:
               </p>
               <ul className="space-y-2 ml-6">
                 <li>• Order confirmation email with tracking number</li>
