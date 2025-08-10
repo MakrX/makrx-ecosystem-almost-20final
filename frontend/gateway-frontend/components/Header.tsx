@@ -85,7 +85,7 @@ export default function Header() {
             <div className="relative">
               <button
                 onClick={() => setShowLauncher(!showLauncher)}
-                className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+                className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-slate-900 transition-colors"
                 aria-label="Launch Apps"
               >
                 <Grid3X3 className="w-5 h-5 text-gray-600 dark:text-gray-300" />
