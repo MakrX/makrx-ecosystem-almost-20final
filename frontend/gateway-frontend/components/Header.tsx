@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Menu, X, ExternalLink, Grid3X3 } from 'lucide-react';
-import { ThemeToggle } from '../lib/theme';
+import { ThemeToggle } from '../lib/theme-clean';
 
 export default function Header() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
