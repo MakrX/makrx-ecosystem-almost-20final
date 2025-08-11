@@ -444,17 +444,37 @@ async def like_project(
     db: Session = Depends(get_db)
 ):
     """Like a project"""
-    
+
     project = db.query(Project).filter(Project.project_id == project_id).first()
     if not project:
         raise HTTPException(status_code=404, detail="Project not found")
-    
-    # TODO: Implement actual like tracking in database
-    # For now, just increment the like count
-    project.like_count = (project.like_count or 0) + 1
+
+    # Check if user already liked the project
+    existing_like = (
+        db.query(ProjectLike)
+        .filter(
+            ProjectLike.project_id == project_id,
+            ProjectLike.user_id == current_user.id,
+        )
+        .first()
+    )
+
+    if not existing_like:
+        db.add(ProjectLike(project_id=project_id, user_id=current_user.id))
+        db.flush()
+
+    # Derive like count from join table
+    like_count = (
+        db.query(ProjectLike)
+        .filter(ProjectLike.project_id == project_id)
+        .count()
+    )
+
+    # Keep project summary in sync
+    project.like_count = like_count
     db.commit()
-    
-    return {"status": "liked", "like_count": project.like_count}
+
+    return {"status": "liked", "like_count": like_count}
 
 @router.delete("/{project_id}/like")
 async def unlike_project(
@@ -463,17 +483,34 @@ async def unlike_project(
     db: Session = Depends(get_db)
 ):
     """Unlike a project"""
-    
+
     project = db.query(Project).filter(Project.project_id == project_id).first()
     if not project:
         raise HTTPException(status_code=404, detail="Project not found")
-    
-    # TODO: Implement actual like tracking in database
-    # For now, just decrement the like count
-    project.like_count = max(0, (project.like_count or 0) - 1)
+
+    existing_like = (
+        db.query(ProjectLike)
+        .filter(
+            ProjectLike.project_id == project_id,
+            ProjectLike.user_id == current_user.id,
+        )
+        .first()
+    )
+
+    if existing_like:
+        db.delete(existing_like)
+        db.flush()
+
+    like_count = (
+        db.query(ProjectLike)
+        .filter(ProjectLike.project_id == project_id)
+        .count()
+    )
+
+    project.like_count = like_count
     db.commit()
-    
-    return {"status": "unliked", "like_count": project.like_count}
+
+    return {"status": "unliked", "like_count": like_count}
 
 @router.post("/{project_id}/bookmark")
 async def bookmark_project(
@@ -482,13 +519,32 @@ async def bookmark_project(
     db: Session = Depends(get_db)
 ):
     """Bookmark a project"""
-    
+
     project = db.query(Project).filter(Project.project_id == project_id).first()
     if not project:
         raise HTTPException(status_code=404, detail="Project not found")
-    
-    # TODO: Implement actual bookmark tracking in database
-    return {"status": "bookmarked"}
+
+    existing_bookmark = (
+        db.query(ProjectBookmark)
+        .filter(
+            ProjectBookmark.project_id == project_id,
+            ProjectBookmark.user_id == current_user.id,
+        )
+        .first()
+    )
+
+    if not existing_bookmark:
+        db.add(ProjectBookmark(project_id=project_id, user_id=current_user.id))
+        db.flush()
+
+    bookmark_count = (
+        db.query(ProjectBookmark)
+        .filter(ProjectBookmark.project_id == project_id)
+        .count()
+    )
+    db.commit()
+
+    return {"status": "bookmarked", "bookmark_count": bookmark_count}
 
 @router.delete("/{project_id}/bookmark")
 async def unbookmark_project(
@@ -497,10 +553,29 @@ async def unbookmark_project(
     db: Session = Depends(get_db)
 ):
     """Remove bookmark from a project"""
-    
+
     project = db.query(Project).filter(Project.project_id == project_id).first()
     if not project:
         raise HTTPException(status_code=404, detail="Project not found")
-    
-    # TODO: Implement actual bookmark tracking in database
-    return {"status": "unbookmarked"}
+
+    existing_bookmark = (
+        db.query(ProjectBookmark)
+        .filter(
+            ProjectBookmark.project_id == project_id,
+            ProjectBookmark.user_id == current_user.id,
+        )
+        .first()
+    )
+
+    if existing_bookmark:
+        db.delete(existing_bookmark)
+        db.flush()
+
+    bookmark_count = (
+        db.query(ProjectBookmark)
+        .filter(ProjectBookmark.project_id == project_id)
+        .count()
+    )
+    db.commit()
+
+    return {"status": "unbookmarked", "bookmark_count": bookmark_count}
