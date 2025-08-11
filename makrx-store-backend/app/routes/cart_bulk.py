@@ -15,6 +15,12 @@ from pydantic import BaseModel, Field, EmailStr
 from ..core.db import get_db
 from ..models.commerce import Cart, CartItem, Product
 from ..schemas.commerce import CartResponse, CartItemResponse
+from ..services.notification_service import (
+    NotificationCategory,
+    NotificationRequest,
+    NotificationType,
+    notification_service,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -108,7 +114,8 @@ async def bulk_add_to_cart(
             bulk_request.user_email,
             bulk_request.project_name or "Bulk Import",
             results["added_items"],
-            results["updated_items"]
+            results["updated_items"],
+            results["details"],
         )
         
         cart_url = f"/cart"  # Frontend cart URL
@@ -431,7 +438,8 @@ async def notify_bulk_cart_addition(
     user_email: str,
     project_name: str,
     added_items: int,
-    updated_items: int
+    updated_items: int,
+    details: List[Dict[str, Any]],
 ):
     """Send notification about bulk cart addition completion"""
     try:
@@ -439,12 +447,50 @@ async def notify_bulk_cart_addition(
             f"Bulk cart addition completed for {user_email}: "
             f"Project '{project_name}' - {added_items} added, {updated_items} updated"
         )
-        
-        # TODO: Integrate with notification service
-        # await notification_service.send_cart_update_notification(
-        #     user_email, project_name, added_items, updated_items
-        # )
-        
+
+        # Prepare item detail summary
+        added_detail = [
+            f"{item['sku']} x{item.get('quantity', item.get('new_quantity', 0))}"
+            for item in details
+            if item.get("status") == "added"
+        ]
+        updated_detail = [
+            f"{item['sku']} ({item.get('action', 'updated')} to {item.get('new_quantity', item.get('quantity', 0))})"
+            for item in details
+            if item.get("status") == "updated"
+        ]
+
+        detail_lines = []
+        if added_detail:
+            detail_lines.append("Added: " + ", ".join(added_detail))
+        if updated_detail:
+            detail_lines.append("Updated: " + ", ".join(updated_detail))
+        detail_message = "\n".join(detail_lines)
+
+        subject = f"Cart updated for {project_name}"
+        message = (
+            f"{added_items} item(s) added, {updated_items} item(s) updated."
+            + ("\n" + detail_message if detail_message else "")
+        )
+
+        requests = [
+            NotificationRequest(
+                recipient=user_email,
+                notification_type=NotificationType.EMAIL,
+                category=NotificationCategory.CART_UPDATED,
+                subject=subject,
+                message=message,
+            ),
+            NotificationRequest(
+                recipient=user_email,
+                notification_type=NotificationType.PUSH,
+                category=NotificationCategory.CART_UPDATED,
+                subject=subject,
+                message=message,
+            ),
+        ]
+        await notification_service.send_bulk_notifications(requests)
+
     except Exception as e:
         logger.error(f"Failed to send bulk cart notification: {e}")
 
