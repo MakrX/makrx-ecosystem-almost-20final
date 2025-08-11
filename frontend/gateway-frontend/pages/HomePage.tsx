@@ -230,7 +230,7 @@ export default function HomePage() {
             <div className="mb-6 sm:mb-12">
               <div className="relative group mb-4 sm:mb-8">
                 <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-display font-bold leading-none relative z-10">
-                  <span className="text-white hover:text-makrx-yellow transition-colors duration-500 cursor-default block sm:inline">MakrX</span>
+                  <span className="text-white dark:text-gray-100 hover:text-makrx-yellow transition-colors duration-500 cursor-default block sm:inline">MakrX</span>
                   <div className="absolute inset-0 bg-gradient-to-r from-makrx-yellow/20 to-transparent rounded-2xl blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-700 -z-10"></div>
                 </h1>
               </div>
