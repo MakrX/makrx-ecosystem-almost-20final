@@ -187,6 +187,20 @@ class MembershipTransaction(Base):
     member = relationship("Member")
     membership_plan = relationship("MembershipPlan")
 
+class MemberFollow(Base):
+    __tablename__ = "member_follows"
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    follower_id = Column(String, ForeignKey("members.id"), nullable=False, index=True)
+    following_id = Column(String, ForeignKey("members.id"), nullable=False, index=True)
+
+    # Metadata
+    followed_at = Column(DateTime(timezone=True), server_default=func.now())
+
+    # Relationships
+    follower = relationship("Member", foreign_keys=[follower_id])
+    following = relationship("Member", foreign_keys=[following_id])
+
 # Indexes for better performance
 from sqlalchemy import Index
 
@@ -202,3 +216,5 @@ Index('idx_invite_status', MemberInvite.status)
 Index('idx_activity_member', MemberActivityLog.member_id)
 Index('idx_activity_type', MemberActivityLog.activity_type)
 Index('idx_transaction_member', MembershipTransaction.member_id)
+Index('idx_follow_follower', MemberFollow.follower_id)
+Index('idx_follow_following', MemberFollow.following_id)
