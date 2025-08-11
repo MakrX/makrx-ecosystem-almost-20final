@@ -10,6 +10,7 @@ export default function HomePage() {
   const [featuredProducts, setFeaturedProducts] = useState<Product[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const loadData = async () => {
@@ -22,14 +23,7 @@ export default function HomePage() {
         setFeaturedProducts(Array.isArray(productsData) ? productsData : []);
         setCategories(Array.isArray(categoriesData) ? categoriesData : []);
       } catch (error) {
-        // Silently handle errors in development when using mock data
-        if (process.env.NODE_ENV === "development") {
-          console.warn("Using fallback data due to backend unavailability");
-        } else {
-          console.error("Failed to load homepage data:", error);
-        }
-
-        // Set empty arrays as fallback
+        setError(error instanceof Error ? error.message : "Failed to load data");
         setFeaturedProducts([]);
         setCategories([]);
       } finally {
@@ -56,17 +50,16 @@ export default function HomePage() {
     );
   }
 
+  if (error) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <p className="text-red-600">Failed to load homepage: {error}</p>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-background">
-      {/* Development Mode Notice */}
-      {process.env.NODE_ENV === "development" && typeof window !== "undefined" && sessionStorage.getItem("mock-data-notice-shown") && (
-        <div className="bg-yellow-100 dark:bg-yellow-900 border-b border-yellow-200 dark:border-yellow-800 px-4 py-2">
-          <p className="text-center text-yellow-800 dark:text-yellow-200 text-sm">
-            🔧 Development Mode: Using demo data - Backend service not connected
-          </p>
-        </div>
-      )}
-
       {/* Hero Section */}
       <section className="relative bg-gradient-to-r from-blue-600 to-purple-700 text-white">
         <div className="absolute inset-0 bg-black opacity-20"></div>
