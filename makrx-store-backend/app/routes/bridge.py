@@ -12,7 +12,7 @@ from sqlalchemy.orm import Session
 from app.core.config import settings
 from app.core.db import get_db
 from app.core.security import get_current_user
-from app.models.commerce import Order
+from app.models.commerce import Order, Product, ProductVariant
 from app.models.services import ServiceOrder
 from app.schemas.services import ServiceOrderCreate, ServiceOrderUpdate
 from app.services.notification_service import (
@@ -293,12 +293,35 @@ async def sync_inventory_with_makrcave(
         # Get inventory data from MakrCave
         inventory_data = await call_makrcave_api("/inventory/sync", "GET")
 
-        # TODO: Update Store product stock levels based on MakrCave inventory
-        # This would update available quantities for products that are manufactured in-house
+        # Map inventory SKUs to product records and update stock levels
+        synced_items = 0
+        for item in inventory_data.get("items", []):
+            sku = item.get("sku")
+            if not sku:
+                continue
+
+            quantity = int(item.get("available_quantity") or 0)
+
+            product = db.query(Product).filter(Product.slug == sku).first()
+            if not product:
+                variant = (
+                    db.query(ProductVariant)
+                    .filter(ProductVariant.sku == sku)
+                    .first()
+                )
+                if variant:
+                    variant.stock_qty = quantity
+                    product = variant.product
+
+            if product:
+                product.stock_qty = quantity
+                synced_items += 1
+
+        db.commit()
 
         return {
             "success": True,
-            "synced_items": len(inventory_data.get("items", [])),
+            "synced_items": synced_items,
             "last_sync": datetime.utcnow().isoformat(),
         }
 
