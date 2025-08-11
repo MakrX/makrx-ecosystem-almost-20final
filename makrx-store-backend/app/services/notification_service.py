@@ -40,7 +40,10 @@ class NotificationCategory(str, Enum):
     ORDER_SHIPPED = "order_shipped"
     ORDER_DELIVERED = "order_delivered"
     ORDER_CANCELLED = "order_cancelled"
-    
+
+    # Cart related
+    CART_UPDATED = "cart_updated"
+
     # Payment related
     PAYMENT_SUCCESS = "payment_success"
     PAYMENT_FAILED = "payment_failed"
