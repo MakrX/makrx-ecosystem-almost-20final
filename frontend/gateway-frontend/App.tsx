@@ -2,7 +2,7 @@ import "./global.css";
 import React from "react";
 import { createRoot } from "react-dom/client";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { ThemeProvider } from "./lib/theme";
+import { ThemeProvider } from "./lib/theme-clean";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
 import HomePage from "./pages/HomePage";
