@@ -7,7 +7,7 @@ import {
 } from 'lucide-react';
 // Feature flags removed - using default behavior
 import SEOStructuredData from '../components/SEOStructuredData';
-import { useTheme } from '../lib/theme';
+// Remove useTheme import since we'll use only Tailwind classes
 // AppLauncher removed - simplified for public gateway
 
 interface StatCardProps {
