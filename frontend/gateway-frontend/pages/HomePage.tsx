@@ -211,6 +211,14 @@ export default function HomePage() {
 
   return (
     <div className="min-h-screen">
+      {/* Theme Debug - Remove after testing */}
+      <div className={`fixed top-20 right-4 z-50 p-2 rounded text-xs font-mono ${
+        resolvedTheme === 'dark'
+          ? 'bg-red-500 text-white'
+          : 'bg-green-500 text-black'
+      }`}>
+        Theme: {resolvedTheme}
+      </div>
       {/* SEO Structured Data */}
       <SEOStructuredData type="organization" />
       <SEOStructuredData type="website" />
