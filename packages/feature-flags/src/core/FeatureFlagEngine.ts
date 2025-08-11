@@ -68,9 +68,14 @@ export interface FlagEvaluationResult {
   flagKey: string;
 }
 
+interface CachedResult {
+  result: FlagEvaluationResult;
+  timestamp: number;
+}
+
 export class FeatureFlagEngine {
   private flags: Map<string, FlagDefinition> = new Map();
-  private cache: Map<string, FlagEvaluationResult> = new Map();
+  private cache: Map<string, CachedResult> = new Map();
   private cacheTTL = 60000; // 1 minute
 
   constructor(flags: FlagDefinition[] = []) {
@@ -93,18 +98,17 @@ export class FeatureFlagEngine {
    * Evaluate a feature flag for given context
    */
   evaluate(flagKey: string, context: FlagContext, defaultValue?: any): FlagEvaluationResult {
-    // Check cache first
+    this.purgeExpiredCache();
+
     const cacheKey = this.getCacheKey(flagKey, context);
     const cached = this.cache.get(cacheKey);
     if (cached && this.isCacheValid(cached)) {
-      return cached;
+      return cached.result;
     }
 
     const result = this.evaluateFlag(flagKey, context, defaultValue);
-    
-    // Cache result
-    this.cache.set(cacheKey, result);
-    
+    this.cache.set(cacheKey, { result, timestamp: Date.now() });
+
     return result;
   }
 
@@ -363,14 +367,21 @@ export class FeatureFlagEngine {
       context.country,
       context.pincode
     ].filter(Boolean).join(':');
-    
+
     return `${flagKey}:${contextKeys}`;
   }
 
-  private isCacheValid(result: FlagEvaluationResult): boolean {
-    // Simple time-based cache validation
-    // In production, you might want more sophisticated cache invalidation
-    return true; // For now, always use cache if present
+  private isCacheValid(entry: CachedResult): boolean {
+    return Date.now() - entry.timestamp < this.cacheTTL;
+  }
+
+  private purgeExpiredCache(): void {
+    const now = Date.now();
+    for (const [key, entry] of this.cache.entries()) {
+      if (now - entry.timestamp >= this.cacheTTL) {
+        this.cache.delete(key);
+      }
+    }
   }
 
   /**
