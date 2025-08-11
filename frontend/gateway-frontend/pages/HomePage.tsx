@@ -245,8 +245,8 @@ export default function HomePage() {
                 </div>
 
                 {/* Static decoration particles */}
-                <div className="absolute -top-4 left-1/4 w-1 h-1 bg-makrx-yellow/40 rounded-full" style={{opacity: '0', animation: 'fadeIn 0.6s ease-out 2s forwards'}}></div>
-                <div className="absolute -top-2 right-1/3 w-1.5 h-1.5 bg-white/30 rounded-full" style={{opacity: '0', animation: 'fadeIn 0.6s ease-out 2.5s forwards'}}></div>
+                <div className="absolute -top-4 left-1/4 w-1 h-1 bg-makrx-yellow/40 dark:bg-makrx-yellow/60 rounded-full" style={{opacity: '0', animation: 'fadeIn 0.6s ease-out 2s forwards'}}></div>
+                <div className="absolute -top-2 right-1/3 w-1.5 h-1.5 bg-white/30 dark:bg-makrx-yellow/40 rounded-full" style={{opacity: '0', animation: 'fadeIn 0.6s ease-out 2.5s forwards'}}></div>
               </div>
             </div>
 
