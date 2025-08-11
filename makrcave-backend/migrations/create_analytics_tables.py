@@ -13,9 +13,9 @@ from datetime import datetime
 # Add the backend directory to the Python path
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from database import engine, get_db_session
-from models.analytics import Base as AnalyticsBase
-from models.analytics import (
+from ..database import engine, get_db_session
+from ..models.analytics import Base as AnalyticsBase
+from ..models.analytics import (
     UsageEvent, AnalyticsSnapshot, ReportRequest, EquipmentUsageLog,
     InventoryAnalytics, ProjectAnalytics, RevenueAnalytics
 )

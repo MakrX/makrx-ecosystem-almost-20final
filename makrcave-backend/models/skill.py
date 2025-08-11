@@ -1,7 +1,7 @@
 from sqlalchemy import Column, String, Text, Boolean, DateTime, ForeignKey, Enum, Table
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
-from database import Base
+from ..database import Base
 import enum
 
 class SkillLevel(str, enum.Enum):

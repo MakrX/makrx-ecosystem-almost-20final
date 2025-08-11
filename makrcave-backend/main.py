@@ -5,30 +5,30 @@ import uvicorn
 import os
 
 # Import security middleware
-from middleware.security import add_security_middleware
+from .middleware.security import add_security_middleware
 
-from routes.inventory import router as inventory_router
-from routes.equipment import router as equipment_router
-from routes.project import router as project_router
-from routes.member import router as member_router
-from routes.billing import router as billing_router
-from routes.analytics import router as analytics_router
-from routes.makerspace_settings import router as settings_router
-from routes.skill import router as skill_router
-from routes.bridge import router as bridge_router
-from routes.membership_plans import router as membership_plans_router
-from routes.announcements import router as announcements_router
-from routes.filament_tracking import router as filament_tracking_router
-from routes.enhanced_projects import router as enhanced_projects_router
-from routes.equipment_reservations import router as equipment_reservations_router
-from routes.job_management import router as job_management_router
-from routes.machine_access import router as machine_access_router
-from routes.enhanced_bom import router as enhanced_bom_router
-from routes.access_control import router as access_control_router
-from routes.enhanced_analytics import router as enhanced_analytics_router
-from routes.notifications import router as notifications_router
-from routes.collaboration import router as collaboration_router
-from routes.project_showcase import router as project_showcase_router
+from .routes.inventory import router as inventory_router
+from .routes.equipment import router as equipment_router
+from .routes.project import router as project_router
+from .routes.member import router as member_router
+from .routes.billing import router as billing_router
+from .routes.analytics import router as analytics_router
+from .routes.makerspace_settings import router as settings_router
+from .routes.skill import router as skill_router
+from .routes.bridge import router as bridge_router
+from .routes.membership_plans import router as membership_plans_router
+from .routes.announcements import router as announcements_router
+from .routes.filament_tracking import router as filament_tracking_router
+from .routes.enhanced_projects import router as enhanced_projects_router
+from .routes.equipment_reservations import router as equipment_reservations_router
+from .routes.job_management import router as job_management_router
+from .routes.machine_access import router as machine_access_router
+from .routes.enhanced_bom import router as enhanced_bom_router
+from .routes.access_control import router as access_control_router
+from .routes.enhanced_analytics import router as enhanced_analytics_router
+from .routes.notifications import router as notifications_router
+from .routes.collaboration import router as collaboration_router
+from .routes.project_showcase import router as project_showcase_router
 
 # Create FastAPI application
 app = FastAPI(

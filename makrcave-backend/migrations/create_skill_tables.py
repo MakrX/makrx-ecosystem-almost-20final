@@ -11,7 +11,7 @@ This migration creates all tables needed for the skill management system:
 """
 
 from sqlalchemy import text
-from database import engine, Base
+from ..database import engine, Base
 import logging
 
 # Configure logging
@@ -24,7 +24,7 @@ def upgrade():
     
     try:
         # Create tables using SQLAlchemy
-        from models.skill import Skill, UserSkill, SkillRequest, SkillAuditLog, skill_prerequisites, skill_equipment
+        from ..models.skill import Skill, UserSkill, SkillRequest, SkillAuditLog, skill_prerequisites, skill_equipment
         
         # Create all skill-related tables
         Base.metadata.create_all(bind=engine, tables=[
