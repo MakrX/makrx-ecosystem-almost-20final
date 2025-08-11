@@ -16,6 +16,7 @@ from app.core.db import get_db
 from app.core.security import get_current_user
 from app.models.services import Upload
 from sqlalchemy.orm import Session
+from app.utils.pagination import paginate_query
 
 router = APIRouter()
 
@@ -573,7 +574,11 @@ async def list_uploads(
             query = query.filter(Upload.status == status)
         
         # Pagination
-        uploads = query.offset(skip).limit(limit).all()
+        uploads = paginate_query(
+            query,
+            offset=skip,
+            limit=limit,
+        )
         total = query.count()
         
         return {

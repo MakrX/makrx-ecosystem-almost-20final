@@ -16,6 +16,7 @@ from app.models.commerce import Product, Category, Order, OrderItem
 from app.models.subscriptions import QuickReorder, BOMIntegration
 from app.models.reviews import Review, ProductRatingSummary
 from pydantic import BaseModel, Field
+from app.utils.pagination import paginate_query
 
 logger = logging.getLogger(__name__)
 
@@ -217,12 +218,12 @@ async def advanced_product_search(
         else:  # relevance (default)
             query = query.order_by(Product.is_featured.desc(), Product.created_at.desc())
         
-        # Apply pagination
-        offset = (request.page - 1) * request.per_page
-        products_query = query.offset(offset).limit(request.per_page)
-        
-        # Execute query
-        products = products_query.all()
+        # Apply pagination and execute query
+        products = paginate_query(
+            query,
+            page=request.page,
+            per_page=request.per_page,
+        )
         
         # Convert to dict format with additional data
         product_list = []
