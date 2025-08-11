@@ -3,8 +3,18 @@
 Service Orders Routes - Handle 3D printing service orders and job routing
 """
 
-from fastapi import APIRouter, HTTPException, Depends, BackgroundTasks, UploadFile, File
+from fastapi import (
+    APIRouter,
+    HTTPException,
+    Depends,
+    BackgroundTasks,
+    UploadFile,
+    File,
+    Request,
+    status,
+)
 from sqlalchemy.orm import Session
+from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, and_, or_
 from typing import List, Dict, Any, Optional
 import httpx
@@ -21,9 +31,11 @@ import redis.asyncio as redis
 
 from ..core.config import settings
 
-from ..core.db import get_db
+from ..core.db import get_db, AsyncSessionLocal
 from ..core.storage import upload_file_to_storage, generate_presigned_url
+from ..core.payments import PaymentProcessor
 from ..models.commerce import Order, OrderItem, Product
+from ..schemas import MessageResponse
 from ..schemas.commerce import OrderResponse
 
 logger = logging.getLogger(__name__)
@@ -149,8 +161,8 @@ async def get_makrcave_client() -> httpx.AsyncClient:
 
 @router.post("/upload", response_model=Dict[str, Any])
 async def upload_3d_files(
-    files: List[UploadFile] = File(...),
     background_tasks: BackgroundTasks,
+    files: List[UploadFile] = File(...),
     db: Session = Depends(get_db)
 ):
     """
@@ -752,6 +764,158 @@ async def process_service_order_payment(
     amount: float
 ):
     """Process payment for service order"""
-    # TODO: Implement payment processing
-    # This would integrate with Stripe/payment processor
-    logger.info(f"Processing payment for service order {service_order_id}: ${amount}")
+    logger.info(
+        f"Processing payment for service order {service_order_id}: Rs.{amount}"
+    )
+
+    async with AsyncSessionLocal() as db:
+        try:
+            order = await db.get(Order, order_id)
+            if not order:
+                logger.error(f"Order {order_id} not found for payment")
+                return
+
+            # Determine payment provider
+            provider = getattr(order, "payment_method", None) or "stripe"
+            metadata = {"order_id": str(order_id), "service_order_id": service_order_id}
+
+            if provider == "stripe":
+                payment = await PaymentProcessor.create_stripe_payment_intent(
+                    amount=amount,
+                    currency=getattr(order, "currency", "INR"),
+                    customer_email=getattr(order, "email", None),
+                    metadata=metadata,
+                )
+
+                order.payment_id = payment["payment_intent_id"]
+                order.payment_status = payment.get("status", "pending")
+                order.payment_method = "stripe"
+                if payment.get("status") == "succeeded":
+                    order.status = "paid"
+                    order.paid_at = datetime.utcnow()
+                else:
+                    order.status = "payment_pending"
+
+            elif provider == "razorpay":
+                payment = await PaymentProcessor.create_razorpay_order(
+                    amount=amount,
+                    currency=getattr(order, "currency", "INR"),
+                    customer_email=getattr(order, "email", None),
+                    metadata=metadata,
+                )
+
+                order.payment_id = payment["order_id"]
+                order.payment_status = payment.get("status", "created")
+                order.payment_method = "razorpay"
+                if payment.get("status") == "paid":
+                    order.status = "paid"
+                    order.paid_at = datetime.utcnow()
+                else:
+                    order.status = "payment_pending"
+            else:
+                logger.error(f"Unsupported payment provider: {provider}")
+                order.payment_status = "failed"
+                order.status = "failed"
+
+            await db.commit()
+        except Exception as e:
+            logger.error(f"Payment processing failed for order {order_id}: {e}")
+            await db.rollback()
+            try:
+                order = await db.get(Order, order_id)
+                if order:
+                    order.payment_status = "failed"
+                    order.status = "failed"
+                    await db.commit()
+            except Exception:
+                pass
+
+
+@router.post("/webhook/stripe", response_model=MessageResponse)
+async def service_order_stripe_webhook(
+    request: Request,
+    db: AsyncSession = Depends(get_db),
+):
+    """Handle Stripe webhook events for service orders"""
+    payload = await request.body()
+    signature = request.headers.get("stripe-signature", "")
+
+    event = await PaymentProcessor.verify_stripe_webhook(
+        payload, signature, settings.STRIPE_WEBHOOK_SECRET
+    )
+    if not event:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid signature"
+        )
+
+    event_type = event.get("type", "")
+    logger.info(f"Processing Stripe webhook: {event_type}")
+
+    if event_type == "payment_intent.succeeded":
+        payment_intent = event["data"]["object"]
+        order_id = payment_intent.get("metadata", {}).get("order_id")
+        if order_id:
+            order = await db.get(Order, order_id)
+            if order:
+                order.status = "paid"
+                order.payment_status = "completed"
+                order.paid_at = datetime.utcnow()
+                order.payment_id = payment_intent["id"]
+                await db.commit()
+    elif event_type == "payment_intent.payment_failed":
+        payment_intent = event["data"]["object"]
+        order_id = payment_intent.get("metadata", {}).get("order_id")
+        if order_id:
+            order = await db.get(Order, order_id)
+            if order:
+                order.payment_status = "failed"
+                order.status = "failed"
+                await db.commit()
+
+    return MessageResponse(message=f"Stripe webhook {event_type} processed successfully")
+
+
+@router.post("/webhook/razorpay", response_model=MessageResponse)
+async def service_order_razorpay_webhook(
+    request: Request,
+    db: AsyncSession = Depends(get_db),
+):
+    """Handle Razorpay webhook events for service orders"""
+    payload = await request.body()
+    signature = request.headers.get("x-razorpay-signature", "")
+
+    event = await PaymentProcessor.verify_razorpay_webhook(
+        payload, signature, settings.RAZORPAY_WEBHOOK_SECRET
+    )
+    if not event:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid signature"
+        )
+
+    event_type = event.get("event", "")
+    logger.info(f"Processing Razorpay webhook: {event_type}")
+
+    if event_type == "payment.captured":
+        payment = event["payload"]["payment"]["entity"]
+        order_id = payment.get("notes", {}).get("order_id")
+        if order_id:
+            order = await db.get(Order, order_id)
+            if order:
+                order.status = "paid"
+                order.payment_status = "completed"
+                order.paid_at = datetime.utcnow()
+                order.payment_id = payment["id"]
+                await db.commit()
+    elif event_type == "payment.failed":
+        payment = event["payload"]["payment"]["entity"]
+        order_id = payment.get("notes", {}).get("order_id")
+        if order_id:
+            order = await db.get(Order, order_id)
+            if order:
+                order.payment_status = "failed"
+                order.status = "failed"
+                await db.commit()
+
+    return MessageResponse(
+        message=f"Razorpay webhook {event_type} processed successfully"
+    )
