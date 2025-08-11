@@ -5,14 +5,16 @@ import hmac
 import hashlib
 import logging
 from datetime import datetime
-from typing import Dict, Any
+from typing import Dict, Any, List
 
+import httpx
 from fastapi import APIRouter, Request, HTTPException, Depends, status
 from sqlalchemy.orm import Session
 from app.core.config import settings
 from app.core.db import get_db
 from app.schemas import MessageResponse
 from app.models.commerce import Order
+from app.models.services import ServiceOrder, Quote
 
 logger = logging.getLogger(__name__)
 router = APIRouter()
@@ -92,9 +94,8 @@ async def stripe_webhook(
                     
                     db.commit()
                     logger.info(f"Order {order_id} marked as paid")
-                    
-                    # TODO: Trigger service order processing if applicable
-                    # await process_service_order(order, db)
+
+                    await process_service_order(order, db)
         
         elif event_type == 'payment_intent.payment_failed':
             payment_intent = event['data']['object']
@@ -179,9 +180,8 @@ async def razorpay_webhook(
                     
                     db.commit()
                     logger.info(f"Order {order_id} marked as paid")
-                    
-                    # TODO: Trigger service order processing if applicable
-                    # await process_service_order(order, db)
+
+                    await process_service_order(order, db)
         
         elif event_type == 'payment.failed':
             payment = event['payload']['payment']['entity']
@@ -217,5 +217,75 @@ async def razorpay_webhook(
 # TODO: Add order processing function that triggers service orders
 async def process_service_order(order: Order, db: Session):
     """Process service orders after payment confirmation"""
-    # This will be implemented when bridge services are added
-    pass
+    try:
+        service_orders: List[ServiceOrder] = (
+            db.query(ServiceOrder).filter(ServiceOrder.order_id == order.id).all()
+        )
+
+        if not service_orders:
+            return
+
+        base_url = getattr(
+            settings,
+            "MAKRCAVE_API_URL",
+            getattr(settings, "SERVICE_MAKRCAVE_URL", ""),
+        )
+        token = getattr(settings, "SERVICE_JWT", getattr(settings, "SERVICE_TOKEN", None))
+        headers = {"Content-Type": "application/json"}
+        if token:
+            headers["Authorization"] = f"Bearer {token}"
+
+        async with httpx.AsyncClient() as client:
+            for service_order in service_orders:
+                try:
+                    quote = db.query(Quote).filter(Quote.id == service_order.quote_id).first()
+                    if not quote or not getattr(quote, "upload", None):
+                        logger.warning(
+                            "Missing quote or upload for service order %s", service_order.id
+                        )
+                        continue
+
+                    payload = {
+                        "service_order_id": str(service_order.id),
+                        "upload_file_key": quote.upload.file_key,
+                        "material": quote.material,
+                        "quality": quote.quality,
+                        "est_weight_g": float(quote.estimated_weight_g or 0),
+                        "est_time_min": quote.estimated_time_minutes or 0,
+                        "delivery": {
+                            "mode": getattr(service_order, "shipping_method", "ship"),
+                            "address": (order.addresses or {}).get("shipping")
+                            if isinstance(order.addresses, dict)
+                            else order.addresses,
+                            "estimated_date": (
+                                service_order.estimated_completion
+                                or datetime.utcnow()
+                            ).isoformat(),
+                        },
+                        "capabilities": {"min_nozzle_mm": 0.4, "bed_min_mm": [220, 220, 250]},
+                    }
+
+                    url = f"{base_url}/api/v1/bridge/jobs/publish"
+                    response = await client.post(url, json=payload, headers=headers)
+                    response.raise_for_status()
+                    data = response.json()
+
+                    service_order.status = "dispatched"
+                    service_order.tracking = service_order.tracking or {}
+                    service_order.tracking.update({"makrcave_job_id": data.get("job_id")})
+                    service_order.routed_at = datetime.utcnow()
+                    db.commit()
+                    logger.info(
+                        "Dispatched service order %s to MakrCave job %s",
+                        service_order.id,
+                        data.get("job_id"),
+                    )
+                except Exception as exc:
+                    logger.error(
+                        "Failed to dispatch service order %s: %s",
+                        service_order.id,
+                        str(exc),
+                    )
+                    db.rollback()
+    except Exception as e:
+        logger.error(f"Service order processing failed: {e}")
