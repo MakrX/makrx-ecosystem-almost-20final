@@ -11,6 +11,8 @@ import httpx
 import logging
 import os
 import json
+import io
+import trimesh
 from uuid import UUID, uuid4
 from datetime import datetime, timedelta
 from pydantic import BaseModel, Field, EmailStr
@@ -448,50 +450,65 @@ async def get_service_order(
 
 # Helper Functions
 
-async def analyze_3d_file(file_url: str, filename: str, file_size: int) -> FileAnalysis:
-    """Analyze 3D file for printing requirements"""
+async def analyze_3d_file(file_url: str, filename: str, file_size: int) -> Optional[FileAnalysis]:
+    """Analyze a 3D file and return geometry statistics."""
     try:
-        # This is a simplified analysis - in production, integrate with 3D analysis library
-        # like Open3D, or external service like slicer API
-        
-        # Mock analysis for demonstration
-        mock_analysis = FileAnalysis(
+        # Download the file
+        async with httpx.AsyncClient() as client:
+            response = await client.get(file_url)
+            response.raise_for_status()
+            file_bytes = response.content
+
+        file_size = len(file_bytes)
+        extension = os.path.splitext(filename)[1].lower().lstrip(".")
+
+        # Load mesh using trimesh
+        mesh = trimesh.load(io.BytesIO(file_bytes), file_type=extension)
+
+        # Dimensions in millimeters
+        dimensions = {"x": float(mesh.extents[0]),
+                      "y": float(mesh.extents[1]),
+                      "z": float(mesh.extents[2])}
+
+        # Convert units to cubic/square centimeters
+        volume_cm3 = float(mesh.volume) / 1000.0
+        surface_area_cm2 = float(mesh.area) / 100.0
+
+        # Simple print time estimation (15 cm^3 per hour)
+        print_speed = 15.0  # cm^3/hour
+        estimated_print_time = max(1, int((volume_cm3 / print_speed) * 60))
+
+        # Material weight assuming PLA density 1.24 g/cm^3
+        density = 1.24
+        estimated_weight = volume_cm3 * density
+
+        # Determine support requirements using face normals
+        overhang_faces = mesh.face_normals[:, 2] < -0.3
+        supports_required = bool(overhang_faces.sum() / len(mesh.face_normals) > 0.1)
+
+        complexity_score = min(1.0, mesh.faces.shape[0] / 10000)
+
+        return FileAnalysis(
             filename=filename,
             file_size=file_size,
-            dimensions={"x": 50.0, "y": 30.0, "z": 20.0},
-            volume=25.5,  # cubic cm
-            surface_area=85.2,  # square cm
-            estimated_print_time=120,  # 2 hours
-            estimated_material_weight=30.0,  # grams
-            complexity_score=0.6,
-            supports_required=True,
-            issues=[]
+            dimensions=dimensions,
+            volume=round(volume_cm3, 2),
+            surface_area=round(surface_area_cm2, 2),
+            estimated_print_time=estimated_print_time,
+            estimated_material_weight=round(estimated_weight, 2),
+            complexity_score=round(complexity_score, 2),
+            supports_required=supports_required,
+            issues=[],
         )
-        
-        # TODO: Implement actual file analysis
-        # - Download file from storage
-        # - Parse STL/OBJ geometry
-        # - Calculate volume, surface area
-        # - Detect overhangs requiring supports
-        # - Estimate print time based on slicing
-        
-        return mock_analysis
-        
     except Exception as e:
         logger.error(f"3D file analysis error: {e}")
         return None
 
 async def analyze_3d_file_from_url(file_url: str) -> Optional[FileAnalysis]:
-    """Analyze 3D file from URL"""
+    """Analyze a 3D file using its URL."""
     try:
-        # Extract filename from URL
         filename = file_url.split('/')[-1]
-        
-        # Mock file size - in production, get from storage metadata
-        file_size = 1024 * 100  # 100KB
-        
-        return await analyze_3d_file(file_url, filename, file_size)
-        
+        return await analyze_3d_file(file_url, filename, 0)
     except Exception as e:
         logger.error(f"File analysis from URL error: {e}")
         return None
