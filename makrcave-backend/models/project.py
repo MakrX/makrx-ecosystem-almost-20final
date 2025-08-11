@@ -348,6 +348,20 @@ class ProjectLike(Base):
     # Relationships
     project = relationship("Project", foreign_keys=[project_id])
 
+class ProjectBookmark(Base):
+    """Track bookmarks for public projects"""
+    __tablename__ = "project_bookmarks"
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    project_id = Column(String(100), ForeignKey("projects.project_id"), nullable=False)
+    user_id = Column(String(100), nullable=False, index=True)
+
+    # Bookmark details
+    bookmarked_at = Column(DateTime(timezone=True), server_default=func.now())
+
+    # Relationships
+    project = relationship("Project", foreign_keys=[project_id])
+
 class ProjectComment(Base):
     """Comments on public projects"""
     __tablename__ = "project_comments"

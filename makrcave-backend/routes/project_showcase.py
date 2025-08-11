@@ -5,8 +5,13 @@ import json
 from datetime import datetime, timedelta
 
 from ..database import get_db
-from ..models.projects import Project, ProjectCollaborator
-from ..models.member import Member
+from ..models.project import (
+    Project,
+    ProjectCollaborator,
+    ProjectLike,
+    ProjectBookmark,
+)
+from ..models.member import Member, MemberFollow
 from ..schemas.project_showcase import (
     ShowcaseProjectResponse,
     FeaturedMakerResponse,
@@ -16,6 +21,44 @@ from ..schemas.project_showcase import (
 from ..dependencies import get_current_user
 
 router = APIRouter(prefix="/api/v1/projects", tags=["project-showcase"])
+
+
+def get_user_project_interactions(
+    db: Session, project_id: str, owner_id: str, user_id: str
+) -> tuple[bool, bool, bool]:
+    """Determine if the user liked/bookmarked a project and follows its owner."""
+
+    is_liked = (
+        db.query(ProjectLike)
+        .filter(
+            ProjectLike.project_id == project_id,
+            ProjectLike.user_id == user_id,
+        )
+        .first()
+        is not None
+    )
+
+    is_bookmarked = (
+        db.query(ProjectBookmark)
+        .filter(
+            ProjectBookmark.project_id == project_id,
+            ProjectBookmark.user_id == user_id,
+        )
+        .first()
+        is not None
+    )
+
+    is_following_owner = (
+        db.query(MemberFollow)
+        .filter(
+            MemberFollow.follower_id == user_id,
+            MemberFollow.following_id == owner_id,
+        )
+        .first()
+        is not None
+    )
+
+    return is_liked, is_bookmarked, is_following_owner
 
 @router.get("/showcase", response_model=List[ShowcaseProjectResponse])
 async def get_showcase_projects(
@@ -74,7 +117,12 @@ async def get_showcase_projects(
     for project in projects:
         # Get project owner info
         owner = db.query(Member).filter(Member.user_id == project.owner_id).first()
-        
+
+        # Determine user interactions
+        is_liked, is_bookmarked, is_following_owner = get_user_project_interactions(
+            db, project.project_id, project.owner_id, current_user.id
+        )
+
         # Get collaborator count
         collaborator_count = db.query(ProjectCollaborator).filter(
             ProjectCollaborator.project_id == project.project_id
@@ -144,9 +192,9 @@ async def get_showcase_projects(
             created_at=project.created_at.isoformat(),
             updated_at=project.updated_at.isoformat(),
             featured_at=project.featured_at.isoformat() if project.featured_at else None,
-            is_liked=False,  # TODO: Check if current user liked this project
-            is_bookmarked=False,  # TODO: Check if current user bookmarked this project
-            is_following_owner=False  # TODO: Check if current user follows the owner
+            is_liked=is_liked,
+            is_bookmarked=is_bookmarked,
+            is_following_owner=is_following_owner
         )
         
         showcase_projects.append(showcase_project)
@@ -228,7 +276,11 @@ async def get_featured_projects(
     showcase_projects = []
     for project in featured_projects:
         owner = db.query(Member).filter(Member.user_id == project.owner_id).first()
-        
+
+        is_liked, is_bookmarked, is_following_owner = get_user_project_interactions(
+            db, project.project_id, project.owner_id, current_user.id
+        )
+
         showcase_project = ShowcaseProjectResponse(
             project_id=project.project_id,
             name=project.name,
@@ -270,9 +322,9 @@ async def get_featured_projects(
             created_at=project.created_at.isoformat(),
             updated_at=project.updated_at.isoformat(),
             featured_at=project.featured_at.isoformat() if project.featured_at else None,
-            is_liked=False,
-            is_bookmarked=False,
-            is_following_owner=False
+            is_liked=is_liked,
+            is_bookmarked=is_bookmarked,
+            is_following_owner=is_following_owner
         )
         
         showcase_projects.append(showcase_project)
@@ -302,7 +354,11 @@ async def get_trending_projects(
     showcase_projects = []
     for project in trending_projects:
         owner = db.query(Member).filter(Member.user_id == project.owner_id).first()
-        
+
+        is_liked, is_bookmarked, is_following_owner = get_user_project_interactions(
+            db, project.project_id, project.owner_id, current_user.id
+        )
+
         showcase_project = ShowcaseProjectResponse(
             project_id=project.project_id,
             name=project.name,
@@ -339,9 +395,9 @@ async def get_trending_projects(
             created_at=project.created_at.isoformat(),
             updated_at=project.updated_at.isoformat(),
             featured_at=project.featured_at.isoformat() if project.featured_at else None,
-            is_liked=False,
-            is_bookmarked=False,
-            is_following_owner=False
+            is_liked=is_liked,
+            is_bookmarked=is_bookmarked,
+            is_following_owner=is_following_owner
         )
         
         showcase_projects.append(showcase_project)
