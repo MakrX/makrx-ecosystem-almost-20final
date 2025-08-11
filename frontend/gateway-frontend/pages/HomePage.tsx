@@ -300,9 +300,9 @@ export default function HomePage() {
         </div>
 
         {/* Static Background Elements */}
-        <div className="absolute top-20 left-10 w-20 h-20 bg-makrx-yellow/10 rounded-full" style={{opacity: '0', animation: 'fadeIn 1s ease-out 2s forwards'}} />
-        <div className="absolute bottom-20 right-10 w-16 h-16 bg-purple-400/10 rounded-full" style={{opacity: '0', animation: 'fadeIn 1s ease-out 3s forwards'}} />
-        <div className="absolute top-1/3 right-20 w-12 h-12 bg-white/5 rounded-full" style={{opacity: '0', animation: 'fadeIn 1s ease-out 4s forwards'}} />
+        <div className="absolute top-20 left-10 w-20 h-20 bg-makrx-yellow/10 dark:bg-makrx-yellow/20 rounded-full" style={{opacity: '0', animation: 'fadeIn 1s ease-out 2s forwards'}} />
+        <div className="absolute bottom-20 right-10 w-16 h-16 bg-purple-400/10 dark:bg-purple-400/20 rounded-full" style={{opacity: '0', animation: 'fadeIn 1s ease-out 3s forwards'}} />
+        <div className="absolute top-1/3 right-20 w-12 h-12 bg-white/5 dark:bg-makrx-yellow/10 rounded-full" style={{opacity: '0', animation: 'fadeIn 1s ease-out 4s forwards'}} />
       </section>
 
       {/* Stats Section */}
