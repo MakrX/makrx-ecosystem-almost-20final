@@ -131,20 +131,30 @@ async def get_jwks_key(token: str) -> str:
         # Fetch JWKS from Keycloak
         keycloak_config_url = f"{KEYCLOAK_URL}/realms/{KEYCLOAK_REALM}/.well-known/openid_configuration"
 
-        async with http_client.get(keycloak_config_url) as config_response:
-            if config_response.status_code != 200:
-                raise HTTPException(status_code=401, detail="Cannot fetch Keycloak configuration")
+        try:
+            config_response = await http_client.get(keycloak_config_url)
+        except httpx.RequestError as e:
+            logger.error(f"Network error fetching Keycloak configuration: {e}")
+            raise HTTPException(status_code=503, detail="Cannot fetch Keycloak configuration")
 
-            config = config_response.json()
-            jwks_uri = config["jwks_uri"]
+        if config_response.status_code != 200:
+            raise HTTPException(status_code=401, detail="Cannot fetch Keycloak configuration")
 
-        async with http_client.get(jwks_uri) as jwks_response:
-            if jwks_response.status_code != 200:
-                raise HTTPException(status_code=401, detail="Cannot fetch JWKS")
+        config = config_response.json()
+        jwks_uri = config["jwks_uri"]
 
-            jwks = jwks_response.json()
-            jwks_cache = jwks
-            jwks_cache_time = datetime.utcnow()
+        try:
+            jwks_response = await http_client.get(jwks_uri)
+        except httpx.RequestError as e:
+            logger.error(f"Network error fetching JWKS: {e}")
+            raise HTTPException(status_code=503, detail="Cannot fetch JWKS")
+
+        if jwks_response.status_code != 200:
+            raise HTTPException(status_code=401, detail="Cannot fetch JWKS")
+
+        jwks = jwks_response.json()
+        jwks_cache = jwks
+        jwks_cache_time = datetime.utcnow()
 
     # Decode token header to get key ID
     unverified_header = jwt.get_unverified_header(token)
@@ -277,7 +287,7 @@ async def get_user_profile(user_data: Dict[str, Any] = Depends(verify_token)):
             preferences={
                 "theme": "system",
                 "notifications": True,
-                **store_data.get("preferences", {}) if store_data else {}
+                **(store_data.get("preferences", {}) if store_data else {})
             },
             created_at=datetime.utcnow(),
             last_login=datetime.utcnow()
@@ -347,15 +357,18 @@ async def get_user_from_service(service: str, user_id: str) -> Optional[Dict[str
             return None
             
         url = service_urls[service]
-        async with http_client.get(url) as response:
-            if response.status_code == 200:
-                return response.json()
-            elif response.status_code == 404:
-                return None
-            else:
-                logger.warning(f"Failed to fetch user from {service}: {response.status_code}")
-                return None
-                
+        response = await http_client.get(url)
+        if response.status_code == 200:
+            return response.json()
+        elif response.status_code == 404:
+            return None
+        else:
+            logger.warning(f"Failed to fetch user from {service}: {response.status_code}")
+            return None
+
+    except httpx.RequestError as e:
+        logger.error(f"Network error fetching user from {service}: {e}")
+        return None
     except Exception as e:
         logger.error(f"Error fetching user from {service}: {e}")
         return None
@@ -370,14 +383,17 @@ async def sync_user_to_service(service: str, sync_request: UserSyncRequest) -> D
         
         if service not in service_urls:
             return {"success": False, "error": f"Unknown service: {service}"}
-            
+
         url = service_urls[service]
-        async with http_client.post(url, json=sync_request.dict()) as response:
-            if response.status_code in [200, 201]:
-                return {"success": True, "data": response.json()}
-            else:
-                return {"success": False, "error": f"HTTP {response.status_code}"}
-                
+        response = await http_client.post(url, json=sync_request.dict())
+        if response.status_code in [200, 201]:
+            return {"success": True, "data": response.json()}
+        else:
+            return {"success": False, "error": f"HTTP {response.status_code}"}
+
+    except httpx.RequestError as e:
+        logger.error(f"Network error syncing user to {service}: {e}")
+        return {"success": False, "error": "network_error"}
     except Exception as e:
         logger.error(f"Error syncing user to {service}: {e}")
         return {"success": False, "error": str(e)}
