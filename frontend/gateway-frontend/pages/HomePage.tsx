@@ -7,6 +7,7 @@ import {
 } from 'lucide-react';
 // Feature flags removed - using default behavior
 import SEOStructuredData from '../components/SEOStructuredData';
+import { useTheme } from '../lib/theme';
 // AppLauncher removed - simplified for public gateway
 
 interface StatCardProps {
