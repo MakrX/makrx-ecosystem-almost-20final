@@ -207,6 +207,7 @@ export default function HomePage() {
   const showStats = true;
   const showTestimonials = true;
   const showVideo = false;
+  const { resolvedTheme } = useTheme();
 
   return (
     <div className="min-h-screen">
