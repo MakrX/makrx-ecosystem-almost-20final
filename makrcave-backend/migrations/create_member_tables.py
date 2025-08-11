@@ -12,7 +12,15 @@ import os
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from sqlalchemy import create_engine, text
-from models.member import Base, Member, MembershipPlan, MemberInvite, MemberActivityLog, MembershipTransaction
+from models.member import (
+    Base,
+    Member,
+    MembershipPlan,
+    MemberInvite,
+    MemberActivityLog,
+    MembershipTransaction,
+    MemberFollow,
+)
 from database import DATABASE_URL, engine
 import logging
 
@@ -30,7 +38,8 @@ def create_member_tables():
             Member.__table__,
             MemberInvite.__table__,
             MemberActivityLog.__table__,
-            MembershipTransaction.__table__
+            MembershipTransaction.__table__,
+            MemberFollow.__table__,
         ])
         
         logger.info("Member tables created successfully!")
