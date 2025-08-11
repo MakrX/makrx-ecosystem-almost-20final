@@ -13,7 +13,7 @@ from database import get_db
 from models.project import Job, JobStatus
 from models.inventory import InventoryItem
 from schemas.project import JobCreate, JobUpdate
-from utils.auth import get_current_user
+from dependencies import get_current_user
 
 logger = logging.getLogger(__name__)
 router = APIRouter()
