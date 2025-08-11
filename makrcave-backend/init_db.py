@@ -16,8 +16,15 @@ from database import init_db, get_db_session, reset_db
 from models.inventory import InventoryItem, InventoryUsageLog, InventoryAlert
 from models.equipment import Equipment, EquipmentMaintenanceLog, EquipmentReservation, EquipmentRating
 from models.project import (
-    Project, ProjectCollaborator, ProjectBOM, ProjectEquipmentReservation,
-    ProjectFile, ProjectMilestone, ProjectActivityLog
+    Project,
+    ProjectCollaborator,
+    ProjectBOM,
+    ProjectEquipmentReservation,
+    ProjectFile,
+    ProjectMilestone,
+    ProjectActivityLog,
+    ProjectLike,
+    ProjectBookmark,
 )
 from schemas.inventory import SupplierType, ItemStatus, UsageAction, AccessLevel
 from schemas.equipment import EquipmentStatus, EquipmentCategory, ReservationStatus
