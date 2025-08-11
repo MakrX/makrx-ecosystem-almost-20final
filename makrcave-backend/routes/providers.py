@@ -9,15 +9,18 @@ from sqlalchemy import select, and_, or_, func
 from typing import List, Dict, Any, Optional
 import logging
 import json
+import os
 from uuid import UUID, uuid4
 from datetime import datetime, timedelta
 from pydantic import BaseModel, Field, EmailStr
 from enum import Enum
+import httpx
 
 from ..database import get_db
 from ..models.project import Project
 from ..models.equipment import Equipment
 from ..models.member import Member, MakerspaceSettings
+from ..utils.email_service import email_service
 
 logger = logging.getLogger(__name__)
 
@@ -578,12 +581,30 @@ async def notify_provider_new_job(provider_id: str, job_id: str):
         
         if provider and job:
             logger.info(f"Notifying provider {provider.name} of new job {job_id}")
-            
-            # TODO: Send email/webhook notification to provider
-            # await email_service.send_new_job_notification(
-            #     provider.contact_email, 
-            #     job.dict()
-            # )
+            subject = f"New service job assigned: {job_id}"
+            html_body = (
+                f"<p>Hello {provider.name},</p>"
+                f"<p>You have been assigned a new job <strong>{job_id}</strong>.</p>"
+                f"<p>Quantity: {job.quantity}<br/>"
+                f"Priority: {job.priority.value}<br/>"
+                f"Deadline: {job.deadline.isoformat()}</p>"
+            )
+            email_service.send_email(provider.contact_email, subject, html_body)
+            webhook_url = os.getenv("PROVIDER_NOTIFICATION_WEBHOOK")
+            if webhook_url:
+                payload = {
+                    "provider_id": provider_id,
+                    "job_id": job_id,
+                    "status": job.status.value,
+                    "priority": job.priority.value,
+                    "deadline": job.deadline.isoformat(),
+                    "quantity": job.quantity,
+                }
+                try:
+                    async with httpx.AsyncClient() as client:
+                        await client.post(webhook_url, json=payload, timeout=10)
+                except Exception as exc:
+                    logger.warning(f"Failed to send provider webhook: {exc}")
             
     except Exception as e:
         logger.error(f"Provider notification error: {e}")
@@ -596,11 +617,28 @@ async def notify_customer_job_update(
 ):
     """Notify customer of job status update"""
     try:
-        logger.info(f"Notifying customer {customer_email} of job {job_id} status change: {old_status} -> {new_status}")
-        
-        # TODO: Send notification to Store service
-        # await store_api.notify_service_order_update(job_id, new_status)
-        
+        logger.info(
+            f"Notifying customer {customer_email} of job {job_id} status change: {old_status} -> {new_status}"
+        )
+        store_api_url = os.getenv("STORE_API_URL")
+        store_api_key = os.getenv("STORE_API_KEY")
+        if store_api_url and store_api_key:
+            endpoint = f"{store_api_url}/api/v1/service-orders/{job_id}/status"
+            payload = {"status": new_status, "previous_status": old_status}
+            headers = {
+                "Content-Type": "application/json",
+                "X-API-Key": store_api_key,
+                "X-Service": "makrcave",
+            }
+            async with httpx.AsyncClient() as client:
+                await client.post(endpoint, json=payload, headers=headers, timeout=10)
+        else:
+            subject = f"Job {job_id} status update"
+            html_body = (
+                f"<p>Your job <strong>{job_id}</strong> status has changed "
+                f"from {old_status} to {new_status}.</p>"
+            )
+            email_service.send_email(customer_email, subject, html_body)
     except Exception as e:
         logger.error(f"Customer notification error: {e}")
 
