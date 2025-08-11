@@ -123,53 +123,40 @@ interface FeatureCardProps {
 }
 
 const FeatureCard: React.FC<FeatureCardProps> = ({ title, description, icon, href, gradient }) => {
-  const { resolvedTheme } = useTheme();
-  const isDark = resolvedTheme === 'dark';
-
   return (
     <Link to={href} className="group block">
-      <div className={`relative overflow-hidden rounded-2xl p-8 h-full transition-all duration-500 group-hover:scale-105 group-hover:shadow-2xl group-hover:-rotate-1 border border-white/10 dark:border-slate-700 ${
-        isDark
-          ? 'bg-gradient-to-br from-slate-800 to-slate-900'
-          : `bg-gradient-to-br ${gradient}`
-      }`}>
+      <div className={[
+        'relative overflow-hidden rounded-2xl p-8 h-full transition-all duration-500 group-hover:scale-105 group-hover:shadow-2xl group-hover:-rotate-1 border',
+        'border-white/10 dark:border-slate-700',
+        // background handled purely by Tailwind:
+        'bg-gradient-to-br',
+        gradient,                       // e.g. "from-blue-600 to-purple-700"
+        'dark:from-slate-800 dark:to-slate-900', // dark variant
+      ].join(' ')}>
         <div className="relative z-10">
-          <div className={`w-12 h-12 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 group-hover:rotate-6 transition-all duration-300 ${
-            isDark
-              ? 'bg-makrx-yellow/20 group-hover:bg-makrx-yellow/30'
-              : 'bg-white/20 group-hover:bg-white/30'
-          }`}>
-            <div className={isDark ? 'text-makrx-yellow' : 'text-white'}>
-              {icon}
-            </div>
+          <div className="w-12 h-12 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 group-hover:rotate-6 transition-all duration-300
+                          bg-white/20 group-hover:bg-white/30 dark:bg-makrx-yellow/20 dark:group-hover:bg-makrx-yellow/30">
+            <div className="text-white dark:text-makrx-yellow">{icon}</div>
           </div>
-          <h3 className={`text-xl font-bold mb-3 group-hover:text-makrx-yellow transition-colors duration-300 ${
-            isDark ? 'text-gray-100' : 'text-white'
-          }`}>{title}</h3>
-          <p className={`mb-4 leading-relaxed transition-colors duration-300 ${
-            isDark
-              ? 'text-gray-300 group-hover:text-gray-100'
-              : 'text-white/90 group-hover:text-white'
-          }`}>{description}</p>
-          <div className={`flex items-center font-medium group-hover:text-makrx-yellow transition-all duration-300 ${
-            isDark ? 'text-gray-200' : 'text-white'
-          }`}>
+
+          <h3 className="text-xl font-bold mb-3 group-hover:text-makrx-yellow transition-colors duration-300 text-white dark:text-gray-100">
+            {title}
+          </h3>
+
+          <p className="mb-4 leading-relaxed transition-colors duration-300 text-white/90 group-hover:text-white dark:text-gray-300 dark:group-hover:text-gray-100">
+            {description}
+          </p>
+
+          <div className="flex items-center font-medium group-hover:text-makrx-yellow transition-all duration-300 text-white dark:text-gray-200">
             Explore <ArrowRight className="ml-2 w-4 h-4 group-hover:translate-x-1 group-hover:scale-110 transition-all duration-300" />
           </div>
         </div>
-        <div className={`absolute top-0 right-0 w-32 h-32 rounded-full -translate-y-16 translate-x-16 group-hover:scale-150 transition-all duration-700 ${
-          isDark
-            ? 'bg-makrx-yellow/10 group-hover:bg-makrx-yellow/20'
-            : 'bg-white/10 group-hover:bg-white/20'
-        }`}></div>
-        <div className={`absolute bottom-0 left-0 w-24 h-24 rounded-full translate-y-12 -translate-x-12 group-hover:scale-125 transition-all duration-700 ${
-          isDark
-            ? 'bg-makrx-yellow/5 group-hover:bg-makrx-yellow/10'
-            : 'bg-white/5 group-hover:bg-white/10'
-        }`}></div>
-        <div className={`absolute inset-0 bg-gradient-to-t to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 ${
-          isDark ? 'from-slate-900/40' : 'from-black/20'
-        }`}></div>
+
+        <div className="absolute top-0 right-0 w-32 h-32 rounded-full -translate-y-16 translate-x-16 group-hover:scale-150 transition-all duration-700
+                        bg-white/10 group-hover:bg-white/20 dark:bg-makrx-yellow/10 dark:group-hover:bg-makrx-yellow/20" />
+        <div className="absolute bottom-0 left-0 w-24 h-24 rounded-full translate-y-12 -translate-x-12 group-hover:scale-125 transition-all duration-700
+                        bg-white/5 group-hover:bg-white/10 dark:bg-makrx-yellow/5 dark:group-hover:bg-makrx-yellow/10" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent dark:from-slate-900/40 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
       </div>
     </Link>
   );
