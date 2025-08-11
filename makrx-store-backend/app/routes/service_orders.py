@@ -418,13 +418,23 @@ async def get_service_order(
         
         # Get job status from MakrCave
         job_status = await get_job_status_from_makrcave(service_order_id)
-        
+
+        estimated_completion = (
+            job_status.get("job_details", {}).get("estimated_completion")
+            or job_status.get("estimated_completion")
+        )
+        estimated_delivery = (
+            datetime.fromisoformat(estimated_completion)
+            if estimated_completion
+            else order.created_at + timedelta(days=7)
+        )
+
         return ServiceOrderResponse(
             order_id=str(order.id),
             service_order_id=service_order_id,
             status=ServiceOrderStatus(order.status),
             total_amount=float(order.total_amount),
-            estimated_delivery=order.created_at + timedelta(days=7),  # TODO: Get from job
+            estimated_delivery=estimated_delivery,
             tracking_info=job_status.get("tracking_info"),
             provider_info=job_status.get("provider_info"),
             job_details=job_status.get("job_details")
