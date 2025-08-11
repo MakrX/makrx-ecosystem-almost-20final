@@ -216,7 +216,7 @@ export default function HomePage() {
       <SEOStructuredData type="product" />
 
       {/* Hero Section */}
-      <section className="relative min-h-[80vh] sm:min-h-[90vh] lg:min-h-screen flex items-center justify-center overflow-hidden bg-gradient-to-br from-makrx-blue via-makrx-blue/90 to-purple-900 px-4 sm:px-6 pt-8 sm:pt-12">
+      <section className="relative min-h-[80vh] sm:min-h-[90vh] lg:min-h-screen flex items-center justify-center overflow-hidden bg-gradient-to-br from-makrx-blue via-makrx-blue/90 to-purple-900 dark:from-slate-900 dark:via-slate-800 dark:to-slate-950 px-4 sm:px-6 pt-8 sm:pt-12">
         {/* Background Pattern */}
         <div className="absolute inset-0 opacity-10">
           <div className="absolute inset-0" style={{
