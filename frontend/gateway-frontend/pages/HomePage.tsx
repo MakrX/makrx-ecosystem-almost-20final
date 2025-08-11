@@ -194,7 +194,7 @@ export default function HomePage() {
   const showStats = true;
   const showTestimonials = true;
   const showVideo = false;
-  const { resolvedTheme } = useTheme();
+  // Using only Tailwind classes now - no JS theme branching needed
 
   return (
     <div className="min-h-screen">
