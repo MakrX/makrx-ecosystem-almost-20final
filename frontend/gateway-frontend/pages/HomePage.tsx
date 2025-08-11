@@ -123,7 +123,7 @@ interface FeatureCardProps {
 
 const FeatureCard: React.FC<FeatureCardProps> = ({ title, description, icon, href, gradient }) => (
   <Link to={href} className="group block">
-    <div className={`relative overflow-hidden rounded-2xl bg-gradient-to-br ${gradient} dark:from-slate-800 dark:to-slate-900 p-8 h-full transition-all duration-500 group-hover:scale-105 group-hover:shadow-2xl group-hover:-rotate-1 border border-white/10 dark:border-slate-700`}>
+    <div className={`relative overflow-hidden rounded-2xl bg-gradient-to-br ${gradient} dark:!from-slate-800 dark:!to-slate-900 p-8 h-full transition-all duration-500 group-hover:scale-105 group-hover:shadow-2xl group-hover:-rotate-1 border border-white/10 dark:border-slate-700`}>
       <div className="relative z-10">
         <div className="w-12 h-12 bg-white/20 dark:bg-makrx-yellow/20 rounded-xl flex items-center justify-center mb-6 group-hover:bg-white/30 dark:group-hover:bg-makrx-yellow/30 group-hover:scale-110 group-hover:rotate-6 transition-all duration-300">
           <div className="text-white dark:text-makrx-yellow">
