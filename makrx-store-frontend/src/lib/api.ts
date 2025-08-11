@@ -1092,6 +1092,11 @@ class ApiClient {
 // Export singleton instance
 export const api = new ApiClient();
 
+// Notification settings helpers
+export const getNotificationSettings = () => api.getNotificationSettings();
+export const updateNotificationSettings = (settings: NotificationSettings) =>
+  api.updateNotificationSettings(settings);
+
 // Utility functions
 export const formatPrice = (price: number, currency = "INR") => {
   return new Intl.NumberFormat("en-IN", {

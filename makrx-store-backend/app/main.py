@@ -57,7 +57,8 @@ from app.routes import (
     webhooks,          # External service webhooks
     health,            # Health checks and monitoring
     bridge,            # Cross-service communication
-    security_management  # Security administration
+    security_management,  # Security administration
+    notifications      # User notification settings
 )
 
 # Security and middleware modules
@@ -239,6 +240,7 @@ app.include_router(admin.router, prefix="/admin", tags=["Admin"])
 app.include_router(webhooks.router, prefix="/webhooks", tags=["Webhooks"])
 app.include_router(bridge.router, prefix="/bridge", tags=["Bridge"])
 app.include_router(security_management.router, prefix="/security", tags=["Security Management"])
+app.include_router(notifications.router, prefix="/user", tags=["Notifications"])
 
 # Import and include new routers
 from app.routes import enhanced_catalog, quick_reorder, bom_import, feature_flags
