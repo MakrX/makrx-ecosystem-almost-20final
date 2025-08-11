@@ -458,11 +458,11 @@ export default function HomePage() {
               }
             ].map((benefit, index) => (
               <div key={index} className="text-center group">
-                <div className="w-16 h-16 bg-white/10 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:bg-white/20 transition-colors">
+                <div className="w-16 h-16 bg-white/10 dark:bg-makrx-yellow/10 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:bg-white/20 dark:group-hover:bg-makrx-yellow/20 transition-colors">
                   {benefit.icon}
                 </div>
-                <h3 className="text-xl font-bold text-white mb-4">{benefit.title}</h3>
-                <p className="text-white/80 leading-relaxed">{benefit.description}</p>
+                <h3 className="text-xl font-bold text-white dark:text-gray-100 mb-4">{benefit.title}</h3>
+                <p className="text-white/80 dark:text-gray-300 leading-relaxed">{benefit.description}</p>
               </div>
             ))}
           </div>
