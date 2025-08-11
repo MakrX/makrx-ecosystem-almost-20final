@@ -4,6 +4,8 @@ from sqlalchemy import and_, or_, desc, asc, func
 from typing import List, Optional, Dict, Any
 from datetime import datetime, timedelta
 import uuid
+import os
+import httpx
 
 from ..database import get_db
 from ..dependencies import get_current_user, get_current_user_optional
@@ -22,6 +24,9 @@ from ..schemas.enhanced_bom import (
     SupplierManagementResponse, BOMSearchFilters, BOMListResponse,
     BOMDashboardStats, MakrXStoreOrderRequest, BOMCostAnalysis
 )
+
+STORE_API_URL = os.getenv("STORE_API_URL", "http://makrx-store-backend:8000")
+STORE_API_KEY = os.getenv("STORE_API_KEY")
 
 router = APIRouter(prefix="/api/v1/enhanced-bom", tags=["enhanced-bom"])
 
@@ -749,14 +754,38 @@ async def create_makrx_store_order(
                 "notes": item_request.notes
             })
         
-        # TODO: Call MakrX Store API to create the order
-        # This would be replaced with actual API call
-        makrx_order_response = {
-            "order_id": f"MAKRX_{uuid.uuid4().hex[:8]}",
-            "status": "pending",
-            "total_value": total_value,
-            "estimated_delivery": (datetime.utcnow() + timedelta(days=7)).isoformat()
-        }
+        headers = {"Content-Type": "application/json"}
+        if STORE_API_KEY:
+            headers["X-API-Key"] = STORE_API_KEY
+            headers["X-Service"] = "makrcave"
+
+        try:
+            async with httpx.AsyncClient(timeout=30.0) as client:
+                response = await client.post(
+                    f"{STORE_API_URL}/api/v1/orders",
+                    json=order_data,
+                    headers=headers,
+                )
+                response.raise_for_status()
+                makrx_order_response = response.json()
+        except httpx.HTTPStatusError as e:
+            raise HTTPException(
+                status_code=e.response.status_code,
+                detail=f"MakrX Store API error: {e.response.text}",
+            )
+        except httpx.RequestError as e:
+            raise HTTPException(
+                status_code=status.HTTP_502_BAD_GATEWAY,
+                detail=f"Failed to connect to MakrX Store: {str(e)}",
+            )
+
+        order_id = makrx_order_response.get("order_id")
+        if not order_id:
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail="Store API did not return an order ID",
+            )
+        estimated_delivery = makrx_order_response.get("estimated_delivery")
         
         # Create purchase orders for each item
         for item_request in order_request.items:
@@ -765,13 +794,13 @@ async def create_makrx_store_order(
             po = BOMPurchaseOrder(
                 id=f"po_{uuid.uuid4().hex[:12]}",
                 bom_item_id=bom_item.id,
-                po_number=makrx_order_response["order_id"],
+                po_number=order_id,
                 supplier_name="MakrX Store",
                 quantity_ordered=float(item_request.quantity),
                 unit_price=bom_item.unit_cost,
                 total_amount=(bom_item.unit_cost or 0) * item_request.quantity,
                 currency="USD",
-                expected_delivery=datetime.fromisoformat(makrx_order_response["estimated_delivery"].replace('Z', '+00:00')),
+                expected_delivery=datetime.fromisoformat(estimated_delivery.replace('Z', '+00:00')) if estimated_delivery else None,
                 status="confirmed",
                 requested_by=current_user.get("user_id")
             )
@@ -785,10 +814,10 @@ async def create_makrx_store_order(
         
         return {
             "success": True,
-            "makrx_order_id": makrx_order_response["order_id"],
+            "makrx_order_id": order_id,
             "total_value": total_value,
-            "estimated_delivery": makrx_order_response["estimated_delivery"],
-            "message": f"Order created successfully with {len(order_request.items)} items"
+            "estimated_delivery": estimated_delivery,
+            "message": f"Order created successfully with {len(order_request.items)} items",
         }
         
     except Exception as e:
