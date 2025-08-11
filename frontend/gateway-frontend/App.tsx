@@ -47,11 +47,26 @@ const App = () => {
             })();
           `}
         </script>
-        <title>MakrX - Digital Manufacturing Ecosystem | Makerspaces, Tools & Fabrication</title>
-        <meta name="description" content="India's leading digital manufacturing platform connecting creators, makerspaces, and service providers. Access MakrCave makerspaces, shop at MakrX.Store, and get custom fabrication through 3D.MakrX.Store." />
-        <meta name="keywords" content="makerspace, digital manufacturing, 3d printing, laser cutting, custom fabrication, tools, india, makrx" />
-        <meta property="og:title" content="MakrX - Digital Manufacturing Ecosystem" />
-        <meta property="og:description" content="India's leading digital manufacturing platform connecting creators, makerspaces, and service providers." />
+        <title>
+          MakrX - Digital Manufacturing Ecosystem | Makerspaces, Tools &
+          Fabrication
+        </title>
+        <meta
+          name="description"
+          content="India's leading digital manufacturing platform connecting creators, makerspaces, and service providers. Access MakrCave makerspaces, shop at MakrX.Store, and get custom fabrication through 3D.MakrX.Store."
+        />
+        <meta
+          name="keywords"
+          content="makerspace, digital manufacturing, 3d printing, laser cutting, custom fabrication, tools, india, makrx"
+        />
+        <meta
+          property="og:title"
+          content="MakrX - Digital Manufacturing Ecosystem"
+        />
+        <meta
+          property="og:description"
+          content="India's leading digital manufacturing platform connecting creators, makerspaces, and service providers."
+        />
         <meta property="og:type" content="website" />
         <meta property="og:url" content="https://makrx.org" />
         <meta property="og:image" content="https://makrx.org/og-image.jpg" />
@@ -62,10 +77,14 @@ const App = () => {
         <link rel="icon" type="image/x-icon" href="/favicon.ico" />
         <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
         <meta name="theme-color" content="#1e40af" />
-        <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0a0a0a" />
+        <meta
+          name="theme-color"
+          media="(prefers-color-scheme: dark)"
+          content="#0a0a0a"
+        />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
       </Helmet>
-      
+
       <BrowserRouter>
         <div className="min-h-screen flex flex-col">
           {/* Skip Link for Accessibility */}
@@ -76,7 +95,7 @@ const App = () => {
             Skip to main content
           </a>
           <Header />
-          
+
           <main id="main-content" className="flex-1 pt-16 md:pt-20" role="main">
             <Routes>
               {/* Core Pages */}
@@ -86,14 +105,14 @@ const App = () => {
               <Route path="/store" element={<Store />} />
               <Route path="/service-providers" element={<ServiceProviders />} />
               <Route path="/3d" element={<ThreeDStore />} />
-              
+
               {/* Content Pages */}
               <Route path="/events" element={<Events />} />
               <Route path="/blog" element={<Blog />} />
               <Route path="/docs" element={<Docs />} />
               <Route path="/support" element={<Support />} />
               <Route path="/status" element={<Status />} />
-              
+
               {/* Company Pages */}
               <Route path="/careers" element={<Careers />} />
               <Route path="/about" element={<About />} />
@@ -102,24 +121,24 @@ const App = () => {
 
               {/* Theme Demo (Development) */}
               <Route path="/theme-demo" element={<ThemeDemo />} />
-              
+
               {/* Legal Pages */}
               <Route path="/legal/privacy" element={<PrivacyPolicy />} />
               <Route path="/legal/terms" element={<TermsOfService />} />
-              
+
               {/* Legacy redirects */}
               <Route path="/privacy" element={<PrivacyPolicy />} />
               <Route path="/terms" element={<TermsOfService />} />
-              
+
               {/* 404 and 500 custom pages */}
               <Route path="/404" element={<NotFound />} />
               <Route path="/500" element={<NotFound />} />
-              
+
               {/* Catch-all route for 404 - MUST be last */}
               <Route path="*" element={<NotFound />} />
             </Routes>
           </main>
-          
+
           <Footer />
         </div>
       </BrowserRouter>

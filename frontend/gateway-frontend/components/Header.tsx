@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
-import { Menu, X, ExternalLink, Grid3X3 } from 'lucide-react';
-import { ThemeToggle } from '../lib/theme-clean';
+import React, { useState } from "react";
+import { Link, useLocation } from "react-router-dom";
+import { Menu, X, ExternalLink, Grid3X3 } from "lucide-react";
+import { ThemeToggle } from "../lib/theme-clean";
 
 export default function Header() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -11,43 +11,43 @@ export default function Header() {
   const isActive = (path: string) => location.pathname === path;
 
   const navigation = [
-    { name: 'Ecosystem', href: '/ecosystem' },
-    { name: 'Makerspaces', href: '/makerspaces' },
-    { name: 'Store', href: '/store' },
-    { name: 'Events', href: '/events' },
-    { name: 'Blog', href: '/blog' },
-    { name: 'Docs', href: '/docs' }
+    { name: "Ecosystem", href: "/ecosystem" },
+    { name: "Makerspaces", href: "/makerspaces" },
+    { name: "Store", href: "/store" },
+    { name: "Events", href: "/events" },
+    { name: "Blog", href: "/blog" },
+    { name: "Docs", href: "/docs" },
   ];
 
   const launcherApps = [
     {
-      name: 'MakrCave',
-      description: 'Makerspace Management',
-      url: 'https://makrcave.com',
-      bgColor: 'bg-blue-100 dark:bg-blue-900',
-      iconColor: 'bg-blue-500 dark:bg-blue-400'
+      name: "MakrCave",
+      description: "Makerspace Management",
+      url: "https://makrcave.com",
+      bgColor: "bg-blue-100 dark:bg-blue-900",
+      iconColor: "bg-blue-500 dark:bg-blue-400",
     },
     {
-      name: 'MakrX.Store',
-      description: 'Tools & Components',
-      url: 'https://makrx.store',
-      bgColor: 'bg-green-100 dark:bg-green-900',
-      iconColor: 'bg-green-500 dark:bg-green-400'
+      name: "MakrX.Store",
+      description: "Tools & Components",
+      url: "https://makrx.store",
+      bgColor: "bg-green-100 dark:bg-green-900",
+      iconColor: "bg-green-500 dark:bg-green-400",
     },
     {
-      name: '3D.MakrX.Store',
-      description: 'Custom Fabrication',
-      url: 'https://3d.makrx.store',
-      bgColor: 'bg-purple-100 dark:bg-purple-900',
-      iconColor: 'bg-purple-500 dark:bg-purple-400'
+      name: "3D.MakrX.Store",
+      description: "Custom Fabrication",
+      url: "https://3d.makrx.store",
+      bgColor: "bg-purple-100 dark:bg-purple-900",
+      iconColor: "bg-purple-500 dark:bg-purple-400",
     },
     {
-      name: 'Provider Panel',
-      description: 'Service Providers',
-      url: 'https://providers.makrx.org',
-      bgColor: 'bg-orange-100 dark:bg-orange-900',
-      iconColor: 'bg-orange-500 dark:bg-orange-400'
-    }
+      name: "Provider Panel",
+      description: "Service Providers",
+      url: "https://providers.makrx.org",
+      bgColor: "bg-orange-100 dark:bg-orange-900",
+      iconColor: "bg-orange-500 dark:bg-orange-400",
+    },
   ];
 
   return (
@@ -59,7 +59,9 @@ export default function Header() {
             <div className="w-8 h-8 bg-makrx-blue rounded-lg flex items-center justify-center">
               <span className="text-white font-bold text-sm">M</span>
             </div>
-            <span className="text-xl font-bold text-gray-900 dark:!text-white transition-colors">MakrX</span>
+            <span className="text-xl font-bold text-gray-900 dark:!text-white transition-colors">
+              MakrX
+            </span>
           </Link>
 
           {/* Desktop Navigation */}
@@ -70,8 +72,8 @@ export default function Header() {
                 to={item.href}
                 className={`text-sm font-medium transition-colors ${
                   isActive(item.href)
-                    ? 'text-makrx-blue dark:!text-makrx-yellow'
-                    : 'text-gray-600 dark:!text-gray-100 hover:text-gray-900 dark:hover:!text-white'
+                    ? "text-makrx-blue dark:!text-makrx-yellow"
+                    : "text-gray-600 dark:!text-gray-100 hover:text-gray-900 dark:hover:!text-white"
                 }`}
               >
                 {item.name}
@@ -94,7 +96,9 @@ export default function Header() {
               {/* Launcher Dropdown */}
               {showLauncher && (
                 <div className="absolute right-0 top-full mt-2 w-80 bg-white dark:bg-slate-950 rounded-xl shadow-xl border border-gray-200 dark:border-slate-800 p-4 z-50">
-                  <h3 className="font-semibold text-gray-900 dark:text-gray-100 mb-3">MakrX Apps</h3>
+                  <h3 className="font-semibold text-gray-900 dark:text-gray-100 mb-3">
+                    MakrX Apps
+                  </h3>
                   <div className="grid grid-cols-2 gap-3">
                     {launcherApps.map((app) => (
                       <a
@@ -104,13 +108,19 @@ export default function Header() {
                         rel="noopener noreferrer"
                         className="p-3 rounded-lg border border-gray-200 dark:border-slate-700 hover:border-gray-300 dark:hover:border-slate-600 hover:shadow-sm dark:hover:bg-slate-900 transition-all group"
                       >
-                        <div className={`w-8 h-8 ${app.bgColor} rounded-lg flex items-center justify-center mb-2 transition-colors`}>
-                          <div className={`w-4 h-4 ${app.iconColor} rounded transition-colors`}></div>
+                        <div
+                          className={`w-8 h-8 ${app.bgColor} rounded-lg flex items-center justify-center mb-2 transition-colors`}
+                        >
+                          <div
+                            className={`w-4 h-4 ${app.iconColor} rounded transition-colors`}
+                          ></div>
                         </div>
                         <div className="text-sm font-medium text-gray-900 dark:text-gray-100 group-hover:text-makrx-blue dark:group-hover:text-makrx-yellow transition-colors">
                           {app.name}
                         </div>
-                        <div className="text-xs text-gray-500 dark:text-gray-300">{app.description}</div>
+                        <div className="text-xs text-gray-500 dark:text-gray-300">
+                          {app.description}
+                        </div>
                       </a>
                     ))}
                   </div>
@@ -166,17 +176,19 @@ export default function Header() {
                   onClick={() => setIsMobileMenuOpen(false)}
                   className={`block text-sm font-medium transition-colors ${
                     isActive(item.href)
-                      ? 'text-makrx-blue dark:text-makrx-yellow'
-                      : 'text-gray-600 dark:text-gray-100 hover:text-gray-900 dark:hover:text-white'
+                      ? "text-makrx-blue dark:text-makrx-yellow"
+                      : "text-gray-600 dark:text-gray-100 hover:text-gray-900 dark:hover:text-white"
                   }`}
                 >
                   {item.name}
                 </Link>
               ))}
-              
+
               {/* Mobile Launcher */}
               <div className="pt-4 border-t border-gray-200 dark:border-slate-800">
-                <div className="text-sm font-medium text-gray-900 dark:text-gray-100 mb-3">MakrX Apps</div>
+                <div className="text-sm font-medium text-gray-900 dark:text-gray-100 mb-3">
+                  MakrX Apps
+                </div>
                 <div className="space-y-2">
                   {launcherApps.map((app) => (
                     <a
@@ -186,23 +198,33 @@ export default function Header() {
                       rel="noopener noreferrer"
                       className="flex items-center gap-3 p-2 rounded-lg hover:bg-gray-50 dark:hover:bg-slate-900 transition-colors"
                     >
-                      <div className={`w-6 h-6 ${app.bgColor} rounded flex items-center justify-center transition-colors`}>
-                        <div className={`w-3 h-3 ${app.iconColor} rounded transition-colors`}></div>
+                      <div
+                        className={`w-6 h-6 ${app.bgColor} rounded flex items-center justify-center transition-colors`}
+                      >
+                        <div
+                          className={`w-3 h-3 ${app.iconColor} rounded transition-colors`}
+                        ></div>
                       </div>
                       <div>
-                        <div className="text-sm font-medium text-gray-900 dark:text-gray-100">{app.name}</div>
-                        <div className="text-xs text-gray-500 dark:text-gray-300">{app.description}</div>
+                        <div className="text-sm font-medium text-gray-900 dark:text-gray-100">
+                          {app.name}
+                        </div>
+                        <div className="text-xs text-gray-500 dark:text-gray-300">
+                          {app.description}
+                        </div>
                       </div>
                       <ExternalLink className="w-4 h-4 text-gray-400 dark:text-gray-300 ml-auto" />
                     </a>
                   ))}
                 </div>
               </div>
-              
+
               {/* Mobile Theme Toggle & Sign In */}
               <div className="pt-4 space-y-3">
                 <div className="flex items-center justify-between">
-                  <span className="text-sm font-medium text-gray-900 dark:text-gray-100">Theme</span>
+                  <span className="text-sm font-medium text-gray-900 dark:text-gray-100">
+                    Theme
+                  </span>
                   <ThemeToggle showLabel />
                 </div>
                 <a
