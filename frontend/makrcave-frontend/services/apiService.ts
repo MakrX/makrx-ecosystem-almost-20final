@@ -2,8 +2,12 @@
 // Connects to FastAPI backend with proper JWT authentication
 
 import loggingService from './loggingService';
+import authService from './authService';
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '/api';
+const MOCK_API_BASE_URL =
+  import.meta.env.VITE_MOCK_API_BASE_URL || 'http://localhost:8000';
+const USE_MOCK_API = import.meta.env.VITE_USE_MOCK_API === 'true';
 
 interface ApiResponse<T> {
   data?: T;
@@ -31,6 +35,19 @@ export interface Equipment {
   next_maintenance?: string;
   access_method?: 'nfc' | 'manual' | 'badge';
   operator_required?: boolean;
+}
+
+export interface EquipmentStats {
+  total_equipment: number;
+  available_equipment: number;
+  in_use_equipment: number;
+  maintenance_equipment: number;
+  offline_equipment: number;
+  total_reservations_today: number;
+  utilization_rate: number;
+  average_rating: number;
+  categories: Record<string, number>;
+  locations: Record<string, number>;
 }
 
 // Reservation Interfaces
@@ -230,19 +247,19 @@ async function apiCall<T>(
   });
 
   try {
-    const token = localStorage.getItem('auth_token') || localStorage.getItem('authToken');
+    const fetchImpl = USE_MOCK_API ? fetch : authService.createAuthenticatedFetch();
+    const baseUrl = USE_MOCK_API ? MOCK_API_BASE_URL : API_BASE_URL;
 
-    loggingService.debug('api', 'ApiService.apiCall', 'Making API call with authentication', {
+    loggingService.debug('api', 'ApiService.apiCall', 'Making API call', {
       endpoint,
       method,
-      hasToken: !!token,
-      apiBaseUrl: API_BASE_URL
+      apiBaseUrl: baseUrl,
+      useMock: USE_MOCK_API,
     });
 
-    const response = await fetch(`${API_BASE_URL}${endpoint}`, {
+    const response = await fetchImpl(`${baseUrl}${endpoint}`, {
       headers: {
         'Content-Type': 'application/json',
-        ...(token && { Authorization: `Bearer ${token}` }),
         ...options.headers,
       },
       ...options,
@@ -281,12 +298,42 @@ async function apiCall<T>(
   } catch (error) {
     const responseTime = Date.now() - startTime;
 
+    const isNetworkError = error instanceof TypeError;
     loggingService.error('api', 'ApiService.apiCall', 'API call error', {
       endpoint,
       method,
       error: (error as Error).message,
-      responseTime
+      responseTime,
+      isNetworkError,
     }, (error as Error).stack);
+
+    if (!USE_MOCK_API && isNetworkError) {
+      try {
+        loggingService.warn('api', 'ApiService.apiCall', 'Falling back to mock API', { endpoint });
+        const mockResponse = await fetch(`${MOCK_API_BASE_URL}${endpoint}`, {
+          headers: {
+            'Content-Type': 'application/json',
+            ...options.headers,
+          },
+          ...options,
+        });
+
+        if (!mockResponse.ok) {
+          const errorData = await mockResponse.json().catch(() => ({}));
+          const errorMessage = errorData.detail || `HTTP error! status: ${mockResponse.status}`;
+          throw new Error(errorMessage);
+        }
+
+        const data = await mockResponse.json();
+        return { data };
+      } catch (mockError) {
+        loggingService.error('api', 'ApiService.apiCall', 'Mock API fallback failed', {
+          endpoint,
+          method,
+          error: (mockError as Error).message,
+        }, (mockError as Error).stack);
+      }
+    }
 
     console.error('API call failed:', error);
     return { error: error instanceof Error ? error.message : 'Unknown error occurred' };
@@ -377,6 +424,11 @@ export const equipmentApi = {
   // Get all equipment
   getEquipment: async (): Promise<ApiResponse<Equipment[]>> => {
     return apiCall<Equipment[]>('/equipment/');
+  },
+
+  // Get equipment statistics
+  getStats: async (): Promise<ApiResponse<EquipmentStats>> => {
+    return apiCall<EquipmentStats>('/equipment/stats/overview');
   },
 
   // Get equipment details
