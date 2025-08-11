@@ -409,7 +409,7 @@ async def get_makrcave_url(user_data: Dict[str, Any] = Depends(verify_token)):
         "portal": "makrcave"
     }
 
-@app.get("/portals/store/url") 
+@app.get("/portals/store/url")
 async def get_store_url(user_data: Dict[str, Any] = Depends(verify_token)):
     """Get Store portal URL with authentication"""
     token = await generate_portal_token(user_data.get("sub"), "store")
@@ -419,6 +419,67 @@ async def get_store_url(user_data: Dict[str, Any] = Depends(verify_token)):
         "portal": "store"
     }
 
+# Keycloak Admin Helpers
+async def get_keycloak_admin_token() -> str:
+    """Retrieve admin access token from Keycloak"""
+    token_url = f"{KEYCLOAK_URL}/realms/{KEYCLOAK_REALM}/protocol/openid-connect/token"
+    data = {
+        "grant_type": "client_credentials",
+        "client_id": KEYCLOAK_CLIENT_ID,
+        "client_secret": KEYCLOAK_CLIENT_SECRET,
+    }
+    try:
+        response = await http_client.post(token_url, data=data)
+        if response.status_code != 200:
+            logger.error(
+                f"Failed to obtain admin token: {response.status_code} {response.text}"
+            )
+            raise HTTPException(
+                status_code=response.status_code,
+                detail="Unable to obtain admin token",
+            )
+        token_data = response.json()
+        access_token = token_data.get("access_token")
+        if not access_token:
+            raise HTTPException(status_code=500, detail="No access token in response")
+        return access_token
+    except httpx.RequestError as e:
+        logger.error(f"Network error obtaining admin token: {e}")
+        raise HTTPException(status_code=502, detail="Keycloak connection failed")
+
+
+async def fetch_keycloak_users(admin_token: str) -> list[Dict[str, Any]]:
+    """Fetch all users from Keycloak handling pagination"""
+    users: list[Dict[str, Any]] = []
+    first = 0
+    max_results = 100
+
+    while True:
+        try:
+            resp = await http_client.get(
+                f"{KEYCLOAK_URL}/admin/realms/{KEYCLOAK_REALM}/users",
+                headers={"Authorization": f"Bearer {admin_token}"},
+                params={"first": first, "max": max_results},
+            )
+            if resp.status_code != 200:
+                logger.error(
+                    f"Failed to fetch users: {resp.status_code} {resp.text}"
+                )
+                raise HTTPException(
+                    status_code=resp.status_code, detail="Failed to fetch users"
+                )
+            batch = resp.json()
+            if not isinstance(batch, list):
+                raise HTTPException(status_code=500, detail="Invalid response format")
+            users.extend(batch)
+            if len(batch) < max_results:
+                break
+            first += max_results
+        except httpx.RequestError as e:
+            logger.error(f"Network error fetching users: {e}")
+            raise HTTPException(status_code=502, detail="Keycloak connection failed")
+    return users
+
 # Admin Endpoints
 @app.get("/admin/users")
 async def list_all_users(user_data: Dict[str, Any] = Depends(verify_token)):
@@ -426,17 +487,14 @@ async def list_all_users(user_data: Dict[str, Any] = Depends(verify_token)):
     roles = user_data.get("realm_access", {}).get("roles", [])
     if "admin" not in roles and "super-admin" not in roles:
         raise HTTPException(status_code=403, detail="Admin access required")
-    
+
     try:
-        # Fetch users from Keycloak
-        keycloak_admin_url = f"{KEYCLOAK_URL}/admin/realms/{KEYCLOAK_REALM}/users"
-        
-        # Note: In production, implement proper Keycloak admin token management
-        return {
-            "message": "User listing requires Keycloak admin integration",
-            "keycloak_url": keycloak_admin_url
-        }
-        
+        admin_token = await get_keycloak_admin_token()
+        users = await fetch_keycloak_users(admin_token)
+        return {"users": users}
+
+    except HTTPException:
+        raise
     except Exception as e:
         logger.error(f"Admin user listing error: {e}")
         raise HTTPException(status_code=500, detail="Failed to list users")
