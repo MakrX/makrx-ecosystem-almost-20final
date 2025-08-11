@@ -15,6 +15,9 @@ from uuid import UUID, uuid4
 from datetime import datetime, timedelta
 from pydantic import BaseModel, Field, EmailStr
 from enum import Enum
+import redis.asyncio as redis
+
+from ..core.config import settings
 
 from ..core.db import get_db
 from ..core.storage import upload_file_to_storage, generate_presigned_url
@@ -28,6 +31,13 @@ MAKRCAVE_API_URL = os.getenv("MAKRCAVE_API_URL", "http://makrcave-backend:8000")
 AUTH_SERVICE_URL = os.getenv("AUTH_SERVICE_URL", "http://auth-service:8000")
 
 router = APIRouter(prefix="/service-orders", tags=["3D Printing Service Orders"])
+
+# Redis client for temporary quote storage
+redis_client = (
+    redis.Redis.from_url(settings.REDIS_URL, decode_responses=True)
+    if getattr(settings, "REDIS_URL", None)
+    else None
+)
 
 # Enums
 class ServiceOrderStatus(str, Enum):
@@ -675,32 +685,39 @@ async def get_job_status_from_makrcave(service_order_id: str) -> Dict[str, Any]:
 
 async def store_quote(quote_id: str, quote_data: Dict[str, Any]):
     """Store quote data (Redis/database)"""
-    # TODO: Implement proper storage
-    # For now, this is a placeholder
-    pass
+    if not redis_client:
+        return
+    try:
+        key = f"service_quote:{quote_id}"
+        ttl = 24 * 60 * 60  # 24 hours
+        await redis_client.setex(key, ttl, json.dumps(quote_data))
+    except Exception as e:
+        logger.error(f"Failed to store quote {quote_id}: {e}")
 
 async def get_quote(quote_id: str) -> Optional[Dict[str, Any]]:
     """Retrieve quote data"""
-    # TODO: Implement proper retrieval
-    # For now, return mock data
-    return {
-        "quote_id": quote_id,
-        "request": {
-            "user_email": "user@example.com",
-            "material": "pla",
-            "quality": "standard",
-            "quantity": 1,
-            "priority": "normal",
-            "file_urls": ["http://example.com/file.stl"]
-        },
-        "pricing": {
-            "base_price": 25.00,
-            "subtotal": 30.00,
-            "tax": 2.40,
-            "shipping": 10.00,
-            "total": 42.40
-        }
-    }
+    if not redis_client:
+        return None
+    try:
+        key = f"service_quote:{quote_id}"
+        data = await redis_client.get(key)
+        if not data:
+            return None
+
+        quote_data = json.loads(data)
+        expires_at = quote_data.get("expires_at")
+        if expires_at:
+            try:
+                if datetime.utcnow() > datetime.fromisoformat(expires_at):
+                    await redis_client.delete(key)
+                    return None
+            except Exception:
+                pass
+
+        return quote_data
+    except Exception as e:
+        logger.error(f"Failed to get quote {quote_id}: {e}")
+        return None
 
 async def process_service_order_payment(
     service_order_id: str,
