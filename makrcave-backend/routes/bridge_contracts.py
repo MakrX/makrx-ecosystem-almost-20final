@@ -4,7 +4,7 @@ Cave side of the Store ↔ Cave integration
 """
 from fastapi import APIRouter, HTTPException, Depends, status
 from sqlalchemy.orm import Session
-from typing import List, Optional, Dict, Any
+from typing import Optional, Dict, Any
 from pydantic import BaseModel
 from datetime import datetime
 import httpx
@@ -290,65 +290,6 @@ async def record_filament_consumption(
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"Failed to record transaction: {str(e)}"
-        )
-
-# ==========================================
-# Inventory Sync for Store
-# ==========================================
-
-class InventoryItem(BaseModel):
-    """Inventory item for Store synchronization"""
-    sku: str
-    name: str
-    available_quantity: float
-    unit: str
-    location: str
-    last_updated: str
-
-class InventorySyncResponse(BaseModel):
-    """Response for Store inventory sync"""
-    success: bool
-    items: List[InventoryItem]
-    sync_timestamp: str
-    total_items: int
-
-@router.get("/inventory/sync", response_model=InventorySyncResponse)
-async def provide_inventory_for_store_sync(
-    service_jwt: str = Depends(verify_service_jwt),
-    db: Session = Depends(get_db)
-):
-    """
-    Provide current inventory levels to Store for synchronization
-    Used for Store product availability updates
-    """
-    try:
-        # Get all inventory items with SKU mapping
-        inventory_items = db.query(InventoryItem).filter(
-            InventoryItem.sku.isnot(None)  # Only items with Store SKU mapping
-        ).all()
-        
-        sync_items = []
-        for item in inventory_items:
-            sync_items.append(InventoryItem(
-                sku=item.sku,
-                name=item.name,
-                available_quantity=item.current_quantity,
-                unit=item.unit,
-                location=item.location or "Unknown",
-                last_updated=item.updated_at.isoformat() if item.updated_at else datetime.utcnow().isoformat()
-            ))
-        
-        return InventorySyncResponse(
-            success=True,
-            items=sync_items,
-            sync_timestamp=datetime.utcnow().isoformat(),
-            total_items=len(sync_items)
-        )
-        
-    except Exception as e:
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=f"Failed to sync inventory: {str(e)}"
         )
 
 # ==========================================
