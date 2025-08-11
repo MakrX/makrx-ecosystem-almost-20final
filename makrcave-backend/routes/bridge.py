@@ -11,6 +11,7 @@ from pydantic import BaseModel
 from core.config import settings
 from database import get_db
 from models.project import Job, JobStatus
+from models.inventory import InventoryItem
 from schemas.project import JobCreate, JobUpdate
 from utils.auth import get_current_user
 
@@ -269,41 +270,27 @@ async def get_inventory_sync_data(
 ):
     """Provide inventory data for Store synchronization"""
     try:
-        # TODO: Get actual inventory data from database
-        # For now, return mock data structure
-        
+        inventory_records = (
+            db.query(InventoryItem)
+            .filter(InventoryItem.linked_makerspace_id == current_user.makerspace_id)
+            .all()
+        )
+
         inventory_items = [
             {
-                "sku": "PLA-WHITE-1KG",
-                "name": "PLA Filament - White - 1kg",
-                "available_quantity": 15.5,
-                "unit": "kg",
-                "location": "Storage A1",
-                "last_updated": datetime.utcnow().isoformat()
-            },
-            {
-                "sku": "ABS-BLACK-1KG", 
-                "name": "ABS Filament - Black - 1kg",
-                "available_quantity": 8.2,
-                "unit": "kg", 
-                "location": "Storage A1",
-                "last_updated": datetime.utcnow().isoformat()
-            },
-            {
-                "sku": "PETG-CLEAR-1KG",
-                "name": "PETG Filament - Clear - 1kg", 
-                "available_quantity": 12.1,
-                "unit": "kg",
-                "location": "Storage A2",
-                "last_updated": datetime.utcnow().isoformat()
+                "sku": item.product_code or item.id,
+                "quantity": item.quantity,
+                "location": item.location,
+                "updated_at": item.updated_at.isoformat() if item.updated_at else None,
             }
+            for item in inventory_records
         ]
-        
+
         return {
             "success": True,
             "items": inventory_items,
             "sync_timestamp": datetime.utcnow().isoformat(),
-            "total_items": len(inventory_items)
+            "total_items": len(inventory_items),
         }
         
     except Exception as e:
