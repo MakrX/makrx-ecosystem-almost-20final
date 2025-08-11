@@ -2,17 +2,17 @@ from fastapi import APIRouter, Depends, HTTPException, Query, status
 from sqlalchemy.orm import Session
 from typing import List, Optional, Dict, Any
 
-from database import get_db
-from dependencies import get_current_user, require_role
-from models.skill import SkillStatus, RequestStatus
-from schemas.skill import (
+from ..database import get_db
+from ..dependencies import get_current_user, require_role
+from ..models.skill import SkillStatus, RequestStatus
+from ..schemas.skill import (
     Skill, SkillCreate, SkillUpdate, SkillWithRelations,
     UserSkill, UserSkillCreate, UserSkillUpdate, UserSkillWithDetails,
     SkillRequest, SkillRequestCreate, SkillRequestUpdate, SkillRequestWithDetails,
     EquipmentSkillRequirements, UserSkillSummary, EquipmentAccessCheck,
     BulkAccessCheck, SkillAnalytics, MakerspaceSkillOverview
 )
-from crud import skill as skill_crud
+from ..crud import skill as skill_crud
 
 router = APIRouter(prefix="/api/v1/skills", tags=["skills"])
 
@@ -299,7 +299,7 @@ async def check_bulk_equipment_access(
     check_user_id = user_id if user_id and current_user.role in ["super_admin", "makerspace_admin"] else current_user.id
     
     # Get all equipment in makerspace
-    from crud.equipment import get_equipment
+    from ..crud.equipment import get_equipment
     equipment_list = get_equipment(db=db, makerspace_id=makerspace_id)
     
     access_checks = []
@@ -332,7 +332,7 @@ async def get_equipment_skill_requirements(
     current_user = Depends(get_current_user)
 ):
     """Get skill requirements for all equipment"""
-    from crud.equipment import get_equipment
+    from ..crud.equipment import get_equipment
     equipment_list = get_equipment(db=db, makerspace_id=makerspace_id)
     
     result = []

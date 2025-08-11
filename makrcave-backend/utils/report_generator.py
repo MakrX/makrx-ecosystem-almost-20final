@@ -37,7 +37,7 @@ class ReportGenerator:
     def generate_usage_report_csv(self, makerspace_id: str, start_date: date, end_date: date) -> str:
         """Generate usage analytics CSV report"""
         # Query usage events
-        from models.analytics import UsageEvent
+        from ..models.analytics import UsageEvent
         
         events = self.db.query(UsageEvent).filter(
             UsageEvent.makerspace_id == makerspace_id,
@@ -87,7 +87,7 @@ class ReportGenerator:
 
     def generate_inventory_report_xlsx(self, makerspace_id: str, start_date: date, end_date: date) -> str:
         """Generate inventory analytics Excel report"""
-        from models.analytics import InventoryAnalytics
+        from ..models.analytics import InventoryAnalytics
         
         # Query inventory data
         inventory_data = self.db.query(InventoryAnalytics).filter(
@@ -151,7 +151,7 @@ class ReportGenerator:
 
     def generate_revenue_report_pdf(self, makerspace_id: str, start_date: date, end_date: date) -> str:
         """Generate revenue analytics PDF report"""
-        from models.analytics import RevenueAnalytics
+        from ..models.analytics import RevenueAnalytics
         
         # Query revenue data
         revenue_data = self.db.query(RevenueAnalytics).filter(
@@ -278,7 +278,7 @@ class ReportGenerator:
 
     def generate_equipment_report_xlsx(self, makerspace_id: str, start_date: date, end_date: date) -> str:
         """Generate equipment metrics Excel report"""
-        from models.analytics import EquipmentUsageLog
+        from ..models.analytics import EquipmentUsageLog
         
         usage_logs = self.db.query(EquipmentUsageLog).filter(
             EquipmentUsageLog.makerspace_id == makerspace_id,
@@ -347,7 +347,7 @@ class ReportGenerator:
 
     def generate_projects_report_csv(self, makerspace_id: str, start_date: date, end_date: date) -> str:
         """Generate project analytics CSV report"""
-        from models.analytics import ProjectAnalytics
+        from ..models.analytics import ProjectAnalytics
         
         projects = self.db.query(ProjectAnalytics).filter(
             ProjectAnalytics.makerspace_id == makerspace_id,

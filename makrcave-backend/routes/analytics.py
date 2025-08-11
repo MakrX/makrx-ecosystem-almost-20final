@@ -5,10 +5,10 @@ from typing import Dict, Any, Optional
 from datetime import datetime, timedelta
 import logging
 
-from database import get_db
-from dependencies import get_current_user, get_current_makerspace, require_permission
-from services.real_analytics_service import get_real_analytics_service
-from utils.analytics_mock_data import AnalyticsMockData  # Fallback only
+from ..database import get_db
+from ..dependencies import get_current_user, get_current_makerspace, require_permission
+from ..services.real_analytics_service import get_real_analytics_service
+from ..utils.analytics_mock_data import AnalyticsMockData  # Fallback only
 
 router = APIRouter()
 logger = logging.getLogger(__name__)

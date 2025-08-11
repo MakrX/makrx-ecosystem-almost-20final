@@ -12,7 +12,7 @@ import os
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from sqlalchemy import create_engine, text
-from models.member import (
+from ..models.member import (
     Base,
     Member,
     MembershipPlan,
@@ -21,7 +21,7 @@ from models.member import (
     MembershipTransaction,
     MemberFollow,
 )
-from database import DATABASE_URL, engine
+from ..database import DATABASE_URL, engine
 import logging
 
 logging.basicConfig(level=logging.INFO)

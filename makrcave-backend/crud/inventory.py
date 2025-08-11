@@ -4,11 +4,11 @@ from typing import List, Optional, Dict, Any
 import uuid
 from datetime import datetime, timedelta
 
-from models.inventory import (
+from ..models.inventory import (
     InventoryItem, InventoryUsageLog, InventoryAlert, BulkImportJob,
     ItemStatus, SupplierType, AccessLevel, UsageAction
 )
-from schemas.inventory import (
+from ..schemas.inventory import (
     InventoryItemCreate, InventoryItemUpdate, InventoryFilter,
     InventoryUsageLogCreate, BulkUpdateRequest, BulkIssueRequest
 )
