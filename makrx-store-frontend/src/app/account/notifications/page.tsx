@@ -43,10 +43,8 @@ function NotificationSettingsPage() {
 
   const loadSettings = async () => {
     try {
-      // TODO: Implement getNotificationSettings API method
-      // const userSettings = await api.getNotificationSettings();
-      // setSettings(userSettings);
-      setSettings(settings); // Use default settings for now
+      const userSettings = await api.getNotificationSettings();
+      setSettings(userSettings);
     } catch (error) {
       console.error("Failed to load notification settings:", error);
     } finally {
