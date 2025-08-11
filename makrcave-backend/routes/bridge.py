@@ -12,6 +12,7 @@ from core.config import settings
 from database import get_db
 from models.project import Job, JobStatus
 from models.job_management import ServiceProvider
+from models.inventory import User
 from schemas.project import JobCreate, JobUpdate
 from utils.auth import get_current_user
 
@@ -336,19 +337,32 @@ async def sync_user_profile_from_store(
     try:
         user_id = profile_data.get("user_id")
         profile_info = profile_data.get("profile_data", {})
-        
-        # TODO: Update user profile in MakrCave database
-        # This would sync preferences, addresses, contact info, etc.
-        
+
+        user = db.query(User).filter(User.id == user_id).first()
+        if not user:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="User not found"
+            )
+
+        for field, value in profile_info.items():
+            if hasattr(user, field):
+                setattr(user, field, value)
+
+        db.commit()
+        db.refresh(user)
+
         logger.info(f"Synced profile for user {user_id} from Store")
-        
+
         return {
             "success": True,
             "user_id": user_id,
             "synced_fields": list(profile_info.keys()),
             "sync_timestamp": datetime.utcnow().isoformat()
         }
-        
+
+    except HTTPException:
+        raise
     except Exception as e:
         logger.error(f"Failed to sync user profile: {str(e)}")
         raise HTTPException(
