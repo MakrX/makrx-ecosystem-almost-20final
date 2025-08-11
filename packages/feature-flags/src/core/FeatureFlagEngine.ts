@@ -257,17 +257,27 @@ export class FeatureFlagEngine {
   }
 
   private evaluateTargeting(flag: FlagDefinition, context: FlagContext): { matches: boolean; reason: string } {
-    // Global scope - everyone
-    if (flag.scope === 'global') {
-      return { matches: true, reason: 'global_scope' };
+    // Role gating applies across all scopes if enabledForRoles is set
+    if (flag.enabledForRoles?.length) {
+      const hasRole = context.roles?.some(role => flag.enabledForRoles!.includes(role)) ?? false;
+
+      if (!hasRole) {
+        return { matches: false, reason: 'role_not_matched' };
+      }
+
+      if (flag.scope === 'role') {
+        return { matches: true, reason: 'role_matched' };
+      }
+    } else if (flag.scope === 'role') {
+      // Role scope without specific roles configured
+      return { matches: false, reason: 'role_not_configured' };
     }
 
-    // Role-based targeting
-    if (flag.scope === 'role' && flag.enabledForRoles?.length) {
-      const hasRole = context.roles?.some(role => flag.enabledForRoles!.includes(role));
-      return { 
-        matches: hasRole ?? false, 
-        reason: hasRole ? 'role_matched' : 'role_not_matched' 
+    // Global scope - everyone after role checks
+    if (flag.scope === 'global') {
+      return {
+        matches: true,
+        reason: flag.enabledForRoles?.length ? 'role_matched' : 'global_scope'
       };
     }
 
