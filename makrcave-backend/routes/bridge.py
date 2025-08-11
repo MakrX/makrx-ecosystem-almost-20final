@@ -11,6 +11,7 @@ from pydantic import BaseModel
 from core.config import settings
 from database import get_db
 from models.project import Job, JobStatus
+from models.job_management import ServiceProvider
 from schemas.project import JobCreate, JobUpdate
 from utils.auth import get_current_user
 
@@ -141,41 +142,54 @@ async def receive_job_from_store(
 async def auto_assign_provider(job: Job, db: Session) -> Optional[Dict[str, Any]]:
     """Auto-assign job to best available provider"""
     try:
-        # TODO: Implement sophisticated provider matching
-        # For now, return mock assignment
-        
         requirements = job.requirements or {}
-        material = requirements.get("material", "PLA")
-        quality = requirements.get("quality", "standard")
-        
-        # Mock provider assignment logic
-        mock_providers = [
-            {
-                "provider_id": "prov_001",
-                "name": "TechHub 3D Services",
-                "capabilities": ["PLA", "ABS", "PETG"],
-                "quality_levels": ["draft", "standard", "high"],
-                "current_queue": 2,
-                "avg_completion_time": 24
-            },
-            {
-                "provider_id": "prov_002", 
-                "name": "Precision Print Co",
-                "capabilities": ["PLA", "ABS", "PETG", "TPU"],
-                "quality_levels": ["standard", "high", "ultra"],
-                "current_queue": 1,
-                "avg_completion_time": 48
-            }
-        ]
-        
-        # Simple assignment: first provider that can handle the job
-        for provider in mock_providers:
-            if (material in provider["capabilities"] and 
-                quality in provider["quality_levels"]):
-                return provider
-        
-        return None
-        
+        material = requirements.get("material")
+        quality = requirements.get("quality")
+
+        providers = db.query(ServiceProvider).filter(
+            ServiceProvider.is_active == True,
+            ServiceProvider.accepts_new_jobs == True
+        ).all()
+
+        best_provider: Optional[Dict[str, Any]] = None
+        best_queue: Optional[int] = None
+
+        for provider in providers:
+            materials = provider.materials_supported or []
+            qualities = provider.quality_levels or []
+            if material and material not in materials:
+                continue
+            if quality and quality not in qualities:
+                continue
+
+            queue_length = db.query(Job).filter(
+                Job.provider_id == provider.provider_id,
+                Job.status.notin_(
+                    [
+                        JobStatus.COMPLETED,
+                        JobStatus.SHIPPED,
+                        JobStatus.CANCELLED,
+                    ]
+                ),
+            ).count()
+
+            if best_queue is None or queue_length < best_queue:
+                best_queue = queue_length
+                best_provider = {
+                    "provider_id": provider.provider_id,
+                    "name": provider.display_name or provider.business_name,
+                    "capabilities": materials,
+                    "quality_levels": qualities,
+                    "current_queue": queue_length,
+                    "avg_completion_time": (
+                        provider.turnaround_time_days * 24
+                        if provider.turnaround_time_days is not None
+                        else None
+                    ),
+                }
+
+        return best_provider
+
     except Exception as e:
         logger.error(f"Provider assignment failed: {str(e)}")
         return None
