@@ -38,7 +38,10 @@ export interface FlagDefinition {
   rolloutState: RolloutState;
   description: string;
   owner: string;
-  
+
+  // Environment targeting
+  environment?: 'all' | 'development' | 'staging' | 'production';
+
   // Targeting rules
   enabledForRoles?: string[];
   enabledForUsers?: string[];
@@ -154,6 +157,17 @@ export class FeatureFlagEngine {
         enabled: false,
         value: flag.defaultValue,
         reason: 'flag_expired',
+        flagKey
+      };
+    }
+
+    // Check environment
+    const flagEnv = flag.environment ?? 'all';
+    if (flagEnv !== 'all' && flagEnv !== context.environment) {
+      return {
+        enabled: false,
+        value: flag.defaultValue,
+        reason: 'environment_mismatch',
         flagKey
       };
     }
