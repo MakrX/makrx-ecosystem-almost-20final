@@ -27,6 +27,7 @@
     "@vitejs/plugin-react": "^5.0.0",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.0.0",
+    "keycloak-js": "^21.1.2",
     "lucide-react": "^0.400.0",
     "next-themes": "^0.3.0",
     "react": "^18.3.1",
