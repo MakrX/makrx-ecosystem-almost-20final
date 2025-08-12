@@ -2,12 +2,14 @@ import { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Loader2, CheckCircle, XCircle } from 'lucide-react';
 import { ThemeToggle } from '../../../packages/ui/components/ThemeToggle';
-import { auth } from '@makrx/utils';
-import { exchangeCodeForTokens, getAndClearRedirectUrl } from '../../../makrx-sso-utils.js';
+import authService from '../services/authService';
+import { useAuth } from '../contexts/AuthContext';
+import { getAndClearRedirectUrl } from '../../../makrx-sso-utils.js';
 
 export default function AuthCallback() {
   const navigate = useNavigate();
   const location = useLocation();
+  const { refreshUser } = useAuth();
   const [status, setStatus] = useState<'loading' | 'success' | 'error'>('loading');
   const [error, setError] = useState('');
 
@@ -29,12 +31,8 @@ export default function AuthCallback() {
         sessionStorage.removeItem('makrx_auth_state');
         sessionStorage.removeItem('makrx_oauth_state');
 
-        const tokens = await exchangeCodeForTokens(code);
-        auth.setTokens({
-          accessToken: tokens.access_token,
-          refreshToken: tokens.refresh_token,
-          expiresIn: Date.now() + tokens.expires_in * 1000,
-        });
+        await authService.handleAuthCallback(code);
+        await refreshUser();
 
         setStatus('success');
         const redirectUrl = getAndClearRedirectUrl() || '/portal/dashboard';

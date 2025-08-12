@@ -12,7 +12,7 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { UserRole, RolePermissions } from '@makrx/types';
 import { getRolePermissions, hasPermission, UI_ACCESS } from '../config/rolePermissions';
-import authService, { User as AuthUser, LoginCredentials } from '../services/authService';
+import authService, { User as AuthUser } from '../services/authService';
 
 interface User {
   id: string;
@@ -33,7 +33,7 @@ interface AuthContextType {
   user: User | null;
   isAuthenticated: boolean;
   isLoading: boolean;
-  login: (credentials: LoginCredentials) => Promise<void>;
+  login: (redirectUrl?: string) => Promise<void>;
   logout: () => Promise<void>;
   register: (data: any) => Promise<void>;
   getCurrentRole: () => UserRole;
@@ -84,10 +84,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   };
 
-  const login = async (credentials: LoginCredentials) => {
+  const login = async (redirectUrl?: string) => {
     try {
-      const response = await authService.login(credentials);
-      setUser(response.user);
+      await authService.login(redirectUrl);
     } catch (error) {
       console.error('Login failed:', error);
       throw error;
