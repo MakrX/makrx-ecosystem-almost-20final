@@ -15,10 +15,39 @@ import { redirectToSSO, exchangeCodeForTokens } from '../../../makrx-sso-utils.j
 // API Configuration
 const API_BASE_URL = import.meta.env.VITE_MAKRCAVE_API_URL || 'http://localhost:8000';
 const KEYCLOAK_URL = import.meta.env.VITE_KEYCLOAK_URL || 'http://localhost:8080/realms/makrx';
-// Local Storage Keys - Change these if you want different storage key names
+// Cookie names used for authentication
 const TOKEN_KEY = 'makrcave_access_token';
 const REFRESH_TOKEN_KEY = 'makrcave_refresh_token';
 const USER_KEY = 'makrcave_user';
+const CSRF_COOKIE = 'csrf_token';
+
+// Cookie helpers. Tokens are expected to be set by the server using
+// `Set-Cookie` headers with the `HttpOnly` flag. These helpers provide a
+// fallback for environments where direct cookie access is needed, while the
+// `Secure` and `SameSite=Strict` attributes help mitigate CSRF risks.
+const cookieOptions = 'path=/; secure; samesite=strict';
+
+const setCookie = (name: string, value: string, expires?: Date) => {
+  if (typeof document === 'undefined') return;
+  let cookie = `${name}=${encodeURIComponent(value)}; ${cookieOptions}`;
+  if (expires) {
+    cookie += `; expires=${expires.toUTCString()}`;
+  }
+  document.cookie = cookie;
+};
+
+const getCookie = (name: string): string | null => {
+  if (typeof document === 'undefined') return null;
+  const match = document.cookie.match(new RegExp(`(^| )${name}=([^;]+)`));
+  return match ? decodeURIComponent(match[2]) : null;
+};
+
+const deleteCookie = (name: string) => {
+  if (typeof document === 'undefined') return;
+  document.cookie = `${name}=; ${cookieOptions}; expires=Thu, 01 Jan 1970 00:00:00 GMT`;
+};
+
+const getCsrfToken = (): string | null => getCookie(CSRF_COOKIE);
 
 export interface LoginResponse {
   access_token: string;
@@ -143,11 +172,14 @@ class AuthService {
         return this.mockRegister(data, Date.now() - startTime);
       }
 
+      const csrfToken = getCsrfToken();
       const response = await fetch(`${API_BASE_URL}/auth/register`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          ...(csrfToken && { 'X-CSRF-Token': csrfToken })
         },
+        credentials: 'include',
         body: JSON.stringify(data),
       });
 
@@ -350,11 +382,14 @@ class AuthService {
           // Call Keycloak logout endpoint
           try {
             const refreshToken = this.getRefreshToken();
+            const csrfToken = getCsrfToken();
             const response = await fetch(`${KEYCLOAK_URL}/protocol/openid-connect/logout`, {
               method: 'POST',
               headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',
+                ...(csrfToken && { 'X-CSRF-Token': csrfToken })
               },
+              credentials: 'include',
               body: new URLSearchParams({
                 client_id: 'makrx-cave',
                 refresh_token: refreshToken || ''
@@ -443,11 +478,14 @@ class AuthService {
         }
       }
 
+      const csrfToken = getCsrfToken();
       const response = await fetch(`${KEYCLOAK_URL}/protocol/openid-connect/token`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
+          ...(csrfToken && { 'X-CSRF-Token': csrfToken })
         },
+        credentials: 'include',
         body: new URLSearchParams({
           grant_type: 'refresh_token',
           client_id: 'makrx-cave',
@@ -548,11 +586,14 @@ class AuthService {
         return { message: 'Password reset instructions sent to your email (demo mode)' };
       }
 
+      const csrfToken = getCsrfToken();
       const response = await fetch(`${API_BASE_URL}/auth/password-reset/request`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          ...(csrfToken && { 'X-CSRF-Token': csrfToken })
         },
+        credentials: 'include',
         body: JSON.stringify(data),
       });
 
@@ -646,11 +687,14 @@ class AuthService {
         return { message: 'Password reset successfully (demo mode)' };
       }
 
+      const csrfToken = getCsrfToken();
       const response = await fetch(`${API_BASE_URL}/auth/password-reset/confirm`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          ...(csrfToken && { 'X-CSRF-Token': csrfToken })
         },
+        credentials: 'include',
         body: JSON.stringify({
           token,
           new_password: newPassword,
@@ -723,12 +767,15 @@ class AuthService {
         throw new Error('Not authenticated');
       }
 
+      const csrfToken = getCsrfToken();
       const response = await fetch(`${API_BASE_URL}/auth/change-password`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`,
+          ...(csrfToken && { 'X-CSRF-Token': csrfToken })
         },
+        credentials: 'include',
         body: JSON.stringify(data),
       });
 
@@ -799,10 +846,13 @@ class AuthService {
         }
       }
 
+      const csrfToken = getCsrfToken();
       const response = await fetch(`${API_BASE_URL}/users/me`, {
         headers: {
-          'Authorization': `Bearer ${token}`,
+          ...(token && { 'Authorization': `Bearer ${token}` }),
+          ...(csrfToken && { 'X-CSRF-Token': csrfToken })
         },
+        credentials: 'include',
       });
 
       if (!response.ok) {
@@ -877,25 +927,25 @@ class AuthService {
 
   // Token management
   getAccessToken(): string | null {
-    return localStorage.getItem(TOKEN_KEY);
+    return getCookie(TOKEN_KEY);
   }
 
   getRefreshToken(): string | null {
-    return localStorage.getItem(REFRESH_TOKEN_KEY);
+    return getCookie(REFRESH_TOKEN_KEY);
   }
 
   setTokens(accessToken: string, refreshToken: string): void {
-    localStorage.setItem(TOKEN_KEY, accessToken);
-    localStorage.setItem(REFRESH_TOKEN_KEY, refreshToken);
-    
+    setCookie(TOKEN_KEY, accessToken);
+    setCookie(REFRESH_TOKEN_KEY, refreshToken);
+
     // Also set for backward compatibility
-    localStorage.setItem('auth_token', accessToken);
-    localStorage.setItem('authToken', accessToken);
+    setCookie('auth_token', accessToken);
+    setCookie('authToken', accessToken);
   }
 
   // User management
   getUser(): User | null {
-    const userData = localStorage.getItem(USER_KEY);
+    const userData = getCookie(USER_KEY);
     if (userData) {
       try {
         return JSON.parse(userData);
@@ -907,10 +957,10 @@ class AuthService {
   }
 
   setUser(user: User): void {
-    localStorage.setItem(USER_KEY, JSON.stringify(user));
-    
+    setCookie(USER_KEY, JSON.stringify(user));
+
     // Also set for backward compatibility
-    localStorage.setItem('makrcave_user', JSON.stringify({ id: user.id }));
+    setCookie('makrcave_user', JSON.stringify({ id: user.id }));
   }
 
   // Clear all auth data
@@ -923,15 +973,15 @@ class AuthService {
       hadRefreshTimer: !!this.refreshTimer
     });
 
-    localStorage.removeItem(TOKEN_KEY);
-    localStorage.removeItem(REFRESH_TOKEN_KEY);
-    localStorage.removeItem(USER_KEY);
+    deleteCookie(TOKEN_KEY);
+    deleteCookie(REFRESH_TOKEN_KEY);
+    deleteCookie(USER_KEY);
 
     // Clear backward compatibility tokens
-    localStorage.removeItem('auth_token');
-    localStorage.removeItem('authToken');
-    localStorage.removeItem('makrcave_user');
-    localStorage.removeItem('makrcave_access_token');
+    deleteCookie('auth_token');
+    deleteCookie('authToken');
+    deleteCookie('makrcave_user');
+    deleteCookie('makrcave_access_token');
 
     // Clear refresh timer
     if (this.refreshTimer) {
@@ -1125,13 +1175,16 @@ class AuthService {
   createAuthenticatedFetch() {
     return async (url: string, options: RequestInit = {}): Promise<Response> => {
       const token = this.getAccessToken();
-      
-      const authenticatedOptions = {
+      const csrfToken = getCsrfToken();
+
+      const authenticatedOptions: RequestInit = {
         ...options,
         headers: {
           ...options.headers,
           ...(token && { Authorization: `Bearer ${token}` }),
+          ...(csrfToken && { 'X-CSRF-Token': csrfToken }),
         },
+        credentials: 'include',
       };
 
       let response = await fetch(url, authenticatedOptions);
@@ -1143,6 +1196,7 @@ class AuthService {
           authenticatedOptions.headers = {
             ...authenticatedOptions.headers,
             Authorization: `Bearer ${newToken}`,
+            ...(csrfToken && { 'X-CSRF-Token': csrfToken })
           };
           response = await fetch(url, authenticatedOptions);
         }
