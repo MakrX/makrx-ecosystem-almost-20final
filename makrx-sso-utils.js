@@ -3,16 +3,39 @@
  * Centralized authentication functions for consistent SSO across all MakrX sites
  */
 
-// SSO Configuration
-const SSO_CONFIG = {
-  authDomain: 'https://auth.makrx.org',
-  realm: 'makrx',
-  clients: {
-    'makrx.org': 'makrx-gateway',
-    'makrcave.com': 'makrx-cave', 
-    'makrx.store': 'makrx-store'
-  }
+// Default SSO configuration. Values can be overridden using environment
+// variables at build time or by calling `configureSSO` at runtime.
+const DEFAULT_CLIENTS = {
+  'makrx.org': 'makrx-gateway',
+  'makrcave.com': 'makrx-cave',
+  'makrx.store': 'makrx-store',
+  localhost: 'makrx-store'
 };
+
+function loadEnvClients(envValue) {
+  if (!envValue) return {};
+  try {
+    return JSON.parse(envValue);
+  } catch {
+    return {};
+  }
+}
+
+const env = typeof process !== 'undefined' && process.env ? process.env : {};
+
+let SSO_CONFIG = {
+  authDomain: env.SSO_AUTH_DOMAIN || 'http://localhost:8080',
+  realm: env.SSO_REALM || 'makrx',
+  clients: { ...DEFAULT_CLIENTS, ...loadEnvClients(env.SSO_CLIENTS) }
+};
+
+function configureSSO(overrides = {}) {
+  SSO_CONFIG = {
+    ...SSO_CONFIG,
+    ...overrides,
+    clients: { ...SSO_CONFIG.clients, ...(overrides.clients || {}) }
+  };
+}
 
 /**
  * Base64URL encode an ArrayBuffer
@@ -69,19 +92,22 @@ function generateNonce() {
 /**
  * Get the appropriate client ID based on the current domain
  */
-function getClientId() {
-  if (typeof window === 'undefined') return 'makrx-store'; // Default for SSR
-  
-  const hostname = window.location.hostname;
-  
-  // Map subdomains and domains to client IDs
-  if (hostname.includes('makrcave') || hostname.includes('cave')) {
-    return SSO_CONFIG.clients['makrcave.com'];
-  } else if (hostname.includes('store')) {
-    return SSO_CONFIG.clients['makrx.store'];
-  } else {
-    return SSO_CONFIG.clients['makrx.org'];
+function getClientId(hostname) {
+  let host = hostname;
+  if (!host && typeof window !== 'undefined') host = window.location.hostname;
+
+  if (!host || host === 'localhost' || host.startsWith('localhost') || host === '127.0.0.1') {
+    return SSO_CONFIG.clients['localhost'];
   }
+
+  host = host.toLowerCase();
+  const match = Object.entries(SSO_CONFIG.clients).find(([domain]) =>
+    host === domain || host.endsWith(`.${domain}`)
+  );
+  if (match) return match[1];
+
+  // Fallback to localhost client in non-production environments
+  return SSO_CONFIG.clients['localhost'] || Object.values(SSO_CONFIG.clients)[0];
 }
 
 /**
@@ -227,7 +253,8 @@ if (typeof module !== 'undefined' && module.exports) {
     logoutFromSSO,
     getClientId,
     getAndClearRedirectUrl,
-    SSO_CONFIG
+    SSO_CONFIG,
+    configureSSO
   };
 } else if (typeof window !== 'undefined') {
   // Browser global
@@ -237,7 +264,8 @@ if (typeof module !== 'undefined' && module.exports) {
     logoutFromSSO,
     getClientId,
     getAndClearRedirectUrl,
-    SSO_CONFIG
+    SSO_CONFIG,
+    configureSSO
   };
 }
 
@@ -248,5 +276,6 @@ export {
   logoutFromSSO,
   getClientId,
   getAndClearRedirectUrl,
-  SSO_CONFIG
+  SSO_CONFIG,
+  configureSSO
 };
