@@ -43,6 +43,7 @@ services:
       KC_DB_PASSWORD: makrx-db-2024
       KC_DB_SCHEMA: keycloak
       KEYCLOAK_ADMIN: admin
+      # Admin password sourced from environment variable
       KEYCLOAK_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD}
     ports:
       - "8080:8080"
@@ -65,6 +66,7 @@ services:
       KEYCLOAK_URL: http://keycloak:8080
       KEYCLOAK_REALM: makrx
       KEYCLOAK_CLIENT_ID: auth-service
+      # Client secret sourced from environment variable
       KEYCLOAK_CLIENT_SECRET: ${KEYCLOAK_CLIENT_SECRET}
     ports:
       - "8001:8000"

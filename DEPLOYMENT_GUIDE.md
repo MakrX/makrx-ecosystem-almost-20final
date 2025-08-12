@@ -28,6 +28,8 @@ Set the following secrets in your deployment environment or `.env` file:
 - `KEYCLOAK_ADMIN_PASSWORD` – password for the Keycloak admin user
 - `KEYCLOAK_CLIENT_SECRET` – client secret used by the auth service
 
+These values should be provided through a local `.env` file (which is excluded from version control) or set directly in your deployment environment.
+
 ## 🔧 Backend Deployment
 
 ### 1. Server Setup
