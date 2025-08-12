@@ -39,7 +39,16 @@ function setupTokenRefresh() {
 
 export const login = () => keycloak.login();
 export const logout = () => keycloak.logout();
-export const getToken = () => keycloak.token ?? '';
+export const getToken = async () => {
+  try {
+    await keycloak.updateToken(30);
+    return keycloak.token ?? '';
+  } catch (err) {
+    console.error('Token refresh failed', err);
+    login();
+    return '';
+  }
+};
 export const isAuthenticated = () => Boolean(keycloak.authenticated);
 
 export default keycloak;

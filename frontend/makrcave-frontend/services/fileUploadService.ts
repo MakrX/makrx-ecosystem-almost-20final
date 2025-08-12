@@ -60,7 +60,7 @@ class FileUploadService {
       formData.append('type', this.getFileType(file));
 
       // Get auth token
-      const token = getToken();
+      const token = await getToken();
 
       // Upload file
       const response = await fetch(`${this.baseUrl}/api/v1/upload`, {
@@ -285,7 +285,7 @@ class FileUploadService {
    */
   async deleteFile(filename: string): Promise<boolean> {
     try {
-      const token = getToken();
+      const token = await getToken();
 
       const response = await fetch(`${this.baseUrl}/api/v1/upload/${filename}`, {
         method: 'DELETE',
@@ -315,7 +315,7 @@ class FileUploadService {
    */
   async getUploads(): Promise<any[]> {
     try {
-      const token = getToken();
+      const token = await getToken();
 
       const response = await fetch(`${this.baseUrl}/api/v1/uploads`, {
         headers: {

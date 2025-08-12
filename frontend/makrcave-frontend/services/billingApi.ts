@@ -323,7 +323,7 @@ async function apiCall<T>(
 
   // Try real API call for local development
   try {
-    const token = getToken();
+    const token = await getToken();
 
     loggingService.debug('api', 'BillingApi.apiCall', 'Making real API call', {
       endpoint,
