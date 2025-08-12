@@ -10,6 +10,7 @@
 // - Role-based permission checking
 
 import loggingService from './loggingService';
+import { redirectToSSO, exchangeCodeForTokens } from '../../../makrx-sso-utils.js';
 
 // API Configuration
 const API_BASE_URL = import.meta.env.VITE_MAKRCAVE_API_URL || 'http://localhost:8000';
@@ -18,11 +19,6 @@ const KEYCLOAK_URL = import.meta.env.VITE_KEYCLOAK_URL || 'http://localhost:8080
 const TOKEN_KEY = 'makrcave_access_token';
 const REFRESH_TOKEN_KEY = 'makrcave_refresh_token';
 const USER_KEY = 'makrcave_user';
-
-export interface LoginCredentials {
-  username: string;
-  password: string;
-}
 
 export interface LoginResponse {
   access_token: string;
@@ -83,283 +79,41 @@ class AuthService {
   }
 
   // ========================================
-  // LOGIN METHOD
+  // LOGIN FLOW - SSO REDIRECT
   // ========================================
-  // Authenticates user with email/password and stores JWT tokens
-  // Returns user data and tokens on success
-  async login(credentials: LoginCredentials): Promise<LoginResponse> {
-    const startTime = Date.now();
-
-    try {
-      loggingService.info('auth', 'AuthService.login', 'Login attempt started', {
-        username: credentials.username,
-        timestamp: new Date().toISOString()
-      });
-
-      // Check if we're in a cloud environment where API might not be available
-      const isCloudEnvironment = window.location.hostname.includes('fly.dev') ||
-                               window.location.hostname.includes('builder.codes') ||
-                               window.location.hostname.includes('vercel.app') ||
-                               window.location.hostname.includes('netlify.app') ||
-                               !window.location.hostname.includes('localhost');
-
-      // If in cloud environment, use mock authentication
-      if (isCloudEnvironment) {
-        const responseTime = Date.now() - startTime;
-
-        loggingService.info('auth', 'AuthService.login', 'Using mock authentication for cloud environment', {
-          username: credentials.username,
-          environment: 'cloud',
-          hostname: window.location.hostname
-        });
-
-        return this.mockLogin(credentials, responseTime);
-      }
-
-      const response = await fetch(`${KEYCLOAK_URL}/protocol/openid-connect/token`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
-        },
-        body: new URLSearchParams({
-          grant_type: 'password',
-          client_id: 'makrx-cave',
-          username: credentials.username,
-          password: credentials.password,
-        }),
-      });
-
-      const responseTime = Date.now() - startTime;
-      loggingService.logAPICall('/auth/login', 'POST', response.status, responseTime);
-
-      if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}));
-        const errorMessage = errorData.detail || `Login failed: ${response.status} ${response.statusText}`;
-
-        loggingService.logAuthEvent('login', false, {
-          username: credentials.username,
-          statusCode: response.status,
-          errorMessage,
-          responseTime
-        });
-
-        // If we get a 404, fall back to mock authentication
-        if (response.status === 404) {
-          loggingService.warn('auth', 'AuthService.login', 'API not available, falling back to mock authentication', {
-            username: credentials.username,
-            originalError: errorMessage
-          });
-
-          return this.mockLogin(credentials, responseTime);
-        }
-
-        throw new Error(errorMessage);
-      }
-
-      const tokenData = await response.json();
-
-      const payload = this.parseTokenPayload(tokenData.access_token);
-      const user: User = {
-        id: payload.sub,
-        email: payload.email,
-        username: (payload as any).preferred_username || payload.email,
-        role: (payload.role as User['role']) || 'maker',
-        assignedMakerspaces: payload.makerspace_ids || [],
-        isActive: true,
-        createdAt: new Date(payload.iat * 1000).toISOString()
-      };
-
-      const data: LoginResponse = {
-        ...tokenData,
-        user
-      };
-
-      // Store tokens and user data
-      this.setTokens(data.access_token, data.refresh_token);
-      this.setUser(user);
-
-      // Set up token refresh
-      this.scheduleTokenRefresh(data.expires_in);
-
-      loggingService.logAuthEvent('login', true, {
-        userId: user.id,
-        username: user.username,
-        role: user.role,
-        responseTime,
-        tokenExpiry: data.expires_in
-      });
-
-      loggingService.info('auth', 'AuthService.login', 'Login successful', {
-        userId: user.id,
-        role: user.role,
-        responseTime
-      });
-
-      return data;
-    } catch (error) {
-      const responseTime = Date.now() - startTime;
-
-      // If it's a network error, try mock authentication as fallback
-      if ((error as Error).message.includes('Failed to fetch') ||
-          (error as Error).message.includes('NetworkError') ||
-          (error as Error).message.includes('ERR_NETWORK')) {
-
-        loggingService.warn('auth', 'AuthService.login', 'Network error, falling back to mock authentication', {
-          username: credentials.username,
-          error: (error as Error).message,
-          responseTime
-        });
-
-        try {
-          return this.mockLogin(credentials, responseTime);
-        } catch (mockError) {
-          loggingService.error('auth', 'AuthService.login', 'Mock authentication also failed', {
-            username: credentials.username,
-            originalError: (error as Error).message,
-            mockError: (mockError as Error).message,
-            responseTime
-          });
-          throw mockError;
-        }
-      }
-
-      loggingService.error('auth', 'AuthService.login', 'Login failed', {
-        username: credentials.username,
-        error: (error as Error).message,
-        responseTime
-      }, (error as Error).stack);
-
-      console.error('Login error:', error);
-      throw error;
-    }
+  async login(redirectUrl?: string): Promise<void> {
+    loggingService.info('auth', 'AuthService.login', 'Initiating SSO redirect', {
+      redirectUrl: redirectUrl || window.location.href
+    });
+    await redirectToSSO(redirectUrl);
   }
 
-  // ========================================
-  // MOCK AUTHENTICATION FOR CLOUD ENVIRONMENT
-  // ========================================
-  private mockLogin(credentials: LoginCredentials, responseTime: number): LoginResponse {
-    // Mock user database
-    const mockUsers: Record<string, User> = {
-      'superadmin@makrcave.com': {
-        id: 'user-super-admin',
-        email: 'superadmin@makrcave.com',
-        username: 'superadmin',
-        firstName: 'Super',
-        lastName: 'Admin',
-        role: 'super_admin',
-        isActive: true,
-        createdAt: '2024-01-01T00:00:00Z',
-        assignedMakerspaces: ['ms-1', 'ms-2', 'ms-3']
-      },
-      'admin@makrcave.com': {
-        id: 'user-admin',
-        email: 'admin@makrcave.com',
-        username: 'sysadmin',
-        firstName: 'System',
-        lastName: 'Administrator',
-        role: 'admin',
-        isActive: true,
-        createdAt: '2024-01-01T00:00:00Z',
-        assignedMakerspaces: ['ms-1', 'ms-2']
-      },
-      'manager@makrcave.com': {
-        id: 'user-manager',
-        email: 'manager@makrcave.com',
-        username: 'spacemanager',
-        firstName: 'Makerspace',
-        lastName: 'Manager',
-        role: 'makerspace_admin',
-        isActive: true,
-        createdAt: '2024-01-01T00:00:00Z',
-        assignedMakerspaces: ['ms-1']
-      },
-      'provider@makrcave.com': {
-        id: 'user-provider',
-        email: 'provider@makrcave.com',
-        username: 'servicepro',
-        firstName: 'Service',
-        lastName: 'Provider',
-        role: 'service_provider',
-        isActive: true,
-        createdAt: '2024-01-01T00:00:00Z',
-        assignedMakerspaces: []
-      },
-      'maker@makrcave.com': {
-        id: 'user-maker',
-        email: 'maker@makrcave.com',
-        username: 'creativemakr',
-        firstName: 'Regular',
-        lastName: 'Maker',
-        role: 'maker',
-        isActive: true,
-        createdAt: '2024-01-01T00:00:00Z',
-        assignedMakerspaces: ['ms-1']
-      }
+  // Handle `/auth/callback` exchange and token storage
+  async handleAuthCallback(code: string): Promise<User> {
+    const tokenData = await exchangeCodeForTokens(code);
+    const payload = this.parseTokenPayload(tokenData.access_token);
+    const user: User = {
+      id: payload.sub,
+      email: payload.email,
+      username: (payload as any).preferred_username || payload.email,
+      role: (payload.role as User['role']) || 'maker',
+      assignedMakerspaces: payload.makerspace_ids || [],
+      isActive: true,
+      createdAt: new Date(payload.iat * 1000).toISOString()
     };
 
-    // Mock passwords
-    const mockPasswords: Record<string, string> = {
-      'superadmin@makrcave.com': 'SuperAdmin2024!',
-      'admin@makrcave.com': 'Admin2024!',
-      'manager@makrcave.com': 'Manager2024!',
-      'provider@makrcave.com': 'Provider2024!',
-      'maker@makrcave.com': 'Maker2024!'
-    };
+    this.setTokens(tokenData.access_token, tokenData.refresh_token);
+    this.setUser(user);
+    this.scheduleTokenRefresh(tokenData.expires_in);
 
-    // Check if user exists
-    const user = mockUsers[credentials.username];
-    if (!user) {
-      loggingService.logAuthEvent('mock_login', false, {
-        username: credentials.username,
-        reason: 'user_not_found',
-        responseTime
-      });
-      throw new Error('Invalid credentials');
-    }
-
-    // Check password
-    if (mockPasswords[credentials.username] !== credentials.password) {
-      loggingService.logAuthEvent('mock_login', false, {
-        username: credentials.username,
-        reason: 'invalid_password',
-        responseTime
-      });
-      throw new Error('Invalid credentials');
-    }
-
-    // Generate mock JWT tokens
-    const accessToken = this.generateMockJWT(user);
-    const refreshToken = this.generateMockRefreshToken();
-
-    const loginResponse: LoginResponse = {
-      access_token: accessToken,
-      refresh_token: refreshToken,
-      token_type: 'bearer',
-      expires_in: 1800, // 30 minutes
-      user: user
-    };
-
-    // Store tokens and user data
-    this.setTokens(loginResponse.access_token, loginResponse.refresh_token);
-    this.setUser(loginResponse.user);
-
-    // Set up token refresh
-    this.scheduleTokenRefresh(loginResponse.expires_in);
-
-    loggingService.logAuthEvent('mock_login', true, {
+    loggingService.logAuthEvent('login', true, {
       userId: user.id,
       username: user.username,
       role: user.role,
-      responseTime
+      tokenExpiry: tokenData.expires_in
     });
 
-    loggingService.info('auth', 'AuthService.mockLogin', 'Mock login successful', {
-      userId: user.id,
-      role: user.role,
-      responseTime
-    });
-
-    return loginResponse;
+    return user;
   }
 
   // ========================================
