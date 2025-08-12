@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Menu, X, ExternalLink, Grid3X3 } from "lucide-react";
 import { ThemeToggle } from "../lib/theme-clean";
+import { login, logout, isAuthenticated } from "../lib/auth";
 
 export default function Header() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -140,15 +141,22 @@ export default function Header() {
             {/* Theme Toggle */}
             <ThemeToggle variant="compact" />
 
-            {/* Sign In Button */}
-            <a
-              href="https://auth.makrx.org/login"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="px-4 py-2 bg-makrx-blue text-white rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors"
-            >
-              Sign In
-            </a>
+            {/* Authentication Buttons */}
+            {isAuthenticated() ? (
+              <button
+                onClick={logout}
+                className="px-4 py-2 bg-makrx-blue text-white rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors"
+              >
+                Logout
+              </button>
+            ) : (
+              <button
+                onClick={login}
+                className="px-4 py-2 bg-makrx-blue text-white rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors"
+              >
+                Sign In
+              </button>
+            )}
           </div>
 
           {/* Mobile Menu Button */}

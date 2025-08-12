@@ -24,6 +24,7 @@ import PrivacyPolicy from "./pages/PrivacyPolicy";
 import TermsOfService from "./pages/TermsOfService";
 import NotFound from "./pages/NotFound";
 import ThemeDemo from "./pages/ThemeDemo";
+import ProtectedRoute from "./components/ProtectedRoute";
 import { Helmet } from "react-helmet-async";
 
 const App = () => {
@@ -102,7 +103,14 @@ const App = () => {
               <Route path="/" element={<HomePage />} />
               <Route path="/ecosystem" element={<Ecosystem />} />
               <Route path="/makerspaces" element={<Makerspaces />} />
-              <Route path="/store" element={<Store />} />
+              <Route
+                path="/store"
+                element={
+                  <ProtectedRoute>
+                    <Store />
+                  </ProtectedRoute>
+                }
+              />
               <Route path="/service-providers" element={<ServiceProviders />} />
               <Route path="/3d" element={<ThreeDStore />} />
 

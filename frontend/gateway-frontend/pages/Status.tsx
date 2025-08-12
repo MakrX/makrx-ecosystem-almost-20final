@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { 
+import {
   CheckCircle, AlertTriangle, XCircle, Clock,
   TrendingUp, Activity, Server, Globe, Database,
   Zap, Shield, RefreshCw
 } from 'lucide-react';
+import { apiFetch } from '../lib/api';
 
 interface ServiceStatus {
   name: string;
@@ -38,7 +39,12 @@ export default function Status() {
 
   useEffect(() => {
     // Simulate real-time status updates
-    const fetchStatus = () => {
+    const fetchStatus = async () => {
+      try {
+        await apiFetch('/api/status');
+      } catch (err) {
+        console.error('Failed to fetch status', err);
+      }
       setServices([
         {
           name: 'MakrX Gateway',
