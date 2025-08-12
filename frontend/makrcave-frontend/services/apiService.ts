@@ -2,7 +2,7 @@
 // Connects to FastAPI backend with proper JWT authentication
 
 import loggingService from './loggingService';
-import authService from './authService';
+import { getToken } from '../lib/auth';
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '/api';
 const MOCK_API_BASE_URL =
@@ -247,7 +247,7 @@ async function apiCall<T>(
   });
 
   try {
-    const fetchImpl = USE_MOCK_API ? fetch : authService.createAuthenticatedFetch();
+    const token = getToken();
     const baseUrl = USE_MOCK_API ? MOCK_API_BASE_URL : API_BASE_URL;
 
     loggingService.debug('api', 'ApiService.apiCall', 'Making API call', {
@@ -257,9 +257,10 @@ async function apiCall<T>(
       useMock: USE_MOCK_API,
     });
 
-    const response = await fetchImpl(`${baseUrl}${endpoint}`, {
+    const response = await fetch(`${baseUrl}${endpoint}`, {
       headers: {
         'Content-Type': 'application/json',
+        ...(token && { Authorization: `Bearer ${token}` }),
         ...options.headers,
       },
       ...options,
