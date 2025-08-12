@@ -4,6 +4,10 @@
  */
 
 import { jwtDecode } from "jwt-decode";
+import {
+  redirectToSSO,
+  exchangeCodeForTokens,
+} from "../../../makrx-sso-utils.js";
 
 // Configuration
 const KEYCLOAK_URL =
@@ -208,25 +212,8 @@ export const hasScope = (scope: string): boolean => {
 export const login = (redirectUri?: string): void => {
   if (!isClient) return;
 
-  // Store the current location for post-login redirect
-  setStoredItem(
-    "makrx_pre_login_url",
-    window.location.pathname + window.location.search,
-  );
-
-  // Store original URL in session storage for SSO consistency
-  sessionStorage.setItem('makrx_redirect_url', window.location.href);
-
-  const params = new URLSearchParams({
-    client_id: CLIENT_ID,
-    redirect_uri: redirectUri || window.location.origin + "/auth/callback",
-    response_type: "code",
-    scope: "openid email profile",
-    state: generateState(),
-  });
-
-  // Redirect to auth.makrx.org (centralized SSO)
-  window.location.href = `${KEYCLOAK_URL}/realms/${REALM}/protocol/openid-connect/auth?${params}`;
+  // Use shared SSO utility which handles PKCE, nonce and state
+  void redirectToSSO(redirectUri);
 };
 
 export const logout = async (): Promise<void> => {
@@ -254,38 +241,18 @@ export const handleAuthCallback = async (
   if (!isClient) return false;
 
   try {
-    // Verify state parameter (basic CSRF protection)
-    const storedState = getStoredItem("makrx_auth_state");
+    // Verify state parameter stored during SSO redirect
+    const storedState = sessionStorage.getItem('makrx_oauth_state');
     if (state !== storedState) {
       throw new Error("Invalid state parameter");
     }
 
-    // Exchange code for tokens
-    const response = await fetch(
-      `${KEYCLOAK_URL}/realms/${REALM}/protocol/openid-connect/token`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/x-www-form-urlencoded",
-        },
-        body: new URLSearchParams({
-          grant_type: "authorization_code",
-          client_id: CLIENT_ID,
-          code,
-          redirect_uri: window.location.origin + "/auth/callback",
-        }),
-      },
-    );
-
-    if (!response.ok) {
-      throw new Error("Token exchange failed");
-    }
-
-    const tokens: AuthTokens = await response.json();
+    // Exchange code for tokens using shared SSO utility
+    const tokens = (await exchangeCodeForTokens(code)) as AuthTokens;
     setTokens(tokens);
 
     // Clean up state
-    removeStoredItem("makrx_auth_state");
+    sessionStorage.removeItem('makrx_oauth_state');
 
     return true;
   } catch (error) {
@@ -298,15 +265,6 @@ export const handleAuthCallback = async (
     clearTokens();
     return false;
   }
-};
-
-// Utility functions
-const generateState = (): string => {
-  const state =
-    Math.random().toString(36).substring(2, 15) +
-    Math.random().toString(36).substring(2, 15);
-  setStoredItem("makrx_auth_state", state);
-  return state;
 };
 
 // Auth listeners
