@@ -1,14 +1,10 @@
 from fastapi import Depends, HTTPException, status
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
-from sqlalchemy.orm import Session
-from typing import Optional
 import jwt
 import httpx
 import os
-from datetime import datetime
 import logging
-
-from .database import get_db
+import json
 
 # Configure logging
 logger = logging.getLogger(__name__)
@@ -17,11 +13,6 @@ logger = logging.getLogger(__name__)
 KEYCLOAK_URL = os.getenv("KEYCLOAK_URL", "http://keycloak:8080")
 KEYCLOAK_REALM = os.getenv("KEYCLOAK_REALM", "makrx")
 KEYCLOAK_CLIENT_ID = os.getenv("KEYCLOAK_CLIENT_ID", "makrcave-frontend")
-
-# JWT verification settings
-JWT_SECRET = os.getenv("JWT_SECRET")
-if not JWT_SECRET:
-    logger.warning("JWT_SECRET not set - using fallback validation")
 
 # Global HTTP client for token validation
 http_client = None
@@ -65,30 +56,68 @@ async def validate_token_with_auth_service(token: str) -> dict:
             )
 
     except httpx.RequestError:
-        # Fallback to local JWT validation if auth service is unavailable
-        logger.warning("Auth service unavailable, falling back to local validation")
-        return await validate_token_locally(token)
+        # Fallback to Keycloak validation if auth service is unavailable
+        logger.warning("Auth service unavailable, falling back to Keycloak validation")
+        return await validate_token_with_keycloak(token)
 
-async def validate_token_locally(token: str) -> dict:
-    """Fallback local token validation"""
+async def validate_token_with_keycloak(token: str) -> dict:
+    """Validate token using Keycloak JWKS"""
     try:
-        if JWT_SECRET:
-            # Validate service-generated tokens
-            payload = jwt.decode(token, JWT_SECRET, algorithms=["HS256"])
-            return payload
-        else:
-            # If no JWT_SECRET, decode without verification (development only)
-            logger.warning("No JWT_SECRET set - token validation disabled for development")
-            payload = jwt.decode(token, options={"verify_signature": False})
-            return payload
+        client = await get_http_client()
 
+        # Decode header to find key ID
+        header = jwt.get_unverified_header(token)
+        kid = header.get("kid")
+        if not kid:
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="Invalid token: missing key ID",
+                headers={"WWW-Authenticate": "Bearer"},
+            )
+
+        # Fetch JWKS from Keycloak
+        jwks_url = f"{KEYCLOAK_URL}/realms/{KEYCLOAK_REALM}/protocol/openid-connect/certs"
+        jwks_response = await client.get(jwks_url)
+        jwks_response.raise_for_status()
+        jwks = jwks_response.json()
+
+        key = None
+        for jwk in jwks.get("keys", []):
+            if jwk.get("kid") == kid:
+                key = jwt.algorithms.RSAAlgorithm.from_jwk(json.dumps(jwk))
+                break
+
+        if not key:
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="Invalid token: key not found",
+                headers={"WWW-Authenticate": "Bearer"},
+            )
+
+        expected_issuer = f"{KEYCLOAK_URL}/realms/{KEYCLOAK_REALM}"
+        payload = jwt.decode(
+            token,
+            key,
+            algorithms=["RS256"],
+            issuer=expected_issuer,
+            audience=KEYCLOAK_CLIENT_ID,
+        )
+
+        return payload
+
+    except httpx.RequestError:
+        raise HTTPException(
+            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+            detail="Authentication service unavailable",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
     except jwt.ExpiredSignatureError:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Token has expired",
             headers={"WWW-Authenticate": "Bearer"},
         )
-    except jwt.InvalidTokenError:
+    except (jwt.InvalidIssuerError, jwt.InvalidAudienceError, jwt.InvalidTokenError):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Invalid token",
