@@ -11,8 +11,9 @@
 
 import loggingService from './loggingService';
 
-// API Configuration - Change this URL to point to your backend
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '/api';
+// API Configuration
+const API_BASE_URL = import.meta.env.VITE_MAKRCAVE_API_URL || 'http://localhost:8000';
+const KEYCLOAK_URL = import.meta.env.VITE_KEYCLOAK_URL || 'http://localhost:8080/realms/makrx';
 // Local Storage Keys - Change these if you want different storage key names
 const TOKEN_KEY = 'makrcave_access_token';
 const REFRESH_TOKEN_KEY = 'makrcave_refresh_token';
@@ -115,12 +116,14 @@ class AuthService {
         return this.mockLogin(credentials, responseTime);
       }
 
-      const response = await fetch(`${API_BASE_URL}/auth/login`, {
+      const response = await fetch(`${KEYCLOAK_URL}/protocol/openid-connect/token`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
         },
         body: new URLSearchParams({
+          grant_type: 'password',
+          client_id: 'makrx-cave',
           username: credentials.username,
           password: credentials.password,
         }),
@@ -153,26 +156,42 @@ class AuthService {
         throw new Error(errorMessage);
       }
 
-      const data: LoginResponse = await response.json();
+      const tokenData = await response.json();
+
+      const payload = this.parseTokenPayload(tokenData.access_token);
+      const user: User = {
+        id: payload.sub,
+        email: payload.email,
+        username: (payload as any).preferred_username || payload.email,
+        role: (payload.role as User['role']) || 'maker',
+        assignedMakerspaces: payload.makerspace_ids || [],
+        isActive: true,
+        createdAt: new Date(payload.iat * 1000).toISOString()
+      };
+
+      const data: LoginResponse = {
+        ...tokenData,
+        user
+      };
 
       // Store tokens and user data
       this.setTokens(data.access_token, data.refresh_token);
-      this.setUser(data.user);
+      this.setUser(user);
 
       // Set up token refresh
       this.scheduleTokenRefresh(data.expires_in);
 
       loggingService.logAuthEvent('login', true, {
-        userId: data.user.id,
-        username: data.user.username,
-        role: data.user.role,
+        userId: user.id,
+        username: user.username,
+        role: user.role,
         responseTime,
         tokenExpiry: data.expires_in
       });
 
       loggingService.info('auth', 'AuthService.login', 'Login successful', {
-        userId: data.user.id,
-        role: data.user.role,
+        userId: user.id,
+        role: user.role,
         responseTime
       });
 
@@ -574,17 +593,22 @@ class AuthService {
             isMockToken
           });
         } else {
-          // Call logout endpoint to invalidate token on server
+          // Call Keycloak logout endpoint
           try {
-            const response = await fetch(`${API_BASE_URL}/auth/logout`, {
+            const refreshToken = this.getRefreshToken();
+            const response = await fetch(`${KEYCLOAK_URL}/protocol/openid-connect/logout`, {
               method: 'POST',
               headers: {
-                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/x-www-form-urlencoded',
               },
+              body: new URLSearchParams({
+                client_id: 'makrx-cave',
+                refresh_token: refreshToken || ''
+              })
             });
 
             const responseTime = Date.now() - startTime;
-            loggingService.logAPICall('/auth/logout', 'POST', response.status, responseTime);
+            loggingService.logAPICall('/protocol/openid-connect/logout', 'POST', response.status, responseTime);
 
             if (!response.ok) {
               loggingService.warn('auth', 'AuthService.logout', 'Server logout returned error, proceeding with local cleanup', {
@@ -665,16 +689,20 @@ class AuthService {
         }
       }
 
-      const response = await fetch(`${API_BASE_URL}/auth/refresh`, {
+      const response = await fetch(`${KEYCLOAK_URL}/protocol/openid-connect/token`, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
+          'Content-Type': 'application/x-www-form-urlencoded',
         },
-        body: JSON.stringify({ refresh_token: refreshToken }),
+        body: new URLSearchParams({
+          grant_type: 'refresh_token',
+          client_id: 'makrx-cave',
+          refresh_token: refreshToken,
+        }),
       });
 
       const responseTime = Date.now() - startTime;
-      loggingService.logAPICall('/auth/refresh', 'POST', response.status, responseTime);
+      loggingService.logAPICall('/protocol/openid-connect/token', 'POST', response.status, responseTime);
 
       if (!response.ok) {
         // If API is not available, try mock refresh
@@ -996,7 +1024,7 @@ class AuthService {
             id: payload.sub,
             email: payload.email,
             username: payload.email.split('@')[0],
-            role: payload.role,
+            role: payload.role as User['role'],
             assignedMakerspaces: payload.makerspace_ids || [],
             isActive: true,
             createdAt: new Date(payload.iat * 1000).toISOString()
@@ -1041,7 +1069,7 @@ class AuthService {
               id: payload.sub,
               email: payload.email,
               username: payload.email.split('@')[0],
-              role: payload.role,
+              role: payload.role as User['role'],
               assignedMakerspaces: payload.makerspace_ids || [],
               isActive: true,
               createdAt: new Date(payload.iat * 1000).toISOString()
@@ -1189,7 +1217,7 @@ class AuthService {
       } else {
         loggingService.debug('auth', 'AuthService.isAuthenticated', 'Token is valid', {
           userId: payload.sub,
-          role: payload.role,
+          role: payload.role as User['role'],
           expiresIn: payload.exp - currentTime
         });
       }

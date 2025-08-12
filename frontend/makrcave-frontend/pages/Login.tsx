@@ -1,21 +1,23 @@
 // ========================================
 // LOGIN PAGE COMPONENT - SSO REDIRECT
 // ========================================
-// Redirects users to centralized auth.makrx.org SSO
+// Redirects users to centralized Keycloak SSO
 
 import { useEffect } from 'react';
 import { Building2 } from 'lucide-react';
 import { ThemeToggle } from '../../../packages/ui/components/ThemeToggle';
 
 export default function Login() {
+  const keycloakUrl = import.meta.env.VITE_KEYCLOAK_URL || 'http://localhost:8080/realms/makrx';
+  const keycloakHost = new URL(keycloakUrl).host;
   // ========================================
   // SSO REDIRECT
   // ========================================
   useEffect(() => {
     // Store current page for redirect after login
     sessionStorage.setItem('makrx_redirect_url', window.location.origin + '/portal/dashboard');
-    
-    // Redirect to auth.makrx.org
+
+    // Redirect to Keycloak
     const params = new URLSearchParams({
       client_id: 'makrx-cave',
       redirect_uri: window.location.origin + '/auth/callback',
@@ -23,8 +25,7 @@ export default function Login() {
       scope: 'openid email profile',
       state: Math.random().toString(36).substring(2)
     });
-    
-    window.location.href = `https://auth.makrx.org/realms/makrx/protocol/openid-connect/auth?${params}`;
+    window.location.href = `${keycloakUrl}/protocol/openid-connect/auth?${params}`;
   }, []);
 
   return (
@@ -58,7 +59,7 @@ export default function Login() {
               Please wait while we redirect you to the secure authentication portal at
             </p>
             <p className="text-makrx-teal font-mono text-sm mb-6">
-              auth.makrx.org
+              {keycloakHost}
             </p>
             <div className="flex justify-center">
               <div className="w-8 h-8 border-4 border-white/30 border-t-makrx-teal rounded-full animate-spin"></div>

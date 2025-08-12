@@ -352,7 +352,7 @@ class HealthCheckService {
     let timeoutId: NodeJS.Timeout | null = null;
 
     try {
-      const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '/api';
+      const API_BASE_URL = import.meta.env.VITE_MAKRCAVE_API_URL || 'http://localhost:8000';
       controller = new AbortController();
 
       // Set up timeout with proper cleanup
