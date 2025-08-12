@@ -247,7 +247,7 @@ async function apiCall<T>(
   });
 
   try {
-    const token = getToken();
+    const token = await getToken();
     const baseUrl = USE_MOCK_API ? MOCK_API_BASE_URL : API_BASE_URL;
 
     loggingService.debug('api', 'ApiService.apiCall', 'Making API call', {

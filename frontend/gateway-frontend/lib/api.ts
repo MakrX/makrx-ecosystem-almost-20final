@@ -2,7 +2,7 @@ import { getToken } from './auth';
 
 export async function apiFetch(input: RequestInfo | URL, init: RequestInit = {}) {
   const headers = new Headers(init.headers);
-  const token = getToken();
+  const token = await getToken();
   if (token) {
     headers.set('Authorization', `Bearer ${token}`);
   }
