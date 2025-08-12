@@ -5,9 +5,10 @@ from typing import List, Optional, Dict, Any
 from datetime import datetime, timedelta
 import uuid
 import json
+import asyncio
 
 from ..database import get_db
-from ..dependencies import get_current_user
+from ..dependencies import get_current_user, validate_token_with_auth_service
 from ..schemas.notifications import (
     NotificationCreate, NotificationUpdate, NotificationResponse,
     BulkNotificationCreate, BulkNotificationResponse,
@@ -594,35 +595,58 @@ async def export_notifications(
             detail=f"Failed to create export: {str(e)}"
         )
 
+async def send_ping(websocket: WebSocket):
+    while True:
+        await asyncio.sleep(30)
+        try:
+            await websocket.send_text(json.dumps({"type": "ping"}))
+        except Exception:
+            break
+
 # Real-time WebSocket endpoint
 @router.websocket("/ws/{user_id}")
 async def websocket_endpoint(
     websocket: WebSocket,
     user_id: str,
+    token: str,
     db: Session = Depends(get_db)
 ):
     """WebSocket endpoint for real-time notifications"""
+    try:
+        user_data = await validate_token_with_auth_service(token)
+        if user_data.get("sub") != user_id:
+            await websocket.close(code=1008)
+            return
+    except HTTPException:
+        await websocket.close(code=1008)
+        return
+
     await websocket.accept()
-    
+
+    ping_task = asyncio.create_task(send_ping(websocket))
+
     try:
         # Register user for real-time notifications
         crud_notifications.register_websocket_connection(user_id, websocket)
-        
+
         while True:
             # Keep connection alive and handle incoming messages
             data = await websocket.receive_text()
             message = json.loads(data)
-            
+
             if message.get("type") == "ping":
                 await websocket.send_text(json.dumps({"type": "pong"}))
+            elif message.get("type") == "pong":
+                continue
             elif message.get("type") == "mark_read":
                 notification_id = message.get("notification_id")
                 if notification_id:
                     crud_notifications.mark_as_read(db, notification_id)
-                    
+
     except Exception as e:
         print(f"WebSocket error: {e}")
     finally:
+        ping_task.cancel()
         # Unregister user
         crud_notifications.unregister_websocket_connection(user_id)
 

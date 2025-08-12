@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState, useCallback } from "react";
 import { useAuth } from "@/contexts/AuthContext";
+import { getToken } from "@/lib/auth";
 
 interface EventMessage {
   type: "event" | "subscription_confirmed" | "unsubscription_confirmed";
@@ -41,6 +42,9 @@ export function useRealTimeUpdates(options: UseRealTimeUpdatesOptions = {}) {
   const reconnectAttempts = useRef(0);
   const reconnectTimeout = useRef<NodeJS.Timeout | null>(null);
   const eventHandlers = useRef<Map<string, EventHandler[]>>(new Map());
+  const pingIntervalRef = useRef<NodeJS.Timeout | null>(null);
+  const pongTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const subscriptions = useRef<Set<string>>(new Set());
 
   const [isConnected, setIsConnected] = useState(false);
   const [connectionStatus, setConnectionStatus] = useState<
@@ -50,8 +54,25 @@ export function useRealTimeUpdates(options: UseRealTimeUpdatesOptions = {}) {
 
   const eventServiceUrl =
     process.env.NEXT_PUBLIC_EVENT_SERVICE_URL || "ws://localhost:8004";
+  const defaultEvents = [
+    "job.assigned",
+    "job.started",
+    "job.progress_update",
+    "job.completed",
+    "job.failed",
+    "service_order.created",
+    "service_order.dispatched",
+    "equipment.reserved",
+    "equipment.available",
+    "equipment.maintenance",
+    "inventory.low_stock",
+    "inventory.out_of_stock",
+    "inventory.restocked",
+    "bom.cart_processed",
+    "order.payment_received",
+  ];
 
-  const connect = useCallback(() => {
+  const connect = useCallback(async () => {
     if (!isAuthenticated || !user || wsRef.current) {
       return;
     }
@@ -59,45 +80,49 @@ export function useRealTimeUpdates(options: UseRealTimeUpdatesOptions = {}) {
     setConnectionStatus("connecting");
 
     try {
-      const wsUrl = `${eventServiceUrl}/ws/${user.id}`;
+      const token = await getToken();
+      const wsUrl = `${eventServiceUrl}/ws/${user.id}?token=${token}`;
       const ws = new WebSocket(wsUrl);
+
+      const startHeartbeat = () => {
+        pingIntervalRef.current = setInterval(() => {
+          if (ws.readyState === WebSocket.OPEN) {
+            ws.send(JSON.stringify({ type: "ping" }));
+            pongTimeoutRef.current = setTimeout(() => {
+              ws.close();
+            }, 10000);
+          }
+        }, 30000);
+      };
 
       ws.onopen = () => {
         console.log("WebSocket connected to event service from MakrCave");
         setIsConnected(true);
         setConnectionStatus("connected");
         reconnectAttempts.current = 0;
+        subscriptions.current = new Set(defaultEvents);
 
-        // Subscribe to events relevant to MakrCave
         ws.send(
           JSON.stringify({
             type: "subscribe",
-            event_types: [
-              "job.assigned",
-              "job.started",
-              "job.progress_update",
-              "job.completed",
-              "job.failed",
-              "service_order.created",
-              "service_order.dispatched",
-              "equipment.reserved",
-              "equipment.available",
-              "equipment.maintenance",
-              "inventory.low_stock",
-              "inventory.out_of_stock",
-              "inventory.restocked",
-              "bom.cart_processed",
-              "order.payment_received",
-            ],
+            event_types: Array.from(subscriptions.current),
           }),
         );
+        startHeartbeat();
       };
 
       ws.onmessage = (event) => {
         try {
           const message: EventMessage = JSON.parse(event.data);
 
-          if (
+          if (message.type === "ping") {
+            ws.send(JSON.stringify({ type: "pong" }));
+          } else if (message.type === "pong") {
+            if (pongTimeoutRef.current) {
+              clearTimeout(pongTimeoutRef.current);
+              pongTimeoutRef.current = null;
+            }
+          } else if (
             message.type === "event" &&
             message.event_type &&
             message.payload
@@ -148,6 +173,14 @@ export function useRealTimeUpdates(options: UseRealTimeUpdatesOptions = {}) {
           event.code,
           event.reason,
         );
+        if (pingIntervalRef.current) {
+          clearInterval(pingIntervalRef.current);
+          pingIntervalRef.current = null;
+        }
+        if (pongTimeoutRef.current) {
+          clearTimeout(pongTimeoutRef.current);
+          pongTimeoutRef.current = null;
+        }
         setIsConnected(false);
         setConnectionStatus("disconnected");
         wsRef.current = null;
@@ -195,6 +228,15 @@ export function useRealTimeUpdates(options: UseRealTimeUpdatesOptions = {}) {
       reconnectTimeout.current = null;
     }
 
+    if (pingIntervalRef.current) {
+      clearInterval(pingIntervalRef.current);
+      pingIntervalRef.current = null;
+    }
+    if (pongTimeoutRef.current) {
+      clearTimeout(pongTimeoutRef.current);
+      pongTimeoutRef.current = null;
+    }
+
     if (wsRef.current) {
       wsRef.current.close();
       wsRef.current = null;
@@ -215,6 +257,7 @@ export function useRealTimeUpdates(options: UseRealTimeUpdatesOptions = {}) {
           }),
         );
       }
+      eventTypes.forEach((et) => subscriptions.current.add(et));
     },
     [isConnected],
   );
@@ -229,6 +272,7 @@ export function useRealTimeUpdates(options: UseRealTimeUpdatesOptions = {}) {
           }),
         );
       }
+      eventTypes.forEach((et) => subscriptions.current.delete(et));
     },
     [isConnected],
   );

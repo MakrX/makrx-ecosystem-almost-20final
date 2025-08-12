@@ -6,6 +6,7 @@ WebSocket and event-driven communication between services
 
 from fastapi import FastAPI, WebSocket, WebSocketDisconnect, HTTPException, Depends, BackgroundTasks
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 import asyncio
 import json
 import logging
@@ -16,6 +17,7 @@ from pydantic import BaseModel, Field
 from enum import Enum
 import httpx
 import os
+import redis.asyncio as redis
 from contextlib import asynccontextmanager
 
 # Configure logging
@@ -26,6 +28,10 @@ logger = logging.getLogger(__name__)
 MAKRCAVE_API_URL = os.getenv("MAKRCAVE_API_URL", "http://makrcave-backend:8000")
 STORE_API_URL = os.getenv("STORE_API_URL", "http://makrx-store-backend:8000")
 AUTH_SERVICE_URL = os.getenv("AUTH_SERVICE_URL", "http://auth-service:8000")
+REDIS_URL = os.getenv("REDIS_URL", "redis://redis:6379/0")
+HEARTBEAT_INTERVAL = int(os.getenv("HEARTBEAT_INTERVAL", "30"))
+
+security = HTTPBearer()
 
 # Event Types
 class EventType(str, Enum):
@@ -109,19 +115,51 @@ active_connections: Dict[str, WebSocketConnection] = {}
 event_subscriptions: Dict[str, EventSubscription] = {}
 event_queue: asyncio.Queue = asyncio.Queue()
 http_client: Optional[httpx.AsyncClient] = None
+redis_client: Optional[redis.Redis] = None
+
+async def verify_token(token: str) -> Dict[str, Any]:
+    """Validate JWT using the auth service"""
+    try:
+        response = await http_client.get(
+            f"{AUTH_SERVICE_URL}/auth/profile",
+            headers={"Authorization": f"Bearer {token}"},
+        )
+        if response.status_code == 200:
+            return response.json()
+    except Exception as e:
+        logger.error(f"Token verification error: {e}")
+    raise HTTPException(status_code=401, detail="Invalid token")
+
+async def get_current_user(
+    credentials: HTTPAuthorizationCredentials = Depends(security),
+) -> Dict[str, Any]:
+    token = credentials.credentials
+    return await verify_token(token)
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     global http_client
+    global redis_client
     http_client = httpx.AsyncClient(timeout=30.0)
-    
+    redis_client = redis.from_url(REDIS_URL, decode_responses=True)
+
+    # Load subscriptions from Redis
+    stored_subs = await redis_client.hgetall("event_subscriptions")
+    for sid, data in stored_subs.items():
+        try:
+            event_subscriptions[sid] = EventSubscription.parse_raw(data)
+        except Exception as e:
+            logger.error(f"Failed to load subscription {sid}: {e}")
+
     # Start event processor
     asyncio.create_task(process_event_queue())
     
     logger.info("Event Service started")
     yield
-    
+
     await http_client.aclose()
+    if redis_client:
+        await redis_client.close()
     logger.info("Event Service shutdown")
 
 # FastAPI app
@@ -187,60 +225,85 @@ async def health_check():
         "pending_events": event_queue.qsize()
     }
 
+async def send_heartbeat(websocket: WebSocket):
+    while True:
+        await asyncio.sleep(HEARTBEAT_INTERVAL)
+        try:
+            await websocket.send_text(json.dumps({"type": "ping"}))
+        except Exception:
+            break
+
 # WebSocket Connection Management
 @app.websocket("/ws/{user_id}")
-async def websocket_endpoint(websocket: WebSocket, user_id: str):
+async def websocket_endpoint(websocket: WebSocket, user_id: str, token: str):
     """WebSocket endpoint for real-time updates"""
+    try:
+        user_data = await verify_token(token)
+        if user_data.get("sub") != user_id:
+            await websocket.close(code=1008)
+            return
+    except HTTPException:
+        await websocket.close(code=1008)
+        return
+
     await websocket.accept()
-    
+
     connection = WebSocketConnection(
         websocket=websocket,
         user_id=user_id
     )
-    
+
     active_connections[connection.connection_id] = connection
     logger.info(f"WebSocket connected: {user_id} ({connection.connection_id})")
-    
+    heartbeat_task = asyncio.create_task(send_heartbeat(websocket))
+
     try:
         while True:
             # Listen for subscription updates from client
             data = await websocket.receive_text()
             message = json.loads(data)
-            
+
             if message.get("type") == "subscribe":
                 event_types = message.get("event_types", [])
                 connection.subscriptions.update(EventType(et) for et in event_types)
                 logger.info(f"User {user_id} subscribed to: {event_types}")
-                
+
                 await websocket.send_text(json.dumps({
                     "type": "subscription_confirmed",
                     "event_types": list(connection.subscriptions),
                     "timestamp": datetime.utcnow().isoformat()
                 }))
-            
+
             elif message.get("type") == "unsubscribe":
                 event_types = message.get("event_types", [])
                 for et in event_types:
                     connection.subscriptions.discard(EventType(et))
                 logger.info(f"User {user_id} unsubscribed from: {event_types}")
-                
+
                 await websocket.send_text(json.dumps({
                     "type": "unsubscription_confirmed",
                     "event_types": event_types,
                     "timestamp": datetime.utcnow().isoformat()
                 }))
-            
+            elif message.get("type") == "ping":
+                await websocket.send_text(json.dumps({"type": "pong"}))
+
     except WebSocketDisconnect:
         logger.info(f"WebSocket disconnected: {user_id} ({connection.connection_id})")
     except Exception as e:
         logger.error(f"WebSocket error for {user_id}: {e}")
     finally:
+        heartbeat_task.cancel()
         if connection.connection_id in active_connections:
             del active_connections[connection.connection_id]
 
 # Event Publishing
 @app.post("/events/publish")
-async def publish_event(event: Event, background_tasks: BackgroundTasks):
+async def publish_event(
+    event: Event,
+    background_tasks: BackgroundTasks,
+    current_user: Dict[str, Any] = Depends(get_current_user),
+):
     """Publish an event to the system"""
     try:
         # Add to processing queue
@@ -409,13 +472,17 @@ def event_matches_filters(event: Event, filters: Dict[str, Any]) -> bool:
 
 # Subscription Management
 @app.post("/subscriptions")
-async def create_subscription(subscription: EventSubscription):
+async def create_subscription(
+    subscription: EventSubscription,
+    current_user: Dict[str, Any] = Depends(get_current_user),
+):
     """Create event subscription"""
     subscription_id = str(uuid4())
     event_subscriptions[subscription_id] = subscription
-    
+    await redis_client.hset("event_subscriptions", subscription_id, subscription.json())
+
     logger.info(f"Created subscription {subscription_id} for events: {subscription.event_types}")
-    
+
     return {
         "subscription_id": subscription_id,
         "event_types": subscription.event_types,
@@ -423,10 +490,14 @@ async def create_subscription(subscription: EventSubscription):
     }
 
 @app.delete("/subscriptions/{subscription_id}")
-async def delete_subscription(subscription_id: str):
+async def delete_subscription(
+    subscription_id: str,
+    current_user: Dict[str, Any] = Depends(get_current_user),
+):
     """Delete event subscription"""
     if subscription_id in event_subscriptions:
         del event_subscriptions[subscription_id]
+        await redis_client.hdel("event_subscriptions", subscription_id)
         logger.info(f"Deleted subscription {subscription_id}")
         return {"message": "Subscription deleted"}
     else:
@@ -438,7 +509,8 @@ async def publish_order_update(
     order_id: str,
     status: str,
     user_id: str,
-    details: Dict[str, Any] = None
+    details: Dict[str, Any] = None,
+    current_user: Dict[str, Any] = Depends(get_current_user),
 ):
     """Publish order status update event"""
     event = Event(
@@ -463,7 +535,8 @@ async def publish_job_status(
     status: str,
     provider_id: str,
     user_id: str,
-    progress: Dict[str, Any] = None
+    progress: Dict[str, Any] = None,
+    current_user: Dict[str, Any] = Depends(get_current_user),
 ):
     """Publish job status update event"""
     event = Event(
@@ -488,7 +561,8 @@ async def publish_bom_export(
     project_id: str,
     user_id: str,
     exported_items: int,
-    cart_url: str
+    cart_url: str,
+    current_user: Dict[str, Any] = Depends(get_current_user),
 ):
     """Publish BOM export to cart event"""
     event = Event(
@@ -508,7 +582,7 @@ async def publish_bom_export(
 
 # Event receiver for services
 @app.post("/events/receive")
-async def receive_event(event: Event):
+async def receive_event(event: Event, current_user: Dict[str, Any] = Depends(get_current_user)):
     """Receive event from another service"""
     logger.info(f"Received event: {event.type} from {event.source_service}")
     
@@ -519,7 +593,7 @@ async def receive_event(event: Event):
 
 # Statistics
 @app.get("/stats")
-async def get_event_stats():
+async def get_event_stats(current_user: Dict[str, Any] = Depends(get_current_user)):
     """Get event service statistics"""
     return {
         "active_connections": len(active_connections),
