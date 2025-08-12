@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Loader2, CheckCircle, XCircle } from 'lucide-react';
 import { auth } from '@makrx/utils';
+import { exchangeCodeForTokens, getAndClearRedirectUrl } from '../../../makrx-sso-utils.js';
 
 export default function AuthCallback() {
   const navigate = useNavigate();
@@ -27,26 +28,7 @@ export default function AuthCallback() {
         sessionStorage.removeItem('makrx_auth_state');
         sessionStorage.removeItem('makrx_oauth_state');
 
-        const keycloakUrl =
-          import.meta.env.VITE_KEYCLOAK_URL ||
-          'http://localhost:8080/realms/makrx';
-
-        const response = await fetch(
-          `${keycloakUrl}/protocol/openid-connect/token`,
-          {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-            body: new URLSearchParams({
-              grant_type: 'authorization_code',
-              client_id: 'makrx-gateway',
-              code,
-              redirect_uri: window.location.origin + '/auth/callback',
-            }),
-          },
-        );
-
-        if (!response.ok) throw new Error('Token exchange failed');
-        const tokens = await response.json();
+        const tokens = await exchangeCodeForTokens(code);
         auth.setTokens({
           accessToken: tokens.access_token,
           refreshToken: tokens.refresh_token,
@@ -54,9 +36,7 @@ export default function AuthCallback() {
         });
 
         setStatus('success');
-        const redirectUrl =
-          sessionStorage.getItem('makrx_redirect_url') || '/';
-        sessionStorage.removeItem('makrx_redirect_url');
+        const redirectUrl = getAndClearRedirectUrl() || '/';
         setTimeout(() => navigate(redirectUrl), 1500);
       } catch (err) {
         console.error('Auth callback error:', err);
