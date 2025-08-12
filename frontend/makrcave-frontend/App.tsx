@@ -91,7 +91,14 @@ const App = () => (
                     <Route path="/forgot-password" element={<ForgotPassword />} />
 
                     {/* Protected Portal Routes */}
-                    <Route path="/portal" element={<Layout />}>
+                    <Route
+                      path="/portal"
+                      element={
+                        <ProtectedRoute>
+                          <Layout />
+                        </ProtectedRoute>
+                      }
+                    >
                       <Route index element={<Navigate to="dashboard" replace />} />
                       <Route path="dashboard" element={<Dashboard />} />
                       <Route path="inventory" element={<Inventory />} />

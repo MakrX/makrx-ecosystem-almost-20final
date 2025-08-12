@@ -3,7 +3,7 @@
 
 import loggingService from './loggingService';
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '/api';
+const API_BASE_URL = import.meta.env.VITE_MAKRCAVE_API_URL || 'http://localhost:8000';
 
 interface ApiResponse<T> {
   data?: T;

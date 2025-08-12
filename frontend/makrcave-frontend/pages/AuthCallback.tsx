@@ -26,7 +26,8 @@ export default function AuthCallback() {
         }
 
         // Exchange code for tokens
-        const tokenResponse = await fetch('https://auth.makrx.org/realms/makrx/protocol/openid-connect/token', {
+        const keycloakUrl = import.meta.env.VITE_KEYCLOAK_URL || 'http://localhost:8080/realms/makrx';
+        const tokenResponse = await fetch(`${keycloakUrl}/protocol/openid-connect/token`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/x-www-form-urlencoded',
