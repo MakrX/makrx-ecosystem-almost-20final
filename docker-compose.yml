@@ -77,7 +77,7 @@ services:
   # MakrCave Backend (FastAPI)
   makrcave-backend:
     build:
-      context: ./backends/makrcave-backend
+      context: ./makrcave-backend
       dockerfile: Dockerfile
     container_name: makrx-makrcave-backend
     environment:
@@ -95,7 +95,7 @@ services:
   # MakrX Store Backend (FastAPI)
   makrx-store-backend:
     build:
-      context: ./backends/makrx-store-backend
+      context: ./makrx-store-backend
       dockerfile: Dockerfile
     container_name: makrx-store-backend
     environment:
@@ -151,7 +151,7 @@ services:
   # MakrX Store Frontend (React + Vite)
   makrx-store-frontend:
     build:
-      context: ./frontend/makrx-store-frontend
+      context: ./makrx-store-frontend
       dockerfile: Dockerfile
     container_name: makrx-store-frontend
     environment:
@@ -170,7 +170,7 @@ services:
   # Reverse Proxy (Nginx)
   reverse-proxy:
     build:
-      context: ./services/reverse-proxy
+      context: ./nginx
       dockerfile: Dockerfile
     container_name: makrx-reverse-proxy
     ports:
@@ -183,4 +183,4 @@ services:
     networks:
       - makrx-net
     volumes:
-      - ./services/reverse-proxy/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
