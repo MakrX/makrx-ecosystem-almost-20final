@@ -6,26 +6,15 @@
 import { useEffect } from 'react';
 import { Building2 } from 'lucide-react';
 import { ThemeToggle } from '../../../packages/ui/components/ThemeToggle';
+import { redirectToSSO, SSO_CONFIG } from '../../../makrx-sso-utils.js';
 
 export default function Login() {
-  const keycloakUrl = import.meta.env.VITE_KEYCLOAK_URL || 'http://localhost:8080/realms/makrx';
-  const keycloakHost = new URL(keycloakUrl).host;
+  const keycloakHost = new URL(SSO_CONFIG.authDomain).host;
   // ========================================
   // SSO REDIRECT
   // ========================================
   useEffect(() => {
-    // Store current page for redirect after login
-    sessionStorage.setItem('makrx_redirect_url', window.location.origin + '/portal/dashboard');
-
-    // Redirect to Keycloak
-    const params = new URLSearchParams({
-      client_id: 'makrx-cave',
-      redirect_uri: window.location.origin + '/auth/callback',
-      response_type: 'code',
-      scope: 'openid email profile',
-      state: Math.random().toString(36).substring(2)
-    });
-    window.location.href = `${keycloakUrl}/protocol/openid-connect/auth?${params}`;
+    redirectToSSO(window.location.origin + '/portal/dashboard');
   }, []);
 
   return (
