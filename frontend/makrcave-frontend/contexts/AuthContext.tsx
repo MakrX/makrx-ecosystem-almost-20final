@@ -12,7 +12,8 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { UserRole, RolePermissions } from '@makrx/types';
 import { getRolePermissions, hasPermission, UI_ACCESS } from '../config/rolePermissions';
-import authService, { User as AuthUser, LoginCredentials } from '../services/authService';
+import { initKeycloak, login as kcLogin, logout as kcLogout, isAuthenticated as kcIsAuthenticated, getUser as kcGetUser } from '../lib/auth';
+type LoginCredentials = any;
 
 interface User {
   id: string;
@@ -70,55 +71,39 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   // Runs on app startup to check for existing authentication
   const initializeAuth = async () => {
     try {
-      // Check if user has valid token and restore session
-      if (authService.isAuthenticated()) {
-        const currentUser = await authService.getCurrentUser();
-        setUser(currentUser);
+      await initKeycloak();
+      if (kcIsAuthenticated()) {
+        const currentUser = kcGetUser();
+        setUser(currentUser as any);
       }
     } catch (error) {
       console.error('Failed to initialize auth:', error);
-      // Clear invalid auth data
-      authService.clearAuthData();
     } finally {
       setIsLoading(false);
     }
   };
 
-  const login = async (credentials: LoginCredentials) => {
-    try {
-      const response = await authService.login(credentials);
-      setUser(response.user);
-    } catch (error) {
-      console.error('Login failed:', error);
-      throw error;
-    }
+  const login = async (_credentials?: LoginCredentials) => {
+    kcLogin();
   };
 
   const logout = async () => {
     try {
-      await authService.logout();
+      await kcLogout();
       setUser(null);
     } catch (error) {
       console.error('Logout failed:', error);
     }
   };
 
-  const register = async (data: any) => {
-    try {
-      const response = await authService.register(data);
-      setUser(response.user);
-    } catch (error) {
-      console.error('Registration failed:', error);
-      throw error;
-    }
+  const register = async (_data: any) => {
+    kcLogin();
   };
 
   const refreshUser = async () => {
-    try {
-      const currentUser = await authService.getCurrentUser();
-      setUser(currentUser);
-    } catch (error) {
-      console.error('Failed to refresh user:', error);
+    if (kcIsAuthenticated()) {
+      setUser(kcGetUser() as any);
+    } else {
       setUser(null);
     }
   };
@@ -149,7 +134,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const isServiceProvider = user?.role === 'service_provider'; // Service provider access
   const isMaker = user?.role === 'maker';                     // Regular member access
   const isMakrcaveManager = isMakerspaceAdmin;                // For backward compatibility
-  const isAuthenticated = !!user && authService.isAuthenticated(); // Combined auth check
+  const isAuthenticated = !!user && kcIsAuthenticated(); // Combined auth check
 
   return (
     <AuthContext.Provider value={{
