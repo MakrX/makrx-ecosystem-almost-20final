@@ -9,6 +9,7 @@ import React, {
 } from "react";
 import { api } from "@/lib/api";
 import { useAuth } from "./AuthContext";
+import { getToken } from "@/lib/auth";
 
 export interface Notification {
   id: string;
@@ -48,19 +49,42 @@ export function NotificationProvider({ children }: { children: ReactNode }) {
     // Setup WebSocket for real-time notifications
     let ws: WebSocket;
     let reconnectTimeout: NodeJS.Timeout;
+    let pingInterval: NodeJS.Timeout;
+    let pongTimeout: NodeJS.Timeout;
 
-    const connectWebSocket = () => {
+    const connectWebSocket = async () => {
       try {
-        const wsUrl = `${process.env.NEXT_PUBLIC_WS_URL || "ws://localhost:8000"}/ws/notifications/${user.id}`;
+        const token = await getToken();
+        const wsUrl = `${process.env.NEXT_PUBLIC_WS_URL || "ws://localhost:8000"}/ws/notifications/${user.id}?token=${token}`;
         ws = new WebSocket(wsUrl);
+
+        const startHeartbeat = () => {
+          pingInterval = setInterval(() => {
+            if (ws.readyState === WebSocket.OPEN) {
+              ws.send(JSON.stringify({ type: "ping" }));
+              pongTimeout = setTimeout(() => {
+                ws.close();
+              }, 10000);
+            }
+          }, 30000);
+        };
 
         ws.onopen = () => {
           console.log("Connected to notification WebSocket");
+          startHeartbeat();
         };
 
         ws.onmessage = (event) => {
           try {
             const notification = JSON.parse(event.data);
+            if (notification.type === "ping") {
+              ws.send(JSON.stringify({ type: "pong" }));
+              return;
+            }
+            if (notification.type === "pong") {
+              clearTimeout(pongTimeout);
+              return;
+            }
             addNotification({
               type: notification.type || "info",
               title: notification.title,
@@ -75,6 +99,8 @@ export function NotificationProvider({ children }: { children: ReactNode }) {
 
         ws.onclose = () => {
           console.log("WebSocket disconnected, attempting to reconnect...");
+          clearInterval(pingInterval);
+          clearTimeout(pongTimeout);
           reconnectTimeout = setTimeout(connectWebSocket, 5000);
         };
 
@@ -96,6 +122,8 @@ export function NotificationProvider({ children }: { children: ReactNode }) {
       if (reconnectTimeout) {
         clearTimeout(reconnectTimeout);
       }
+      clearInterval(pingInterval);
+      clearTimeout(pongTimeout);
     };
   }, [isAuthenticated, user]);
 

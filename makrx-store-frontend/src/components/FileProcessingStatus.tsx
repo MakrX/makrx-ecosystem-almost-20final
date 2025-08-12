@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { api } from "@/lib/api";
 import { useNotifications } from "@/contexts/NotificationContext";
+import { getToken } from "@/lib/auth";
 import {
   FileText,
   AlertCircle,
@@ -41,20 +42,44 @@ export default function FileProcessingStatus({
   useEffect(() => {
     let interval: NodeJS.Timeout;
     let ws: WebSocket;
+    let pingInterval: NodeJS.Timeout;
+    let pongTimeout: NodeJS.Timeout;
 
     // Setup WebSocket for real-time updates
-    const setupWebSocket = () => {
+    const setupWebSocket = async () => {
       try {
-        const wsUrl = `${process.env.NEXT_PUBLIC_WS_URL || "ws://localhost:8000"}/ws/processing/${uploadId}`;
+        const token = await getToken();
+        const wsUrl = `${process.env.NEXT_PUBLIC_WS_URL || "ws://localhost:8000"}/ws/processing/${uploadId}?token=${token}`;
         ws = new WebSocket(wsUrl);
+
+        const startHeartbeat = () => {
+          pingInterval = setInterval(() => {
+            if (ws.readyState === WebSocket.OPEN) {
+              ws.send(JSON.stringify({ type: "ping" }));
+              pongTimeout = setTimeout(() => {
+                ws.close();
+              }, 10000);
+            }
+          }, 30000);
+        };
 
         ws.onopen = () => {
           console.log("Connected to file processing WebSocket");
+          startHeartbeat();
         };
 
         ws.onmessage = (event) => {
           try {
             const update = JSON.parse(event.data);
+
+            if (update.type === "ping") {
+              ws.send(JSON.stringify({ type: "pong" }));
+              return;
+            }
+            if (update.type === "pong") {
+              clearTimeout(pongTimeout);
+              return;
+            }
 
             if (update.status) {
               setStatus(update.status);
@@ -91,6 +116,8 @@ export default function FileProcessingStatus({
 
         ws.onclose = () => {
           console.log("Processing WebSocket disconnected");
+          clearInterval(pingInterval);
+          clearTimeout(pongTimeout);
           // Try to reconnect after 3 seconds
           setTimeout(setupWebSocket, 3000);
         };
@@ -132,6 +159,12 @@ export default function FileProcessingStatus({
       }
       if (interval) {
         clearInterval(interval);
+      }
+      if (pingInterval) {
+        clearInterval(pingInterval);
+      }
+      if (pongTimeout) {
+        clearTimeout(pongTimeout);
       }
     };
   }, [uploadId, fileName, onComplete, addNotification]);

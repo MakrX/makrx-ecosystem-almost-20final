@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState, useCallback } from "react";
 import { useAuth } from "@/contexts/AuthContext";
+import { getToken } from "@/lib/auth";
 
 interface EventMessage {
   type: "event" | "subscription_confirmed" | "unsubscription_confirmed";
@@ -41,6 +42,9 @@ export function useRealTimeUpdates(options: UseRealTimeUpdatesOptions = {}) {
   const reconnectAttempts = useRef(0);
   const reconnectTimeout = useRef<NodeJS.Timeout | null>(null);
   const eventHandlers = useRef<Map<string, EventHandler[]>>(new Map());
+  const pingIntervalRef = useRef<NodeJS.Timeout | null>(null);
+  const pongTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const subscriptions = useRef<Set<string>>(new Set());
 
   const [isConnected, setIsConnected] = useState(false);
   const [connectionStatus, setConnectionStatus] = useState<
@@ -50,8 +54,21 @@ export function useRealTimeUpdates(options: UseRealTimeUpdatesOptions = {}) {
 
   const eventServiceUrl =
     process.env.NEXT_PUBLIC_EVENT_SERVICE_URL || "ws://localhost:8004";
+  const defaultEvents = [
+    "order.updated",
+    "order.payment_received",
+    "order.shipped",
+    "order.delivered",
+    "service_order.quoted",
+    "service_order.accepted",
+    "service_order.in_progress",
+    "service_order.completed",
+    "job.progress_update",
+    "bom.exported_to_cart",
+    "inventory.low_stock",
+  ];
 
-  const connect = useCallback(() => {
+  const connect = useCallback(async () => {
     if (!isAuthenticated || !user || wsRef.current) {
       return;
     }
@@ -59,41 +76,49 @@ export function useRealTimeUpdates(options: UseRealTimeUpdatesOptions = {}) {
     setConnectionStatus("connecting");
 
     try {
-      const wsUrl = `${eventServiceUrl}/ws/${user.id}`;
+      const token = await getToken();
+      const wsUrl = `${eventServiceUrl}/ws/${user.id}?token=${token}`;
       const ws = new WebSocket(wsUrl);
+
+      const startHeartbeat = () => {
+        pingIntervalRef.current = setInterval(() => {
+          if (ws.readyState === WebSocket.OPEN) {
+            ws.send(JSON.stringify({ type: "ping" }));
+            pongTimeoutRef.current = setTimeout(() => {
+              ws.close();
+            }, 10000);
+          }
+        }, 30000);
+      };
 
       ws.onopen = () => {
         console.log("WebSocket connected to event service");
         setIsConnected(true);
         setConnectionStatus("connected");
         reconnectAttempts.current = 0;
+        subscriptions.current = new Set(defaultEvents);
 
-        // Subscribe to default events for Store
         ws.send(
           JSON.stringify({
             type: "subscribe",
-            event_types: [
-              "order.updated",
-              "order.payment_received",
-              "order.shipped",
-              "order.delivered",
-              "service_order.quoted",
-              "service_order.accepted",
-              "service_order.in_progress",
-              "service_order.completed",
-              "job.progress_update",
-              "bom.exported_to_cart",
-              "inventory.low_stock",
-            ],
+            event_types: Array.from(subscriptions.current),
           }),
         );
+        startHeartbeat();
       };
 
       ws.onmessage = (event) => {
         try {
           const message: EventMessage = JSON.parse(event.data);
 
-          if (
+          if (message.type === "ping") {
+            ws.send(JSON.stringify({ type: "pong" }));
+          } else if (message.type === "pong") {
+            if (pongTimeoutRef.current) {
+              clearTimeout(pongTimeoutRef.current);
+              pongTimeoutRef.current = null;
+            }
+          } else if (
             message.type === "event" &&
             message.event_type &&
             message.payload
@@ -140,6 +165,14 @@ export function useRealTimeUpdates(options: UseRealTimeUpdatesOptions = {}) {
 
       ws.onclose = (event) => {
         console.log("WebSocket disconnected:", event.code, event.reason);
+        if (pingIntervalRef.current) {
+          clearInterval(pingIntervalRef.current);
+          pingIntervalRef.current = null;
+        }
+        if (pongTimeoutRef.current) {
+          clearTimeout(pongTimeoutRef.current);
+          pongTimeoutRef.current = null;
+        }
         setIsConnected(false);
         setConnectionStatus("disconnected");
         wsRef.current = null;
@@ -184,6 +217,15 @@ export function useRealTimeUpdates(options: UseRealTimeUpdatesOptions = {}) {
       reconnectTimeout.current = null;
     }
 
+    if (pingIntervalRef.current) {
+      clearInterval(pingIntervalRef.current);
+      pingIntervalRef.current = null;
+    }
+    if (pongTimeoutRef.current) {
+      clearTimeout(pongTimeoutRef.current);
+      pongTimeoutRef.current = null;
+    }
+
     if (wsRef.current) {
       wsRef.current.close();
       wsRef.current = null;
@@ -204,6 +246,7 @@ export function useRealTimeUpdates(options: UseRealTimeUpdatesOptions = {}) {
           }),
         );
       }
+      eventTypes.forEach((et) => subscriptions.current.add(et));
     },
     [isConnected],
   );
@@ -218,6 +261,7 @@ export function useRealTimeUpdates(options: UseRealTimeUpdatesOptions = {}) {
           }),
         );
       }
+      eventTypes.forEach((et) => subscriptions.current.delete(et));
     },
     [isConnected],
   );
