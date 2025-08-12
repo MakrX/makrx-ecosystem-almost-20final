@@ -21,7 +21,15 @@ This guide covers the security vulnerabilities that have been fixed and the depl
 
 ### 1. Environment Configuration
 
+#### Keycloak SSO
+
+```bash
+# Generate secure admin password
+export KEYCLOAK_ADMIN_PASSWORD=$(openssl rand -base64 32)
+```
+
 #### Auth Service
+
 ```bash
 # Copy and configure environment
 cp backends/auth-service/.env.example backends/auth-service/.env
@@ -34,6 +42,7 @@ export JWT_SECRET=$(openssl rand -base64 32)
 ```
 
 #### MakrCave Backend
+
 ```bash
 # Copy and configure environment
 cp makrcave-backend/.env.example makrcave-backend/.env
@@ -48,6 +57,7 @@ export DATABASE_URL="postgresql://makrcave_user:SECURE_PASSWORD@localhost:5432/m
 ```
 
 #### Event Service
+
 ```bash
 # Copy and configure environment
 cp backends/event-service/.env.example backends/event-service/.env
@@ -61,6 +71,7 @@ export API_KEY=$(openssl rand -base64 32)
 ### 2. Database Security Setup
 
 #### PostgreSQL Configuration
+
 ```sql
 -- Create dedicated users with minimal privileges
 CREATE USER makrcave_user WITH PASSWORD 'SECURE_RANDOM_PASSWORD';
@@ -79,6 +90,7 @@ GRANT CONNECT ON DATABASE makrx_events TO events_user;
 ```
 
 #### Database Encryption
+
 ```bash
 # Enable encryption at rest
 # PostgreSQL with pgcrypto extension
@@ -93,6 +105,7 @@ echo "ssl_key_file = '/etc/ssl/private/postgresql.key'" >> /etc/postgresql/13/ma
 ### 3. SSL/TLS Configuration
 
 #### Generate SSL Certificates
+
 ```bash
 # Option 1: Let's Encrypt (Recommended for production)
 sudo certbot certonly --nginx -d makrx.org -d makrcave.com -d makrx.store
@@ -102,21 +115,22 @@ openssl req -x509 -newkey rsa:4096 -keyout key.pem -out cert.pem -days 365 -node
 ```
 
 #### Nginx Configuration
+
 ```nginx
 # /etc/nginx/sites-available/makrx-ecosystem
 server {
     listen 443 ssl http2;
     server_name makrcave.com;
-    
+
     ssl_certificate /etc/letsencrypt/live/makrcave.com/fullchain.pem;
     ssl_certificate_key /etc/letsencrypt/live/makrcave.com/privkey.pem;
-    
+
     # Security headers
     add_header Strict-Transport-Security "max-age=31536000; includeSubDomains; preload";
     add_header X-Content-Type-Options nosniff;
     add_header X-Frame-Options DENY;
     add_header X-XSS-Protection "1; mode=block";
-    
+
     location /api/ {
         proxy_pass http://localhost:8000;
         proxy_set_header Host $host;
@@ -124,7 +138,7 @@ server {
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
         proxy_set_header X-Forwarded-Proto $scheme;
     }
-    
+
     location / {
         proxy_pass http://localhost:3001;
         proxy_set_header Host $host;
@@ -143,6 +157,7 @@ server {
 ### 4. Firewall Configuration
 
 #### UFW (Ubuntu Firewall)
+
 ```bash
 # Reset and set defaults
 sudo ufw --force reset
@@ -169,6 +184,7 @@ sudo ufw enable
 ### 5. Application Security
 
 #### Install Dependencies
+
 ```bash
 # Install security dependencies
 cd makrcave-backend
@@ -182,6 +198,7 @@ pip install -r requirements.txt
 ```
 
 #### Start Services with Security
+
 ```bash
 # Auth Service
 cd backends/auth-service
@@ -199,6 +216,7 @@ uvicorn main:app --host 0.0.0.0 --port 8004 --ssl-keyfile=/path/to/key.pem --ssl
 ### 6. Monitoring and Logging
 
 #### Setup Log Rotation
+
 ```bash
 # /etc/logrotate.d/makrx-ecosystem
 /var/log/makrx/*.log {
@@ -216,6 +234,7 @@ uvicorn main:app --host 0.0.0.0 --port 8004 --ssl-keyfile=/path/to/key.pem --ssl
 ```
 
 #### Security Monitoring
+
 ```bash
 # Install fail2ban for intrusion detection
 sudo apt-get install fail2ban
@@ -244,6 +263,7 @@ sudo systemctl start fail2ban
 ### 7. Backup and Recovery
 
 #### Database Backups
+
 ```bash
 # Create backup script
 cat > /usr/local/bin/backup-makrx.sh << EOF
@@ -274,6 +294,7 @@ echo "0 2 * * * /usr/local/bin/backup-makrx.sh" | sudo crontab -
 ## 🔧 Security Checklist
 
 ### Pre-Deployment
+
 - [ ] All environment variables configured with secure values
 - [ ] SSL certificates obtained and installed
 - [ ] Database users created with minimal privileges
@@ -282,6 +303,7 @@ echo "0 2 * * * /usr/local/bin/backup-makrx.sh" | sudo crontab -
 - [ ] Monitoring tools installed
 
 ### Post-Deployment
+
 - [ ] All services running with SSL/TLS
 - [ ] Authentication working properly
 - [ ] Rate limiting active
@@ -291,6 +313,7 @@ echo "0 2 * * * /usr/local/bin/backup-makrx.sh" | sudo crontab -
 - [ ] Monitoring alerts configured
 
 ### Ongoing Security
+
 - [ ] Regular security updates
 - [ ] Secret rotation schedule
 - [ ] Security log monitoring
@@ -303,13 +326,16 @@ echo "0 2 * * * /usr/local/bin/backup-makrx.sh" | sudo crontab -
 ## 🚨 Emergency Response
 
 ### Security Incident Response
+
 1. **Immediate Actions**
+
    - Isolate affected systems
    - Change all potentially compromised secrets
    - Review access logs
    - Document the incident
 
 2. **Investigation**
+
    - Analyze attack vectors
    - Assess data exposure
    - Check for lateral movement
@@ -322,6 +348,7 @@ echo "0 2 * * * /usr/local/bin/backup-makrx.sh" | sudo crontab -
    - Conduct post-incident review
 
 ### Emergency Contacts
+
 - **Security Team**: security@makrx.org
 - **Infrastructure Team**: infra@makrx.org
 - **On-call Engineer**: +1-XXX-XXX-XXXX
@@ -329,6 +356,7 @@ echo "0 2 * * * /usr/local/bin/backup-makrx.sh" | sudo crontab -
 ## 📞 Support and Maintenance
 
 ### Regular Maintenance Tasks
+
 - **Daily**: Review security logs
 - **Weekly**: Check for security updates
 - **Monthly**: Rotate non-critical secrets
@@ -336,6 +364,7 @@ echo "0 2 * * * /usr/local/bin/backup-makrx.sh" | sudo crontab -
 - **Annually**: Penetration testing
 
 ### Security Tools Integration
+
 - **SIEM**: Splunk, ELK Stack, or similar
 - **Vulnerability Scanning**: Nessus, OpenVAS
 - **Intrusion Detection**: Suricata, Snort
