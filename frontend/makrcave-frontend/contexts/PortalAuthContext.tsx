@@ -2,6 +2,7 @@
 
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { useAuth } from "./AuthContext";
+import { getToken } from "../lib/auth";
 
 interface PortalAuthContextValue {
   handlePortalAuth: () => void;
@@ -145,7 +146,7 @@ export class PortalAwareApiService {
     }
 
     // Add standard auth token if available
-    const authToken = localStorage.getItem("auth_token");
+    const authToken = getToken();
     if (authToken) {
       headers["Authorization"] = `Bearer ${authToken}`;
     }

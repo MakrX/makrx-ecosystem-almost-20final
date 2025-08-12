@@ -618,6 +618,21 @@ export const makerspaceApi = {
     });
   },
 
+  updateSettingsSection: async (section: string, data: any): Promise<ApiResponse<MakerspaceSettings>> => {
+    return apiCall<MakerspaceSettings>(`/makerspace/settings/section/${section}`, {
+      method: 'POST',
+      body: JSON.stringify(data),
+    });
+  },
+
+  exportSettings: async (): Promise<ApiResponse<any>> => {
+    return apiCall<any>('/makerspace/settings/export');
+  },
+
+  resetSettings: async (): Promise<ApiResponse<{ message: string }>> => {
+    return apiCall<{ message: string }>('/makerspace/settings', { method: 'DELETE' });
+  },
+
   // Get subscription options
   getSubscriptionOptions: async (): Promise<ApiResponse<any[]>> => {
     return apiCall<any[]>('/makerspace/subscription-options');
