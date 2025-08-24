@@ -5,7 +5,14 @@ import json
 from datetime import datetime, timedelta
 
 from ..database import get_db
-from ..models.project import Project, ProjectCollaborator, ProjectLike, ProjectBookmark
+
+from ..models.project import (
+    Project,
+    ProjectCollaborator,
+    ProjectLike,
+    ProjectBookmark,
+)
+
 from ..models.member import Member, MemberFollow
 from ..schemas.project_showcase import (
     ShowcaseProjectResponse,
@@ -16,6 +23,44 @@ from ..schemas.project_showcase import (
 from ..dependencies import get_current_user
 
 router = APIRouter(prefix="/api/v1/projects", tags=["project-showcase"])
+
+
+def get_user_project_interactions(
+    db: Session, project_id: str, owner_id: str, user_id: str
+) -> tuple[bool, bool, bool]:
+    """Determine if the user liked/bookmarked a project and follows its owner."""
+
+    is_liked = (
+        db.query(ProjectLike)
+        .filter(
+            ProjectLike.project_id == project_id,
+            ProjectLike.user_id == user_id,
+        )
+        .first()
+        is not None
+    )
+
+    is_bookmarked = (
+        db.query(ProjectBookmark)
+        .filter(
+            ProjectBookmark.project_id == project_id,
+            ProjectBookmark.user_id == user_id,
+        )
+        .first()
+        is not None
+    )
+
+    is_following_owner = (
+        db.query(MemberFollow)
+        .filter(
+            MemberFollow.follower_id == user_id,
+            MemberFollow.following_id == owner_id,
+        )
+        .first()
+        is not None
+    )
+
+    return is_liked, is_bookmarked, is_following_owner
 
 @router.get("/showcase", response_model=List[ShowcaseProjectResponse])
 async def get_showcase_projects(
@@ -74,6 +119,12 @@ async def get_showcase_projects(
     for project in projects:
         # Get project owner info
         owner = db.query(Member).filter(Member.user_id == project.owner_id).first()
+
+        # Determine user interactions
+        is_liked, is_bookmarked, is_following_owner = get_user_project_interactions(
+            db, project.project_id, project.owner_id, current_user.id
+        )
+
 
         # Get collaborator count
         collaborator_count = db.query(ProjectCollaborator).filter(
@@ -244,20 +295,11 @@ async def get_featured_projects(
     showcase_projects = []
     for project in featured_projects:
         owner = db.query(Member).filter(Member.user_id == project.owner_id).first()
-        is_liked = bool(
-            db.query(ProjectLike)
-            .filter_by(project_id=project.project_id, user_id=current_user.id)
-            .first()
-        )
-        is_bookmarked = bool(
-            db.query(ProjectBookmark)
-            .filter_by(project_id=project.project_id, user_id=current_user.id)
-            .first()
-        )
-        is_following_owner = bool(
-            db.query(MemberFollow)
-            .filter_by(follower_id=current_user.id, followed_id=project.owner_id)
-            .first()
+
+
+        is_liked, is_bookmarked, is_following_owner = get_user_project_interactions(
+            db, project.project_id, project.owner_id, current_user.id
+
         )
 
         showcase_project = ShowcaseProjectResponse(
@@ -334,20 +376,10 @@ async def get_trending_projects(
     for project in trending_projects:
         owner = db.query(Member).filter(Member.user_id == project.owner_id).first()
 
-        is_liked = bool(
-            db.query(ProjectLike)
-            .filter_by(project_id=project.project_id, user_id=current_user.id)
-            .first()
-        )
-        is_bookmarked = bool(
-            db.query(ProjectBookmark)
-            .filter_by(project_id=project.project_id, user_id=current_user.id)
-            .first()
-        )
-        is_following_owner = bool(
-            db.query(MemberFollow)
-            .filter_by(follower_id=current_user.id, followed_id=project.owner_id)
-            .first()
+
+        is_liked, is_bookmarked, is_following_owner = get_user_project_interactions(
+            db, project.project_id, project.owner_id, current_user.id
+
         )
 
         showcase_project = ShowcaseProjectResponse(
@@ -435,21 +467,38 @@ async def like_project(
     db: Session = Depends(get_db)
 ):
     """Like a project"""
-    
+
     project = db.query(Project).filter(Project.project_id == project_id).first()
     if not project:
         raise HTTPException(status_code=404, detail="Project not found")
+
+
+    # Check if user already liked the project
     existing_like = (
         db.query(ProjectLike)
-        .filter_by(project_id=project_id, user_id=current_user.id)
+        .filter(
+            ProjectLike.project_id == project_id,
+            ProjectLike.user_id == current_user.id,
+        )
         .first()
     )
+
     if not existing_like:
         db.add(ProjectLike(project_id=project_id, user_id=current_user.id))
-        project.like_count = (project.like_count or 0) + 1
-        db.commit()
+        db.flush()
 
-    return {"status": "liked", "like_count": project.like_count}
+    # Derive like count from join table
+    like_count = (
+        db.query(ProjectLike)
+        .filter(ProjectLike.project_id == project_id)
+        .count()
+    )
+
+    # Keep project summary in sync
+    project.like_count = like_count
+    db.commit()
+
+    return {"status": "liked", "like_count": like_count}
 
 @router.delete("/{project_id}/like")
 async def unlike_project(
@@ -458,21 +507,36 @@ async def unlike_project(
     db: Session = Depends(get_db)
 ):
     """Unlike a project"""
-    
+
     project = db.query(Project).filter(Project.project_id == project_id).first()
     if not project:
         raise HTTPException(status_code=404, detail="Project not found")
+
+
     existing_like = (
         db.query(ProjectLike)
-        .filter_by(project_id=project_id, user_id=current_user.id)
+        .filter(
+            ProjectLike.project_id == project_id,
+            ProjectLike.user_id == current_user.id,
+        )
         .first()
     )
+
     if existing_like:
         db.delete(existing_like)
-        project.like_count = max(0, (project.like_count or 0) - 1)
-        db.commit()
+        db.flush()
 
-    return {"status": "unliked", "like_count": project.like_count}
+    like_count = (
+        db.query(ProjectLike)
+        .filter(ProjectLike.project_id == project_id)
+        .count()
+    )
+
+    project.like_count = like_count
+    db.commit()
+
+    return {"status": "unliked", "like_count": like_count}
+
 
 @router.post("/{project_id}/bookmark")
 async def bookmark_project(
@@ -481,20 +545,34 @@ async def bookmark_project(
     db: Session = Depends(get_db)
 ):
     """Bookmark a project"""
-    
+
     project = db.query(Project).filter(Project.project_id == project_id).first()
     if not project:
         raise HTTPException(status_code=404, detail="Project not found")
-    existing = (
+
+
+    existing_bookmark = (
         db.query(ProjectBookmark)
-        .filter_by(project_id=project_id, user_id=current_user.id)
+        .filter(
+            ProjectBookmark.project_id == project_id,
+            ProjectBookmark.user_id == current_user.id,
+        )
         .first()
     )
-    if not existing:
-        db.add(ProjectBookmark(project_id=project_id, user_id=current_user.id))
-        db.commit()
 
-    return {"status": "bookmarked"}
+    if not existing_bookmark:
+        db.add(ProjectBookmark(project_id=project_id, user_id=current_user.id))
+        db.flush()
+
+    bookmark_count = (
+        db.query(ProjectBookmark)
+        .filter(ProjectBookmark.project_id == project_id)
+        .count()
+    )
+    db.commit()
+
+    return {"status": "bookmarked", "bookmark_count": bookmark_count}
+
 
 @router.delete("/{project_id}/bookmark")
 async def unbookmark_project(
@@ -503,67 +581,31 @@ async def unbookmark_project(
     db: Session = Depends(get_db)
 ):
     """Remove bookmark from a project"""
-    
+
     project = db.query(Project).filter(Project.project_id == project_id).first()
     if not project:
         raise HTTPException(status_code=404, detail="Project not found")
-    existing = (
+
+
+    existing_bookmark = (
         db.query(ProjectBookmark)
-        .filter_by(project_id=project_id, user_id=current_user.id)
+        .filter(
+            ProjectBookmark.project_id == project_id,
+            ProjectBookmark.user_id == current_user.id,
+        )
         .first()
     )
-    if existing:
-        db.delete(existing)
-        db.commit()
 
-    return {"status": "unbookmarked"}
+    if existing_bookmark:
+        db.delete(existing_bookmark)
+        db.flush()
 
-
-@router.post("/{project_id}/follow")
-async def follow_project_owner(
-    project_id: str,
-    current_user = Depends(get_current_user),
-    db: Session = Depends(get_db)
-):
-    """Follow the owner of a project"""
-
-    project = db.query(Project).filter(Project.project_id == project_id).first()
-    if not project:
-        raise HTTPException(status_code=404, detail="Project not found")
-
-    existing = (
-        db.query(MemberFollow)
-        .filter_by(follower_id=current_user.id, followed_id=project.owner_id)
-        .first()
+    bookmark_count = (
+        db.query(ProjectBookmark)
+        .filter(ProjectBookmark.project_id == project_id)
+        .count()
     )
-    if not existing and project.owner_id != current_user.id:
-        db.add(MemberFollow(follower_id=current_user.id, followed_id=project.owner_id))
-        db.commit()
+    db.commit()
 
-    follower_count = db.query(MemberFollow).filter(MemberFollow.followed_id == project.owner_id).count()
-    return {"status": "following", "follower_count": follower_count}
+    return {"status": "unbookmarked", "bookmark_count": bookmark_count}
 
-
-@router.delete("/{project_id}/follow")
-async def unfollow_project_owner(
-    project_id: str,
-    current_user = Depends(get_current_user),
-    db: Session = Depends(get_db)
-):
-    """Unfollow the owner of a project"""
-
-    project = db.query(Project).filter(Project.project_id == project_id).first()
-    if not project:
-        raise HTTPException(status_code=404, detail="Project not found")
-
-    existing = (
-        db.query(MemberFollow)
-        .filter_by(follower_id=current_user.id, followed_id=project.owner_id)
-        .first()
-    )
-    if existing:
-        db.delete(existing)
-        db.commit()
-
-    follower_count = db.query(MemberFollow).filter(MemberFollow.followed_id == project.owner_id).count()
-    return {"status": "unfollowed", "follower_count": follower_count}

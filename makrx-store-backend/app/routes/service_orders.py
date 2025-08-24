@@ -3,22 +3,39 @@
 Service Orders Routes - Handle 3D printing service orders and job routing
 """
 
-from fastapi import APIRouter, HTTPException, Depends, BackgroundTasks, UploadFile, File
+from fastapi import (
+    APIRouter,
+    HTTPException,
+    Depends,
+    BackgroundTasks,
+    UploadFile,
+    File,
+    Request,
+    status,
+)
 from sqlalchemy.orm import Session
+from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, and_, or_
 from typing import List, Dict, Any, Optional
 import httpx
 import logging
 import os
 import json
+import io
+import trimesh
 from uuid import UUID, uuid4
 from datetime import datetime, timedelta
 from pydantic import BaseModel, Field, EmailStr
 from enum import Enum
+import redis.asyncio as redis
 
-from ..core.db import get_db
+from ..core.config import settings
+
+from ..core.db import get_db, AsyncSessionLocal
 from ..core.storage import upload_file_to_storage, generate_presigned_url
+from ..core.payments import PaymentProcessor
 from ..models.commerce import Order, OrderItem, Product
+from ..schemas import MessageResponse
 from ..schemas.commerce import OrderResponse
 
 logger = logging.getLogger(__name__)
@@ -28,6 +45,13 @@ MAKRCAVE_API_URL = os.getenv("MAKRCAVE_API_URL", "http://makrcave-backend:8000")
 AUTH_SERVICE_URL = os.getenv("AUTH_SERVICE_URL", "http://auth-service:8000")
 
 router = APIRouter(prefix="/service-orders", tags=["3D Printing Service Orders"])
+
+# Redis client for temporary quote storage
+redis_client = (
+    redis.Redis.from_url(settings.REDIS_URL, decode_responses=True)
+    if getattr(settings, "REDIS_URL", None)
+    else None
+)
 
 # Enums
 class ServiceOrderStatus(str, Enum):
@@ -137,8 +161,8 @@ async def get_makrcave_client() -> httpx.AsyncClient:
 
 @router.post("/upload", response_model=Dict[str, Any])
 async def upload_3d_files(
-    files: List[UploadFile] = File(...),
     background_tasks: BackgroundTasks,
+    files: List[UploadFile] = File(...),
     db: Session = Depends(get_db)
 ):
     """
@@ -408,13 +432,23 @@ async def get_service_order(
         
         # Get job status from MakrCave
         job_status = await get_job_status_from_makrcave(service_order_id)
-        
+
+        estimated_completion = (
+            job_status.get("job_details", {}).get("estimated_completion")
+            or job_status.get("estimated_completion")
+        )
+        estimated_delivery = (
+            datetime.fromisoformat(estimated_completion)
+            if estimated_completion
+            else order.created_at + timedelta(days=7)
+        )
+
         return ServiceOrderResponse(
             order_id=str(order.id),
             service_order_id=service_order_id,
             status=ServiceOrderStatus(order.status),
             total_amount=float(order.total_amount),
-            estimated_delivery=order.created_at + timedelta(days=7),  # TODO: Get from job
+            estimated_delivery=estimated_delivery,
             tracking_info=job_status.get("tracking_info"),
             provider_info=job_status.get("provider_info"),
             job_details=job_status.get("job_details")
@@ -428,50 +462,65 @@ async def get_service_order(
 
 # Helper Functions
 
-async def analyze_3d_file(file_url: str, filename: str, file_size: int) -> FileAnalysis:
-    """Analyze 3D file for printing requirements"""
+async def analyze_3d_file(file_url: str, filename: str, file_size: int) -> Optional[FileAnalysis]:
+    """Analyze a 3D file and return geometry statistics."""
     try:
-        # This is a simplified analysis - in production, integrate with 3D analysis library
-        # like Open3D, or external service like slicer API
-        
-        # Mock analysis for demonstration
-        mock_analysis = FileAnalysis(
+        # Download the file
+        async with httpx.AsyncClient() as client:
+            response = await client.get(file_url)
+            response.raise_for_status()
+            file_bytes = response.content
+
+        file_size = len(file_bytes)
+        extension = os.path.splitext(filename)[1].lower().lstrip(".")
+
+        # Load mesh using trimesh
+        mesh = trimesh.load(io.BytesIO(file_bytes), file_type=extension)
+
+        # Dimensions in millimeters
+        dimensions = {"x": float(mesh.extents[0]),
+                      "y": float(mesh.extents[1]),
+                      "z": float(mesh.extents[2])}
+
+        # Convert units to cubic/square centimeters
+        volume_cm3 = float(mesh.volume) / 1000.0
+        surface_area_cm2 = float(mesh.area) / 100.0
+
+        # Simple print time estimation (15 cm^3 per hour)
+        print_speed = 15.0  # cm^3/hour
+        estimated_print_time = max(1, int((volume_cm3 / print_speed) * 60))
+
+        # Material weight assuming PLA density 1.24 g/cm^3
+        density = 1.24
+        estimated_weight = volume_cm3 * density
+
+        # Determine support requirements using face normals
+        overhang_faces = mesh.face_normals[:, 2] < -0.3
+        supports_required = bool(overhang_faces.sum() / len(mesh.face_normals) > 0.1)
+
+        complexity_score = min(1.0, mesh.faces.shape[0] / 10000)
+
+        return FileAnalysis(
             filename=filename,
             file_size=file_size,
-            dimensions={"x": 50.0, "y": 30.0, "z": 20.0},
-            volume=25.5,  # cubic cm
-            surface_area=85.2,  # square cm
-            estimated_print_time=120,  # 2 hours
-            estimated_material_weight=30.0,  # grams
-            complexity_score=0.6,
-            supports_required=True,
-            issues=[]
+            dimensions=dimensions,
+            volume=round(volume_cm3, 2),
+            surface_area=round(surface_area_cm2, 2),
+            estimated_print_time=estimated_print_time,
+            estimated_material_weight=round(estimated_weight, 2),
+            complexity_score=round(complexity_score, 2),
+            supports_required=supports_required,
+            issues=[],
         )
-        
-        # TODO: Implement actual file analysis
-        # - Download file from storage
-        # - Parse STL/OBJ geometry
-        # - Calculate volume, surface area
-        # - Detect overhangs requiring supports
-        # - Estimate print time based on slicing
-        
-        return mock_analysis
-        
     except Exception as e:
         logger.error(f"3D file analysis error: {e}")
         return None
 
 async def analyze_3d_file_from_url(file_url: str) -> Optional[FileAnalysis]:
-    """Analyze 3D file from URL"""
+    """Analyze a 3D file using its URL."""
     try:
-        # Extract filename from URL
         filename = file_url.split('/')[-1]
-        
-        # Mock file size - in production, get from storage metadata
-        file_size = 1024 * 100  # 100KB
-        
-        return await analyze_3d_file(file_url, filename, file_size)
-        
+        return await analyze_3d_file(file_url, filename, 0)
     except Exception as e:
         logger.error(f"File analysis from URL error: {e}")
         return None
@@ -675,32 +724,39 @@ async def get_job_status_from_makrcave(service_order_id: str) -> Dict[str, Any]:
 
 async def store_quote(quote_id: str, quote_data: Dict[str, Any]):
     """Store quote data (Redis/database)"""
-    # TODO: Implement proper storage
-    # For now, this is a placeholder
-    pass
+    if not redis_client:
+        return
+    try:
+        key = f"service_quote:{quote_id}"
+        ttl = 24 * 60 * 60  # 24 hours
+        await redis_client.setex(key, ttl, json.dumps(quote_data))
+    except Exception as e:
+        logger.error(f"Failed to store quote {quote_id}: {e}")
 
 async def get_quote(quote_id: str) -> Optional[Dict[str, Any]]:
     """Retrieve quote data"""
-    # TODO: Implement proper retrieval
-    # For now, return mock data
-    return {
-        "quote_id": quote_id,
-        "request": {
-            "user_email": "user@example.com",
-            "material": "pla",
-            "quality": "standard",
-            "quantity": 1,
-            "priority": "normal",
-            "file_urls": ["http://example.com/file.stl"]
-        },
-        "pricing": {
-            "base_price": 25.00,
-            "subtotal": 30.00,
-            "tax": 2.40,
-            "shipping": 10.00,
-            "total": 42.40
-        }
-    }
+    if not redis_client:
+        return None
+    try:
+        key = f"service_quote:{quote_id}"
+        data = await redis_client.get(key)
+        if not data:
+            return None
+
+        quote_data = json.loads(data)
+        expires_at = quote_data.get("expires_at")
+        if expires_at:
+            try:
+                if datetime.utcnow() > datetime.fromisoformat(expires_at):
+                    await redis_client.delete(key)
+                    return None
+            except Exception:
+                pass
+
+        return quote_data
+    except Exception as e:
+        logger.error(f"Failed to get quote {quote_id}: {e}")
+        return None
 
 async def process_service_order_payment(
     service_order_id: str,
@@ -708,6 +764,158 @@ async def process_service_order_payment(
     amount: float
 ):
     """Process payment for service order"""
-    # TODO: Implement payment processing
-    # This would integrate with Stripe/payment processor
-    logger.info(f"Processing payment for service order {service_order_id}: ${amount}")
+    logger.info(
+        f"Processing payment for service order {service_order_id}: Rs.{amount}"
+    )
+
+    async with AsyncSessionLocal() as db:
+        try:
+            order = await db.get(Order, order_id)
+            if not order:
+                logger.error(f"Order {order_id} not found for payment")
+                return
+
+            # Determine payment provider
+            provider = getattr(order, "payment_method", None) or "stripe"
+            metadata = {"order_id": str(order_id), "service_order_id": service_order_id}
+
+            if provider == "stripe":
+                payment = await PaymentProcessor.create_stripe_payment_intent(
+                    amount=amount,
+                    currency=getattr(order, "currency", "INR"),
+                    customer_email=getattr(order, "email", None),
+                    metadata=metadata,
+                )
+
+                order.payment_id = payment["payment_intent_id"]
+                order.payment_status = payment.get("status", "pending")
+                order.payment_method = "stripe"
+                if payment.get("status") == "succeeded":
+                    order.status = "paid"
+                    order.paid_at = datetime.utcnow()
+                else:
+                    order.status = "payment_pending"
+
+            elif provider == "razorpay":
+                payment = await PaymentProcessor.create_razorpay_order(
+                    amount=amount,
+                    currency=getattr(order, "currency", "INR"),
+                    customer_email=getattr(order, "email", None),
+                    metadata=metadata,
+                )
+
+                order.payment_id = payment["order_id"]
+                order.payment_status = payment.get("status", "created")
+                order.payment_method = "razorpay"
+                if payment.get("status") == "paid":
+                    order.status = "paid"
+                    order.paid_at = datetime.utcnow()
+                else:
+                    order.status = "payment_pending"
+            else:
+                logger.error(f"Unsupported payment provider: {provider}")
+                order.payment_status = "failed"
+                order.status = "failed"
+
+            await db.commit()
+        except Exception as e:
+            logger.error(f"Payment processing failed for order {order_id}: {e}")
+            await db.rollback()
+            try:
+                order = await db.get(Order, order_id)
+                if order:
+                    order.payment_status = "failed"
+                    order.status = "failed"
+                    await db.commit()
+            except Exception:
+                pass
+
+
+@router.post("/webhook/stripe", response_model=MessageResponse)
+async def service_order_stripe_webhook(
+    request: Request,
+    db: AsyncSession = Depends(get_db),
+):
+    """Handle Stripe webhook events for service orders"""
+    payload = await request.body()
+    signature = request.headers.get("stripe-signature", "")
+
+    event = await PaymentProcessor.verify_stripe_webhook(
+        payload, signature, settings.STRIPE_WEBHOOK_SECRET
+    )
+    if not event:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid signature"
+        )
+
+    event_type = event.get("type", "")
+    logger.info(f"Processing Stripe webhook: {event_type}")
+
+    if event_type == "payment_intent.succeeded":
+        payment_intent = event["data"]["object"]
+        order_id = payment_intent.get("metadata", {}).get("order_id")
+        if order_id:
+            order = await db.get(Order, order_id)
+            if order:
+                order.status = "paid"
+                order.payment_status = "completed"
+                order.paid_at = datetime.utcnow()
+                order.payment_id = payment_intent["id"]
+                await db.commit()
+    elif event_type == "payment_intent.payment_failed":
+        payment_intent = event["data"]["object"]
+        order_id = payment_intent.get("metadata", {}).get("order_id")
+        if order_id:
+            order = await db.get(Order, order_id)
+            if order:
+                order.payment_status = "failed"
+                order.status = "failed"
+                await db.commit()
+
+    return MessageResponse(message=f"Stripe webhook {event_type} processed successfully")
+
+
+@router.post("/webhook/razorpay", response_model=MessageResponse)
+async def service_order_razorpay_webhook(
+    request: Request,
+    db: AsyncSession = Depends(get_db),
+):
+    """Handle Razorpay webhook events for service orders"""
+    payload = await request.body()
+    signature = request.headers.get("x-razorpay-signature", "")
+
+    event = await PaymentProcessor.verify_razorpay_webhook(
+        payload, signature, settings.RAZORPAY_WEBHOOK_SECRET
+    )
+    if not event:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid signature"
+        )
+
+    event_type = event.get("event", "")
+    logger.info(f"Processing Razorpay webhook: {event_type}")
+
+    if event_type == "payment.captured":
+        payment = event["payload"]["payment"]["entity"]
+        order_id = payment.get("notes", {}).get("order_id")
+        if order_id:
+            order = await db.get(Order, order_id)
+            if order:
+                order.status = "paid"
+                order.payment_status = "completed"
+                order.paid_at = datetime.utcnow()
+                order.payment_id = payment["id"]
+                await db.commit()
+    elif event_type == "payment.failed":
+        payment = event["payload"]["payment"]["entity"]
+        order_id = payment.get("notes", {}).get("order_id")
+        if order_id:
+            order = await db.get(Order, order_id)
+            if order:
+                order.payment_status = "failed"
+                order.status = "failed"
+                await db.commit()
+
+    return MessageResponse(
+        message=f"Razorpay webhook {event_type} processed successfully"
+    )

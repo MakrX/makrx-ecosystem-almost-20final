@@ -649,6 +649,7 @@ REDIS_URL=redis://localhost:6379
 JWT_SECRET=your-super-secure-jwt-secret-key
 KEYCLOAK_URL=http://localhost:8080
 KEYCLOAK_ADMIN_PASSWORD=admin_password
+KEYCLOAK_CLIENT_SECRET=client_secret
 
 # External Services
 STRIPE_SECRET_KEY=sk_test_...

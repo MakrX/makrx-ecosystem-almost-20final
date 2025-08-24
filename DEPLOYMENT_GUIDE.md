@@ -5,6 +5,7 @@ This guide covers deploying the MakrCave system to production servers with all n
 ## 📋 Prerequisites
 
 ### Server Requirements
+
 - **OS**: Ubuntu 20.04+ or RHEL 8+
 - **RAM**: Minimum 4GB (8GB recommended)
 - **CPU**: 2+ cores
@@ -12,12 +13,22 @@ This guide covers deploying the MakrCave system to production servers with all n
 - **Network**: Static IP with ports 80, 443, 8000 open
 
 ### Software Dependencies
+
 - **Docker**: 20.10+
 - **Docker Compose**: 2.0+
 - **Nginx**: 1.18+ (for reverse proxy)
 - **Node.js**: 18+ (for frontend builds)
 - **Python**: 3.9+ (for backend)
 - **PostgreSQL**: 13+ (recommended over SQLite for production)
+
+### Environment Variables
+
+Set the following secrets in your deployment environment or `.env` file:
+
+- `KEYCLOAK_ADMIN_PASSWORD` – password for the Keycloak admin user
+- `KEYCLOAK_CLIENT_SECRET` – client secret used by the auth service
+
+These values should be provided through a local `.env` file (which is excluded from version control) or set directly in your deployment environment.
 
 ## 🔧 Backend Deployment
 
@@ -234,7 +245,7 @@ server {
 
     ssl_certificate /etc/letsencrypt/live/yourdomain.com/fullchain.pem;
     ssl_certificate_key /etc/letsencrypt/live/yourdomain.com/privkey.pem;
-    
+
     ssl_protocols TLSv1.2 TLSv1.3;
     ssl_ciphers ECDHE-RSA-AES256-GCM-SHA512:DHE-RSA-AES256-GCM-SHA512:ECDHE-RSA-AES256-GCM-SHA384:DHE-RSA-AES256-GCM-SHA384;
     ssl_prefer_server_ciphers off;
@@ -268,7 +279,7 @@ server {
 
     ssl_certificate /etc/letsencrypt/live/api.yourdomain.com/fullchain.pem;
     ssl_certificate_key /etc/letsencrypt/live/api.yourdomain.com/privkey.pem;
-    
+
     ssl_protocols TLSv1.2 TLSv1.3;
     ssl_ciphers ECDHE-RSA-AES256-GCM-SHA512:DHE-RSA-AES256-GCM-SHA512:ECDHE-RSA-AES256-GCM-SHA384:DHE-RSA-AES256-GCM-SHA384;
     ssl_prefer_server_ciphers off;
@@ -279,12 +290,12 @@ server {
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
         proxy_set_header X-Forwarded-Proto $scheme;
-        
+
         # WebSocket support
         proxy_http_version 1.1;
         proxy_set_header Upgrade $http_upgrade;
         proxy_set_header Connection "upgrade";
-        
+
         # Timeouts
         proxy_connect_timeout 60s;
         proxy_send_timeout 60s;
@@ -386,7 +397,7 @@ CMD ["nginx", "-g", "daemon off;"]
 Create `docker-compose.prod.yml`:
 
 ```yaml
-version: '3.8'
+version: "3.8"
 
 services:
   postgres:
@@ -563,6 +574,7 @@ sudo systemctl restart fail2ban
 ## 🚀 Deployment Checklist
 
 ### Pre-Deployment
+
 - [ ] Server meets minimum requirements
 - [ ] Domain DNS pointing to server
 - [ ] SSL certificates configured
@@ -571,6 +583,7 @@ sudo systemctl restart fail2ban
 - [ ] Firewall configured
 
 ### Backend Deployment
+
 - [ ] Python dependencies installed
 - [ ] Database migrations run successfully
 - [ ] Environment file configured
@@ -579,6 +592,7 @@ sudo systemctl restart fail2ban
 - [ ] Skill management system functional
 
 ### Frontend Deployment
+
 - [ ] Node.js dependencies installed
 - [ ] Production build created
 - [ ] Nginx configured correctly
@@ -587,6 +601,7 @@ sudo systemctl restart fail2ban
 - [ ] All pages loading correctly
 
 ### Post-Deployment
+
 - [ ] Health checks configured
 - [ ] Monitoring setup
 - [ ] Backup strategy implemented
@@ -599,6 +614,7 @@ sudo systemctl restart fail2ban
 ### Common Issues
 
 **Backend not starting:**
+
 ```bash
 # Check logs
 sudo journalctl -u makrcave-backend -n 50
@@ -611,6 +627,7 @@ sudo netstat -tulpn | grep :8000
 ```
 
 **Frontend not loading:**
+
 ```bash
 # Check Nginx status
 sudo systemctl status nginx
@@ -623,6 +640,7 @@ sudo tail -f /var/log/nginx/error.log
 ```
 
 **Database connection issues:**
+
 ```bash
 # Check PostgreSQL status
 sudo systemctl status postgresql

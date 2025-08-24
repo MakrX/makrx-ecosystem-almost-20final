@@ -200,7 +200,6 @@ class MemberFollow(Base):
     __table_args__ = (
         UniqueConstraint("follower_id", "followed_id", name="uq_member_follow"),
     )
-
 # Indexes for better performance
 from sqlalchemy import Index
 
@@ -217,4 +216,5 @@ Index('idx_activity_member', MemberActivityLog.member_id)
 Index('idx_activity_type', MemberActivityLog.activity_type)
 Index('idx_transaction_member', MembershipTransaction.member_id)
 Index('idx_follow_follower', MemberFollow.follower_id)
+
 Index('idx_follow_followed', MemberFollow.followed_id)

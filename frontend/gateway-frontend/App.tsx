@@ -26,6 +26,7 @@ import NotFound from "./pages/NotFound";
 import ThemeDemo from "./pages/ThemeDemo";
 import ProtectedRoute from "./components/ProtectedRoute";
 import { Helmet } from "react-helmet-async";
+import AuthCallback from "./pages/AuthCallback";
 
 const App = () => {
   return (
@@ -120,6 +121,9 @@ const App = () => {
               <Route path="/docs" element={<Docs />} />
               <Route path="/support" element={<Support />} />
               <Route path="/status" element={<Status />} />
+
+              {/* Auth Callback */}
+              <Route path="/auth/callback" element={<AuthCallback />} />
 
               {/* Company Pages */}
               <Route path="/careers" element={<Careers />} />

@@ -63,11 +63,11 @@ class ShowcaseProjectResponse(BaseModel):
     created_at: str
     updated_at: str
     featured_at: Optional[str] = None
-    
+
     # Interaction flags for current user
-    is_liked: bool
-    is_bookmarked: bool
-    is_following_owner: bool
+    is_liked: bool = False
+    is_bookmarked: bool = False
+    is_following_owner: bool = False
     
     class Config:
         from_attributes = True

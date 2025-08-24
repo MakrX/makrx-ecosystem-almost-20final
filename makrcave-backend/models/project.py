@@ -349,19 +349,23 @@ class ProjectLike(Base):
     project = relationship("Project", foreign_keys=[project_id])
 
 
+
 class ProjectBookmark(Base):
     """Track project bookmarks"""
+
     __tablename__ = "project_bookmarks"
 
     id = Column(Integer, primary_key=True, autoincrement=True)
     project_id = Column(String(100), ForeignKey("projects.project_id"), nullable=False)
     user_id = Column(String(100), nullable=False, index=True)
 
+
     bookmarked_at = Column(DateTime(timezone=True), server_default=func.now())
 
     __table_args__ = (
         UniqueConstraint("project_id", "user_id", name="uq_project_bookmark"),
     )
+
 
     project = relationship("Project", foreign_keys=[project_id])
 
