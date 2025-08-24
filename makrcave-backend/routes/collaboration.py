@@ -23,7 +23,7 @@ from ..schemas.collaboration import (
     DocumentChangeCreate,
     DocumentVersionCreate
 )
-from ..dependencies import get_current_user
+from ..dependencies import get_current_user, validate_token_with_auth_service
 
 router = APIRouter(prefix="/api/v1/collaboration", tags=["collaboration"])
 
@@ -101,19 +101,39 @@ class CollaborationManager:
 # Global collaboration manager instance
 collaboration_manager = CollaborationManager()
 
+async def send_ping(websocket: WebSocket):
+    while True:
+        await asyncio.sleep(30)
+        try:
+            await websocket.send_text(json.dumps({'type': 'ping'}))
+        except Exception:
+            break
+
 @router.websocket("/ws/{project_id}/{user_id}")
-async def websocket_endpoint(websocket: WebSocket, project_id: str, user_id: str):
+async def websocket_endpoint(websocket: WebSocket, project_id: str, user_id: str, token: str):
     """WebSocket endpoint for real-time collaboration"""
+    try:
+        user_data = await validate_token_with_auth_service(token)
+        if user_data.get("sub") != user_id:
+            await websocket.close(code=1008)
+            return
+    except HTTPException:
+        await websocket.close(code=1008)
+        return
+
     await collaboration_manager.connect(websocket, project_id, user_id)
-    
+    ping_task = asyncio.create_task(send_ping(websocket))
+
     try:
         while True:
             data = await websocket.receive_text()
             message = json.loads(data)
-            
+
             # Handle different message types
             message_type = message.get('type')
-            
+
+            if message_type == 'pong':
+                continue
             if message_type == 'cursor_update':
                 await collaboration_manager.broadcast_to_project(project_id, {
                     'type': 'collaboration.cursor',
@@ -126,7 +146,7 @@ async def websocket_endpoint(websocket: WebSocket, project_id: str, user_id: str
                         'timestamp': datetime.utcnow().isoformat()
                     }
                 }, exclude_ws=websocket)
-                
+
             elif message_type == 'editing_status':
                 await collaboration_manager.broadcast_to_project(project_id, {
                     'type': 'collaboration.editing',
@@ -138,7 +158,7 @@ async def websocket_endpoint(websocket: WebSocket, project_id: str, user_id: str
                         'timestamp': datetime.utcnow().isoformat()
                     }
                 }, exclude_ws=websocket)
-                
+
             elif message_type == 'presence_update':
                 await collaboration_manager.broadcast_to_project(project_id, {
                     'type': 'collaboration.presence',
@@ -150,9 +170,11 @@ async def websocket_endpoint(websocket: WebSocket, project_id: str, user_id: str
                         'timestamp': datetime.utcnow().isoformat()
                     }
                 }, exclude_ws=websocket)
-                
+
     except WebSocketDisconnect:
         collaboration_manager.disconnect(websocket, project_id, user_id)
+    finally:
+        ping_task.cancel()
 
 # Chat and messaging endpoints
 @router.post("/messages", response_model=MessageResponse)

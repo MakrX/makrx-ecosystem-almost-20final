@@ -18,6 +18,7 @@ import MaintenanceModal from '../components/MaintenanceModal';
 import EquipmentSkillRequirements from '../components/EquipmentSkillRequirements';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../components/ui/tabs';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar } from 'recharts';
+import api from '../services/apiService';
 
 interface Equipment {
   id: string;
@@ -94,52 +95,32 @@ export default function Equipment() {
     start: new Date().toISOString().split('T')[0],
     end: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]
   });
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   // Load equipment and stats on mount
   useEffect(() => {
-    loadEquipment();
-    loadStats();
+    const loadData = async () => {
+      setLoading(true);
+      setError(null);
+      try {
+        const [equipmentRes, statsRes] = await Promise.all([
+          api.equipment.getEquipment(),
+          api.equipment.getStats()
+        ]);
+        if (equipmentRes.error) throw new Error(equipmentRes.error);
+        if (statsRes.error) throw new Error(statsRes.error);
+        setEquipment(equipmentRes.data || []);
+        setStats(statsRes.data || null);
+      } catch (err) {
+        console.error('Error loading equipment:', err);
+        setError(err instanceof Error ? err.message : 'Failed to load equipment');
+      } finally {
+        setLoading(false);
+      }
+    };
+    loadData();
   }, []);
-
-  const loadEquipment = async () => {
-    try {
-      const authToken = localStorage.getItem('auth_token') || 'mock-token';
-      const response = await fetch('/api/v1/equipment/', {
-        headers: {
-          'Authorization': `Bearer ${authToken}`
-        }
-      });
-      
-      if (response.ok) {
-        const equipmentData = await response.json();
-        setEquipment(equipmentData);
-      }
-    } catch (error) {
-      console.error('Error loading equipment:', error);
-      // Fallback to mock data
-      setEquipment(mockEquipment);
-    }
-  };
-
-  const loadStats = async () => {
-    try {
-      const authToken = localStorage.getItem('auth_token') || 'mock-token';
-      const response = await fetch('/api/v1/equipment/stats/overview', {
-        headers: {
-          'Authorization': `Bearer ${authToken}`
-        }
-      });
-      
-      if (response.ok) {
-        const statsData = await response.json();
-        setStats(statsData);
-      }
-    } catch (error) {
-      console.error('Error loading stats:', error);
-      // Calculate mock stats
-      setStats(calculateMockStats());
-    }
-  };
 
   // Role-based permissions
   const canViewEquipment = user?.role === 'super_admin' || user?.role === 'makerspace_admin' || 
@@ -152,111 +133,6 @@ export default function Equipment() {
                             user?.role === 'service_provider';
   const canDeleteEquipment = user?.role === 'super_admin' || user?.role === 'makerspace_admin' || 
                             (user?.role === 'service_provider');
-
-  // Mock data for development
-  const mockEquipment: Equipment[] = [
-    {
-      id: 'eq-1',
-      equipment_id: 'PRINTER3D-001',
-      name: 'Ultimaker S3',
-      category: 'printer_3d',
-      sub_category: 'FDM Printer',
-      status: 'available',
-      location: 'Station A1',
-      linked_makerspace_id: 'ms-1',
-      requires_certification: true,
-      certification_required: '3D Printing Safety',
-      last_maintenance_date: '2024-01-15',
-      next_maintenance_date: '2024-02-15',
-      total_usage_hours: 247.5,
-      usage_count: 89,
-      average_rating: 4.5,
-      total_ratings: 23,
-      manufacturer: 'Ultimaker',
-      model: 'S3',
-      hourly_rate: 12.00,
-      description: 'High-precision FDM 3D printer perfect for prototyping',
-      image_url: '/images/ultimaker-s3.jpg',
-      created_at: '2024-01-01T00:00:00Z',
-      updated_at: '2024-01-15T10:30:00Z'
-    },
-    {
-      id: 'eq-2',
-      equipment_id: 'LASER-001',
-      name: 'Glowforge Pro',
-      category: 'laser_cutter',
-      sub_category: 'CO2 Laser',
-      status: 'in_use',
-      location: 'Station B1',
-      linked_makerspace_id: 'ms-1',
-      requires_certification: true,
-      certification_required: 'Laser Safety Certification',
-      last_maintenance_date: '2024-01-20',
-      next_maintenance_date: '2024-02-20',
-      total_usage_hours: 156.2,
-      usage_count: 45,
-      average_rating: 4.8,
-      total_ratings: 18,
-      manufacturer: 'Glowforge',
-      model: 'Pro',
-      hourly_rate: 25.00,
-      description: 'Precision laser cutter for wood, acrylic, and fabric',
-      created_at: '2024-01-01T00:00:00Z',
-      updated_at: '2024-01-20T14:20:00Z'
-    },
-    {
-      id: 'eq-3',
-      equipment_id: 'CNC-001',
-      name: 'Shapeoko 4',
-      category: 'cnc_machine',
-      sub_category: 'Desktop CNC',
-      status: 'under_maintenance',
-      location: 'Station C1',
-      linked_makerspace_id: 'ms-1',
-      requires_certification: true,
-      certification_required: 'CNC Operation Certificate',
-      last_maintenance_date: '2024-01-25',
-      total_usage_hours: 89.3,
-      usage_count: 23,
-      average_rating: 4.2,
-      total_ratings: 12,
-      manufacturer: 'Carbide 3D',
-      model: 'Shapeoko 4',
-      hourly_rate: 30.00,
-      description: 'CNC machine for precision cutting and carving',
-      created_at: '2024-01-01T00:00:00Z',
-      updated_at: '2024-01-25T09:15:00Z'
-    }
-  ];
-
-  const calculateMockStats = (): EquipmentStats => {
-    const total = mockEquipment.length;
-    const available = mockEquipment.filter(eq => eq.status === 'available').length;
-    const inUse = mockEquipment.filter(eq => eq.status === 'in_use').length;
-    const maintenance = mockEquipment.filter(eq => eq.status === 'under_maintenance').length;
-    const offline = mockEquipment.filter(eq => eq.status === 'offline').length;
-    
-    return {
-      total_equipment: total,
-      available_equipment: available,
-      in_use_equipment: inUse,
-      maintenance_equipment: maintenance,
-      offline_equipment: offline,
-      total_reservations_today: 8,
-      utilization_rate: total > 0 ? (inUse / total) * 100 : 0,
-      average_rating: 4.5,
-      categories: {
-        'printer_3d': 1,
-        'laser_cutter': 1,
-        'cnc_machine': 1
-      },
-      locations: {
-        'Station A1': 1,
-        'Station B1': 1,
-        'Station C1': 1
-      }
-    };
-  };
 
   // Filtered equipment
   const filteredEquipment = useMemo(() => {
@@ -346,6 +222,22 @@ export default function Equipment() {
     setSelectedEquipment(equipment);
     setShowDetailModal(true);
   };
+
+  if (loading) {
+    return (
+      <div className="p-6 flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-makrx-blue"></div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="p-6 text-center text-red-600">
+        Failed to load equipment: {error}
+      </div>
+    );
+  }
 
   if (!canViewEquipment) {
     return (

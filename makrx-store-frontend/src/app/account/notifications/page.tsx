@@ -7,7 +7,11 @@ import {
   useNotifications,
   requestNotificationPermission,
 } from "@/contexts/NotificationContext";
-import { api, type NotificationSettings } from "@/lib/api";
+import {
+  getNotificationSettings,
+  updateNotificationSettings,
+  type NotificationSettings,
+} from "@/lib/api";
 import {
   Bell,
   BellOff,
@@ -43,7 +47,9 @@ function NotificationSettingsPage() {
 
   const loadSettings = async () => {
     try {
+
       const userSettings = await api.getNotificationSettings();
+
       setSettings(userSettings);
     } catch (error) {
       console.error("Failed to load notification settings:", error);
@@ -61,7 +67,7 @@ function NotificationSettingsPage() {
   const saveSettings = async () => {
     setSaving(true);
     try {
-      await api.updateNotificationSettings(settings);
+      await updateNotificationSettings(settings);
       alert("Settings saved successfully!");
     } catch (error) {
       console.error("Failed to save settings:", error);

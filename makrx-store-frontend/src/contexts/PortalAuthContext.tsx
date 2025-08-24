@@ -2,6 +2,7 @@
 
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { useAuth } from "./AuthContext";
+import { auth } from "@/lib/auth";
 
 interface PortalAuthContextValue {
   handlePortalAuth: () => void;
@@ -30,8 +31,7 @@ export function PortalAuthProvider({
       if (authToken && isPortalAuth) {
         console.log("Portal authentication token detected");
 
-        // Store token for API requests
-        localStorage.setItem("portal_auth_token", authToken);
+        // Track portal authentication without storing the token
         localStorage.setItem("portal_auth_timestamp", Date.now().toString());
 
         // Set authentication state
@@ -41,22 +41,20 @@ export function PortalAuthProvider({
         const cleanUrl = window.location.pathname;
         window.history.replaceState({}, "", cleanUrl);
 
-        // Trigger login with portal token
-        login(authToken);
+        // Trigger login
+        login();
       } else {
-        // Check for existing portal token
-        const storedToken = localStorage.getItem("portal_auth_token");
+        // Check for existing portal auth
         const timestamp = localStorage.getItem("portal_auth_timestamp");
 
-        if (storedToken && timestamp) {
+        if (timestamp) {
           const tokenAge = Date.now() - parseInt(timestamp);
           const tokenValidHours = 24; // 24 hours
 
           if (tokenAge < tokenValidHours * 60 * 60 * 1000) {
             setIsPortalAuthenticated(true);
           } else {
-            // Token expired, clean up
-            localStorage.removeItem("portal_auth_token");
+            // Auth expired, clean up
             localStorage.removeItem("portal_auth_timestamp");
           }
         }
@@ -73,7 +71,6 @@ export function PortalAuthProvider({
         console.log("Received cross-portal signout message in Store");
 
         // Clear portal authentication
-        localStorage.removeItem("portal_auth_token");
         localStorage.removeItem("portal_auth_timestamp");
         setIsPortalAuthenticated(false);
 
@@ -93,9 +90,9 @@ export function PortalAuthProvider({
       const urlParams = new URLSearchParams(window.location.search);
       const authToken = urlParams.get("auth_token");
       if (authToken) {
-        localStorage.setItem("portal_auth_token", authToken);
+        localStorage.setItem("portal_auth_timestamp", Date.now().toString());
         setIsPortalAuthenticated(true);
-        login(authToken);
+        login();
       }
     },
     isPortalAuthenticated,
@@ -117,9 +114,12 @@ export function usePortalAuth() {
 }
 
 // Utility function to get portal auth token for API requests
-export function getPortalAuthToken(): string | null {
+export async function getPortalAuthToken(): Promise<string | null> {
   if (typeof window !== "undefined") {
-    return localStorage.getItem("portal_auth_token");
+    const timestamp = localStorage.getItem("portal_auth_timestamp");
+    if (timestamp) {
+      return await auth.getToken();
+    }
   }
   return null;
 }
@@ -129,9 +129,10 @@ export async function portalAwareApiRequest(
   url: string,
   options: RequestInit = {},
 ): Promise<Response> {
-  const portalToken = getPortalAuthToken();
-
   const headers = new Headers(options.headers);
+
+  const authToken = await auth.getToken();
+  const portalToken = await getPortalAuthToken();
 
   // Add portal auth token if available
   if (portalToken) {
@@ -139,7 +140,6 @@ export async function portalAwareApiRequest(
   }
 
   // Add standard auth token if available
-  const authToken = localStorage.getItem("auth_token");
   if (authToken) {
     headers.set("Authorization", `Bearer ${authToken}`);
   }

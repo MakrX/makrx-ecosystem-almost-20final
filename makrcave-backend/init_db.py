@@ -12,15 +12,22 @@ from datetime import datetime
 # Add the backend directory to the Python path
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
-from database import init_db, get_db_session, reset_db
-from models.inventory import InventoryItem, InventoryUsageLog, InventoryAlert
-from models.equipment import Equipment, EquipmentMaintenanceLog, EquipmentReservation, EquipmentRating
-from models.project import (
-    Project, ProjectCollaborator, ProjectBOM, ProjectEquipmentReservation,
-    ProjectFile, ProjectMilestone, ProjectActivityLog
+from .database import init_db, get_db_session, reset_db
+from .models.inventory import InventoryItem, InventoryUsageLog, InventoryAlert
+from .models.equipment import Equipment, EquipmentMaintenanceLog, EquipmentReservation, EquipmentRating
+from .models.project import (
+    Project,
+    ProjectCollaborator,
+    ProjectBOM,
+    ProjectEquipmentReservation,
+    ProjectFile,
+    ProjectMilestone,
+    ProjectActivityLog,
+    ProjectLike,
+    ProjectBookmark,
 )
-from schemas.inventory import SupplierType, ItemStatus, UsageAction, AccessLevel
-from schemas.equipment import EquipmentStatus, EquipmentCategory, ReservationStatus
+from .schemas.inventory import SupplierType, ItemStatus, UsageAction, AccessLevel
+from .schemas.equipment import EquipmentStatus, EquipmentCategory, ReservationStatus
 
 def create_sample_data():
     """Create sample inventory data for testing"""

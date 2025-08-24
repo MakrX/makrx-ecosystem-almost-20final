@@ -1,4 +1,4 @@
-from sqlalchemy import Column, String, Text, DateTime, Boolean, ForeignKey, Integer, Float, JSON, Enum
+from sqlalchemy import Column, String, Text, DateTime, Boolean, ForeignKey, Integer, Float, JSON, Enum, UniqueConstraint
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 import enum
@@ -348,18 +348,25 @@ class ProjectLike(Base):
     # Relationships
     project = relationship("Project", foreign_keys=[project_id])
 
+
+
 class ProjectBookmark(Base):
-    """Track bookmarks for public projects"""
+    """Track project bookmarks"""
+
     __tablename__ = "project_bookmarks"
 
     id = Column(Integer, primary_key=True, autoincrement=True)
     project_id = Column(String(100), ForeignKey("projects.project_id"), nullable=False)
     user_id = Column(String(100), nullable=False, index=True)
 
-    # Bookmark details
+
     bookmarked_at = Column(DateTime(timezone=True), server_default=func.now())
 
-    # Relationships
+    __table_args__ = (
+        UniqueConstraint("project_id", "user_id", name="uq_project_bookmark"),
+    )
+
+
     project = relationship("Project", foreign_keys=[project_id])
 
 class ProjectComment(Base):

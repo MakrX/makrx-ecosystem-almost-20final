@@ -25,6 +25,7 @@ import InventorySettings from '../components/settings/InventorySettings';
 import BillingConfig from '../components/settings/BillingConfig';
 import ServiceModeToggle from '../components/settings/ServiceModeToggle';
 import { useToast } from '../hooks/use-toast';
+import api from '../services/apiService';
 
 interface MakerspaceSettings {
   id?: string;
@@ -99,20 +100,14 @@ const Settings: React.FC = () => {
   const fetchSettings = async () => {
     setLoading(true);
     try {
-      const response = await fetch('/api/makerspace/settings/', {
-        headers: {
-          'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
-          'Content-Type': 'application/json',
-        },
-      });
+      const response = await api.makerspace.getSettings();
 
-      if (response.ok) {
-        const data = await response.json();
-        setSettings(data);
+      if (response.data) {
+        setSettings(response.data);
       } else {
         toast({
           title: "Error",
-          description: "Failed to load settings",
+          description: response.error || "Failed to load settings",
           variant: "destructive",
         });
       }
@@ -136,18 +131,10 @@ const Settings: React.FC = () => {
   const saveSettings = async () => {
     setSaving(true);
     try {
-      const response = await fetch('/api/makerspace/settings/update', {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(settings),
-      });
+      const response = await api.makerspace.updateSettings(settings);
 
-      if (response.ok) {
-        const updatedSettings = await response.json();
-        setSettings(updatedSettings);
+      if (response.data) {
+        setSettings(response.data);
         setHasUnsavedChanges(false);
         setLastSaved(new Date());
         toast({
@@ -155,10 +142,9 @@ const Settings: React.FC = () => {
           description: "Settings saved successfully",
         });
       } else {
-        const errorData = await response.json();
         toast({
           title: "Error",
-          description: errorData.detail || "Failed to save settings",
+          description: response.error || "Failed to save settings",
           variant: "destructive",
         });
       }
@@ -177,18 +163,10 @@ const Settings: React.FC = () => {
   const saveSectionSettings = async (section: string, sectionData: any) => {
     setSaving(true);
     try {
-      const response = await fetch(`/api/makerspace/settings/section/${section}`, {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(sectionData),
-      });
+      const response = await api.makerspace.updateSettingsSection(section, sectionData);
 
-      if (response.ok) {
-        const updatedSettings = await response.json();
-        setSettings(updatedSettings);
+      if (response.data) {
+        setSettings(response.data);
         setHasUnsavedChanges(false);
         setLastSaved(new Date());
         toast({
@@ -196,10 +174,9 @@ const Settings: React.FC = () => {
           description: `${section.charAt(0).toUpperCase() + section.slice(1)} settings saved successfully`,
         });
       } else {
-        const errorData = await response.json();
         toast({
           title: "Error",
-          description: errorData.detail || "Failed to save settings",
+          description: response.error || "Failed to save settings",
           variant: "destructive",
         });
       }
@@ -217,16 +194,10 @@ const Settings: React.FC = () => {
 
   const exportSettings = async () => {
     try {
-      const response = await fetch('/api/makerspace/settings/export', {
-        headers: {
-          'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
-          'Content-Type': 'application/json',
-        },
-      });
+      const response = await api.makerspace.exportSettings();
 
-      if (response.ok) {
-        const data = await response.json();
-        const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+      if (response.data) {
+        const blob = new Blob([JSON.stringify(response.data, null, 2)], { type: 'application/json' });
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = url;
@@ -235,7 +206,7 @@ const Settings: React.FC = () => {
         a.click();
         document.body.removeChild(a);
         URL.revokeObjectURL(url);
-        
+
         toast({
           title: "Success",
           description: "Settings exported successfully",
@@ -243,7 +214,7 @@ const Settings: React.FC = () => {
       } else {
         toast({
           title: "Error",
-          description: "Failed to export settings",
+          description: response.error || "Failed to export settings",
           variant: "destructive",
         });
       }
@@ -265,12 +236,7 @@ const Settings: React.FC = () => {
     setLoading(true);
     try {
       // First delete existing settings, then fetch defaults
-      await fetch('/api/makerspace/settings/', {
-        method: 'DELETE',
-        headers: {
-          'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
-        },
-      });
+      await api.makerspace.resetSettings();
 
       // Fetch new default settings
       await fetchSettings();

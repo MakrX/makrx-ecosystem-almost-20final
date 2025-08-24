@@ -13,6 +13,7 @@ import { adminDataService } from "./adminData";
 // API Configuration
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8003";
 const API_VERSION = "v1";
+const USE_MOCK_API = process.env.NEXT_PUBLIC_USE_MOCK_API === "true";
 
 // Types
 export interface ApiResponse<T> {
@@ -319,9 +320,8 @@ class ApiClient {
     endpoint: string,
     options: RequestInit = {},
   ): Promise<T> {
-    // In development mode, skip backend requests entirely and use mock data
-    if (process.env.NODE_ENV === "development" && this.baseURL.includes("localhost:8003")) {
-      // Show a one-time notification that we're using mock data
+    // Allow forcing mock mode via environment variable
+    if (USE_MOCK_API) {
       if (typeof window !== "undefined" && !sessionStorage.getItem("mock-data-notice-shown")) {
         sessionStorage.setItem("mock-data-notice-shown", "true");
         console.info("🔧 Development Mode: Using mock data for demo purposes (backend requests disabled).");
@@ -377,7 +377,7 @@ class ApiClient {
            error.message.includes("net::ERR"));
 
       // Always use mock data in development for network errors, abort errors, or connection issues
-      if (isAbortError || isNetworkError || isConnectionError || (process.env.NODE_ENV === "development" && url.includes("localhost:8003"))) {
+      if (isAbortError || isNetworkError || isConnectionError) {
         // Show a one-time notification that we're using mock data (but not for abort errors)
         if (!isAbortError && typeof window !== "undefined" && !sessionStorage.getItem("mock-data-notice-shown")) {
           sessionStorage.setItem("mock-data-notice-shown", "true");
@@ -1091,6 +1091,11 @@ class ApiClient {
 
 // Export singleton instance
 export const api = new ApiClient();
+
+// Notification settings helpers
+export const getNotificationSettings = () => api.getNotificationSettings();
+export const updateNotificationSettings = (settings: NotificationSettings) =>
+  api.updateNotificationSettings(settings);
 
 // Utility functions
 export const formatPrice = (price: number, currency = "INR") => {

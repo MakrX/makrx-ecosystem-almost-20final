@@ -3,6 +3,8 @@
  * Handles file uploads for profile images, documents, and other assets
  */
 
+import { getToken } from '../lib/auth';
+
 export interface UploadOptions {
   maxSize?: number; // in bytes
   allowedTypes?: string[];
@@ -58,7 +60,7 @@ class FileUploadService {
       formData.append('type', this.getFileType(file));
 
       // Get auth token
-      const token = localStorage.getItem('auth_token') || localStorage.getItem('makrx_access_token');
+      const token = await getToken();
 
       // Upload file
       const response = await fetch(`${this.baseUrl}/api/v1/upload`, {
@@ -283,7 +285,7 @@ class FileUploadService {
    */
   async deleteFile(filename: string): Promise<boolean> {
     try {
-      const token = localStorage.getItem('auth_token') || localStorage.getItem('makrx_access_token');
+      const token = await getToken();
 
       const response = await fetch(`${this.baseUrl}/api/v1/upload/${filename}`, {
         method: 'DELETE',
@@ -313,7 +315,7 @@ class FileUploadService {
    */
   async getUploads(): Promise<any[]> {
     try {
-      const token = localStorage.getItem('auth_token') || localStorage.getItem('makrx_access_token');
+      const token = await getToken();
 
       const response = await fetch(`${this.baseUrl}/api/v1/uploads`, {
         headers: {

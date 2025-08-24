@@ -5,12 +5,14 @@ import json
 from datetime import datetime, timedelta
 
 from ..database import get_db
+
 from ..models.project import (
     Project,
     ProjectCollaborator,
     ProjectLike,
     ProjectBookmark,
 )
+
 from ..models.member import Member, MemberFollow
 from ..schemas.project_showcase import (
     ShowcaseProjectResponse,
@@ -123,6 +125,7 @@ async def get_showcase_projects(
             db, project.project_id, project.owner_id, current_user.id
         )
 
+
         # Get collaborator count
         collaborator_count = db.query(ProjectCollaborator).filter(
             ProjectCollaborator.project_id == project.project_id
@@ -156,6 +159,22 @@ async def get_showcase_projects(
                 "awarded_at": project.featured_at.isoformat() if project.featured_at else datetime.utcnow().isoformat()
             })
         
+        is_liked = bool(
+            db.query(ProjectLike)
+            .filter_by(project_id=project.project_id, user_id=current_user.id)
+            .first()
+        )
+        is_bookmarked = bool(
+            db.query(ProjectBookmark)
+            .filter_by(project_id=project.project_id, user_id=current_user.id)
+            .first()
+        )
+        is_following_owner = bool(
+            db.query(MemberFollow)
+            .filter_by(follower_id=current_user.id, followed_id=project.owner_id)
+            .first()
+        )
+
         showcase_project = ShowcaseProjectResponse(
             project_id=project.project_id,
             name=project.name,
@@ -277,8 +296,10 @@ async def get_featured_projects(
     for project in featured_projects:
         owner = db.query(Member).filter(Member.user_id == project.owner_id).first()
 
+
         is_liked, is_bookmarked, is_following_owner = get_user_project_interactions(
             db, project.project_id, project.owner_id, current_user.id
+
         )
 
         showcase_project = ShowcaseProjectResponse(
@@ -355,8 +376,10 @@ async def get_trending_projects(
     for project in trending_projects:
         owner = db.query(Member).filter(Member.user_id == project.owner_id).first()
 
+
         is_liked, is_bookmarked, is_following_owner = get_user_project_interactions(
             db, project.project_id, project.owner_id, current_user.id
+
         )
 
         showcase_project = ShowcaseProjectResponse(
@@ -449,6 +472,7 @@ async def like_project(
     if not project:
         raise HTTPException(status_code=404, detail="Project not found")
 
+
     # Check if user already liked the project
     existing_like = (
         db.query(ProjectLike)
@@ -488,6 +512,7 @@ async def unlike_project(
     if not project:
         raise HTTPException(status_code=404, detail="Project not found")
 
+
     existing_like = (
         db.query(ProjectLike)
         .filter(
@@ -512,6 +537,7 @@ async def unlike_project(
 
     return {"status": "unliked", "like_count": like_count}
 
+
 @router.post("/{project_id}/bookmark")
 async def bookmark_project(
     project_id: str,
@@ -523,6 +549,7 @@ async def bookmark_project(
     project = db.query(Project).filter(Project.project_id == project_id).first()
     if not project:
         raise HTTPException(status_code=404, detail="Project not found")
+
 
     existing_bookmark = (
         db.query(ProjectBookmark)
@@ -546,6 +573,7 @@ async def bookmark_project(
 
     return {"status": "bookmarked", "bookmark_count": bookmark_count}
 
+
 @router.delete("/{project_id}/bookmark")
 async def unbookmark_project(
     project_id: str,
@@ -557,6 +585,7 @@ async def unbookmark_project(
     project = db.query(Project).filter(Project.project_id == project_id).first()
     if not project:
         raise HTTPException(status_code=404, detail="Project not found")
+
 
     existing_bookmark = (
         db.query(ProjectBookmark)
@@ -579,3 +608,4 @@ async def unbookmark_project(
     db.commit()
 
     return {"status": "unbookmarked", "bookmark_count": bookmark_count}
+

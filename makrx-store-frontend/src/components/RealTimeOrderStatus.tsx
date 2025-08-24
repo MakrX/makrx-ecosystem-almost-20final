@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { api } from "@/lib/api";
 import { useNotifications } from "@/contexts/NotificationContext";
+import { getToken } from "@/lib/auth";
 import { CheckCircle, Clock, Package, Truck, MapPin } from "lucide-react";
 
 interface OrderStatusProps {
@@ -31,21 +32,44 @@ export default function RealTimeOrderStatus({
   useEffect(() => {
     let interval: NodeJS.Timeout;
     let ws: WebSocket;
+    let pingInterval: NodeJS.Timeout;
+    let pongTimeout: NodeJS.Timeout;
 
     // Setup WebSocket for real-time updates
-    const setupWebSocket = () => {
+    const setupWebSocket = async () => {
       try {
-        const wsUrl = `${process.env.NEXT_PUBLIC_WS_URL || "ws://localhost:8000"}/ws/orders/${orderId}/status`;
+        const token = await getToken();
+        const wsUrl = `${process.env.NEXT_PUBLIC_WS_URL || "ws://localhost:8000"}/ws/orders/${orderId}/status?token=${token}`;
         ws = new WebSocket(wsUrl);
+
+        const startHeartbeat = () => {
+          pingInterval = setInterval(() => {
+            if (ws.readyState === WebSocket.OPEN) {
+              ws.send(JSON.stringify({ type: "ping" }));
+              pongTimeout = setTimeout(() => {
+                ws.close();
+              }, 10000);
+            }
+          }, 30000);
+        };
 
         ws.onopen = () => {
           console.log("Connected to order status WebSocket");
+          startHeartbeat();
         };
 
         ws.onmessage = (event) => {
           try {
             const update = JSON.parse(event.data);
-            if (update.status !== status) {
+            if (update.type === "ping") {
+              ws.send(JSON.stringify({ type: "pong" }));
+              return;
+            }
+            if (update.type === "pong") {
+              clearTimeout(pongTimeout);
+              return;
+            }
+            if (update.status && update.status !== status) {
               setStatus(update.status);
               setStatusHistory((prev) => [
                 ...prev,
@@ -75,6 +99,8 @@ export default function RealTimeOrderStatus({
 
         ws.onclose = () => {
           console.log("Order status WebSocket disconnected");
+          clearInterval(pingInterval);
+          clearTimeout(pongTimeout);
           // Try to reconnect after 5 seconds
           setTimeout(setupWebSocket, 5000);
         };
@@ -116,6 +142,12 @@ export default function RealTimeOrderStatus({
       }
       if (interval) {
         clearInterval(interval);
+      }
+      if (pingInterval) {
+        clearInterval(pingInterval);
+      }
+      if (pongTimeout) {
+        clearTimeout(pongTimeout);
       }
     };
   }, [orderId, status, addNotification]);

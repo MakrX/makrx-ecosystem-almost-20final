@@ -131,20 +131,30 @@ async def get_jwks_key(token: str) -> str:
         # Fetch JWKS from Keycloak
         keycloak_config_url = f"{KEYCLOAK_URL}/realms/{KEYCLOAK_REALM}/.well-known/openid_configuration"
 
-        async with http_client.get(keycloak_config_url) as config_response:
-            if config_response.status_code != 200:
-                raise HTTPException(status_code=401, detail="Cannot fetch Keycloak configuration")
+        try:
+            config_response = await http_client.get(keycloak_config_url)
+        except httpx.RequestError as e:
+            logger.error(f"Network error fetching Keycloak configuration: {e}")
+            raise HTTPException(status_code=503, detail="Cannot fetch Keycloak configuration")
 
-            config = config_response.json()
-            jwks_uri = config["jwks_uri"]
+        if config_response.status_code != 200:
+            raise HTTPException(status_code=401, detail="Cannot fetch Keycloak configuration")
 
-        async with http_client.get(jwks_uri) as jwks_response:
-            if jwks_response.status_code != 200:
-                raise HTTPException(status_code=401, detail="Cannot fetch JWKS")
+        config = config_response.json()
+        jwks_uri = config["jwks_uri"]
 
-            jwks = jwks_response.json()
-            jwks_cache = jwks
-            jwks_cache_time = datetime.utcnow()
+        try:
+            jwks_response = await http_client.get(jwks_uri)
+        except httpx.RequestError as e:
+            logger.error(f"Network error fetching JWKS: {e}")
+            raise HTTPException(status_code=503, detail="Cannot fetch JWKS")
+
+        if jwks_response.status_code != 200:
+            raise HTTPException(status_code=401, detail="Cannot fetch JWKS")
+
+        jwks = jwks_response.json()
+        jwks_cache = jwks
+        jwks_cache_time = datetime.utcnow()
 
     # Decode token header to get key ID
     unverified_header = jwt.get_unverified_header(token)
@@ -277,7 +287,7 @@ async def get_user_profile(user_data: Dict[str, Any] = Depends(verify_token)):
             preferences={
                 "theme": "system",
                 "notifications": True,
-                **store_data.get("preferences", {}) if store_data else {}
+                **(store_data.get("preferences", {}) if store_data else {})
             },
             created_at=datetime.utcnow(),
             last_login=datetime.utcnow()
@@ -347,15 +357,18 @@ async def get_user_from_service(service: str, user_id: str) -> Optional[Dict[str
             return None
             
         url = service_urls[service]
-        async with http_client.get(url) as response:
-            if response.status_code == 200:
-                return response.json()
-            elif response.status_code == 404:
-                return None
-            else:
-                logger.warning(f"Failed to fetch user from {service}: {response.status_code}")
-                return None
-                
+        response = await http_client.get(url)
+        if response.status_code == 200:
+            return response.json()
+        elif response.status_code == 404:
+            return None
+        else:
+            logger.warning(f"Failed to fetch user from {service}: {response.status_code}")
+            return None
+
+    except httpx.RequestError as e:
+        logger.error(f"Network error fetching user from {service}: {e}")
+        return None
     except Exception as e:
         logger.error(f"Error fetching user from {service}: {e}")
         return None
@@ -370,14 +383,17 @@ async def sync_user_to_service(service: str, sync_request: UserSyncRequest) -> D
         
         if service not in service_urls:
             return {"success": False, "error": f"Unknown service: {service}"}
-            
+
         url = service_urls[service]
-        async with http_client.post(url, json=sync_request.dict()) as response:
-            if response.status_code in [200, 201]:
-                return {"success": True, "data": response.json()}
-            else:
-                return {"success": False, "error": f"HTTP {response.status_code}"}
-                
+        response = await http_client.post(url, json=sync_request.dict())
+        if response.status_code in [200, 201]:
+            return {"success": True, "data": response.json()}
+        else:
+            return {"success": False, "error": f"HTTP {response.status_code}"}
+
+    except httpx.RequestError as e:
+        logger.error(f"Network error syncing user to {service}: {e}")
+        return {"success": False, "error": "network_error"}
     except Exception as e:
         logger.error(f"Error syncing user to {service}: {e}")
         return {"success": False, "error": str(e)}
@@ -393,7 +409,7 @@ async def get_makrcave_url(user_data: Dict[str, Any] = Depends(verify_token)):
         "portal": "makrcave"
     }
 
-@app.get("/portals/store/url") 
+@app.get("/portals/store/url")
 async def get_store_url(user_data: Dict[str, Any] = Depends(verify_token)):
     """Get Store portal URL with authentication"""
     token = await generate_portal_token(user_data.get("sub"), "store")
@@ -403,6 +419,67 @@ async def get_store_url(user_data: Dict[str, Any] = Depends(verify_token)):
         "portal": "store"
     }
 
+# Keycloak Admin Helpers
+async def get_keycloak_admin_token() -> str:
+    """Retrieve admin access token from Keycloak"""
+    token_url = f"{KEYCLOAK_URL}/realms/{KEYCLOAK_REALM}/protocol/openid-connect/token"
+    data = {
+        "grant_type": "client_credentials",
+        "client_id": KEYCLOAK_CLIENT_ID,
+        "client_secret": KEYCLOAK_CLIENT_SECRET,
+    }
+    try:
+        response = await http_client.post(token_url, data=data)
+        if response.status_code != 200:
+            logger.error(
+                f"Failed to obtain admin token: {response.status_code} {response.text}"
+            )
+            raise HTTPException(
+                status_code=response.status_code,
+                detail="Unable to obtain admin token",
+            )
+        token_data = response.json()
+        access_token = token_data.get("access_token")
+        if not access_token:
+            raise HTTPException(status_code=500, detail="No access token in response")
+        return access_token
+    except httpx.RequestError as e:
+        logger.error(f"Network error obtaining admin token: {e}")
+        raise HTTPException(status_code=502, detail="Keycloak connection failed")
+
+
+async def fetch_keycloak_users(admin_token: str) -> list[Dict[str, Any]]:
+    """Fetch all users from Keycloak handling pagination"""
+    users: list[Dict[str, Any]] = []
+    first = 0
+    max_results = 100
+
+    while True:
+        try:
+            resp = await http_client.get(
+                f"{KEYCLOAK_URL}/admin/realms/{KEYCLOAK_REALM}/users",
+                headers={"Authorization": f"Bearer {admin_token}"},
+                params={"first": first, "max": max_results},
+            )
+            if resp.status_code != 200:
+                logger.error(
+                    f"Failed to fetch users: {resp.status_code} {resp.text}"
+                )
+                raise HTTPException(
+                    status_code=resp.status_code, detail="Failed to fetch users"
+                )
+            batch = resp.json()
+            if not isinstance(batch, list):
+                raise HTTPException(status_code=500, detail="Invalid response format")
+            users.extend(batch)
+            if len(batch) < max_results:
+                break
+            first += max_results
+        except httpx.RequestError as e:
+            logger.error(f"Network error fetching users: {e}")
+            raise HTTPException(status_code=502, detail="Keycloak connection failed")
+    return users
+
 # Admin Endpoints
 @app.get("/admin/users")
 async def list_all_users(user_data: Dict[str, Any] = Depends(verify_token)):
@@ -410,17 +487,14 @@ async def list_all_users(user_data: Dict[str, Any] = Depends(verify_token)):
     roles = user_data.get("realm_access", {}).get("roles", [])
     if "admin" not in roles and "super-admin" not in roles:
         raise HTTPException(status_code=403, detail="Admin access required")
-    
+
     try:
-        # Fetch users from Keycloak
-        keycloak_admin_url = f"{KEYCLOAK_URL}/admin/realms/{KEYCLOAK_REALM}/users"
-        
-        # Note: In production, implement proper Keycloak admin token management
-        return {
-            "message": "User listing requires Keycloak admin integration",
-            "keycloak_url": keycloak_admin_url
-        }
-        
+        admin_token = await get_keycloak_admin_token()
+        users = await fetch_keycloak_users(admin_token)
+        return {"users": users}
+
+    except HTTPException:
+        raise
     except Exception as e:
         logger.error(f"Admin user listing error: {e}")
         raise HTTPException(status_code=500, detail="Failed to list users")

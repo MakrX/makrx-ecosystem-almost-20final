@@ -1,4 +1,4 @@
-from sqlalchemy import Column, String, Integer, Boolean, DateTime, Float, Text, ForeignKey, JSON, Enum
+from sqlalchemy import Column, String, Integer, Boolean, DateTime, Float, Text, ForeignKey, JSON, Enum, UniqueConstraint
 from sqlalchemy.orm import relationship
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.sql import func
@@ -187,20 +187,19 @@ class MembershipTransaction(Base):
     member = relationship("Member")
     membership_plan = relationship("MembershipPlan")
 
+
 class MemberFollow(Base):
+    """Track user follow relationships"""
     __tablename__ = "member_follows"
 
     id = Column(Integer, primary_key=True, autoincrement=True)
-    follower_id = Column(String, ForeignKey("members.id"), nullable=False, index=True)
-    following_id = Column(String, ForeignKey("members.id"), nullable=False, index=True)
-
-    # Metadata
+    follower_id = Column(String(100), nullable=False, index=True)
+    followed_id = Column(String(100), nullable=False, index=True)
     followed_at = Column(DateTime(timezone=True), server_default=func.now())
 
-    # Relationships
-    follower = relationship("Member", foreign_keys=[follower_id])
-    following = relationship("Member", foreign_keys=[following_id])
-
+    __table_args__ = (
+        UniqueConstraint("follower_id", "followed_id", name="uq_member_follow"),
+    )
 # Indexes for better performance
 from sqlalchemy import Index
 
@@ -217,4 +216,5 @@ Index('idx_activity_member', MemberActivityLog.member_id)
 Index('idx_activity_type', MemberActivityLog.activity_type)
 Index('idx_transaction_member', MembershipTransaction.member_id)
 Index('idx_follow_follower', MemberFollow.follower_id)
-Index('idx_follow_following', MemberFollow.following_id)
+
+Index('idx_follow_followed', MemberFollow.followed_id)

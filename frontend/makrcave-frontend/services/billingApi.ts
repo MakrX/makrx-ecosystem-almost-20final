@@ -2,6 +2,7 @@
 // Connects frontend components with the backend billing system
 
 import loggingService from './loggingService';
+import { getToken } from '../lib/auth';
 
 const API_BASE_URL = import.meta.env.VITE_MAKRCAVE_API_URL || 'http://localhost:8000';
 
@@ -322,7 +323,7 @@ async function apiCall<T>(
 
   // Try real API call for local development
   try {
-    const token = localStorage.getItem('auth_token') || localStorage.getItem('authToken');
+    const token = await getToken();
 
     loggingService.debug('api', 'BillingApi.apiCall', 'Making real API call', {
       endpoint,

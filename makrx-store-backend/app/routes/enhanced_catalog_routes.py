@@ -13,6 +13,7 @@ import logging
 from app.core.db import get_db
 from app.models.commerce import Brand, Collection, CollectionProduct, Tag, ProductTag, Category, Product
 from pydantic import BaseModel, Field
+from app.utils.pagination import paginate_query
 
 logger = logging.getLogger(__name__)
 
@@ -314,8 +315,11 @@ async def get_collection_products(
         total_count = query.count()
         
         # Apply pagination
-        offset = (page - 1) * per_page
-        products = query.offset(offset).limit(per_page).all()
+        products = paginate_query(
+            query,
+            page=page,
+            per_page=per_page,
+        )
         
         # Format products
         product_list = []

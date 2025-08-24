@@ -200,6 +200,61 @@ const ProjectShowcase: React.FC = () => {
     }
   };
 
+  const toggleLike = async (projectId: string) => {
+    const project = projects.find(p => p.project_id === projectId);
+    if (!project) return;
+    try {
+      const token = localStorage.getItem('auth_token') || 'mock-token';
+      const method = project.is_liked ? 'DELETE' : 'POST';
+      const response = await fetch(`/api/v1/projects/${projectId}/like`, {
+        method,
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      if (response.ok) {
+        const data = await response.json();
+        setProjects(prev => prev.map(p => p.project_id === projectId ? { ...p, is_liked: !p.is_liked, like_count: data.like_count } : p));
+      }
+    } catch (err) {
+      console.error('Error toggling like:', err);
+    }
+  };
+
+  const toggleBookmark = async (projectId: string) => {
+    const project = projects.find(p => p.project_id === projectId);
+    if (!project) return;
+    try {
+      const token = localStorage.getItem('auth_token') || 'mock-token';
+      const method = project.is_bookmarked ? 'DELETE' : 'POST';
+      const response = await fetch(`/api/v1/projects/${projectId}/bookmark`, {
+        method,
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      if (response.ok) {
+        setProjects(prev => prev.map(p => p.project_id === projectId ? { ...p, is_bookmarked: !p.is_bookmarked } : p));
+      }
+    } catch (err) {
+      console.error('Error toggling bookmark:', err);
+    }
+  };
+
+  const toggleFollow = async (projectId: string) => {
+    const project = projects.find(p => p.project_id === projectId);
+    if (!project) return;
+    try {
+      const token = localStorage.getItem('auth_token') || 'mock-token';
+      const method = project.is_following_owner ? 'DELETE' : 'POST';
+      const response = await fetch(`/api/v1/projects/${projectId}/follow`, {
+        method,
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      if (response.ok) {
+        setProjects(prev => prev.map(p => p.project_id === projectId ? { ...p, is_following_owner: !p.is_following_owner } : p));
+      }
+    } catch (err) {
+      console.error('Error toggling follow:', err);
+    }
+  };
+
   const applyFilters = () => {
     let filtered = [...projects];
 
@@ -566,6 +621,9 @@ const ProjectShowcase: React.FC = () => {
                     key={project.project_id}
                     project={project}
                     viewMode={viewMode}
+                    onToggleLike={() => toggleLike(project.project_id)}
+                    onToggleBookmark={() => toggleBookmark(project.project_id)}
+                    onToggleFollow={() => toggleFollow(project.project_id)}
                   />
                 ))}
               </div>

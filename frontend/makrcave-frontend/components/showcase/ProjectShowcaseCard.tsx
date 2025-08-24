@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Card, CardHeader, CardTitle, CardContent } from '../ui/card';
 import { Button } from '../ui/button';
 import { Badge } from '../ui/badge';
@@ -25,7 +25,9 @@ import {
   Wrench,
   Gauge,
   Target,
-  CheckCircle2
+  CheckCircle2,
+  UserPlus,
+  UserCheck
 } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
 import { useAuth } from '../../contexts/AuthContext';
@@ -64,6 +66,7 @@ interface ShowcaseProject {
   updated_at: string;
   is_liked: boolean;
   is_bookmarked: boolean;
+  is_following_owner: boolean;
   status: string;
 }
 
@@ -71,17 +74,24 @@ interface ProjectShowcaseCardProps {
   project: ShowcaseProject;
   viewMode: 'grid' | 'list';
   onProjectClick?: (projectId: string) => void;
+  onToggleLike?: () => void;
+  onToggleBookmark?: () => void;
+  onToggleFollow?: () => void;
 }
 
 const ProjectShowcaseCard: React.FC<ProjectShowcaseCardProps> = ({
   project,
   viewMode,
-  onProjectClick
+  onProjectClick,
+  onToggleLike,
+  onToggleBookmark,
+  onToggleFollow,
 }) => {
   const { user } = useAuth();
-  const [isLiked, setIsLiked] = useState(project.is_liked);
-  const [isBookmarked, setIsBookmarked] = useState(project.is_bookmarked);
-  const [likeCount, setLikeCount] = useState(project.like_count);
+  const isLiked = project.is_liked;
+  const isBookmarked = project.is_bookmarked;
+  const likeCount = project.like_count;
+  const isFollowingOwner = project.is_following_owner;
 
   const getDifficultyColor = (level: string) => {
     switch (level) {
@@ -103,47 +113,22 @@ const ProjectShowcaseCard: React.FC<ProjectShowcaseCardProps> = ({
     }
   };
 
-  const handleLike = async (e: React.MouseEvent) => {
+  const handleLike = (e: React.MouseEvent) => {
     e.stopPropagation();
     if (!user) return;
-
-    try {
-      const token = localStorage.getItem('auth_token') || 'mock-token';
-      const response = await fetch(`/api/v1/projects/${project.project_id}/like`, {
-        method: isLiked ? 'DELETE' : 'POST',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-        },
-      });
-
-      if (response.ok) {
-        setIsLiked(!isLiked);
-        setLikeCount(prev => isLiked ? prev - 1 : prev + 1);
-      }
-    } catch (error) {
-      console.error('Error toggling like:', error);
-    }
+    onToggleLike?.();
   };
 
-  const handleBookmark = async (e: React.MouseEvent) => {
+  const handleBookmark = (e: React.MouseEvent) => {
     e.stopPropagation();
     if (!user) return;
+    onToggleBookmark?.();
+  };
 
-    try {
-      const token = localStorage.getItem('auth_token') || 'mock-token';
-      const response = await fetch(`/api/v1/projects/${project.project_id}/bookmark`, {
-        method: isBookmarked ? 'DELETE' : 'POST',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-        },
-      });
-
-      if (response.ok) {
-        setIsBookmarked(!isBookmarked);
-      }
-    } catch (error) {
-      console.error('Error toggling bookmark:', error);
-    }
+  const handleFollow = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (!user) return;
+    onToggleFollow?.();
   };
 
   const handleShare = async (e: React.MouseEvent) => {
@@ -288,6 +273,18 @@ const ProjectShowcaseCard: React.FC<ProjectShowcaseCardProps> = ({
                   >
                     <Bookmark className={`h-4 w-4 ${isBookmarked ? 'fill-current' : ''}`} />
                   </Button>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={handleFollow}
+                    className={isFollowingOwner ? 'text-green-600' : 'text-gray-500'}
+                  >
+                    {isFollowingOwner ? (
+                      <UserCheck className="h-4 w-4" />
+                    ) : (
+                      <UserPlus className="h-4 w-4" />
+                    )}
+                  </Button>
                   <Button variant="ghost" size="sm" onClick={handleShare}>
                     <Share2 className="h-4 w-4" />
                   </Button>
@@ -394,6 +391,18 @@ const ProjectShowcaseCard: React.FC<ProjectShowcaseCardProps> = ({
             className={`shadow-lg ${isBookmarked ? 'text-blue-500' : ''}`}
           >
             <Bookmark className={`h-4 w-4 ${isBookmarked ? 'fill-current' : ''}`} />
+          </Button>
+          <Button
+            variant="secondary"
+            size="sm"
+            onClick={handleFollow}
+            className={`shadow-lg ${isFollowingOwner ? 'text-green-600' : ''}`}
+          >
+            {isFollowingOwner ? (
+              <UserCheck className="h-4 w-4" />
+            ) : (
+              <UserPlus className="h-4 w-4" />
+            )}
           </Button>
         </div>
       </div>

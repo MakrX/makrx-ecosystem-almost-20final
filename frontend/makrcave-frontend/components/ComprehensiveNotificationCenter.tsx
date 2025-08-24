@@ -1,4 +1,6 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
+import { useAuth } from '@/contexts/AuthContext';
+import { getToken } from '@/lib/auth';
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
 import { Button } from './ui/button';
 import { Badge } from './ui/badge';
@@ -126,6 +128,9 @@ const ComprehensiveNotificationCenter: React.FC = () => {
   // Real-time connection
   const wsRef = useRef<WebSocket | null>(null);
   const [isConnected, setIsConnected] = useState(false);
+  const pingIntervalRef = useRef<NodeJS.Timeout | null>(null);
+  const pongTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const { user } = useAuth();
 
   // Load data functions
   const loadNotifications = useCallback(async () => {
@@ -217,28 +222,51 @@ const ComprehensiveNotificationCenter: React.FC = () => {
   }, []);
 
   // WebSocket connection
-  const connectWebSocket = useCallback(() => {
-    const token = localStorage.getItem('token');
-    const userId = 'current_user_id'; // Get from auth context
-    
+  const connectWebSocket = useCallback(async () => {
+    const token = await getToken();
+    const userId = user?.id;
     if (!token || !userId) return;
 
-    const wsUrl = `ws://localhost:8000/api/notifications/ws/${userId}`;
+    const wsUrl = `ws://localhost:8000/api/notifications/ws/${userId}?token=${token}`;
     wsRef.current = new WebSocket(wsUrl);
+
+    const startHeartbeat = () => {
+      pingIntervalRef.current = setInterval(() => {
+        if (wsRef.current?.readyState === WebSocket.OPEN) {
+          wsRef.current.send(JSON.stringify({ type: 'ping' }));
+          pongTimeoutRef.current = setTimeout(() => {
+            wsRef.current?.close();
+          }, 10000);
+        }
+      }, 30000);
+    };
 
     wsRef.current.onopen = () => {
       setIsConnected(true);
       console.log('WebSocket connected');
+      startHeartbeat();
     };
 
     wsRef.current.onmessage = (event) => {
       const data = JSON.parse(event.data);
-      
+
+      if (data.type === 'ping') {
+        wsRef.current?.send(JSON.stringify({ type: 'pong' }));
+        return;
+      }
+      if (data.type === 'pong') {
+        if (pongTimeoutRef.current) {
+          clearTimeout(pongTimeoutRef.current);
+          pongTimeoutRef.current = null;
+        }
+        return;
+      }
+
       if (data.type === 'notification') {
         // Add new notification to the list
         setNotifications(prev => [data.notification, ...prev]);
         setUnreadCount(prev => prev + 1);
-        
+
         // Show browser notification if enabled
         if (preferences?.push_enabled && 'Notification' in window) {
           new Notification(data.notification.title, {
@@ -248,9 +276,9 @@ const ComprehensiveNotificationCenter: React.FC = () => {
         }
       } else if (data.type === 'notification_read') {
         // Update notification status
-        setNotifications(prev => 
-          prev.map(n => 
-            n.id === data.notification_id 
+        setNotifications(prev =>
+          prev.map(n =>
+            n.id === data.notification_id
               ? { ...n, read_at: new Date().toISOString(), status: 'read' }
               : n
           )
@@ -262,7 +290,15 @@ const ComprehensiveNotificationCenter: React.FC = () => {
     wsRef.current.onclose = () => {
       setIsConnected(false);
       console.log('WebSocket disconnected');
-      
+      if (pingIntervalRef.current) {
+        clearInterval(pingIntervalRef.current);
+        pingIntervalRef.current = null;
+      }
+      if (pongTimeoutRef.current) {
+        clearTimeout(pongTimeoutRef.current);
+        pongTimeoutRef.current = null;
+      }
+
       // Reconnect after a delay
       setTimeout(connectWebSocket, 5000);
     };
@@ -270,7 +306,7 @@ const ComprehensiveNotificationCenter: React.FC = () => {
     wsRef.current.onerror = (error) => {
       console.error('WebSocket error:', error);
     };
-  }, [preferences?.push_enabled]);
+  }, [preferences?.push_enabled, user]);
 
   // Initial load
   useEffect(() => {
@@ -284,10 +320,18 @@ const ComprehensiveNotificationCenter: React.FC = () => {
   // Connect WebSocket
   useEffect(() => {
     connectWebSocket();
-    
+
     return () => {
       if (wsRef.current) {
         wsRef.current.close();
+      }
+      if (pingIntervalRef.current) {
+         clearInterval(pingIntervalRef.current);
+         pingIntervalRef.current = null;
+      }
+      if (pongTimeoutRef.current) {
+         clearTimeout(pongTimeoutRef.current);
+         pongTimeoutRef.current = null;
       }
     };
   }, [connectWebSocket]);

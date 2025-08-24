@@ -9,12 +9,14 @@ from sqlalchemy.orm import Session
 from pydantic import BaseModel
 
 from core.config import settings
+
 from database import get_db
 from models.project import Job, JobStatus
 from models.job_management import ServiceProvider
 from models.inventory import User
 from schemas.project import JobCreate, JobUpdate
 from dependencies import get_current_user
+
 
 logger = logging.getLogger(__name__)
 router = APIRouter()

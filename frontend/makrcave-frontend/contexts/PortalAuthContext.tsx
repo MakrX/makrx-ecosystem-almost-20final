@@ -2,6 +2,7 @@
 
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { useAuth } from "./AuthContext";
+import { getToken } from "../lib/auth";
 
 interface PortalAuthContextValue {
   handlePortalAuth: () => void;
@@ -133,7 +134,7 @@ export class PortalAwareApiService {
     this.baseURL = baseURL;
   }
 
-  private getHeaders(): HeadersInit {
+  private async getHeaders(): Promise<HeadersInit> {
     const headers: HeadersInit = {
       "Content-Type": "application/json",
     };
@@ -145,7 +146,7 @@ export class PortalAwareApiService {
     }
 
     // Add standard auth token if available
-    const authToken = localStorage.getItem("auth_token");
+    const authToken = await getToken();
     if (authToken) {
       headers["Authorization"] = `Bearer ${authToken}`;
     }
@@ -156,7 +157,7 @@ export class PortalAwareApiService {
   async get(endpoint: string): Promise<any> {
     const response = await fetch(`${this.baseURL}${endpoint}`, {
       method: "GET",
-      headers: this.getHeaders(),
+      headers: await this.getHeaders(),
     });
 
     if (!response.ok) {
@@ -169,7 +170,7 @@ export class PortalAwareApiService {
   async post(endpoint: string, data: any): Promise<any> {
     const response = await fetch(`${this.baseURL}${endpoint}`, {
       method: "POST",
-      headers: this.getHeaders(),
+      headers: await this.getHeaders(),
       body: JSON.stringify(data),
     });
 
@@ -183,7 +184,7 @@ export class PortalAwareApiService {
   async put(endpoint: string, data: any): Promise<any> {
     const response = await fetch(`${this.baseURL}${endpoint}`, {
       method: "PUT",
-      headers: this.getHeaders(),
+      headers: await this.getHeaders(),
       body: JSON.stringify(data),
     });
 
@@ -197,7 +198,7 @@ export class PortalAwareApiService {
   async delete(endpoint: string): Promise<any> {
     const response = await fetch(`${this.baseURL}${endpoint}`, {
       method: "DELETE",
-      headers: this.getHeaders(),
+      headers: await this.getHeaders(),
     });
 
     if (!response.ok) {
@@ -218,7 +219,7 @@ export class PortalAwareApiService {
     const response = await fetch(`${storeApiUrl}${endpoint}`, {
       ...options,
       headers: {
-        ...this.getHeaders(),
+        ...(await this.getHeaders()),
         ...options.headers,
       },
     });
@@ -240,7 +241,7 @@ export class PortalAwareApiService {
     const response = await fetch(`${authServiceUrl}${endpoint}`, {
       ...options,
       headers: {
-        ...this.getHeaders(),
+        ...(await this.getHeaders()),
         ...options.headers,
       },
     });
