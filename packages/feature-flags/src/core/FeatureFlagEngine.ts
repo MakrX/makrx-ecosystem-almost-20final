@@ -38,7 +38,10 @@ export interface FlagDefinition {
   rolloutState: RolloutState;
   description: string;
   owner: string;
-  
+
+  // Environment targeting
+  environment?: 'all' | 'development' | 'staging' | 'production';
+
   // Targeting rules
   enabledForRoles?: string[];
   enabledForUsers?: string[];
@@ -68,9 +71,14 @@ export interface FlagEvaluationResult {
   flagKey: string;
 }
 
+interface CachedResult {
+  result: FlagEvaluationResult;
+  timestamp: number;
+}
+
 export class FeatureFlagEngine {
   private flags: Map<string, FlagDefinition> = new Map();
-  private cache: Map<string, FlagEvaluationResult> = new Map();
+  private cache: Map<string, CachedResult> = new Map();
   private cacheTTL = 60000; // 1 minute
 
   constructor(flags: FlagDefinition[] = []) {
@@ -93,18 +101,17 @@ export class FeatureFlagEngine {
    * Evaluate a feature flag for given context
    */
   evaluate(flagKey: string, context: FlagContext, defaultValue?: any): FlagEvaluationResult {
-    // Check cache first
+    this.purgeExpiredCache();
+
     const cacheKey = this.getCacheKey(flagKey, context);
     const cached = this.cache.get(cacheKey);
     if (cached && this.isCacheValid(cached)) {
-      return cached;
+      return cached.result;
     }
 
     const result = this.evaluateFlag(flagKey, context, defaultValue);
-    
-    // Cache result
-    this.cache.set(cacheKey, result);
-    
+    this.cache.set(cacheKey, { result, timestamp: Date.now() });
+
     return result;
   }
 
@@ -150,6 +157,17 @@ export class FeatureFlagEngine {
         enabled: false,
         value: flag.defaultValue,
         reason: 'flag_expired',
+        flagKey
+      };
+    }
+
+    // Check environment
+    const flagEnv = flag.environment ?? 'all';
+    if (flagEnv !== 'all' && flagEnv !== context.environment) {
+      return {
+        enabled: false,
+        value: flag.defaultValue,
+        reason: 'environment_mismatch',
         flagKey
       };
     }
@@ -239,17 +257,27 @@ export class FeatureFlagEngine {
   }
 
   private evaluateTargeting(flag: FlagDefinition, context: FlagContext): { matches: boolean; reason: string } {
-    // Global scope - everyone
-    if (flag.scope === 'global') {
-      return { matches: true, reason: 'global_scope' };
+    // Role gating applies across all scopes if enabledForRoles is set
+    if (flag.enabledForRoles?.length) {
+      const hasRole = context.roles?.some(role => flag.enabledForRoles!.includes(role)) ?? false;
+
+      if (!hasRole) {
+        return { matches: false, reason: 'role_not_matched' };
+      }
+
+      if (flag.scope === 'role') {
+        return { matches: true, reason: 'role_matched' };
+      }
+    } else if (flag.scope === 'role') {
+      // Role scope without specific roles configured
+      return { matches: false, reason: 'role_not_configured' };
     }
 
-    // Role-based targeting
-    if (flag.scope === 'role' && flag.enabledForRoles?.length) {
-      const hasRole = context.roles?.some(role => flag.enabledForRoles!.includes(role));
-      return { 
-        matches: hasRole ?? false, 
-        reason: hasRole ? 'role_matched' : 'role_not_matched' 
+    // Global scope - everyone after role checks
+    if (flag.scope === 'global') {
+      return {
+        matches: true,
+        reason: flag.enabledForRoles?.length ? 'role_matched' : 'global_scope'
       };
     }
 
@@ -363,14 +391,21 @@ export class FeatureFlagEngine {
       context.country,
       context.pincode
     ].filter(Boolean).join(':');
-    
+
     return `${flagKey}:${contextKeys}`;
   }
 
-  private isCacheValid(result: FlagEvaluationResult): boolean {
-    // Simple time-based cache validation
-    // In production, you might want more sophisticated cache invalidation
-    return true; // For now, always use cache if present
+  private isCacheValid(entry: CachedResult): boolean {
+    return Date.now() - entry.timestamp < this.cacheTTL;
+  }
+
+  private purgeExpiredCache(): void {
+    const now = Date.now();
+    for (const [key, entry] of this.cache.entries()) {
+      if (now - entry.timestamp >= this.cacheTTL) {
+        this.cache.delete(key);
+      }
+    }
   }
 
   /**

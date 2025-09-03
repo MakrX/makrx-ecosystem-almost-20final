@@ -6,8 +6,6 @@
   "description": "MakrCave - Makerspace Management Portal",
   "scripts": {
     "dev": "vite --port 3001",
-    "dev:with-api": "node dev-with-api.js",
-    "mock-api": "node mock-api-server.js",
     "build": "vite build",
     "preview": "vite preview",
     "typecheck": "tsc --noEmit"

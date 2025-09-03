@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { handleAuthCallback } from "@/lib/auth";
 import { Loader2, CheckCircle, XCircle } from "lucide-react";
+import { getAndClearRedirectUrl } from "../../../../../makrx-sso-utils.js";
 
 export default function AuthCallbackPage() {
   const router = useRouter();
@@ -33,14 +34,8 @@ export default function AuthCallbackPage() {
           setStatus('success');
           
           // Get stored redirect URL or default to home
-          const redirectUrl = sessionStorage.getItem('makrx_redirect_url') || 
-                            localStorage.getItem('makrx_pre_login_url') || 
-                            '/';
-          
-          // Clear stored URLs
-          sessionStorage.removeItem('makrx_redirect_url');
-          localStorage.removeItem('makrx_pre_login_url');
-          
+          const redirectUrl = getAndClearRedirectUrl() || '/';
+
           // Small delay for better UX
           setTimeout(() => {
             router.push(redirectUrl);

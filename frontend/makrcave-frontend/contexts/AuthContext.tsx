@@ -12,6 +12,7 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { UserRole, RolePermissions } from '@makrx/types';
 import { getRolePermissions, hasPermission, UI_ACCESS } from '../config/rolePermissions';
+
 import { initKeycloak, login as kcLogin, logout as kcLogout, isAuthenticated as kcIsAuthenticated, getUser as kcGetUser } from '../lib/auth';
 type LoginCredentials = any;
 
@@ -34,7 +35,7 @@ interface AuthContextType {
   user: User | null;
   isAuthenticated: boolean;
   isLoading: boolean;
-  login: (credentials: LoginCredentials) => Promise<void>;
+  login: (redirectUrl?: string) => Promise<void>;
   logout: () => Promise<void>;
   register: (data: any) => Promise<void>;
   getCurrentRole: () => UserRole;
@@ -83,8 +84,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   };
 
+
   const login = async (_credentials?: LoginCredentials) => {
     kcLogin();
+    
   };
 
   const logout = async () => {

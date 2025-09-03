@@ -10,18 +10,44 @@
 // - Role-based permission checking
 
 import loggingService from './loggingService';
+import { redirectToSSO, exchangeCodeForTokens } from '../../../makrx-sso-utils.js';
 
-// API Configuration - Change this URL to point to your backend
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '/api';
-// Local Storage Keys - Change these if you want different storage key names
+// API Configuration
+const API_BASE_URL = import.meta.env.VITE_MAKRCAVE_API_URL || 'http://localhost:8000';
+const KEYCLOAK_URL = import.meta.env.VITE_KEYCLOAK_URL || 'http://localhost:8080/realms/makrx';
+// Cookie names used for authentication
 const TOKEN_KEY = 'makrcave_access_token';
 const REFRESH_TOKEN_KEY = 'makrcave_refresh_token';
 const USER_KEY = 'makrcave_user';
+const CSRF_COOKIE = 'csrf_token';
 
-export interface LoginCredentials {
-  username: string;
-  password: string;
-}
+// Cookie helpers. Tokens are expected to be set by the server using
+// `Set-Cookie` headers with the `HttpOnly` flag. These helpers provide a
+// fallback for environments where direct cookie access is needed, while the
+// `Secure` and `SameSite=Strict` attributes help mitigate CSRF risks.
+const cookieOptions = 'path=/; secure; samesite=strict';
+
+const setCookie = (name: string, value: string, expires?: Date) => {
+  if (typeof document === 'undefined') return;
+  let cookie = `${name}=${encodeURIComponent(value)}; ${cookieOptions}`;
+  if (expires) {
+    cookie += `; expires=${expires.toUTCString()}`;
+  }
+  document.cookie = cookie;
+};
+
+const getCookie = (name: string): string | null => {
+  if (typeof document === 'undefined') return null;
+  const match = document.cookie.match(new RegExp(`(^| )${name}=([^;]+)`));
+  return match ? decodeURIComponent(match[2]) : null;
+};
+
+const deleteCookie = (name: string) => {
+  if (typeof document === 'undefined') return;
+  document.cookie = `${name}=; ${cookieOptions}; expires=Thu, 01 Jan 1970 00:00:00 GMT`;
+};
+
+const getCsrfToken = (): string | null => getCookie(CSRF_COOKIE);
 
 export interface LoginResponse {
   access_token: string;
@@ -82,265 +108,41 @@ class AuthService {
   }
 
   // ========================================
-  // LOGIN METHOD
+  // LOGIN FLOW - SSO REDIRECT
   // ========================================
-  // Authenticates user with email/password and stores JWT tokens
-  // Returns user data and tokens on success
-  async login(credentials: LoginCredentials): Promise<LoginResponse> {
-    const startTime = Date.now();
-
-    try {
-      loggingService.info('auth', 'AuthService.login', 'Login attempt started', {
-        username: credentials.username,
-        timestamp: new Date().toISOString()
-      });
-
-      // Check if we're in a cloud environment where API might not be available
-      const isCloudEnvironment = window.location.hostname.includes('fly.dev') ||
-                               window.location.hostname.includes('builder.codes') ||
-                               window.location.hostname.includes('vercel.app') ||
-                               window.location.hostname.includes('netlify.app') ||
-                               !window.location.hostname.includes('localhost');
-
-      // If in cloud environment, use mock authentication
-      if (isCloudEnvironment) {
-        const responseTime = Date.now() - startTime;
-
-        loggingService.info('auth', 'AuthService.login', 'Using mock authentication for cloud environment', {
-          username: credentials.username,
-          environment: 'cloud',
-          hostname: window.location.hostname
-        });
-
-        return this.mockLogin(credentials, responseTime);
-      }
-
-      const response = await fetch(`${API_BASE_URL}/auth/login`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
-        },
-        body: new URLSearchParams({
-          username: credentials.username,
-          password: credentials.password,
-        }),
-      });
-
-      const responseTime = Date.now() - startTime;
-      loggingService.logAPICall('/auth/login', 'POST', response.status, responseTime);
-
-      if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}));
-        const errorMessage = errorData.detail || `Login failed: ${response.status} ${response.statusText}`;
-
-        loggingService.logAuthEvent('login', false, {
-          username: credentials.username,
-          statusCode: response.status,
-          errorMessage,
-          responseTime
-        });
-
-        // If we get a 404, fall back to mock authentication
-        if (response.status === 404) {
-          loggingService.warn('auth', 'AuthService.login', 'API not available, falling back to mock authentication', {
-            username: credentials.username,
-            originalError: errorMessage
-          });
-
-          return this.mockLogin(credentials, responseTime);
-        }
-
-        throw new Error(errorMessage);
-      }
-
-      const data: LoginResponse = await response.json();
-
-      // Store tokens and user data
-      this.setTokens(data.access_token, data.refresh_token);
-      this.setUser(data.user);
-
-      // Set up token refresh
-      this.scheduleTokenRefresh(data.expires_in);
-
-      loggingService.logAuthEvent('login', true, {
-        userId: data.user.id,
-        username: data.user.username,
-        role: data.user.role,
-        responseTime,
-        tokenExpiry: data.expires_in
-      });
-
-      loggingService.info('auth', 'AuthService.login', 'Login successful', {
-        userId: data.user.id,
-        role: data.user.role,
-        responseTime
-      });
-
-      return data;
-    } catch (error) {
-      const responseTime = Date.now() - startTime;
-
-      // If it's a network error, try mock authentication as fallback
-      if ((error as Error).message.includes('Failed to fetch') ||
-          (error as Error).message.includes('NetworkError') ||
-          (error as Error).message.includes('ERR_NETWORK')) {
-
-        loggingService.warn('auth', 'AuthService.login', 'Network error, falling back to mock authentication', {
-          username: credentials.username,
-          error: (error as Error).message,
-          responseTime
-        });
-
-        try {
-          return this.mockLogin(credentials, responseTime);
-        } catch (mockError) {
-          loggingService.error('auth', 'AuthService.login', 'Mock authentication also failed', {
-            username: credentials.username,
-            originalError: (error as Error).message,
-            mockError: (mockError as Error).message,
-            responseTime
-          });
-          throw mockError;
-        }
-      }
-
-      loggingService.error('auth', 'AuthService.login', 'Login failed', {
-        username: credentials.username,
-        error: (error as Error).message,
-        responseTime
-      }, (error as Error).stack);
-
-      console.error('Login error:', error);
-      throw error;
-    }
+  async login(redirectUrl?: string): Promise<void> {
+    loggingService.info('auth', 'AuthService.login', 'Initiating SSO redirect', {
+      redirectUrl: redirectUrl || window.location.href
+    });
+    await redirectToSSO(redirectUrl);
   }
 
-  // ========================================
-  // MOCK AUTHENTICATION FOR CLOUD ENVIRONMENT
-  // ========================================
-  private mockLogin(credentials: LoginCredentials, responseTime: number): LoginResponse {
-    // Mock user database
-    const mockUsers: Record<string, User> = {
-      'superadmin@makrcave.com': {
-        id: 'user-super-admin',
-        email: 'superadmin@makrcave.com',
-        username: 'superadmin',
-        firstName: 'Super',
-        lastName: 'Admin',
-        role: 'super_admin',
-        isActive: true,
-        createdAt: '2024-01-01T00:00:00Z',
-        assignedMakerspaces: ['ms-1', 'ms-2', 'ms-3']
-      },
-      'admin@makrcave.com': {
-        id: 'user-admin',
-        email: 'admin@makrcave.com',
-        username: 'sysadmin',
-        firstName: 'System',
-        lastName: 'Administrator',
-        role: 'admin',
-        isActive: true,
-        createdAt: '2024-01-01T00:00:00Z',
-        assignedMakerspaces: ['ms-1', 'ms-2']
-      },
-      'manager@makrcave.com': {
-        id: 'user-manager',
-        email: 'manager@makrcave.com',
-        username: 'spacemanager',
-        firstName: 'Makerspace',
-        lastName: 'Manager',
-        role: 'makerspace_admin',
-        isActive: true,
-        createdAt: '2024-01-01T00:00:00Z',
-        assignedMakerspaces: ['ms-1']
-      },
-      'provider@makrcave.com': {
-        id: 'user-provider',
-        email: 'provider@makrcave.com',
-        username: 'servicepro',
-        firstName: 'Service',
-        lastName: 'Provider',
-        role: 'service_provider',
-        isActive: true,
-        createdAt: '2024-01-01T00:00:00Z',
-        assignedMakerspaces: []
-      },
-      'maker@makrcave.com': {
-        id: 'user-maker',
-        email: 'maker@makrcave.com',
-        username: 'creativemakr',
-        firstName: 'Regular',
-        lastName: 'Maker',
-        role: 'maker',
-        isActive: true,
-        createdAt: '2024-01-01T00:00:00Z',
-        assignedMakerspaces: ['ms-1']
-      }
+  // Handle `/auth/callback` exchange and token storage
+  async handleAuthCallback(code: string): Promise<User> {
+    const tokenData = await exchangeCodeForTokens(code);
+    const payload = this.parseTokenPayload(tokenData.access_token);
+    const user: User = {
+      id: payload.sub,
+      email: payload.email,
+      username: (payload as any).preferred_username || payload.email,
+      role: (payload.role as User['role']) || 'maker',
+      assignedMakerspaces: payload.makerspace_ids || [],
+      isActive: true,
+      createdAt: new Date(payload.iat * 1000).toISOString()
     };
 
-    // Mock passwords
-    const mockPasswords: Record<string, string> = {
-      'superadmin@makrcave.com': 'SuperAdmin2024!',
-      'admin@makrcave.com': 'Admin2024!',
-      'manager@makrcave.com': 'Manager2024!',
-      'provider@makrcave.com': 'Provider2024!',
-      'maker@makrcave.com': 'Maker2024!'
-    };
+    this.setTokens(tokenData.access_token, tokenData.refresh_token);
+    this.setUser(user);
+    this.scheduleTokenRefresh(tokenData.expires_in);
 
-    // Check if user exists
-    const user = mockUsers[credentials.username];
-    if (!user) {
-      loggingService.logAuthEvent('mock_login', false, {
-        username: credentials.username,
-        reason: 'user_not_found',
-        responseTime
-      });
-      throw new Error('Invalid credentials');
-    }
-
-    // Check password
-    if (mockPasswords[credentials.username] !== credentials.password) {
-      loggingService.logAuthEvent('mock_login', false, {
-        username: credentials.username,
-        reason: 'invalid_password',
-        responseTime
-      });
-      throw new Error('Invalid credentials');
-    }
-
-    // Generate mock JWT tokens
-    const accessToken = this.generateMockJWT(user);
-    const refreshToken = this.generateMockRefreshToken();
-
-    const loginResponse: LoginResponse = {
-      access_token: accessToken,
-      refresh_token: refreshToken,
-      token_type: 'bearer',
-      expires_in: 1800, // 30 minutes
-      user: user
-    };
-
-    // Store tokens and user data
-    this.setTokens(loginResponse.access_token, loginResponse.refresh_token);
-    this.setUser(loginResponse.user);
-
-    // Set up token refresh
-    this.scheduleTokenRefresh(loginResponse.expires_in);
-
-    loggingService.logAuthEvent('mock_login', true, {
+    loggingService.logAuthEvent('login', true, {
       userId: user.id,
       username: user.username,
       role: user.role,
-      responseTime
+      tokenExpiry: tokenData.expires_in
     });
 
-    loggingService.info('auth', 'AuthService.mockLogin', 'Mock login successful', {
-      userId: user.id,
-      role: user.role,
-      responseTime
-    });
-
-    return loginResponse;
+    return user;
   }
 
   // ========================================
@@ -370,11 +172,14 @@ class AuthService {
         return this.mockRegister(data, Date.now() - startTime);
       }
 
+      const csrfToken = getCsrfToken();
       const response = await fetch(`${API_BASE_URL}/auth/register`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          ...(csrfToken && { 'X-CSRF-Token': csrfToken })
         },
+        credentials: 'include',
         body: JSON.stringify(data),
       });
 
@@ -574,17 +379,25 @@ class AuthService {
             isMockToken
           });
         } else {
-          // Call logout endpoint to invalidate token on server
+          // Call Keycloak logout endpoint
           try {
-            const response = await fetch(`${API_BASE_URL}/auth/logout`, {
+            const refreshToken = this.getRefreshToken();
+            const csrfToken = getCsrfToken();
+            const response = await fetch(`${KEYCLOAK_URL}/protocol/openid-connect/logout`, {
               method: 'POST',
               headers: {
-                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/x-www-form-urlencoded',
+                ...(csrfToken && { 'X-CSRF-Token': csrfToken })
               },
+              credentials: 'include',
+              body: new URLSearchParams({
+                client_id: 'makrx-cave',
+                refresh_token: refreshToken || ''
+              })
             });
 
             const responseTime = Date.now() - startTime;
-            loggingService.logAPICall('/auth/logout', 'POST', response.status, responseTime);
+            loggingService.logAPICall('/protocol/openid-connect/logout', 'POST', response.status, responseTime);
 
             if (!response.ok) {
               loggingService.warn('auth', 'AuthService.logout', 'Server logout returned error, proceeding with local cleanup', {
@@ -665,16 +478,23 @@ class AuthService {
         }
       }
 
-      const response = await fetch(`${API_BASE_URL}/auth/refresh`, {
+      const csrfToken = getCsrfToken();
+      const response = await fetch(`${KEYCLOAK_URL}/protocol/openid-connect/token`, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
+          'Content-Type': 'application/x-www-form-urlencoded',
+          ...(csrfToken && { 'X-CSRF-Token': csrfToken })
         },
-        body: JSON.stringify({ refresh_token: refreshToken }),
+        credentials: 'include',
+        body: new URLSearchParams({
+          grant_type: 'refresh_token',
+          client_id: 'makrx-cave',
+          refresh_token: refreshToken,
+        }),
       });
 
       const responseTime = Date.now() - startTime;
-      loggingService.logAPICall('/auth/refresh', 'POST', response.status, responseTime);
+      loggingService.logAPICall('/protocol/openid-connect/token', 'POST', response.status, responseTime);
 
       if (!response.ok) {
         // If API is not available, try mock refresh
@@ -766,11 +586,14 @@ class AuthService {
         return { message: 'Password reset instructions sent to your email (demo mode)' };
       }
 
+      const csrfToken = getCsrfToken();
       const response = await fetch(`${API_BASE_URL}/auth/password-reset/request`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          ...(csrfToken && { 'X-CSRF-Token': csrfToken })
         },
+        credentials: 'include',
         body: JSON.stringify(data),
       });
 
@@ -864,11 +687,14 @@ class AuthService {
         return { message: 'Password reset successfully (demo mode)' };
       }
 
+      const csrfToken = getCsrfToken();
       const response = await fetch(`${API_BASE_URL}/auth/password-reset/confirm`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          ...(csrfToken && { 'X-CSRF-Token': csrfToken })
         },
+        credentials: 'include',
         body: JSON.stringify({
           token,
           new_password: newPassword,
@@ -941,12 +767,15 @@ class AuthService {
         throw new Error('Not authenticated');
       }
 
+      const csrfToken = getCsrfToken();
       const response = await fetch(`${API_BASE_URL}/auth/change-password`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`,
+          ...(csrfToken && { 'X-CSRF-Token': csrfToken })
         },
+        credentials: 'include',
         body: JSON.stringify(data),
       });
 
@@ -996,7 +825,7 @@ class AuthService {
             id: payload.sub,
             email: payload.email,
             username: payload.email.split('@')[0],
-            role: payload.role,
+            role: payload.role as User['role'],
             assignedMakerspaces: payload.makerspace_ids || [],
             isActive: true,
             createdAt: new Date(payload.iat * 1000).toISOString()
@@ -1017,10 +846,13 @@ class AuthService {
         }
       }
 
+      const csrfToken = getCsrfToken();
       const response = await fetch(`${API_BASE_URL}/users/me`, {
         headers: {
-          'Authorization': `Bearer ${token}`,
+          ...(token && { 'Authorization': `Bearer ${token}` }),
+          ...(csrfToken && { 'X-CSRF-Token': csrfToken })
         },
+        credentials: 'include',
       });
 
       if (!response.ok) {
@@ -1041,7 +873,7 @@ class AuthService {
               id: payload.sub,
               email: payload.email,
               username: payload.email.split('@')[0],
-              role: payload.role,
+              role: payload.role as User['role'],
               assignedMakerspaces: payload.makerspace_ids || [],
               isActive: true,
               createdAt: new Date(payload.iat * 1000).toISOString()
@@ -1095,25 +927,25 @@ class AuthService {
 
   // Token management
   getAccessToken(): string | null {
-    return localStorage.getItem(TOKEN_KEY);
+    return getCookie(TOKEN_KEY);
   }
 
   getRefreshToken(): string | null {
-    return localStorage.getItem(REFRESH_TOKEN_KEY);
+    return getCookie(REFRESH_TOKEN_KEY);
   }
 
   setTokens(accessToken: string, refreshToken: string): void {
-    localStorage.setItem(TOKEN_KEY, accessToken);
-    localStorage.setItem(REFRESH_TOKEN_KEY, refreshToken);
-    
+    setCookie(TOKEN_KEY, accessToken);
+    setCookie(REFRESH_TOKEN_KEY, refreshToken);
+
     // Also set for backward compatibility
-    localStorage.setItem('auth_token', accessToken);
-    localStorage.setItem('authToken', accessToken);
+    setCookie('auth_token', accessToken);
+    setCookie('authToken', accessToken);
   }
 
   // User management
   getUser(): User | null {
-    const userData = localStorage.getItem(USER_KEY);
+    const userData = getCookie(USER_KEY);
     if (userData) {
       try {
         return JSON.parse(userData);
@@ -1125,10 +957,10 @@ class AuthService {
   }
 
   setUser(user: User): void {
-    localStorage.setItem(USER_KEY, JSON.stringify(user));
-    
+    setCookie(USER_KEY, JSON.stringify(user));
+
     // Also set for backward compatibility
-    localStorage.setItem('makrcave_user', JSON.stringify({ id: user.id }));
+    setCookie('makrcave_user', JSON.stringify({ id: user.id }));
   }
 
   // Clear all auth data
@@ -1141,15 +973,15 @@ class AuthService {
       hadRefreshTimer: !!this.refreshTimer
     });
 
-    localStorage.removeItem(TOKEN_KEY);
-    localStorage.removeItem(REFRESH_TOKEN_KEY);
-    localStorage.removeItem(USER_KEY);
+    deleteCookie(TOKEN_KEY);
+    deleteCookie(REFRESH_TOKEN_KEY);
+    deleteCookie(USER_KEY);
 
     // Clear backward compatibility tokens
-    localStorage.removeItem('auth_token');
-    localStorage.removeItem('authToken');
-    localStorage.removeItem('makrcave_user');
-    localStorage.removeItem('makrcave_access_token');
+    deleteCookie('auth_token');
+    deleteCookie('authToken');
+    deleteCookie('makrcave_user');
+    deleteCookie('makrcave_access_token');
 
     // Clear refresh timer
     if (this.refreshTimer) {
@@ -1189,7 +1021,7 @@ class AuthService {
       } else {
         loggingService.debug('auth', 'AuthService.isAuthenticated', 'Token is valid', {
           userId: payload.sub,
-          role: payload.role,
+          role: payload.role as User['role'],
           expiresIn: payload.exp - currentTime
         });
       }
@@ -1343,13 +1175,16 @@ class AuthService {
   createAuthenticatedFetch() {
     return async (url: string, options: RequestInit = {}): Promise<Response> => {
       const token = this.getAccessToken();
-      
-      const authenticatedOptions = {
+      const csrfToken = getCsrfToken();
+
+      const authenticatedOptions: RequestInit = {
         ...options,
         headers: {
           ...options.headers,
           ...(token && { Authorization: `Bearer ${token}` }),
+          ...(csrfToken && { 'X-CSRF-Token': csrfToken }),
         },
+        credentials: 'include',
       };
 
       let response = await fetch(url, authenticatedOptions);
@@ -1361,6 +1196,7 @@ class AuthService {
           authenticatedOptions.headers = {
             ...authenticatedOptions.headers,
             Authorization: `Bearer ${newToken}`,
+            ...(csrfToken && { 'X-CSRF-Token': csrfToken })
           };
           response = await fetch(url, authenticatedOptions);
         }

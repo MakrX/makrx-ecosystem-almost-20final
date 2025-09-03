@@ -1,4 +1,4 @@
-version: '3.8'
+version: "3.8"
 
 networks:
   makrx-net:
@@ -43,7 +43,8 @@ services:
       KC_DB_PASSWORD: makrx-db-2024
       KC_DB_SCHEMA: keycloak
       KEYCLOAK_ADMIN: admin
-      KEYCLOAK_ADMIN_PASSWORD: makrx-admin-2024
+      # Admin password sourced from environment variable
+      KEYCLOAK_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD}
     ports:
       - "8080:8080"
     depends_on:
@@ -65,7 +66,8 @@ services:
       KEYCLOAK_URL: http://keycloak:8080
       KEYCLOAK_REALM: makrx
       KEYCLOAK_CLIENT_ID: auth-service
-      KEYCLOAK_CLIENT_SECRET: makrx-auth-service-secret-2024
+      # Client secret sourced from environment variable
+      KEYCLOAK_CLIENT_SECRET: ${KEYCLOAK_CLIENT_SECRET}
     ports:
       - "8001:8000"
     depends_on:
@@ -77,7 +79,7 @@ services:
   # MakrCave Backend (FastAPI)
   makrcave-backend:
     build:
-      context: ./backends/makrcave-backend
+      context: ./makrcave-backend
       dockerfile: Dockerfile
     container_name: makrx-makrcave-backend
     environment:
@@ -95,7 +97,7 @@ services:
   # MakrX Store Backend (FastAPI)
   makrx-store-backend:
     build:
-      context: ./backends/makrx-store-backend
+      context: ./makrx-store-backend
       dockerfile: Dockerfile
     container_name: makrx-store-backend
     environment:
@@ -151,7 +153,7 @@ services:
   # MakrX Store Frontend (React + Vite)
   makrx-store-frontend:
     build:
-      context: ./frontend/makrx-store-frontend
+      context: ./makrx-store-frontend
       dockerfile: Dockerfile
     container_name: makrx-store-frontend
     environment:
@@ -170,7 +172,7 @@ services:
   # Reverse Proxy (Nginx)
   reverse-proxy:
     build:
-      context: ./services/reverse-proxy
+      context: ./nginx
       dockerfile: Dockerfile
     container_name: makrx-reverse-proxy
     ports:
@@ -183,4 +185,4 @@ services:
     networks:
       - makrx-net
     volumes:
-      - ./services/reverse-proxy/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro

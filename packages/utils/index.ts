@@ -1,36 +1,61 @@
 import type { AuthTokens } from '@makrx/types';
 
+// Basic cookie helpers. Cookies are expected to be set by the server with the
+// `HttpOnly` flag; these helpers are defensive fallbacks for environments where
+// `document` is available. SameSite and Secure attributes mitigate CSRF risk.
+const cookieOptions = 'path=/; secure; samesite=strict';
+
+const setCookie = (name: string, value: string, expiresMs?: number) => {
+  if (typeof document === 'undefined') return;
+  let cookie = `${name}=${encodeURIComponent(value)}; ${cookieOptions}`;
+  if (expiresMs) {
+    cookie += `; expires=${new Date(expiresMs).toUTCString()}`;
+  }
+  document.cookie = cookie;
+};
+
+const getCookie = (name: string): string | null => {
+  if (typeof document === 'undefined') return null;
+  const match = document.cookie.match(new RegExp(`(^| )${name}=([^;]+)`));
+  return match ? decodeURIComponent(match[2]) : null;
+};
+
+const deleteCookie = (name: string) => {
+  if (typeof document === 'undefined') return;
+  document.cookie = `${name}=; ${cookieOptions}; expires=Thu, 01 Jan 1970 00:00:00 GMT`;
+};
+
 // Auth utilities
 export const auth = {
   setTokens: (tokens: AuthTokens) => {
-    localStorage.setItem('makrx_access_token', tokens.accessToken);
-    localStorage.setItem('makrx_refresh_token', tokens.refreshToken);
-    localStorage.setItem('makrx_expires_in', tokens.expiresIn.toString());
+    setCookie('makrx_access_token', tokens.accessToken, tokens.expiresIn);
+    setCookie('makrx_refresh_token', tokens.refreshToken, tokens.expiresIn);
+    setCookie('makrx_expires_in', tokens.expiresIn.toString(), tokens.expiresIn);
   },
 
   getAccessToken: (): string | null => {
-    return localStorage.getItem('makrx_access_token');
+    return getCookie('makrx_access_token');
   },
 
   getRefreshToken: (): string | null => {
-    return localStorage.getItem('makrx_refresh_token');
+    return getCookie('makrx_refresh_token');
   },
 
   clearTokens: () => {
-    localStorage.removeItem('makrx_access_token');
-    localStorage.removeItem('makrx_refresh_token');
-    localStorage.removeItem('makrx_expires_in');
+    deleteCookie('makrx_access_token');
+    deleteCookie('makrx_refresh_token');
+    deleteCookie('makrx_expires_in');
   },
 
   isAuthenticated: (): boolean => {
-    const token = localStorage.getItem('makrx_access_token');
-    const expiresIn = localStorage.getItem('makrx_expires_in');
-    
+    const token = getCookie('makrx_access_token');
+    const expiresIn = getCookie('makrx_expires_in');
+
     if (!token || !expiresIn) return false;
-    
+
     const now = Date.now();
     const expiry = parseInt(expiresIn);
-    
+
     return now < expiry;
   }
 };

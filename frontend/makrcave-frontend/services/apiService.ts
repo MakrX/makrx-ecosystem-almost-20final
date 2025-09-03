@@ -4,6 +4,7 @@
 import loggingService from './loggingService';
 import { getToken } from '../lib/auth';
 
+
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '/api';
 const MOCK_API_BASE_URL =
   import.meta.env.VITE_MOCK_API_BASE_URL || 'http://localhost:8000';

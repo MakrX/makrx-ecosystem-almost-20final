@@ -1,15 +1,12 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Loader2, CheckCircle, XCircle } from 'lucide-react';
-import { ThemeToggle } from '../../../packages/ui/components/ThemeToggle';
-import authService from '../services/authService';
-import { useAuth } from '../contexts/AuthContext';
-import { getAndClearRedirectUrl } from '../../../makrx-sso-utils.js';
+import { auth } from '@makrx/utils';
+import { exchangeCodeForTokens, getAndClearRedirectUrl } from '../../../makrx-sso-utils.js';
 
 export default function AuthCallback() {
   const navigate = useNavigate();
   const location = useLocation();
-  const { refreshUser } = useAuth();
   const [status, setStatus] = useState<'loading' | 'success' | 'error'>('loading');
   const [error, setError] = useState('');
 
@@ -31,11 +28,15 @@ export default function AuthCallback() {
         sessionStorage.removeItem('makrx_auth_state');
         sessionStorage.removeItem('makrx_oauth_state');
 
-        await authService.handleAuthCallback(code);
-        await refreshUser();
+        const tokens = await exchangeCodeForTokens(code);
+        auth.setTokens({
+          accessToken: tokens.access_token,
+          refreshToken: tokens.refresh_token,
+          expiresIn: Date.now() + tokens.expires_in * 1000,
+        });
 
         setStatus('success');
-        const redirectUrl = getAndClearRedirectUrl() || '/portal/dashboard';
+        const redirectUrl = getAndClearRedirectUrl() || '/';
         setTimeout(() => navigate(redirectUrl), 1500);
       } catch (err) {
         console.error('Auth callback error:', err);
@@ -48,45 +49,51 @@ export default function AuthCallback() {
   }, [location, navigate]);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-makrx-blue via-makrx-blue/95 to-makrx-blue/90 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 flex items-center justify-center p-6">
-      <div className="fixed top-6 right-6 z-50">
-        <ThemeToggle variant="default" />
-      </div>
-      <div className="w-full max-w-md relative">
-        <div className="backdrop-blur-md border border-white/20 rounded-2xl p-8 bg-white/10 text-center">
+    <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900">
+      <div className="max-w-md w-full mx-auto">
+        <div className="bg-white dark:bg-gray-800 shadow-lg rounded-lg p-8 text-center">
           {status === 'loading' && (
             <>
               <div className="flex justify-center mb-4">
-                <Loader2 className="w-6 h-6 text-makrx-teal animate-spin" />
+                <Loader2 className="h-12 w-12 text-blue-600 animate-spin" />
               </div>
-              <h2 className="text-xl font-bold text-white mb-2">Completing Sign In</h2>
-              <p className="text-white/80 mb-4">Please wait while we authenticate you...</p>
+              <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
+                Completing Sign In
+              </h2>
+              <p className="text-gray-600 dark:text-gray-400">
+                Please wait while we authenticate you...
+              </p>
             </>
           )}
           {status === 'success' && (
             <>
               <div className="flex justify-center mb-4">
-                <CheckCircle className="w-12 h-12 text-green-400" />
+                <CheckCircle className="h-12 w-12 text-green-600" />
               </div>
-              <h2 className="text-xl font-bold text-white mb-2">Welcome to <span className="text-makrx-teal">MakrCave</span>!</h2>
-              <p className="text-white/80">Redirecting you to your dashboard...</p>
+              <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
+                Sign In Successful!
+              </h2>
+              <p className="text-gray-600 dark:text-gray-400">
+                Redirecting you to your destination...
+              </p>
             </>
           )}
           {status === 'error' && (
             <>
               <div className="flex justify-center mb-4">
-                <XCircle className="w-12 h-12 text-red-400" />
+                <XCircle className="h-12 w-12 text-red-600" />
               </div>
-              <h2 className="text-xl font-bold text-white mb-2">Sign In Failed</h2>
-              <p className="text-white/80 mb-4">{error || 'An error occurred during authentication'}</p>
-              <p className="text-sm text-white/60">Redirecting to home page...</p>
+              <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
+                Sign In Failed
+              </h2>
+              <p className="text-gray-600 dark:text-gray-400 mb-4">
+                {error || 'An error occurred during authentication'}
+              </p>
+              <p className="text-sm text-gray-500 dark:text-gray-400">
+                Redirecting to home page...
+              </p>
             </>
           )}
-          <div className="mt-8 text-center">
-            <div className="pt-4 border-t border-white/10">
-              <p className="text-xs text-white/40">🔐 Secure Single Sign-On • Powered by MakrX</p>
-            </div>
-          </div>
         </div>
       </div>
     </div>
